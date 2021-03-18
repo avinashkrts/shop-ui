@@ -6,6 +6,7 @@ export enum AppRoute {
   FORGET_PASSWORD = 'Forget Passrord',
   SHOP_CUSTOMER = 'Shop Customer',
   SHOP_CUSTOMER_DETAIL = 'Shop Customer Detail',
+  ADD_CUSTOMER = 'Add Customer',
   ITEM_CATEGORY = 'Item Category',
   ADD_CATEGORY = 'Add Category',
   EMPLOYEE = 'Employee',

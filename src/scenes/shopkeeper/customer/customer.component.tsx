@@ -19,7 +19,7 @@ import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading,
 import { CustomerScreenProps } from '../../../navigation/Customer.navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon } from '../../../assets/icons';
+import { PlusCircle, SearchIcon } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -91,37 +91,14 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
             employment_Type: [],
             skill: [],
         }
-        this.submitFresher = this.submitFresher.bind(this);
-        this.submitExperienced = this.submitExperienced.bind(this);
-        this.submitQButton = this.submitQButton.bind(this);
+        this.navigationAddCustomer = this.navigationAddCustomer.bind(this);
+        this.handleAddCustomer = this.handleAddCustomer.bind(this);
+        // this.submitQButton = this.submitQButton.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
     }
 
-    submitFresher() {
-        this.setState(
-            {
-                isFresher: true,
-                isExperience: false
-            }
-        )
-    }
-
-    submitExperienced() {
-        this.setState(
-            {
-                isExperience: true,
-                isFresher: false
-            }
-        )
-    }
-
-    submitQButton(e, selected) {
-        // console.log(selected)
-        this.setState(
-            {
-                qButton: selected
-            }
-        )
+    navigationAddCustomer() {
+        this.props.navigation.navigate(AppRoute.ADD_CUSTOMER);
     }
 
     // async componentDidMount() {
@@ -380,7 +357,9 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
     //     </ListItem>
     // )
 
-
+    handleAddCustomer() {
+        this.navigationAddCustomer();
+    }
 
     render() {
         const { my_Jobs } = this.state
@@ -391,6 +370,8 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
                 <Toolbar
                     title='All Customers'
                     backIcon={MenuIcon}
+                    menuIcon={PlusCircle}
+                    onRightPress={() => { this.handleAddCustomer() }}
                     onBackPress={this.props.navigation.openDrawer}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
@@ -411,7 +392,7 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
                         />
                     </View>
                     {/* </Header> */}
-                    <TouchableOpacity onPress = {() => {this.handleJobSubmit()}}>
+                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.image} />
