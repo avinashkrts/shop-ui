@@ -43,7 +43,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import { Color, LableText } from '../../../constants/LabelConstants';
-import ImageResizer from 'react-native-image-resizer';
+
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -322,7 +322,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
 
                 <Divider />
 
-                <Content style={Styles.customer_content} showsVerticalScrollIndicator={false}
+                <Content style={Styles.customer_content}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -369,7 +369,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
 
                             <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
                                 <View>
-                                    <Text style={Styles.product_2nd_buy_text} onPress={() => {this.handleCart()}}>{LableText.BUY}</Text>
+                                    <Text style={Styles.product_2nd_buy_text} onPress={() => { this.handleCart() }}>{LableText.BUY}</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -386,27 +386,28 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                             <Text style={{ color: '#000', paddingVertical: 20, fontWeight: 'bold', fontSize: 20 }}>Dawat Basmati Rice</Text>
 
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                            <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>25 Kg.</Text>
+                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>25 Kg.</Text>
                                 <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,100</Text>
                                 <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,150</Text>
                                 <Text style={{ color: Color.COLOR }}>3.5 % off</Text>
                             </View>
 
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                <Text style={{ color: Color.COLOR }}>Offer till Tue.</Text>
+                                <Text style={{ color: Color.COLOR }}>Offer till 25.4.2021.</Text>
                             </View>
                         </View>
-                        <View style={Styles.product_3rd_view_1}>
-                            <Text style={Styles.product_name_heading}>Dawat Basmati Rice</Text>
-                            <Text style={Styles.product_name_text}></Text>
+                        {/* <View style={Styles.product_3rd_view_1}> */}
+                        {/* <ScrollView> */}
+                        <View style={Styles.product_description_view}>
+                            <Text style={{fontSize: 20, fontWeight: 'bold', marginLeft: 10}}>Product Description</Text>
+                            <View style={{ borderTopWidth: 2, borderColor: '#0099cc', marginTop: 10, padding: 10 }}>
+                                <Text style={{ fontSize: 18 }}>These bags are made up of high quality material from trusted vendor. Our products undergo quality checks before delivery to customers.</Text>
+                            </View>
                         </View>
-
-                        <View style={Styles.product_3rd_view_1}>
-                            <Text style={Styles.product_name_heading}>{LableText.PRICE}</Text>
-                            <Text style={Styles.product_name_text}>1,100</Text>
-                        </View>
+                        {/* </ScrollView> */}
                     </View>
-                    <View style={{ height: 10, width: '100%' }} />
+                    <View style={{ height: 100, width: '100%' }} />
+
                 </Content>
 
             </SafeAreaLayout>

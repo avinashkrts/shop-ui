@@ -390,7 +390,7 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
                     <TouchableOpacity onPress={() => { this.handleBrandList() }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/samsung_logo.png")} style={Styles.image} />
+                                <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.image} />
                                 {/* <View>
                                 <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
                             </View> */}
@@ -398,7 +398,7 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
 
                             <View style={Styles.itemCategoryName}>
                                 <View>
-                                    <Text style={Styles.itemCategoryText}>Samsung</Text>
+                                    <Text style={Styles.itemCategoryText}>Laptop</Text>
                                 </View>
                             </View>
 

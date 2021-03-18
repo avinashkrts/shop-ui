@@ -1,4 +1,6 @@
+import { Col } from "native-base";
 import { StyleSheet, Dimensions } from "react-native";
+import { color } from "react-native-reanimated";
 import { Color, Padding } from "../constants/LabelConstants";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -158,7 +160,7 @@ export const Styles = StyleSheet.create({
   product_view: {
     width: '100%',
     height: 300,
-    flexWrap: 'wrap'
+    // flexWrap: 'wrap'
   },
 
   product_image: {
@@ -225,11 +227,23 @@ export const Styles = StyleSheet.create({
   },
 
   product_3rd_view: {
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
     width: '100%',
     height: 200
   },
 
+  product_3rd_view_1: {
+    textAlign:'left',
+  },
+
+  product_description_view: {
+    width:'100%',
+    borderWidth:2,
+    marginTop:10,
+    borderRadius:10,
+    borderColor: Color.COLOR,
+    paddingVertical: 10,
+  },
   /*---------------------------------------------This Style is for Cart--------------------------------------------------------- */
 
 
@@ -317,8 +331,8 @@ export const Styles = StyleSheet.create({
   },
 
   cart_button_text: {
-    paddingVertical: 10,
-    paddingHorizontal: '5%',
+    paddingVertical: 7,
+    paddingHorizontal: 5,
     color: Color.BUTTON_NAME_COLOR
   },
 
@@ -412,10 +426,12 @@ export const Styles = StyleSheet.create({
   },
 
   cart_bottom_box_button: {
+    borderRadius: 5,
     backgroundColor: Color.COLOR,
   },
 
   cart_bottom_box_button_text: {
+    color: Color.BUTTON_NAME_COLOR,
     fontSize: 20,
     paddingVertical: 15,
     paddingHorizontal: '10%'

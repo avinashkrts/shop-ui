@@ -15,7 +15,7 @@ import {
     withStyles, TabBar,
     styled, Divider, Avatar, Icon, Button
 } from 'react-native-ui-kitten';
-import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab } from 'native-base';
+import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab, Col } from 'native-base';
 import { CartScreenProps } from '../../../navigation/shopKeeperNavigator/allItem.Navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
@@ -280,6 +280,10 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
         this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL)
     }
 
+    continiueShopping() {
+        this.props.navigation.navigate(AppRoute.ALLITEM)
+    }
+
     addItem() { }
 
     render() {
@@ -314,6 +318,18 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                             style={Styles.searchInput}
                         />
                     </View> */}
+
+                    <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Address</Text>
+
+                        <Text style={{ marginVertical: 5 }}>101, InOrbit Complex, Near B.M.P. 16, Phulwari Khagaul Road, Patna, 801505</Text>
+
+                        <View style={{width: '100%', alignItems: 'flex-end'}}>
+                            <TouchableOpacity style={[Styles.center, {paddingVertical: 10, width: 100, borderRadius: 5, backgroundColor: Color.COLOR}]}>
+                                <Text style={{color: Color.BUTTON_NAME_COLOR}}>Change</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
                     <View style={Styles.cart_main_view}>
 
@@ -444,7 +460,7 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                         </View>
                     </View> */}
 
-                    <TouchableOpacity style={Styles.cart_shopping_view}>
+                    <TouchableOpacity style={Styles.cart_shopping_view} onPress={() => {this.continiueShopping()}}>
                         <Text style={Styles.cart_shopping_text}>Continue Shopping</Text>
                         <Text style={Styles.cart_shopping_text}><RightArrowIcon fontSize={20} /></Text>
                     </TouchableOpacity>
@@ -488,7 +504,7 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                 <View style={Styles.cart_bottom_box_view}>
                     <View>
                         <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />3,000</Text>
-                        <TouchableOpacity onPress={() => {}}>
+                        <TouchableOpacity onPress={() => { }}>
                             <Text style={Styles.cart_price_text_data}>View price details</Text>
                         </TouchableOpacity>
                     </View>
@@ -499,8 +515,8 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                         </TouchableOpacity>
                     </View>
                 </View>
-                <Divider/>
-                <Divider/>
+                <Divider />
+                <Divider />
             </SafeAreaLayout>
         )
     }
