@@ -423,7 +423,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                     <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/pulse.jpg")} style={Styles.image} />
+                                <Avatar source={require("../../../assets/lenovo.jpg")} style={Styles.image} />
                                 {/* <View>
                                 <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
                             </View> */}
@@ -431,7 +431,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
 
                             <View style={Styles.itemCategoryName}>
                                 <View>
-                                    <Text style={Styles.itemCategoryText}>Pulse</Text>
+                                    <Text style={Styles.itemCategoryText}>Lenovo</Text>
                                 </View>
                             </View>
 
@@ -447,7 +447,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                     <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/rice.jpg")} style={Styles.image} />
+                                <Avatar source={require("../../../assets/anchor.jpg")} style={Styles.image} />
                                 {/* <View>
                                 <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
                             </View> */}
@@ -455,7 +455,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
 
                             <View style={Styles.itemCategoryName}>
                                 <View>
-                                    <Text style={Styles.itemCategoryText}>Rice</Text>
+                                    <Text style={Styles.itemCategoryText}>Anchor</Text>
                                 </View>
                             </View>
 
