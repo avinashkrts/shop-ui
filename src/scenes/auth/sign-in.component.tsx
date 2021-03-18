@@ -24,8 +24,8 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     super(props);
 
     this.state = {
-      emailId: '',
-      pwd: '',
+      emailId: 'avi@in.com',
+      pwd: 'Welcome@0',
       passwordVisible: true
     }
 
@@ -42,7 +42,27 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
 
   onFormSubmit() {
     const { emailId, pwd } = this.state
-    this.navigateHome();
+
+    if (emailId == null || emailId === '') {
+      Alert.alert("Please enter Email Id.");
+    } else if (pwd == null || pwd === '') {
+      Alert.alert("Please enter Password.");
+    } else {
+      axios ({
+        method: 'POST',
+        url: 'http://192.168.0.105:8081/api/user/login',
+        data: {
+          "emailId": emailId,
+          "pwd": pwd
+        },
+      }).then((response) => {
+        console.log(response.data);
+      }, (error) => {
+        console.log(error);
+        Alert.alert("Please enter a valid email ID and password.")
+      });
+    }
+    // this.navigateHome();
     // this.navigateHRHome();
 
     // axios({
@@ -121,6 +141,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
   };
 
   render() {
+    const {emailId, pwd} = this.state;
     return (
       <SafeAreaLayout
         style={Styles.safeArea}
@@ -140,6 +161,8 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
               <TextInput
                 style={Styles.inputText}
                 placeholder={Placeholder.PHONE}
+                value={emailId}
+                onChangeText={(value) => {this.setState({emailId: value})}}
               />
             </View>
 
@@ -147,6 +170,8 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
               <TextInput
                 style={Styles.inputTextWithIcon}
                 placeholder={Placeholder.PASSWORD}
+                value={pwd}
+                onChangeText={(value) => {this.setState({pwd: value})}}
               />
               <View style={[Styles.inputTextIcon, Styles.center]}>
                 {this.state.passwordVisible ?

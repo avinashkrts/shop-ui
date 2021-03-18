@@ -19,7 +19,7 @@ import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading,
 import { EmployeeScreenProps } from '../../../navigation/employee.navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon } from '../../../assets/icons';
+import { PlusCircle, SearchIcon } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -91,37 +91,12 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
             employment_Type: [],
             skill: [],
         }
-        this.submitFresher = this.submitFresher.bind(this);
-        this.submitExperienced = this.submitExperienced.bind(this);
-        this.submitQButton = this.submitQButton.bind(this);
+        this.navigateAddEmployee = this.navigateAddEmployee.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
     }
 
-    submitFresher() {
-        this.setState(
-            {
-                isFresher: true,
-                isExperience: false
-            }
-        )
-    }
-
-    submitExperienced() {
-        this.setState(
-            {
-                isExperience: true,
-                isFresher: false
-            }
-        )
-    }
-
-    submitQButton(e, selected) {
-        // console.log(selected)
-        this.setState(
-            {
-                qButton: selected
-            }
-        )
+    navigateAddEmployee() {
+        this.props.navigation.navigate(AppRoute.ADDEMPLOYEE);
     }
 
     // async componentDidMount() {
@@ -194,6 +169,19 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
         // })
     }
 
+    handleAddEmployee() {
+        this.navigateAddEmployee()
+        // const jobData = {
+        //     jobId: jobId,
+        //     jobUserId: jobUserId
+        // }
+        // AsyncStorage.setItem('jobId', JSON.stringify(jobData), () => {
+        //     AsyncStorage.getItem('jobId', (err, result) => {
+        //         console.log('Job Id is', result);
+        //     })
+        //     this.props.navigation.navigate(AppRoute.JOBDETAIL);
+        // })
+    }
     _onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
@@ -391,6 +379,8 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
                 <Toolbar
                     title='All Customers'
                     backIcon={MenuIcon}
+                    menuIcon={PlusCircle}
+                    onRightPress={() => { this.handleAddEmployee() }}
                     onBackPress={this.props.navigation.openDrawer}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
@@ -411,7 +401,7 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
                         />
                     </View>
                     {/* </Header> */}
-                    <TouchableOpacity onPress = {() => {this.handleJobSubmit()}}>
+                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.image} />

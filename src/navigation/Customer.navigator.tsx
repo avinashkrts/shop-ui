@@ -15,7 +15,6 @@ import { CustomerDetailScreen, CustomerScreen } from '../scenes/shopkeeper/custo
 type CustomerNavigatorParams = {
     [AppRoute.SHOP_CUSTOMER]: undefined;   
     [AppRoute.SHOP_CUSTOMER_DETAIL]: undefined;   
-    [AppRoute.JOBDETAIL]: undefined;   
 }
 
 export interface CustomerScreenProps {
@@ -32,14 +31,6 @@ export interface CustomerDetailScreenProps {
         StackNavigationProp<CustomerNavigatorParams, AppRoute.SHOP_CUSTOMER_DETAIL>
     >;
     route: RouteProp<CustomerNavigatorParams, AppRoute.SHOP_CUSTOMER_DETAIL>;
-}
-
-export interface JobDetailScreenProps {
-    navigation: CompositeNavigationProp<
-    CustomerTabNavigationProp,
-        StackNavigationProp<CustomerNavigatorParams, AppRoute.JOBDETAIL>
-    >;
-    route: RouteProp<CustomerNavigatorParams, AppRoute.JOBDETAIL>;
 }
 
 

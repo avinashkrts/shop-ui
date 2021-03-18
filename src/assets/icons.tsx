@@ -15,7 +15,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {Color} from '../constants/LabelConstants'
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { Color } from '../constants/LabelConstants'
 
 export const PeopleIcon = (style): AntDesign => (
   <SimpleLineIcons size={20} name='people' />
@@ -37,9 +38,37 @@ export const CancelIcon = (style): AntDesign => (
   <MaterialCommunityIcons size={20} name='close' />
 );
 
+export const CameraIcon = (style): AntDesign => (
+  <Entypo size={22} name='camera' />
+);
 
+export const WishIcon = (style): AntDesign => (
+  <Entypo size={30} name='heart' />
+);
 
+export const MinusIcon = (style): AntDesign => (
+  <AntDesign size={20} name='minus' />
+);
 
+export const AddIcon = (style): AntDesign => (
+  <AntDesign size={20} name='plus' />
+);
+
+export const RupeeIcon = (style): AntDesign => (
+  <FontAwesome style={style} name='rupee' />
+);
+
+export const EyeIcon = (style): AntDesign => (
+  <Feather size={22} name='eye' />
+);
+
+export const EyeOffIcon = (style): AntDesign => (
+  <Feather size={22} name='eye-off' />
+);
+
+export const RightArrowIcon = (style, app): AntDesign => (
+  <AntDesign style={style} name='right' />
+);
 
 
 
@@ -48,7 +77,7 @@ export const CancelIcon = (style): AntDesign => (
 
 
 export const PublicIcon = (style): AntDesign => (
-  <MaterialIcons size={15} color= "rgba(128,128,128,1)" name='public' />
+  <MaterialIcons size={15} color="rgba(128,128,128,1)" name='public' />
 );
 
 
@@ -58,27 +87,27 @@ export const CheckCircleIcon = (style): AntDesign => (
 );
 
 export const HelpIcon = (style): AntDesign => (
-  <Entypo size={18} color={'#1DA1F2'} name='help-with-circle'/>
+  <Entypo size={18} color={'#1DA1F2'} name='help-with-circle' />
 );
 
 export const ExperienceIcon = (style): AntDesign => (
-  <Entypo size={15} color= "rgba(128,128,128,1)" name='suitcase'/>
+  <Entypo size={15} color="rgba(128,128,128,1)" name='suitcase' />
 );
 
 export const LocationIcon = (style): AntDesign => (
-  <Entypo size={15} color= "rgba(128,128,128,1)" name='location'/>
+  <Entypo size={15} color="rgba(128,128,128,1)" name='location' />
 );
 
 export const PencilIcon = (style): AntDesign => (
-  <Entypo size={15} color= "rgba(128,128,128,1)" name='pencil'/>
+  <Entypo size={15} color="rgba(128,128,128,1)" name='pencil' />
 );
 
 export const LogOutIcon = (style): AntDesign => (
-  <Entypo size={18} color={'#1DA1F2'} name='log-out'/>
+  <Entypo size={18} color={'#1DA1F2'} name='log-out' />
 );
 
 export const FeedbackIcon = (style): AntDesign => (
-  <MaterialIcons size={18} color={'#1DA1F2'} name='feedback'/>
+  <MaterialIcons size={18} color={'#1DA1F2'} name='feedback' />
 );
 
 export const ArroCircle = (style): AntDesign => (
@@ -103,14 +132,6 @@ export const CompanyIcon = (style): AntDesign => (
 
 export const WalletIcon = (style): AntDesign => (
   <Fontisto size={18} name='wallet' />
-);
-
-export const EyeIcon = (style): AntDesign => (
-  <Feather size={22} name='eye' />
-);
-
-export const EyeOffIcon = (style): AntDesign => (
-  <Feather size={22} name='eye-off' />
 );
 
 export const HomeIcon = (style): IconElement => (
@@ -167,7 +188,7 @@ export const MoreVerticalIcon = (style): IconElement => (
 );
 
 export const ArrowDownward = (style): IconElement => (
-  <Icon {...style}  name='arrow-ios-downward-outline' />
+  <Icon {...style} name='arrow-ios-downward-outline' />
 );
 
 export const ArrowUpward = (style): IconElement => (

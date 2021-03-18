@@ -9,12 +9,13 @@ import {
 } from '@react-navigation/stack';
 import { StockTabNavigationProp } from './home.navigator';
 import { AppRoute } from './app-routes';
-import { ItemCategoryScreen, AddCategoryScreen, BrandListScreen } from '../scenes/shopkeeper/stock';
+import { ItemCategoryScreen, AddCategoryScreen, BrandListScreen, ItemListScreen } from '../scenes/shopkeeper/stock';
 
 type StockNavigatorParams = {
     [AppRoute.ITEM_CATEGORY]: undefined;
     [AppRoute.ADD_CATEGORY]: undefined;
     [AppRoute.BRANDLIST]: undefined;
+    [AppRoute.ITEMLIST]: undefined;
 }
 
 export interface ItemCategoryScreenProps {
@@ -33,6 +34,14 @@ export interface BrandListScreenProps {
     route: RouteProp<StockNavigatorParams, AppRoute.BRANDLIST>;
 }
 
+export interface ItemListScreenProps {
+    navigation: CompositeNavigationProp<
+        StockTabNavigationProp,
+        StackNavigationProp<StockNavigatorParams, AppRoute.ITEMLIST>
+    >;
+    route: RouteProp<StockNavigatorParams, AppRoute.ITEMLIST>;
+}
+
 export interface AddCategoryScreenProps {
     navigation: CompositeNavigationProp<
         StockTabNavigationProp,
@@ -48,5 +57,6 @@ export const StockNavigator = (): React.ReactElement => (
         <Stack.Screen name={AppRoute.ITEM_CATEGORY} component={ItemCategoryScreen} />
         <Stack.Screen name={AppRoute.ADD_CATEGORY} component={AddCategoryScreen} />
         <Stack.Screen name={AppRoute.BRANDLIST} component={BrandListScreen} />
+        <Stack.Screen name={AppRoute.ITEMLIST} component={ItemListScreen} />
     </Stack.Navigator>
 );

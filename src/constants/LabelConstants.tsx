@@ -3,6 +3,17 @@ export class Color {
     public static readonly COLOR = '#0099cc';
     public static readonly BUTTON_NAME_COLOR = '#fff';
     public static readonly COLOR_CUSTOMER = '#00bfff';
+    public static readonly COLOR_ITEM_NAME = '#777777';
+    public static readonly BORDER = '#d1d1d1';
+    public static readonly CART_LIST_EVEN = '#0099cc';
+    public static readonly CART_LIST_ODD = '#4dd2ff';
+    public static readonly CART_BACKGROUND = '#f2f2f2';
+    public static readonly SILVER = '#8f8f8f';
+}
+
+/*------------------------------------------------------------PADDING CODE------------------------------------------------------------*/
+export class Padding {
+    public static readonly HORIZONTAL_PADDING = 20;
 }
 
 /*------------------------------------------------------------TEXT------------------------------------------------------------*/
@@ -20,6 +31,35 @@ export class LableText {
     public static readonly RESET_PASSWORD = "Reset Password";
     public static readonly ANOTHER_NUMBER = "Use another number";
     public static readonly NAME = 'Name';
+    public static readonly FIRST_NAME = 'First Name';
+    public static readonly LAST_NAME = 'Last Name';
+    public static readonly FATHER_NAME = "Father's Name";
+    public static readonly VILLAGE = 'Village / City';
+    public static readonly POST_OFFICE = 'Post Office';
+    public static readonly POLICE_STATION = 'Police Station';
+    public static readonly DISTRICT = 'District';
+    public static readonly PIN_CODE = 'Pin Code';
+    public static readonly STATE = 'State';
+    public static readonly ADHAR_NUMBER = 'Adhar Number';
+    public static readonly PAN_NUMBER = 'Pan Number';
+    public static readonly SALARY = 'Salary';
+    public static readonly SALARY_TYPE = 'Salary Type';
+    public static readonly JOINING_DATE = 'Joining Date';
+    public static readonly ADVANCE_SALARY = 'Advance Salary';
+    public static readonly ATTENDANCE = 'Attendance';
+    public static readonly INCENTIVE = 'Incentive';
+    public static readonly WORKING_DAYS = 'Working Days';
+    public static readonly PRESENT = 'Present';
+    public static readonly DESIGNATION = 'Designation';
+    public static readonly EMPLOYEE_ID = 'Employee Id';
+    public static readonly ABSENT = 'Absent';
+    public static readonly BONUS = 'Bonus';
+    public static readonly LEAVE_FROM = 'Leave From';
+    public static readonly LEAVE_TO = 'Leave To';
+    public static readonly LEAVE_TYPE = 'Leave Type';
+    public static readonly EMAIL_ID = 'Email ID';
+    public static readonly STREET = 'Street';
+    public static readonly LAND_MARK = 'Land Mark';
     public static readonly PHONE = 'Phone';
     public static readonly TOTAL_AMT = 'Total Amount';
     public static readonly DUES = 'Dues';
@@ -28,19 +68,27 @@ export class LableText {
     public static readonly TRANSACTION_HISTORY = 'Transaction History';
     public static readonly CHECK_HISTORY = 'Check History';
     public static readonly PAYMENT = 'Payment';
+    public static readonly CART = 'Cart';
+    public static readonly BUY = 'Buy';
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/
 export class Placeholder {
-    
+
     public static readonly PHONE = 'Phone';
     public static readonly PASSWORD = 'Password';
     public static readonly FIRSTNAME = 'First Name';
     public static readonly LASTNAME = 'Last Name';
     public static readonly OTP = 'OTP';
     public static readonly AMOUNT = 'Amount';
-    public static readonly CATEGORY = 'Category';    
+    public static readonly CATEGORY = 'Category';
+    public static readonly NAME = 'Name';
 }
+
+export class AlertConstants {
+    public static readonly ALERT_USER_ID = 'Please Enter User Id';
+
+ }
 
 export class LabelConstants {
 
@@ -92,4 +140,4 @@ export class LabelConstants {
     public static readonly com_alert_choose_availability = 'Choose Availability';
     public static readonly com_alert_choose_category = 'Choose Category';
     public static readonly com_alert_choose_language = 'Choose Language';
-}; 
+};

@@ -16,10 +16,10 @@ import {
     styled, Divider, Avatar, Icon, Button
 } from 'react-native-ui-kitten';
 import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab } from 'native-base';
-import { ItemListScreenProps } from '../../../navigation/stock.navigator';
+import { CartScreenProps } from '../../../navigation/shopKeeperNavigator/allItem.Navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, EditIcon } from '../../../assets/icons';
+import { SearchIcon, MinusIcon, AddIcon, PlusCircle, BackIcon, CancelIcon } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -42,6 +42,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
+import { Color } from '../../../constants/LabelConstants';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -62,136 +63,20 @@ type MyState = {
     selectedIndex: number;
 }
 
-
-const renderItem = ({ item, index }) => (
-    <ListItem title={`${item.title} ${index + 1}`} />
-);
-
 const HEADER_MAX_HEIGHT = 120;
 const HEADER_MIN_HEIGHT = 70;
 const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
 
-export class ItemListScreen extends React.Component<ItemListScreenProps & ThemedComponentProps, MyState & any> {
+export class CartScreen extends React.Component<CartScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
-            userId: '',
-            userType: '',
-            token: '',
-            isFresher: false,
-            isExperience: false,
-            qButton: '',
-            my_Jobs: [],
-            salary_Type: [],
-            job_Industry: [],
-            min_Qualification: [],
-            experience_Required: [],
-            employment_Type: [],
-            skill: [],
+
         }
-        this.submitFresher = this.submitFresher.bind(this);
-        this.submitExperienced = this.submitExperienced.bind(this);
-        this.submitQButton = this.submitQButton.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
-    }
-
-    submitFresher() {
-        this.setState(
-            {
-                isFresher: true,
-                isExperience: false
-            }
-        )
-    }
-
-    submitExperienced() {
-        this.setState(
-            {
-                isExperience: true,
-                isFresher: false
-            }
-        )
-    }
-
-    submitQButton(e, selected) {
-        // console.log(selected)
-        this.setState(
-            {
-                qButton: selected
-            }
-        )
-    }
-
-    // async componentDidMount() {
-    //     const value = await AsyncStorage.getItem('userDetail');
-    //     if (value) {
-    //         // console.log('user Details all data', value);
-    //         const user = JSON.parse(value);
-    //         this.setState({
-    //             userType: user.userType,
-    //             token: user.token,
-    //             userId: user.userId,
-    //         })
-    //         // console.log('user data id', this.state.userId);      
-    //     }
-
-    //     axios({
-    //         method: 'get',
-    //         url: AppConstants.API_BASE_URL + '/api/job/getalljob',
-
-    //     }).then((response) => {
-    //         this.setState({
-    //             ...this.state,
-    //             my_Jobs: response.data
-    //         })
-    //         console.log("Profile Data", response.data);
-    //     },
-    //         (error) => {
-    //             console.log(error);
-    //             if (error) {
-    //                 Alert.alert("UserId or Password is invalid");
-    //             }
-    //         }
-    //     );
-
-    //     axios({
-    //         method: 'get',
-    //         url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',
-    //     }).then((response) => {
-    //         this.setState({
-    //             ...this.state,
-    //             salary_Type: response.data.SALARY_TYPE,
-    //             job_Industry: response.data.JOB_CATEGORY,
-    //             min_Qualification: response.data.QUALIFICATION,
-    //             experience_Required: response.data.EXPERIENCE,
-    //             employment_Type: response.data.EMPLOYMENT_TYPE,
-    //             skill: response.data.SKILL
-    //         })
-    //         // console.log("Profile Data", response.data);
-    //     },
-    //         (error) => {
-    //             console.log(error);
-    //             if (error) {
-    //                 Alert.alert("UserId or Password is invalid");
-    //             }
-    //         }
-    //     );
-    // }
-
-    handleJobSubmit() {
-        // this.props.navigation.navigate(AppRoute.SHOP_CUSTOMER_DETAIL);
-        // const jobData = {
-        //     jobId: jobId,
-        //     jobUserId: jobUserId
-        // }
-        // AsyncStorage.setItem('jobId', JSON.stringify(jobData), () => {
-        //     AsyncStorage.getItem('jobId', (err, result) => {
-        //         console.log('Job Id is', result);
-        //     })
-        //     this.props.navigation.navigate(AppRoute.JOBDETAIL);
-        // })
+        this.navigationProductDetail = this.navigationProductDetail.bind(this);
     }
 
     _onRefresh() {
@@ -381,22 +266,52 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
     // )
 
     navigationItemList() {
-        this.props.navigation.navigate(AppRoute.ITEMLIST)
+        // this.props.navigation.navigate(AppRoute.ITEMLIST)
     }
+
+    navigationProductDetail() {
+        this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL)
+    }
+
+    addItem() { }
 
     render() {
         const { my_Jobs } = this.state
         return (
             <SafeAreaLayout
-                style={Styles.safeArea}
+                style={[Styles.safeArea, { paddingHorizontal: 5 }]}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Item'
-                    backIcon={MenuIcon}
-                    onBackPress={this.props.navigation.openDrawer}
+                    title='Cart'
+                    backIcon={BackIcon}
+                    onBackPress={this.props.navigation.goBack}
+                    onRightPress={() => { this.addItem() }}
+                    menuIcon={PlusCircle}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
-                <Content style={Styles.customer_content}
+                <Divider />
+
+                <View style={Styles.cart_view}>
+                    <View style={[Styles.cart_sl_view, Styles.center]}>
+                        <Text style={Styles.cart_sl_text}>Sl. No.</Text>
+                    </View>
+                    <View style={[Styles.cart_name_view, Styles.center]}>
+                        <Text style={Styles.cart_sl_text}>Name</Text>
+                    </View>
+                    <View style={[Styles.cart_quantity_view, Styles.center]}>
+                        <Text style={Styles.cart_sl_text}>Quantity</Text>
+                    </View>
+                    <View style={[Styles.cart_amount_view, Styles.center]}>
+                        <Text style={Styles.cart_sl_text}>Amount</Text>
+                    </View>
+                    <View style={[Styles.cart_cancle_view, Styles.center]}>
+                        <TouchableOpacity onPress={() => { }}>
+                            <Text style={Styles.cart_sl_text}><CancelIcon /></Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                <Content style={Styles.cart_content} showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -405,94 +320,149 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                     }
                 >
                     {/* <Header style={styles.header}> */}
-                    <View style={Styles.searchBox}>
+                    {/* <View style={Styles.searchBox}>
                         <Text style={Styles.searchIcon}><SearchIcon /></Text>
                         <TextInput
                             placeholder="Search"
                             style={Styles.searchInput}
                         />
+                    </View> */}
+
+
+
+                    <View style={Styles.cart_data_view}>
+                        <View style={Styles.cart_sl_data_view}>
+                            <Text style={Styles.cart_sl_data_text}>1.</Text>
+                        </View>
+                        <View style={Styles.cart_name_data_view}>
+                            <Text style={Styles.cart_sl_data_text}>Dawat Rice</Text>
+                        </View>
+                        <View style={Styles.cart_quantity_data_view}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <View>
+                                    <Text style={Styles.cart_sl_data_text}><MinusIcon /></Text>
+                                </View>
+                            </TouchableOpacity>
+
+                            <View>
+                                <Text style={Styles.cart_sl_data_text}>1</Text>
+                            </View>
+
+                            <TouchableOpacity onPress={() => { }}>
+                                <View>
+                                    <Text style={Styles.cart_sl_data_text}><AddIcon /></Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={Styles.cart_amount_data_view}>
+                            <Text style={Styles.cart_sl_data_text}>1,100</Text>
+                        </View>
+
+                        <View style={[Styles.cart_cancle_data_view, Styles.center]}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <Text style={Styles.cart_sl_data_text}><CancelIcon /></Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    {/* </Header> */}
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/samsung_logo.png")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
 
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Samsung</Text>
-                                </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
-                                </View>
-                            </View>
+                    <View style={Styles.cart_data_view_even}>
+                        <View style={Styles.cart_sl_data_view_even}>
+                            <Text style={Styles.cart_sl_data_text_even}>2.</Text>
                         </View>
-                    </TouchableOpacity>
-                    <Divider />
-
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/pulse.jpg")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
-
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Pulse</Text>
-                                </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
-                                </View>
-                            </View>
+                        <View style={Styles.cart_name_data_view_even}>
+                            <Text style={Styles.cart_sl_data_text_even}>Vivo Mobile</Text>
                         </View>
-                    </TouchableOpacity>
-                    <Divider />
-
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/rice.jpg")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
-
-                            <View style={Styles.itemCategoryName}>
+                        <View style={Styles.cart_quantity_data_view_even}>
+                            <TouchableOpacity onPress={() => { }}>
                                 <View>
-                                    <Text style={Styles.itemCategoryText}>Rice</Text>
+                                    <Text style={Styles.cart_sl_data_text_even}><MinusIcon /></Text>
                                 </View>
+                            </TouchableOpacity>
+
+                            <View>
+                                <Text style={Styles.cart_sl_data_text_even}>1</Text>
                             </View>
 
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
+                            <TouchableOpacity onPress={() => { }}>
                                 <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
+                                    <Text style={Styles.cart_sl_data_text_even}><AddIcon /></Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         </View>
-                    </TouchableOpacity>
-                    <Divider />
+
+                        <View style={Styles.cart_amount_data_view_even}>
+                            <Text style={Styles.cart_sl_data_text_even}>11,000</Text>
+                        </View>
+
+                        <View style={[Styles.cart_cancle_data_view_even, Styles.center]}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <Text style={Styles.cart_sl_data_text_even}><CancelIcon /></Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    <View style={Styles.cart_data_view}>
+                        <View style={Styles.cart_sl_data_view}>
+                            <Text style={Styles.cart_sl_data_text}>3.</Text>
+                        </View>
+                        <View style={Styles.cart_name_data_view}>
+                            <Text style={Styles.cart_sl_data_text}>HP Laptop</Text>
+                        </View>
+                        <View style={Styles.cart_quantity_data_view}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <View>
+                                    <Text style={Styles.cart_sl_data_text}><MinusIcon /></Text>
+                                </View>
+                            </TouchableOpacity>
+
+                            <View>
+                                <Text style={Styles.cart_sl_data_text}>1</Text>
+                            </View>
+
+                            <TouchableOpacity onPress={() => { }}>
+                                <View>
+                                    <Text style={Styles.cart_sl_data_text}><AddIcon /></Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={Styles.cart_amount_data_view}>
+                            <Text style={Styles.cart_sl_data_text}>40,000</Text>
+                        </View>
+
+                        <View style={[Styles.cart_cancle_data_view, Styles.center]}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <Text style={Styles.cart_sl_data_text}><CancelIcon /></Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    <View style={[Styles.cart_data_view_even, {borderBottomLeftRadius: 5, borderBottomRightRadius: 5}]}>
+                        <View style={Styles.cart_sl_data_view_even}>
+                        </View>
+                        <View style={Styles.cart_name_data_view_even}>
+                            <Text style={Styles.cart_sl_text}>Total</Text>
+                        </View>
+                        <View style={Styles.cart_quantity_data_view_even}>
+                           
+                        </View>
+
+                        <View style={Styles.cart_amount_data_view_even}>
+                            <Text style={Styles.cart_sl_text}>52,100</Text>
+                        </View>
+
+                        <View style={[Styles.cart_cancle_data_view_even, Styles.center]}>
+                          
+                        </View>
+                    </View>
 
                     {/* <List data={my_Jobs}
                         renderItem={this.renderMyJob}
                     /> */}
-                    <View style={{ height: 10, width: '100%' }}/>
+                    <View style={{ height: 10, width: '100%' }} />
                 </Content>
-
             </SafeAreaLayout>
         )
     }
-
 }

@@ -35,6 +35,7 @@ import {
   LogoutIcon,
   CustomerIcon
 } from '../assets/icons';
+import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
@@ -48,10 +49,16 @@ type HomeDrawerNavigatorParams = {
 }
 
 type HomeBottomTabsNavigatorParams = {
+  [AppRoute.ALLITEM]: undefined;
   [AppRoute.CUSTOMER]: undefined;
   [AppRoute.STOCK]: undefined;
   [AppRoute.EMPLOYEE]: undefined;
 }
+
+export type AllItemTabNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<HomeBottomTabsNavigatorParams, AppRoute.ALLITEM>,
+  DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.HOME>
+>;
 
 export type CustomerTabNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<HomeBottomTabsNavigatorParams, AppRoute.CUSTOMER>,
@@ -166,6 +173,11 @@ const BottomTab = createBottomTabNavigator<HomeBottomTabsNavigatorParams>();
 const HomeBottomNavigator = (): React.ReactElement => (
   // @ts-ignore: `tabBar` also contains a DrawerNavigationProp
   <BottomTab.Navigator tabBar={props => <HomeTabBar{...props} />}>
+    <BottomTab.Screen
+      name={AppRoute.ALLITEM}
+      component={AllItemNavigator}
+      options={{ title: 'Home', tabBarIcon: HomeIcon }}
+    />
 
     <BottomTab.Screen
       name={AppRoute.CUSTOMER}

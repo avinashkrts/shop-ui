@@ -9,9 +9,14 @@ export enum AppRoute {
   ITEM_CATEGORY = 'Item Category',
   ADD_CATEGORY = 'Add Category',
   EMPLOYEE = 'Employee',
+  ALLITEM = 'All Item',
+  PRODUCT_DETAIL = 'Product Detail',
+  CART = 'Cart',
   CUSTOMER = 'Customer',
   STOCK = 'Stock',
   BRANDLIST = 'Brand List',
+  ITEMLIST = 'Item List',
+  ADDEMPLOYEE = 'Add Employee',
 
 
   INFORMATION = 'Information',

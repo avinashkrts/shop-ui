@@ -9,11 +9,12 @@ import {
 } from '@react-navigation/stack';
 import { EmployeeTabNavigationProp } from './home.navigator';
 import { AppRoute } from './app-routes';
-import { EmployeeScreen } from '../scenes/shopkeeper/Employee/employee.component';
+import { EmployeeScreen, AddEmployeeScreen } from '../scenes/shopkeeper/Employee';
 // import { ProfileScreen, EditProfileScreen, ResumeScreen, AddAchivementScreen, AddEducationScreen, AddCertificateScreen, AddExperienceScreen, LogoutScreen } from '../scenes/profile';
 
 type EmployeeNavigatorParams = {
     [AppRoute.EMPLOYEE]: undefined; 
+    [AppRoute.ADDEMPLOYEE]: undefined; 
       
 }
 
@@ -25,13 +26,21 @@ export interface EmployeeScreenProps {
     route: RouteProp<EmployeeNavigatorParams, AppRoute.EMPLOYEE>;
 }
 
+export interface AddEmployeeScreenProps {
+    navigation: CompositeNavigationProp<
+    EmployeeTabNavigationProp,
+        StackNavigationProp<EmployeeNavigatorParams, AppRoute.ADDEMPLOYEE>
+    >;
+    route: RouteProp<EmployeeNavigatorParams, AppRoute.ADDEMPLOYEE>;
+}
+
 const Stack = createStackNavigator<EmployeeNavigatorParams>();
 
 export const EmployeeNavigator = (): React.ReactElement => (
     <Stack.Navigator headerMode='none'>
         <Stack.Screen name={AppRoute.EMPLOYEE} component={EmployeeScreen} />        
-        {/* <Stack.Screen name={AppRoute.PROFILE} component={ProfileScreen} />        
-        <Stack.Screen name={AppRoute.EDITPROFILE} component={EditProfileScreen} />        
+         <Stack.Screen name={AppRoute.ADDEMPLOYEE} component={AddEmployeeScreen} />        
+        {/*<Stack.Screen name={AppRoute.EDITPROFILE} component={EditProfileScreen} />        
         <Stack.Screen name={AppRoute.ADDACHIVEMENT} component={AddAchivementScreen} />        
         <Stack.Screen name={AppRoute.ADDCERTIFICATE} component={AddCertificateScreen} />        
         <Stack.Screen name={AppRoute.ADDEDUCATION} component={AddEducationScreen} />        

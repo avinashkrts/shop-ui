@@ -19,7 +19,7 @@ import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading,
 import { AddCategoryScreenProps } from '../../../navigation/stock.navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, EditIcon } from '../../../assets/icons';
+import { SearchIcon, EditIcon, BackIcon } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -28,7 +28,7 @@ import {
     SafeAreaLayoutElement,
     SaveAreaInset,
 } from '../../../components/safe-area-layout.component';
-import { MenuIcon, PlusCircle, CancelIcon, LocationIcon, PublicIcon, PencilIcon } from '../../../assets/icons';
+import { MenuIcon, CameraIcon, PlusCircle, CancelIcon, LocationIcon, PublicIcon, PencilIcon } from '../../../assets/icons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { any } from 'prop-types';
@@ -42,13 +42,20 @@ import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
-import { Placeholder, LableText } from '../../../constants';
-// import axios from 'axios';  
-// import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
+import { Placeholder, LableText, Color } from '../../../constants';
+import ImagePicker from 'react-native-image-picker';  
 
 const allTodos: TimeLineData[] = [
     TimeLineData.getAllTimelineData()
 ];
+
+const options = {
+    title: 'Select a Photo',
+    takePhoto: 'Take Photo',
+    chooseFromLibraryButtonTitle: 'Choose from gallery',
+    quality: 1,
+    type: 'image'
+}
 
 type MyState = {
     displayName: String,
@@ -73,15 +80,34 @@ const HEADER_MIN_HEIGHT = 70;
 const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
-
 export class AddCategoryScreen extends React.Component<AddCategoryScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
-            modalVisible: false
+            imageSource: '',
+            file: null
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.handleAddCategory = this.handleAddCategory.bind(this);
+    }
+
+    selectPhoto() {
+        ImagePicker.showImagePicker(options, (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled Image picker');
+            } else if (response.error) {
+                console.log('Image Picker Error: ', response.error);
+            } else {
+                const source = { uri: response.uri };
+                const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
+
+                this.setState({
+                    imageSource: source,
+                    file: file,
+                    isVisible: true
+                });
+            }
+        });
     }
 
 
@@ -149,22 +175,22 @@ export class AddCategoryScreen extends React.Component<AddCategoryScreenProps & 
     }
 
     handleAddCategory() {
-        
+
     }
-   
+
     render() {
-        const { modalVisible } = this.state
+        const { modalVisible, imageSource } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Add Category'
-                    backIcon={MenuIcon}
-                    onBackPress={this.props.navigation.openDrawer}
+                    title='Add'
+                    backIcon={BackIcon}
+                    onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
-                <Divider/>
+                <Divider />
                 <Content style={Styles.customer_content}
                     refreshControl={
                         <RefreshControl
@@ -173,27 +199,34 @@ export class AddCategoryScreen extends React.Component<AddCategoryScreenProps & 
                         />
                     }
                 >
-                    <View style={Styles.center} visible={!modalVisible}>
+                    <View style={Styles.center}>
                         <View style={[Styles.center, { flex: 1 }]}>
-                                <View style={[Styles.profile, Styles.center]}>
-                                    <View style={Styles.profile_image}>
-                                        <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
-                                    </View>
-                                </View>
-
-                                <View style={[Styles.inputTextView, { width: '90%' }]}>
-                                    <TextInput
-                                        style={[Styles.inputText, { width: '90%' }]}
-                                        placeholder={Placeholder.CATEGORY}
-                                    />
-                                </View>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <View style={[Styles.center, {marginHorizontal: '10%', width: '100%' }]}>
-                                        <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} onPress={() => { this.onFormSubmit() }}>
-                                            <Text style={Styles.buttonName}>{LableText.ADD}</Text>
+                            <View style={[Styles.profile, Styles.center]}>
+                                <View style={Styles.categoryImage}>
+                                    <View>
+                                        <TouchableOpacity onPress={() => {this.selectPhoto()}}>
+                                            <View style={Styles.ImgBgOne} />
+                                            <View style={Styles.ImgBgTwo} />
+                                            <Avatar source={imageSource} style={Styles.profile_avatar} />
                                         </TouchableOpacity>
-                                    </View>
+                                    </View>                                   
                                 </View>
+                            </View>
+
+                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                <TextInput
+                                    style={[Styles.inputText, { width: '90%' }]}
+                                    placeholder={Placeholder.NAME}
+                                />
+                            </View>
+
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
+                                    <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} onPress={() => {  }}>
+                                        <Text style={Styles.buttonName}>{LableText.ADD}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </View>
                     </View>
                 </Content>

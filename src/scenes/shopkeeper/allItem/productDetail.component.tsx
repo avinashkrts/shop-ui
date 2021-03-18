@@ -15,11 +15,11 @@ import {
     withStyles, TabBar,
     styled, Divider, Avatar, Icon, Button
 } from 'react-native-ui-kitten';
-import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab } from 'native-base';
-import { ItemListScreenProps } from '../../../navigation/stock.navigator';
+import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab, Picker } from 'native-base';
+import { ProductDetailScreenProps } from '../../../navigation/shopKeeperNavigator/allItem.Navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, EditIcon } from '../../../assets/icons';
+import { SearchIcon, EditIcon, PlusCircle, BackIcon } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -28,7 +28,7 @@ import {
     SafeAreaLayoutElement,
     SaveAreaInset,
 } from '../../../components/safe-area-layout.component';
-import { MenuIcon, ExperienceIcon, LocationIcon, PublicIcon, PencilIcon } from '../../../assets/icons';
+import { MenuIcon, ExperienceIcon, LocationIcon, PublicIcon, WishIcon } from '../../../assets/icons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { any } from 'prop-types';
@@ -42,6 +42,8 @@ import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
+import { Color, LableText } from '../../../constants/LabelConstants';
+import ImageResizer from 'react-native-image-resizer';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -73,125 +75,16 @@ const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
 
-export class ItemListScreen extends React.Component<ItemListScreenProps & ThemedComponentProps, MyState & any> {
+export class ProductDetailScreen extends React.Component<ProductDetailScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
-            userId: '',
-            userType: '',
-            token: '',
-            isFresher: false,
-            isExperience: false,
-            qButton: '',
-            my_Jobs: [],
-            salary_Type: [],
-            job_Industry: [],
-            min_Qualification: [],
-            experience_Required: [],
-            employment_Type: [],
-            skill: [],
+            isSelectedWish: false
         }
-        this.submitFresher = this.submitFresher.bind(this);
-        this.submitExperienced = this.submitExperienced.bind(this);
-        this.submitQButton = this.submitQButton.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
-    }
-
-    submitFresher() {
-        this.setState(
-            {
-                isFresher: true,
-                isExperience: false
-            }
-        )
-    }
-
-    submitExperienced() {
-        this.setState(
-            {
-                isExperience: true,
-                isFresher: false
-            }
-        )
-    }
-
-    submitQButton(e, selected) {
-        // console.log(selected)
-        this.setState(
-            {
-                qButton: selected
-            }
-        )
-    }
-
-    // async componentDidMount() {
-    //     const value = await AsyncStorage.getItem('userDetail');
-    //     if (value) {
-    //         // console.log('user Details all data', value);
-    //         const user = JSON.parse(value);
-    //         this.setState({
-    //             userType: user.userType,
-    //             token: user.token,
-    //             userId: user.userId,
-    //         })
-    //         // console.log('user data id', this.state.userId);      
-    //     }
-
-    //     axios({
-    //         method: 'get',
-    //         url: AppConstants.API_BASE_URL + '/api/job/getalljob',
-
-    //     }).then((response) => {
-    //         this.setState({
-    //             ...this.state,
-    //             my_Jobs: response.data
-    //         })
-    //         console.log("Profile Data", response.data);
-    //     },
-    //         (error) => {
-    //             console.log(error);
-    //             if (error) {
-    //                 Alert.alert("UserId or Password is invalid");
-    //             }
-    //         }
-    //     );
-
-    //     axios({
-    //         method: 'get',
-    //         url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',
-    //     }).then((response) => {
-    //         this.setState({
-    //             ...this.state,
-    //             salary_Type: response.data.SALARY_TYPE,
-    //             job_Industry: response.data.JOB_CATEGORY,
-    //             min_Qualification: response.data.QUALIFICATION,
-    //             experience_Required: response.data.EXPERIENCE,
-    //             employment_Type: response.data.EMPLOYMENT_TYPE,
-    //             skill: response.data.SKILL
-    //         })
-    //         // console.log("Profile Data", response.data);
-    //     },
-    //         (error) => {
-    //             console.log(error);
-    //             if (error) {
-    //                 Alert.alert("UserId or Password is invalid");
-    //             }
-    //         }
-    //     );
-    // }
-
-    handleJobSubmit() {
-        // this.props.navigation.navigate(AppRoute.SHOP_CUSTOMER_DETAIL);
-        // const jobData = {
-        //     jobId: jobId,
-        //     jobUserId: jobUserId
-        // }
-        // AsyncStorage.setItem('jobId', JSON.stringify(jobData), () => {
-        //     AsyncStorage.getItem('jobId', (err, result) => {
-        //         console.log('Job Id is', result);
-        //     })
-        //     this.props.navigation.navigate(AppRoute.JOBDETAIL);
-        // })
+        this.handleWishList = this.handleWishList.bind(this);
+        this.navigationCart = this.navigationCart.bind(this);
+        this.handleCart = this.handleCart.bind(this);
     }
 
     _onRefresh() {
@@ -380,23 +273,56 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
     //     </ListItem>
     // )
 
-    navigationItemList() {
-        this.props.navigation.navigate(AppRoute.ITEMLIST)
+    navigationCart() {
+        this.props.navigation.navigate(AppRoute.CART)
     }
 
+    navigationItemList() {
+        // this.props.navigation.navigate(AppRoute.ITEMLIST)
+    }
+
+    //     ImageResizer.createResizedImage(path: "../../../assets/profile.jpeg", maxWidth: 100, maxHeight: 200, compressFormat, quality, rotation, outputPath)
+    //   .then(response => {
+    //         // response.uri is the URI of the new image that can now be displayed, uploaded...
+    //         // response.path is the path of the new image
+    //         // response.name is the name of the new image with the extension
+    //         // response.size is the size of the new image
+    //     })
+    //   .catch(err => {
+    //         // Oops, something went wrong. Check that the filename is correct and
+    //         // inspect err to get more details.
+    //     });
+
+    addItem() { }
+
+    handleCart() {
+        this.navigationCart();
+    }
+
+    handleWishList() {
+        const { isSelectedWish } = this.state
+        this.setState({
+            isSelectedWish: !isSelectedWish
+        })
+    }
+
+
     render() {
-        const { my_Jobs } = this.state
+        const { isSelectedWish } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Item'
-                    backIcon={MenuIcon}
-                    onBackPress={this.props.navigation.openDrawer}
+                    title='Product Details'
+                    backIcon={BackIcon}
+                    onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
-                <Content style={Styles.customer_content}
+
+                <Divider />
+
+                <Content style={Styles.customer_content} showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -405,90 +331,82 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                     }
                 >
                     {/* <Header style={styles.header}> */}
-                    <View style={Styles.searchBox}>
+                    {/* <View style={Styles.searchBox}>
                         <Text style={Styles.searchIcon}><SearchIcon /></Text>
                         <TextInput
                             placeholder="Search"
                             style={Styles.searchInput}
                         />
-                    </View>
+                    </View> */}
                     {/* </Header> */}
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/samsung_logo.png")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
+
+                    <View style={[Styles.product_view, Styles.center]}>
+                        <View style={[Styles.product_image, Styles.center]}>
+                            <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.product_avatar} />
+                        </View>
+                    </View>
+
+                    <View style={Styles.product_2nd_view}>
+                        <View style={Styles.product_2nd_view_1}>
+                            <View style={Styles.product_2nd_quantity_view}>
+                                <Picker
+                                    note
+                                    mode="dropdown"
+                                    style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: 80 }]}
+                                    selectedValue={this.state.selected}
+                                    onValueChange={() => { }}
+                                >
+                                    <Picker.Item label="1" value="key0" />
+                                    <Picker.Item label="2" value="key1" />
+                                </Picker>
                             </View>
 
-                            <View style={Styles.itemCategoryName}>
+                            <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
                                 <View>
-                                    <Text style={Styles.itemCategoryText}>Samsung</Text>
+                                    <Text style={Styles.product_2nd_buy_text}>{LableText.CART}</Text>
                                 </View>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
+                                <View>
+                                    <Text style={Styles.product_2nd_buy_text} onPress={() => {this.handleCart()}}>{LableText.BUY}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={Styles.product_2nd_wish_view}>
+                            <Text onPress={() => { this.handleWishList() }} style={isSelectedWish ? Styles.selected_wish_icon : Styles.wish_icon}><WishIcon /></Text>
+                        </View>
+
+
+                    </View>
+
+                    <View style={Styles.product_3rd_view}>
+                        <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                            <Text style={{ color: '#000', paddingVertical: 20, fontWeight: 'bold', fontSize: 20 }}>Dawat Basmati Rice</Text>
+
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                            <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>25 Kg.</Text>
+                                <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,100</Text>
+                                <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,150</Text>
+                                <Text style={{ color: Color.COLOR }}>3.5 % off</Text>
                             </View>
 
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
-                                </View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                <Text style={{ color: Color.COLOR }}>Offer till Tue.</Text>
                             </View>
                         </View>
-                    </TouchableOpacity>
-                    <Divider />
-
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/pulse.jpg")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
-
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Pulse</Text>
-                                </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
-                                </View>
-                            </View>
+                        <View style={Styles.product_3rd_view_1}>
+                            <Text style={Styles.product_name_heading}>Dawat Basmati Rice</Text>
+                            <Text style={Styles.product_name_text}></Text>
                         </View>
-                    </TouchableOpacity>
-                    <Divider />
 
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/rice.jpg")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
-
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Rice</Text>
-                                </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
-                                </View>
-                            </View>
+                        <View style={Styles.product_3rd_view_1}>
+                            <Text style={Styles.product_name_heading}>{LableText.PRICE}</Text>
+                            <Text style={Styles.product_name_text}>1,100</Text>
                         </View>
-                    </TouchableOpacity>
-                    <Divider />
-
-                    {/* <List data={my_Jobs}
-                        renderItem={this.renderMyJob}
-                    /> */}
-                    <View style={{ height: 10, width: '100%' }}/>
+                    </View>
+                    <View style={{ height: 10, width: '100%' }} />
                 </Content>
 
             </SafeAreaLayout>

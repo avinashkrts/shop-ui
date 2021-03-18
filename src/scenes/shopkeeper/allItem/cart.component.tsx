@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     ListRenderItemInfo, View, StyleSheet, TouchableOpacity,
-    ActivityIndicator, Image, Alert, FlatList, ScrollView, RefreshControl, TextInput
+    ActivityIndicator, Image, Alert, FlatList, ScrollView, RefreshControl, TextInput, Dimensions
 } from 'react-native';
 import {
     // Input,
@@ -16,10 +16,10 @@ import {
     styled, Divider, Avatar, Icon, Button
 } from 'react-native-ui-kitten';
 import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab } from 'native-base';
-import { ItemListScreenProps } from '../../../navigation/stock.navigator';
+import { CartScreenProps } from '../../../navigation/shopKeeperNavigator/allItem.Navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, EditIcon } from '../../../assets/icons';
+import { SearchIcon, MinusIcon, RupeeIcon, PlusCircle, BackIcon, CancelIcon, PlusIcon, AddIcon, RightArrowIcon } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -41,7 +41,8 @@ import Share from 'react-native-share';
 import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
-import { Styles } from '../../../assets/styles'
+import { styles, Styles } from '../../../assets/styles'
+import { Color } from '../../../constants/LabelConstants';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -62,136 +63,23 @@ type MyState = {
     selectedIndex: number;
 }
 
-
-const renderItem = ({ item, index }) => (
-    <ListItem title={`${item.title} ${index + 1}`} />
-);
-
 const HEADER_MAX_HEIGHT = 120;
 const HEADER_MIN_HEIGHT = 70;
 const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
+var SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-export class ItemListScreen extends React.Component<ItemListScreenProps & ThemedComponentProps, MyState & any> {
+
+export class CartScreen extends React.Component<CartScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
-            userId: '',
-            userType: '',
-            token: '',
-            isFresher: false,
-            isExperience: false,
-            qButton: '',
-            my_Jobs: [],
-            salary_Type: [],
-            job_Industry: [],
-            min_Qualification: [],
-            experience_Required: [],
-            employment_Type: [],
-            skill: [],
+
         }
-        this.submitFresher = this.submitFresher.bind(this);
-        this.submitExperienced = this.submitExperienced.bind(this);
-        this.submitQButton = this.submitQButton.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
-    }
-
-    submitFresher() {
-        this.setState(
-            {
-                isFresher: true,
-                isExperience: false
-            }
-        )
-    }
-
-    submitExperienced() {
-        this.setState(
-            {
-                isExperience: true,
-                isFresher: false
-            }
-        )
-    }
-
-    submitQButton(e, selected) {
-        // console.log(selected)
-        this.setState(
-            {
-                qButton: selected
-            }
-        )
-    }
-
-    // async componentDidMount() {
-    //     const value = await AsyncStorage.getItem('userDetail');
-    //     if (value) {
-    //         // console.log('user Details all data', value);
-    //         const user = JSON.parse(value);
-    //         this.setState({
-    //             userType: user.userType,
-    //             token: user.token,
-    //             userId: user.userId,
-    //         })
-    //         // console.log('user data id', this.state.userId);      
-    //     }
-
-    //     axios({
-    //         method: 'get',
-    //         url: AppConstants.API_BASE_URL + '/api/job/getalljob',
-
-    //     }).then((response) => {
-    //         this.setState({
-    //             ...this.state,
-    //             my_Jobs: response.data
-    //         })
-    //         console.log("Profile Data", response.data);
-    //     },
-    //         (error) => {
-    //             console.log(error);
-    //             if (error) {
-    //                 Alert.alert("UserId or Password is invalid");
-    //             }
-    //         }
-    //     );
-
-    //     axios({
-    //         method: 'get',
-    //         url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',
-    //     }).then((response) => {
-    //         this.setState({
-    //             ...this.state,
-    //             salary_Type: response.data.SALARY_TYPE,
-    //             job_Industry: response.data.JOB_CATEGORY,
-    //             min_Qualification: response.data.QUALIFICATION,
-    //             experience_Required: response.data.EXPERIENCE,
-    //             employment_Type: response.data.EMPLOYMENT_TYPE,
-    //             skill: response.data.SKILL
-    //         })
-    //         // console.log("Profile Data", response.data);
-    //     },
-    //         (error) => {
-    //             console.log(error);
-    //             if (error) {
-    //                 Alert.alert("UserId or Password is invalid");
-    //             }
-    //         }
-    //     );
-    // }
-
-    handleJobSubmit() {
-        // this.props.navigation.navigate(AppRoute.SHOP_CUSTOMER_DETAIL);
-        // const jobData = {
-        //     jobId: jobId,
-        //     jobUserId: jobUserId
-        // }
-        // AsyncStorage.setItem('jobId', JSON.stringify(jobData), () => {
-        //     AsyncStorage.getItem('jobId', (err, result) => {
-        //         console.log('Job Id is', result);
-        //     })
-        //     this.props.navigation.navigate(AppRoute.JOBDETAIL);
-        // })
+        this.navigationProductDetail = this.navigationProductDetail.bind(this);
     }
 
     _onRefresh() {
@@ -199,6 +87,10 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
         this.componentDidMount().then(() => {
             this.setState({ refreshing: false });
         });
+    }
+
+    componentDidMount() {
+        SCREEN_WIDTH = Dimensions.get('window').width;
     }
 
     // renderMyJob = ({ item }: any): ListItemElement => (
@@ -381,8 +273,14 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
     // )
 
     navigationItemList() {
-        this.props.navigation.navigate(AppRoute.ITEMLIST)
+        // this.props.navigation.navigate(AppRoute.ITEMLIST)
     }
+
+    navigationProductDetail() {
+        this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL)
+    }
+
+    addItem() { }
 
     render() {
         const { my_Jobs } = this.state
@@ -391,12 +289,16 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Item'
-                    backIcon={MenuIcon}
-                    onBackPress={this.props.navigation.openDrawer}
+                    title='Cart'
+                    backIcon={BackIcon}
+                    onBackPress={this.props.navigation.goBack}
+                    onRightPress={() => { this.addItem() }}
+                    menuIcon={PlusCircle}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
-                <Content style={Styles.customer_content}
+                <Divider />
+
+                <Content style={Styles.cart_content} showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -405,94 +307,201 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                     }
                 >
                     {/* <Header style={styles.header}> */}
-                    <View style={Styles.searchBox}>
+                    {/* <View style={Styles.searchBox}>
                         <Text style={Styles.searchIcon}><SearchIcon /></Text>
                         <TextInput
                             placeholder="Search"
                             style={Styles.searchInput}
                         />
+                    </View> */}
+
+                    <View style={Styles.cart_main_view}>
+
+                        <View style={Styles.cart_view_1}>
+                            <View style={Styles.cart_view_1_1}>
+                                <View style={[Styles.cart_avatar_view, Styles.center]}>
+                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.cart_avatar} />
+                                </View>
+                            </View>
+
+                            <View style={Styles.cart_view_1_2}>
+                                <Text style={Styles.cart_name_text}>Dawat Basmati Rice 25 kg</Text>
+                                <View style={Styles.cart_price_view}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={Styles.price_text}><RupeeIcon /> 1,100</Text>
+                                        <Text style={Styles.offer_price_text}>1,150</Text>
+                                    </View>
+
+                                    <View style={Styles.cart_quantity_view}>
+                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
+                                            <Text style={Styles.cart_button_text}><MinusIcon /></Text>
+                                        </TouchableOpacity>
+
+                                        <View style={Styles.cart_quantity_text_view}>
+                                            <Text style={Styles.cart_quantity_text}>3</Text>
+                                        </View>
+
+                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
+                                            <Text style={Styles.cart_button_text}><AddIcon /></Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
+                                <View>
+                                    <Text style={Styles.cart_offer_text}>2% off</Text>
+                                </View>
+                            </View>
+                        </View>
+
+                        <View>
+                            <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>5 offers available</Text>
+                        </View>
                     </View>
-                    {/* </Header> */}
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/samsung_logo.png")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
 
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Samsung</Text>
+                    {/* <View style={Styles.cart_main_view}>
+
+                        <View style={Styles.cart_view_1}>
+                            <View style={Styles.cart_view_1_1}>
+                                <View style={[Styles.cart_avatar_view, Styles.center]}>
+                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.cart_avatar} />
                                 </View>
                             </View>
 
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
+                            <View style={Styles.cart_view_1_2}>
+                                <Text style={Styles.cart_name_text}>Dawat Basmati Rice 25 kg</Text>
+                                <View style={Styles.cart_price_view}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={Styles.price_text}><RupeeIcon /> 1,100</Text>
+                                        <Text style={Styles.offer_price_text}>1,150</Text>
+                                    </View>
+
+                                    <View style={Styles.cart_quantity_view}>
+                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
+                                            <Text style={Styles.cart_button_text}><MinusIcon /></Text>
+                                        </TouchableOpacity>
+
+                                        <View style={Styles.cart_quantity_text_view}>
+                                            <Text style={Styles.cart_quantity_text}>1</Text>
+                                        </View>
+
+                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
+                                            <Text style={Styles.cart_button_text}><AddIcon /></Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    <Divider />
 
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/pulse.jpg")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
-
-                            <View style={Styles.itemCategoryName}>
                                 <View>
-                                    <Text style={Styles.itemCategoryText}>Pulse</Text>
-                                </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
+                                    <Text style={Styles.cart_offer_text}>2% off</Text>
                                 </View>
                             </View>
                         </View>
-                    </TouchableOpacity>
-                    <Divider />
 
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/rice.jpg")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
+                        <View>
+                            <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>5 offers available</Text>
+                        </View>
+                    </View> */}
 
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Rice</Text>
+                    {/* <View style={Styles.cart_main_view}>
+
+                        <View style={Styles.cart_view_1}>
+                            <View style={Styles.cart_view_1_1}>
+                                <View style={[Styles.cart_avatar_view, Styles.center]}>
+                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.cart_avatar} />
                                 </View>
                             </View>
 
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
+                            <View style={Styles.cart_view_1_2}>
+                                <Text style={Styles.cart_name_text}>Dawat Basmati Rice 25 kg</Text>
+                                <View style={Styles.cart_price_view}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={Styles.price_text}><RupeeIcon /> 1,100</Text>
+                                        <Text style={Styles.offer_price_text}>1,150</Text>
+                                    </View>
+
+                                    <View style={Styles.cart_quantity_view}>
+                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
+                                            <Text style={Styles.cart_button_text}><MinusIcon /></Text>
+                                        </TouchableOpacity>
+
+                                        <View style={Styles.cart_quantity_text_view}>
+                                            <Text style={Styles.cart_quantity_text}>1</Text>
+                                        </View>
+
+                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
+                                            <Text style={Styles.cart_button_text}><AddIcon /></Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+
                                 <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
+                                    <Text style={Styles.cart_offer_text}>2% off</Text>
                                 </View>
                             </View>
                         </View>
+
+                        <View>
+                            <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>5 offers available</Text>
+                        </View>
+                    </View> */}
+
+                    <TouchableOpacity style={Styles.cart_shopping_view}>
+                        <Text style={Styles.cart_shopping_text}>Continue Shopping</Text>
+                        <Text style={Styles.cart_shopping_text}><RightArrowIcon fontSize={20} /></Text>
                     </TouchableOpacity>
-                    <Divider />
+
+                    <View style={Styles.price_detail_1}>
+                        <Text style={Styles.cart_price_detail_1_text}>PRICE DETAILS</Text>
+
+                        <View style={Styles.price_detail_2}>
+                            <View style={Styles.price_detail_2_1}>
+                                <Text style={Styles.cart_price_text_head}>Price (3 items)</Text>
+                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />3,300</Text>
+                            </View>
+
+                            <View style={Styles.price_detail_2_1}>
+                                <Text style={Styles.cart_price_text_head}>Discount</Text>
+                                <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />300</Text>
+                            </View>
+
+                            <View style={Styles.price_detail_2_1}>
+                                <Text style={Styles.cart_price_text_head}>Delevery Charges</Text>
+                                <Text style={Styles.cart_price_text_data}>FREE</Text>
+                            </View>
+                        </View>
+
+                        <View style={Styles.cart_total_view}>
+                            <Text style={Styles.cart_total_text_head}>Total Amount</Text>
+                            <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />3,000</Text>
+                        </View>
+                        <View style={Styles.price_detail_2}>
+                            <Text style={Styles.cart_price_text_data}>You will save <RupeeIcon fontSize={18} />300 on this order.</Text>
+                        </View>
+                    </View>
+
 
                     {/* <List data={my_Jobs}
                         renderItem={this.renderMyJob}
                     /> */}
-                    <View style={{ height: 10, width: '100%' }}/>
+                    <View style={{ height: 10, width: '100%' }} />
                 </Content>
 
+                <View style={Styles.cart_bottom_box_view}>
+                    <View>
+                        <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />3,000</Text>
+                        <TouchableOpacity onPress={() => {}}>
+                            <Text style={Styles.cart_price_text_data}>View price details</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View>
+                        <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]}>
+                            <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <Divider/>
+                <Divider/>
             </SafeAreaLayout>
         )
     }
-
 }

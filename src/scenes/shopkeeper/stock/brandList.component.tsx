@@ -91,37 +91,13 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
             employment_Type: [],
             skill: [],
         }
-        this.submitFresher = this.submitFresher.bind(this);
-        this.submitExperienced = this.submitExperienced.bind(this);
-        this.submitQButton = this.submitQButton.bind(this);
+        this.navigationItemList = this.navigationItemList.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
     }
 
-    submitFresher() {
-        this.setState(
-            {
-                isFresher: true,
-                isExperience: false
-            }
-        )
-    }
 
-    submitExperienced() {
-        this.setState(
-            {
-                isExperience: true,
-                isFresher: false
-            }
-        )
-    }
-
-    submitQButton(e, selected) {
-        // console.log(selected)
-        this.setState(
-            {
-                qButton: selected
-            }
-        )
+    navigationItemList() {
+        this.props.navigation.navigate(AppRoute.ITEMLIST)
     }
 
     // async componentDidMount() {
@@ -389,7 +365,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Category'
+                    title='Brand'
                     backIcon={MenuIcon}
                     onBackPress={this.props.navigation.openDrawer}
                     style={{ marginTop: -5, marginLeft: -5 }}
@@ -411,7 +387,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                         />
                     </View>
                     {/* </Header> */}
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
+                    <TouchableOpacity onPress={() => { this.navigationItemList() }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/samsung_logo.png")} style={Styles.image} />

@@ -1,6 +1,8 @@
-import { StyleSheet } from "react-native";
-import { color } from "react-native-reanimated";
-import { Color } from "../constants/LabelConstants";
+import { StyleSheet, Dimensions } from "react-native";
+import { Color, Padding } from "../constants/LabelConstants";
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export const Styles = StyleSheet.create({
 
@@ -11,12 +13,12 @@ export const Styles = StyleSheet.create({
   content: {
     backgroundColor: 'transparent',
     padding: 10
-  }, 
+  },
 
   customer_content: {
     backgroundColor: '#fff',
     padding: 5
-},
+  },
 
   center: {
     justifyContent: "center",
@@ -35,8 +37,9 @@ export const Styles = StyleSheet.create({
   },
 
   inputText: {
+    width: '100%',
     marginVertical: -8
-  }, 
+  },
 
   inputTextWithIcon: {
     marginVertical: -8,
@@ -47,13 +50,34 @@ export const Styles = StyleSheet.create({
     width: '15%'
   },
 
-/*------------------------------------------------------------STYLE FOR BUTTON------------------------------------------------------------*/
+  ImgBgTwo: {
+    position: 'absolute',
+    borderRadius: 55,
+    alignSelf: 'center',
+    height: 42,
+    width: 35,
+    transform: [{ scaleX: 2 }],
+    backgroundColor: 'white',
+    marginTop: 50
+  },
+
+  ImgBgOne: {
+    height: 30,
+    width: 30,
+    backgroundColor: 'white',
+    borderRadius: 50,
+    alignSelf: 'center',
+    marginTop: 18,
+    position: 'absolute'
+  },
+
+  /*------------------------------------------------------------STYLE FOR BUTTON------------------------------------------------------------*/
 
   buttonBox: {
-      paddingVertical: 10,
-      marginVertical: 20,
-      backgroundColor: Color.COLOR,
-      borderRadius: 50
+    paddingVertical: 10,
+    marginVertical: 20,
+    backgroundColor: Color.COLOR,
+    borderRadius: 50
   },
 
   buttonName: {
@@ -94,11 +118,447 @@ export const Styles = StyleSheet.create({
     marginBottom: 35
   },
 
+  /*---------------------------------------------This Style is for All Item Page--------------------------------------------------------- */
+  all_Item_Main_View: {
+    width: '100%',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+  },
+
+  all_Item_List: {
+    width: '48%',
+    backgroundColor: '#000',
+    margin: '1%'
+  },
+
+  all_Item_Image: {
+    height: 150,
+    width: '100%',
+    borderRadius: 0
+  },
+
+  all_Item_Image_1: {
+    padding: 15,
+    backgroundColor: Color.BUTTON_NAME_COLOR,
+    borderColor: Color.COLOR_CUSTOMER,
+    borderWidth: 1
+  },
+
+  all_Item_Detail: {
+    backgroundColor: Color.BUTTON_NAME_COLOR
+  },
+
   /*---------------------------------------------This Style is for Blank Space at bottom of Page--------------------------------------------------------- */
   bottomSpace: {
     width: '100%',
     height: 50
   },
+
+  /*---------------------------------------------This Style is for Product Detail--------------------------------------------------------- */
+  product_view: {
+    width: '100%',
+    height: 300,
+    flexWrap: 'wrap'
+  },
+
+  product_image: {
+    borderRadius: 10,
+    flexWrap: 'wrap',
+    width: '100%',
+    height: '100%'
+  },
+
+  product_avatar: {
+    height: '100%',
+    width: '100%',
+    borderRadius: 0
+  },
+
+  product_2nd_view: {
+    width: '100%',
+    height: 40,
+    flexDirection: 'row',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    justifyContent: 'space-between',
+    borderBottomColor: Color.BORDER,
+    borderBottomWidth: 1
+  },
+
+  product_2nd_view_1: {
+    width: '80%',
+    flexDirection: 'row',
+  },
+
+  product_2nd_quantity_view: {
+    width: '25%',
+    marginHorizontal: 5
+  },
+
+  product_2nd_wish_view: {
+    width: '20%',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    paddingRight: 5
+  },
+
+  product_2nd_buy_view: {
+    width: '20%',
+    height: '100%',
+    backgroundColor: Color.COLOR,
+    borderRadius: 5,
+    marginHorizontal: 5
+  },
+
+  product_2nd_buy_text: {
+    color: Color.BUTTON_NAME_COLOR,
+  },
+
+  selected_wish_icon: {
+    paddingTop: 10,
+    color: Color.COLOR
+  },
+
+  wish_icon: {
+    paddingTop: 10,
+    color: Color.BORDER
+  },
+
+  product_3rd_view: {
+    backgroundColor: 'red',
+    width: '100%',
+    height: 200
+  },
+
+  /*---------------------------------------------This Style is for Cart--------------------------------------------------------- */
+
+
+  cart_content: {
+    backgroundColor: Color.CART_BACKGROUND,
+  },
+
+  cart_main_view: {
+    borderBottomColor: Color.BORDER,
+    borderBottomWidth: 0.5,
+    borderTopColor: Color.BORDER,
+    borderTopWidth: 0.5,
+    paddingVertical: 25,
+    backgroundColor: Color.BUTTON_NAME_COLOR
+  },
+
+  cart_view_1: {
+    width: '100%',
+    paddingBottom: 20,
+    flexDirection: 'row',
+  },
+
+  cart_view_1_1: {
+    width: '30%',
+    height: 100,
+  },
+
+  cart_avatar_view: {
+    width: '100%',
+    height: '100%'
+  },
+
+  cart_avatar: {
+    borderRadius: 0,
+    width: 100,
+    height: 120,
+  },
+
+  cart_view_1_2: {
+    width: '70%',
+    height: 110,
+    paddingHorizontal: 10
+  },
+
+  cart_name_text: {
+    fontSize: 17,
+    fontWeight: '700'
+  },
+
+  cart_price_view: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 25,
+  },
+
+  price_text: {
+    fontSize: 19,
+    fontWeight: 'bold'
+  },
+
+  offer_price_text: {
+    fontSize: 14,
+    marginHorizontal: 20,
+    textDecorationLine: 'line-through'
+  },
+
+  cart_quantity_view: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+
+  cart_quantity_text_view: {
+
+  },
+
+  cart_quantity_text: {
+    paddingVertical: 5,
+    paddingHorizontal: 10
+  },
+
+  cart_button: {
+    backgroundColor: Color.COLOR,
+    borderRadius: 3
+  },
+
+  cart_button_text: {
+    paddingVertical: 10,
+    paddingHorizontal: '5%',
+    color: Color.BUTTON_NAME_COLOR
+  },
+
+  cart_offer_text: {
+    color: Color.COLOR,
+    fontWeight: 'bold',
+    fontSize: 17
+  },
+
+  cart_shopping_view: {
+    flexDirection: 'row',
+    borderColor: Color.BORDER,
+    backgroundColor: Color.BUTTON_NAME_COLOR,
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    paddingVertical: 20,
+    marginTop: 5,
+    justifyContent: 'space-between',
+    paddingHorizontal: Padding.HORIZONTAL_PADDING
+  },
+
+  cart_shopping_text: {
+    fontSize: 20
+  },
+
+  price_detail_1: {
+    backgroundColor: Color.BUTTON_NAME_COLOR,
+    marginVertical: 15,
+    paddingTop: 20,
+    borderTopColor: Color.BORDER,
+    borderTopWidth: 0.5
+  },
+
+  cart_price_detail_1_text: {
+    fontSize: 20,
+    paddingHorizontal: Padding.HORIZONTAL_PADDING,
+    color: Color.SILVER,
+    fontWeight: '700'
+  },
+
+  price_detail_2: {
+    paddingVertical: 15,
+    paddingHorizontal: Padding.HORIZONTAL_PADDING,
+    marginTop: 20,
+    borderColor: Color.BORDER,
+    borderTopWidth: 1,
+    borderBottomWidth: 1
+  },
+
+  price_detail_2_1: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 5
+  },
+
+  cart_price_text_head: {
+    fontWeight: '600',
+    fontSize: 18
+  },
+
+  cart_price_text_data: {
+    fontWeight: '600',
+    fontSize: 18,
+    color: Color.COLOR,
+  },
+
+  cart_total_view: {
+    paddingHorizontal: Padding.HORIZONTAL_PADDING,
+    marginVertical: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+
+  cart_total_text_head: {
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  
+  cart_bottom_box_view: {
+    flexDirection: 'row',
+    paddingHorizontal: Padding.HORIZONTAL_PADDING,
+    paddingVertical: 10,
+    justifyContent: 'space-between'
+  },
+
+  cart_bottom_box_price_text: {
+    fontSize: 25,
+    paddingTop: 5,
+    fontWeight: 'bold',
+    marginBottom: 5
+  },
+
+  cart_bottom_box_button: {
+    backgroundColor: Color.COLOR,
+  },
+
+  cart_bottom_box_button_text: {
+    fontSize: 20,
+    paddingVertical: 15,
+    paddingHorizontal: '10%'
+  },
+
+
+  // cart_view: {
+  //   width: '100%',
+  //   flexDirection: 'row',
+  //   padding: 2,
+  //   paddingVertical: 5,
+  //   backgroundColor: Color.COLOR,
+  //   borderTopLeftRadius: 5,
+  //   borderTopRightRadius: 5
+  // },
+
+  // cart_sl_view: {
+  //   backgroundColor: Color.COLOR,
+  //   width: '15%',
+  // },
+
+  // cart_sl_text: {
+  //   color: Color.BUTTON_NAME_COLOR,
+  //   fontSize: 15,
+  //   fontWeight: 'bold'
+  // },
+
+  // cart_name_view: {
+  //   backgroundColor: Color.COLOR,
+  //   width: '25%',
+  // },
+
+  // cart_quantity_view: {
+  //   backgroundColor: Color.COLOR,
+  //   width: '30%',
+  // },
+
+  // cart_amount_view: {
+  //   backgroundColor: Color.COLOR,
+  //   width: '23%',
+  // },
+
+  // cart_cancle_view: {
+  //   backgroundColor: Color.COLOR,
+  //   width: '7%',
+  // },
+
+  // /* ----------Odd Row Data----------- */
+  // cart_data_view: {
+  //   width: '100%',
+  //   flexDirection: 'row',
+  //   padding: 2,
+  //   paddingVertical: 8,
+  //   backgroundColor: Color.CART_LIST_ODD
+  // },
+
+  // cart_sl_data_view: {
+  //   backgroundColor: Color.CART_LIST_ODD,
+  //   width: '10%',
+  //   alignItems: 'flex-end',
+  //   paddingRight: 5
+  // },
+
+  // cart_sl_data_text: {
+  //   color: Color.BUTTON_NAME_COLOR,
+  //   fontSize: 15,
+  // },
+
+  // cart_name_data_view: {
+  //   flexWrap: 'wrap',
+  //   backgroundColor: Color.CART_LIST_ODD,
+  //   width: '30%',
+  // },
+
+  // cart_quantity_data_view: {
+  //   backgroundColor: Color.CART_LIST_ODD,
+  //   width: '30%',
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   paddingHorizontal: 5,
+  //   alignItems: 'center'
+  // },
+
+  // cart_amount_data_view: {
+  //   backgroundColor: Color.CART_LIST_ODD,
+  //   width: '23%',
+  //   paddingRight: 10,
+  //   alignItems: 'flex-end',
+  // },
+
+  // cart_cancle_data_view: {
+  //   backgroundColor: Color.CART_LIST_ODD,
+  //   width: '7%',
+  // },
+
+  //  /* ----------Even Row Data----------- */
+  //  cart_data_view_even: {
+  //   width: '100%',
+  //   flexDirection: 'row',
+  //   padding: 2,
+  //   paddingVertical: 8,
+  //   backgroundColor: Color.CART_LIST_EVEN
+  // },
+
+  // cart_sl_data_view_even: {
+  //   backgroundColor: Color.CART_LIST_EVEN,
+  //   width: '10%',
+  //   alignItems: 'flex-end',
+  //   paddingRight: 5
+  // },
+
+  // cart_sl_data_text_even: {
+  //   color: Color.BUTTON_NAME_COLOR,
+  //   fontSize: 15,
+  //   // fontWeight: 'bold'
+  // },
+
+  // cart_name_data_view_even: {
+  //   flexWrap: 'wrap',
+  //   backgroundColor: Color.CART_LIST_EVEN,
+  //   width: '30%',
+  // },
+
+  // cart_quantity_data_view_even: {
+  //   backgroundColor: Color.CART_LIST_EVEN,
+  //   width: '30%',
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   paddingHorizontal: 5,
+  //   alignItems: 'center'
+  // },
+
+  // cart_amount_data_view_even: {
+  //   backgroundColor: Color.CART_LIST_EVEN,
+  //   width: '23%',
+  //   paddingRight: 10,
+  //   alignItems: 'flex-end',
+  // },
+
+  // cart_cancle_data_view_even: {
+  //   backgroundColor: Color.CART_LIST_EVEN,
+  //   width: '7%',
+  // },
 
   /*---------------------------------------------This Style is for Item Category List--------------------------------------------------------- */
   itemCategoryName: {
@@ -147,7 +607,7 @@ export const Styles = StyleSheet.create({
     width: 50,
     borderRadius: 100,
     height: 50
-},
+  },
 
   customer_list_image: {
     margin: 5,
@@ -186,8 +646,17 @@ export const Styles = StyleSheet.create({
     paddingVertical: 10
   },
 
+  categoryImage: {
+    height: 100,
+    width: 100,
+    backgroundColor: '#D8D8D899',
+    borderRadius: 80,
+    alignSelf: 'center',
+    marginTop: 5
+  },
+
   profile_image: {
-    backgroundColor: 'green',
+    backgroundColor: '#aaa',
     borderRadius: 200,
     borderWidth: 2,
     borderColor: Color.COLOR
