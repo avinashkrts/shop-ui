@@ -19,7 +19,7 @@ import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading,
 import { ItemListScreenProps } from '../../../navigation/stock.navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, EditIcon } from '../../../assets/icons';
+import { SearchIcon, EditIcon, PlusCircle, BackIcon } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -42,6 +42,8 @@ import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
+import { Color } from '../../../constants';
+import { CartScreenProps } from 'src/navigation/shopKeeperNavigator/allItem.Navigator';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -95,6 +97,14 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
         this.submitExperienced = this.submitExperienced.bind(this);
         this.submitQButton = this.submitQButton.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
+    }
+
+    navigationCart() {
+        this.props.navigation.navigate(AppRoute.CART)
+    }
+
+    navigationProductDetail() {
+        this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL)
     }
 
     submitFresher() {
@@ -384,6 +394,9 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
         this.props.navigation.navigate(AppRoute.ITEMLIST)
     }
 
+    handleAddCart() {
+        this.navigationCart();
+    }
     render() {
         const { my_Jobs } = this.state
         return (
@@ -391,9 +404,11 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Item'
-                    backIcon={MenuIcon}
-                    onBackPress={this.props.navigation.openDrawer}
+                    title='Item List'
+                    backIcon={BackIcon}
+                    menuIcon={PlusCircle}
+                    onRightPress={() => {}}
+                    onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Content style={Styles.customer_content}
@@ -413,77 +428,145 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                         />
                     </View>
                     {/* </Header> */}
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/samsung_logo.png")} style={Styles.image} />
+                    <View style={Styles.all_Item_Main_View}>
+
+                        <View style={Styles.all_Item_List}>
+                            <TouchableOpacity onPress={() => this.navigationProductDetail()}>
+                                <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
+                                    {/* <View>
+                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
+                                    </View> */}
+                                </View>
+                                <View style={Styles.all_Item_Detail}>
+                                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>Dawat Basmati Rice</Text>
+                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>25 Kg.</Text>
+
+                                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                            <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,100</Text>
+                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,150</Text>
+                                        </View>
+
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                            <Text style={{ color: Color.COLOR }}>3.5 % off</Text>
+                                            <Text style={{ color: Color.COLOR }}>Offer till Tue.</Text>
+                                        </View>
+                                    </View>
+                                    <TouchableOpacity onPress={() => { this.handleAddCart() }}>
+                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={Styles.all_Item_List}>
+                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                <Avatar source={require("../../../assets/wire.jpg")} style={Styles.all_Item_Image} />
                                 {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
+                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
+                                    </View> */}
                             </View>
+                            <View style={Styles.all_Item_Detail}>
+                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                    <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>V-Guard Copper Wire</Text>
+                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>1 Mtr.</Text>
 
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Samsung</Text>
-                                </View>
-                            </View>
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 20</Text>
+                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>22</Text>
+                                    </View>
 
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                        <Text style={{ color: Color.COLOR }}>2.5 % off</Text>
+                                        <Text style={{ color: Color.COLOR }}>Offer till Mon.</Text>
+                                    </View>
                                 </View>
+                                <TouchableOpacity>
+                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         </View>
-                    </TouchableOpacity>
-                    <Divider />
 
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/pulse.jpg")} style={Styles.image} />
+                        <View style={Styles.all_Item_List}>
+                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.all_Item_Image} />
                                 {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
+                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
+                                    </View> */}
                             </View>
+                            <View style={Styles.all_Item_Detail}>
+                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                    <Text style={{ color: '#000', marginVertical: 5, fontWeight: 'bold' }}>Hp Probook 6460b</Text>
+                                    <Text style={{ color: Color.COLOR_ITEM_NAME }}>1 Pc.</Text>
 
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Pulse</Text>
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 64,999</Text>
+                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>67,999</Text>
+                                    </View>
                                 </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
-                                </View>
+                                <TouchableOpacity>
+                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         </View>
-                    </TouchableOpacity>
-                    <Divider />
 
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/rice.jpg")} style={Styles.image} />
+                        <View style={Styles.all_Item_List}>
+                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                <Avatar source={require("../../../assets/vivo_mobile.jpeg")} style={Styles.all_Item_Image} />
                                 {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
+                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
+                                    </View> */}
                             </View>
+                            <View style={Styles.all_Item_Detail}>
+                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                    <Text style={{ color: '#000', marginVertical: 5, fontWeight: 'bold' }}>Vivo V 17</Text>
+                                    <Text style={{ color: Color.COLOR_ITEM_NAME }}>1 Pcs.</Text>
 
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Rice</Text>
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 21,999</Text>
+                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>24,999</Text>
+                                    </View>
                                 </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
-                                </View>
+                                <TouchableOpacity>
+                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         </View>
-                    </TouchableOpacity>
-                    <Divider />
+
+                        <View style={Styles.all_Item_List}>
+                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                <Avatar source={require("../../../assets/chair.jpg")} style={Styles.all_Item_Image} />
+                                {/* <View>
+                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
+                                    </View> */}
+                            </View>
+                            <View style={Styles.all_Item_Detail}>
+                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                    <Text style={{ color: '#000', marginVertical: 5, fontWeight: 'bold' }}>Nilkamal Chair</Text>
+                                    <Text style={{ color: Color.COLOR_ITEM_NAME }}>1 Pc.</Text>
+
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,500</Text>
+                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,700</Text>
+                                    </View>
+                                </View>
+                                <TouchableOpacity>
+                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
 
                     {/* <List data={my_Jobs}
                         renderItem={this.renderMyJob}

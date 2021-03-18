@@ -19,7 +19,7 @@ import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading,
 import { BrandListScreenProps } from '../../../navigation/stock.navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, EditIcon } from '../../../assets/icons';
+import { SearchIcon, EditIcon, BackIcon, PlusCircle } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -356,6 +356,13 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
     //     </ListItem>
     // )
 
+    navigateAddCategory() {
+        this.props.navigation.navigate(AppRoute.ADD_CATEGORY)
+    }
+
+    handleAddBrand() {
+        this.navigateAddCategory();
+    }
 
 
     render() {
@@ -365,9 +372,11 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Brand'
-                    backIcon={MenuIcon}
-                    onBackPress={this.props.navigation.openDrawer}
+                    title='Brand List'
+                    backIcon={BackIcon}
+                    onBackPress={this.props.navigation.goBack}
+                    menuIcon={PlusCircle}
+                    onRightPress={() => {this.handleAddBrand()}}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Content style={Styles.customer_content}

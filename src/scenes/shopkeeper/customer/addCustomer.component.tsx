@@ -216,9 +216,24 @@ export class AddCustomerScreen extends React.Component<AddCustomerScreenProps & 
                             <View style={[Styles.inputTextView, { width: '90%' }]}>
                                 <TextInput
                                     style={[Styles.inputText, { width: '90%' }]}
-                                    placeholder={Placeholder.NAME}
+                                    placeholder={LableText.NAME}
                                 />
                             </View>
+
+                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                <TextInput
+                                    style={[Styles.inputText, { width: '90%' }]}
+                                    placeholder={LableText.ADDRESS}
+                                />
+                            </View>
+
+                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                <TextInput
+                                    style={[Styles.inputText, { width: '90%' }]}
+                                    placeholder={LableText.PHONE}
+                                />
+                            </View>
+
 
                             <View style={{ flexDirection: 'row' }}>
                                 <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>

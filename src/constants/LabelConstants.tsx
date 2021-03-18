@@ -70,6 +70,8 @@ export class LableText {
     public static readonly PAYMENT = 'Payment';
     public static readonly CART = 'Cart';
     public static readonly BUY = 'Buy';
+    public static readonly ADDRESS = 'Adress';
+    public static readonly MOBILE = 'Mobile No.';
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/

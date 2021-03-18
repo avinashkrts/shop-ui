@@ -344,8 +344,16 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
         this.navigationAddCategory()
     }
 
+    handleBrandList() {
+        this.navigationBrandList()
+    }
+
     navigationAddCategory() {
         this.props.navigation.navigate(AppRoute.ADD_CATEGORY)
+    }
+
+    navigationBrandList() {
+        this.props.navigation.navigate(AppRoute.BRANDLIST)
     }
 
     render() {
@@ -379,7 +387,7 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
                         />
                     </View>
                     {/* </Header> */}
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
+                    <TouchableOpacity onPress={() => { this.handleBrandList() }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/samsung_logo.png")} style={Styles.image} />
@@ -403,7 +411,7 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
                     </TouchableOpacity>
                     <Divider />
 
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
+                    <TouchableOpacity onPress={() => { this.handleBrandList() }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/pulse.jpg")} style={Styles.image} />
@@ -427,7 +435,7 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
                     </TouchableOpacity>
                     <Divider />
 
-                    <TouchableOpacity onPress={() => { this.handleJobSubmit() }}>
+                    <TouchableOpacity onPress={() => { this.handleBrandList() }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/rice.jpg")} style={Styles.image} />

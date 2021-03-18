@@ -156,7 +156,8 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
     // }
 
     handleJobSubmit() {
-        // this.props.navigation.navigate(AppRoute.SHOP_CUSTOMER_DETAIL);
+
+        this.props.navigation.navigate(AppRoute.ADDEMPLOYEE);
         // const jobData = {
         //     jobId: jobId,
         //     jobUserId: jobUserId
@@ -377,7 +378,7 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='All Customers'
+                    title='All Employees'
                     backIcon={MenuIcon}
                     menuIcon={PlusCircle}
                     onRightPress={() => { this.handleAddEmployee() }}
@@ -412,7 +413,7 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
 
                             <View style={Styles.list_name}>
                                 <View style={{ width: '80%' }}>
-                                    <Text style={Styles.customer_list_name_text}>Avinash</Text>
+                                    <Text style={Styles.customer_list_name_text}>Ramanand</Text>
                                 </View>
 
                                 <View style={Styles.list_price}>
