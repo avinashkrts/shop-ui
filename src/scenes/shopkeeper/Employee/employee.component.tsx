@@ -418,7 +418,7 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
 
                                 <View style={Styles.list_price}>
                                     <View>
-                                        <Text style={Styles.customer_list_price_text}>8870563892</Text>
+                                        <Text style={Styles.customer_list_price_text}>1234567890</Text>
                                     </View>
 
                                     <View>
@@ -445,7 +445,7 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
 
                             <View style={Styles.list_price}>
                                 <View>
-                                    <Text style={Styles.customer_list_price_text}>8870563892</Text>
+                                    <Text style={Styles.customer_list_price_text}>1234567890</Text>
                                 </View>
 
                                 <View>
@@ -472,7 +472,7 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
 
                             <View style={Styles.list_price}>
                                 <View>
-                                    <Text style={Styles.customer_list_price_text}>8870563892</Text>
+                                    <Text style={Styles.customer_list_price_text}>1234567890</Text>
                                 </View>
 
                                 <View>

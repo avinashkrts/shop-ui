@@ -42,6 +42,12 @@ import {
   MyOrderIcon,
   ValidityIcon,
   AddProductIcon,
+  HelpIcon,
+  CustomerListIcon,
+  StockListIcon,
+  OutOfStockIcon,
+  OfferIcon,
+  DailyMessageIcon,
 } from '../assets/icons';
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
 
@@ -67,7 +73,7 @@ type HomeDrawerNavigatorParams = {
   [AppRoute.OUT_OF_STOCK]: undefined;
   [AppRoute.OFFERS]: undefined;
   [AppRoute.DAILY_MESSAGE]: undefined;
-
+  [AppRoute.CONTACTUS]: undefined;
 }
 
 type HomeBottomTabsNavigatorParams = {
@@ -299,31 +305,37 @@ export const HomeNavigator = (): React.ReactElement => (
     <Drawer.Screen
       name={AppRoute.CUSTOMER_LIST}
       component={ProfileScreen}
-      options={{ title: 'Customer List', drawerIcon: AccountsIcon }}
+      options={{ title: 'Customer List', drawerIcon: CustomerListIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.STOCK_LIST}
       component={ProfileScreen}
-      options={{ title: 'Stock List', drawerIcon: AccountsIcon }}
+      options={{ title: 'Stock List', drawerIcon: StockListIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.OUT_OF_STOCK}
       component={ProfileScreen}
-      options={{ title: 'Out of Stock', drawerIcon: AccountsIcon }}
+      options={{ title: 'Out of Stock', drawerIcon: OutOfStockIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.OFFERS}
       component={ProfileScreen}
-      options={{ title: 'Offers', drawerIcon: AccountsIcon }}
+      options={{ title: 'Offers', drawerIcon: OfferIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.DAILY_MESSAGE}
       component={ProfileScreen}
-      options={{ title: 'Daily Message', drawerIcon: AccountsIcon }}
+      options={{ title: 'Daily Message', drawerIcon: DailyMessageIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.CONTACTUS}
+      component={LogoutScreen}
+      options={{ title: 'Contact Us', drawerIcon: HelpIcon }}
     />
 
     <Drawer.Screen

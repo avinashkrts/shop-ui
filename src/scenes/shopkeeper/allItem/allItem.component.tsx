@@ -19,7 +19,7 @@ import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading,
 import { AllItemScreenProps } from '../../../navigation/shopKeeperNavigator/allItem.Navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, EditIcon, PlusCircle } from '../../../assets/icons';
+import { SearchIcon, CartIcon, PlusCircle } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -295,8 +295,8 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                     title='Item'
                     backIcon={MenuIcon}
                     onBackPress={this.props.navigation.openDrawer}
-                    onRightPress={() => { this.addItem() }}
-                    menuIcon={PlusCircle}
+                    onRightPress={() => { this.navigationCart() }}
+                    menuIcon={CartIcon}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Content style={Styles.customer_content} showsVerticalScrollIndicator={false}

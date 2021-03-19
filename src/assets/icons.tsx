@@ -103,7 +103,35 @@ export const AddProductIcon = (style): AntDesign => (
   <Fontisto size={15} color={'silver'} name='shopping-basket-add' />
 );
 
+export const HelpIcon = (style): AntDesign => (
+  <MaterialIcons size={22} color={'silver'} name='call' />
+);
 
+export const CustomerListIcon = (style): AntDesign => (
+  <FontAwesome size={20} color={'silver'} name='list-ul' />
+);
+
+export const StockListIcon = (style): AntDesign => (
+  <FontAwesome5 size={18} color={'silver'} name='cart-plus' />
+);
+
+
+export const OutOfStockIcon = (style): AntDesign => (
+  <Fontisto size={16} color={'silver'} name='shopping-basket-remove' />
+);
+
+
+export const OfferIcon = (style): AntDesign => (
+  <MaterialCommunityIcons size={16} color={'silver'} name='offer' />
+);
+
+export const DailyMessageIcon = (style): AntDesign => (
+  <Entypo size={16} color={'silver'} name='message' />
+);
+
+export const CartIcon = (style): AntDesign => (
+  <MaterialIcons size={24} color={'#0099CC'} name='shopping-cart' />
+);
 
 
 
@@ -126,9 +154,6 @@ export const CheckCircleIcon = (style): AntDesign => (
   <AntDesign size={13} color={'#1DA1F2'} name='checkcircle' />
 );
 
-export const HelpIcon = (style): AntDesign => (
-  <Entypo size={18} color={'#1DA1F2'} name='help-with-circle' />
-);
 
 export const ExperienceIcon = (style): AntDesign => (
   <Entypo size={15} color="rgba(128,128,128,1)" name='suitcase' />

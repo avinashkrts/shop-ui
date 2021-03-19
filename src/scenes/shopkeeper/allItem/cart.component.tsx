@@ -296,7 +296,7 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                     title='Cart'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
-                    onRightPress={() => { this.addItem() }}
+                    onRightPress={() => { this.continiueShopping() }}
                     menuIcon={PlusCircle}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
