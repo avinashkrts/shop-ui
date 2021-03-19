@@ -48,19 +48,21 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     } else if (pwd == null || pwd === '') {
       Alert.alert("Please enter Password.");
     } else {
-      axios ({
-        method: 'POST',
-        url: 'http://192.168.0.105:8081/api/user/login',
-        data: {
-          "emailId": emailId,
-          "pwd": pwd
-        },
-      }).then((response) => {
-        console.log(response.data);
-      }, (error) => {
-        console.log(error);
-        Alert.alert("Please enter a valid email ID and password.")
-      });
+    this.navigateHome();
+
+      // axios ({
+      //   method: 'POST',
+      //   url: 'http://192.168.0.105:8081/api/user/login',
+      //   data: {
+      //     "emailId": emailId,
+      //     "pwd": pwd
+      //   },
+      // }).then((response) => {
+      //   console.log(response.data);
+      // }, (error) => {
+      //   console.log(error);
+      //   Alert.alert("Please enter a valid email ID and password.")
+      // });
     }
     // this.navigateHome();
     // this.navigateHRHome();

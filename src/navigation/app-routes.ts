@@ -18,6 +18,22 @@ export enum AppRoute {
   BRANDLIST = 'Brand List',
   ITEMLIST = 'Item List',
   ADDEMPLOYEE = 'Add Employee',
+  PROFILE = 'Profile',
+  MY_WALLET = 'My Wallet',
+  MY_ORDER = 'My Order',
+  VALIDITY = 'Validity',
+  NOTIFICATION = 'Notification',
+  PAY_NOW = 'Pay Now',
+  ADD_PRODUCT = 'Add Product',
+  ADD_EMPLOYEE = 'Add Employee',
+  OUT_OF_STOCK = 'Out of Stock',
+  OFFERS = 'Offers',
+  DAILY_MESSAGE = 'Daily Message',
+  CUSTOMER_LIST = 'Customer List',
+  STOCK_LIST = 'Stock List',
+
+
+
 
 
   INFORMATION = 'Information',
@@ -60,7 +76,6 @@ export enum AppRoute {
   TODO_IN_PROGRESS = 'ToDo In Progress',
   TODO_DONE = 'ToDo Done',
   TODO_DETAILS = 'ToDo Details',
-  NOTIFICATION = 'notification',
   CONTACTUS = 'ContactUs',
   CHANGEPASSWORD = 'Changepassword',
   ASK = 'Ask',

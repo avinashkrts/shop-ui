@@ -12,7 +12,7 @@ import {
   List,
   Icon
 } from 'react-native-ui-kitten';
-import { ProfileScreenProps } from '../../navigation/timeline.navigator';
+import { ProfileScreenProps } from '../../navigation/home.navigator';
 import { Toolbar } from '../../components/toolbar.component';
 import {
   SafeAreaLayout,
@@ -27,7 +27,7 @@ import { AsyncStorage } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { SearchIcon, HomeIcon } from '../../assets/icons';
-import VideoPlayer from 'react-native-video-player';
+// import VideoPlayer from 'react-native-video-player';
 import Share from 'react-native-share';
 import { MoreScreen } from '../home/more.component'
 import { ArrowDownward, ArrowUpward } from '../../assets/icons';
@@ -136,197 +136,197 @@ export class ProfileScreen extends Component<ProfileScreenProps & SafeAreaLayout
   //     }
   //   }
 
-  async UNSAFE_componentWillReceiveProps(nextProps) {
+  // async UNSAFE_componentWillReceiveProps(nextProps) {
 
-    const value1 = await AsyncStorage.getItem('userDetail');
-    if (value1) {
-      const user = JSON.parse(value1);
-      this.setState({
-        // displayName: user.displayName,
-        userId: user.userId,
-        // userType: user.userType
-      });
-    }
-
-
-    const value = JSON.stringify(nextProps.route.params.pid)
-    if (value !== this.state.profileUserId) {
-      console.log('userID in profile', value);
-      this.setState({
-        profileUserId: value
-      })
-      Axios({
-        method: 'get',
-        url: AppConstants.API_BASE_URL + '/api/profile/getprofile/' + value
-      }).then((response) => {
-        this.setState({
-          profileData: response.data,
-          backgroundExpertise: response.data.backgroundExpertise,
-          summeryDetails: response.data.summeryDetails,
-          consultationPrice: response.data.consultationPrice,
-          availability: response.data.availability,
-          displayName: response.data.displayName,
-          catagory: response.data.catagory,
-          language: response.data.languagePrimary,
-          languageSeconday: response.data.languageSeconday
-        })
-      }, (error) => {
-        if (error) {
-          Alert.alert(error)
-        }
-      });
-
-      Axios({
-        method: 'get',
-        url: AppConstants.API_BASE_URL + "/api/timeline/getalltimeline/byconsultant/" + value
-      }).then((response) => {
-        this.setState({
-          dataSource: response.data
-
-        })
-      }, (error) => {
-        if (error) {
-          Alert.alert(error)
-        }
-      });
+  //   const value1 = await AsyncStorage.getItem('userDetail');
+  //   if (value1) {
+  //     const user = JSON.parse(value1);
+  //     this.setState({
+  //       // displayName: user.displayName,
+  //       userId: user.userId,
+  //       // userType: user.userType
+  //     });
+  //   }
 
 
+  //   const value = JSON.stringify(nextProps.route.params.pid)
+  //   if (value !== this.state.profileUserId) {
+  //     console.log('userID in profile', value);
+  //     this.setState({
+  //       profileUserId: value
+  //     })
+  //     Axios({
+  //       method: 'get',
+  //       url: AppConstants.API_BASE_URL + '/api/profile/getprofile/' + value
+  //     }).then((response) => {
+  //       this.setState({
+  //         profileData: response.data,
+  //         backgroundExpertise: response.data.backgroundExpertise,
+  //         summeryDetails: response.data.summeryDetails,
+  //         consultationPrice: response.data.consultationPrice,
+  //         availability: response.data.availability,
+  //         displayName: response.data.displayName,
+  //         catagory: response.data.catagory,
+  //         language: response.data.languagePrimary,
+  //         languageSeconday: response.data.languageSeconday
+  //       })
+  //     }, (error) => {
+  //       if (error) {
+  //         Alert.alert(error)
+  //       }
+  //     });
 
-      Axios({
-        method: 'get',
-        url: AppConstants.API_BASE_URL + "/api/user/get/" + value
-      }).then((response) => {
-        this.setState({
-          firstName: response.data.firstName,
-          lastName: response.data.lastName,
-          followedBy: response.data.followedBy,
-          followCount: response.data.followCount
-        })
-      }, (error) => {
-        if (error) {
-          Alert.alert(error)
-        }
-      });
-    }
-  }
-  async componentDidMount() {
-    const value = JSON.stringify(this.props.route.params.pid)
-    if (value !== this.state.profileUserId) {
-      console.log('userID in profile', value);
-      this.setState({
-        profileUserId: value
-      })
-    }
+  //     Axios({
+  //       method: 'get',
+  //       url: AppConstants.API_BASE_URL + "/api/timeline/getalltimeline/byconsultant/" + value
+  //     }).then((response) => {
+  //       this.setState({
+  //         dataSource: response.data
 
-    const value1 = await AsyncStorage.getItem('userDetail');
-    if (value1) {
-      const user = JSON.parse(value1);
-      this.setState({
-        // displayName: user.displayName,
-        userId: user.userId,
-        // userType: user.userType
-      });
-    }
+  //       })
+  //     }, (error) => {
+  //       if (error) {
+  //         Alert.alert(error)
+  //       }
+  //     });
 
-    const responselook = await fetch(AppConstants.API_BASE_URL + '/api/lookup/getalllookup');
-    const responseJsonlook = await responselook.json();
-    this.setState({
-      user_Type: responseJsonlook.USER_TYPE,
-      timelineType: responseJsonlook.TIMELINE_TYPE
-    });
-    // console.log("TimeLineTypeHere",this.state.timelineType);
 
-    try {
-      const response = await fetch(AppConstants.API_BASE_URL + "/api/timeline/getalltimeline/byconsultant/" + value);
-      const responseJson = await response.json();
-      // set state
-      this.setState({
-        //   isLoading: false,
-        dataSource: responseJson
-      });
-      console.log("dataSource", this.state.dataSource);
-    }
-    catch (error) {
-      console.log(error.toString());
-    }
-    // console.log("timeline",this.state.timelineType);
-    // const value = await AsyncStorage.getItem('userDetail');
-    // if (value) {
-    //   const user = JSON.parse(value);
-    //   this.setState({ userId: user.userId });
-    // }
 
-    //   const value = JSON.stringify(this.props.route.params.pid)
-    //   if(value !== this.state.userId){
-    //   console.log('userID in profile', value);
-    //   this.setState({
-    //     userId: value
-    //   })
-    // }
+  //     Axios({
+  //       method: 'get',
+  //       url: AppConstants.API_BASE_URL + "/api/user/get/" + value
+  //     }).then((response) => {
+  //       this.setState({
+  //         firstName: response.data.firstName,
+  //         lastName: response.data.lastName,
+  //         followedBy: response.data.followedBy,
+  //         followCount: response.data.followCount
+  //       })
+  //     }, (error) => {
+  //       if (error) {
+  //         Alert.alert(error)
+  //       }
+  //     });
+  //   }
+  // }
+  // async componentDidMount() {
+  //   const value = JSON.stringify(this.props.route.params.pid)
+  //   if (value !== this.state.profileUserId) {
+  //     console.log('userID in profile', value);
+  //     this.setState({
+  //       profileUserId: value
+  //     })
+  //   }
 
-    // if (value) {
-    //   console.log('user Details all data', value);
-    //   const user = JSON.parse(value);
-    //   this.setState({
-    //     userType: user.userType,
-    //     token: user.token,
-    //     userId: user.userId,
-    //   })
-    //   console.log('user data id', this.state.userId);      
-    // }
-    Axios({
-      method: 'get',
-      url: AppConstants.API_BASE_URL + '/api/profile/getprofile/' + value
-    }).then((response) => {
-      this.setState({
-        profileData: response.data,
-        backgroundExpertise: response.data.backgroundExpertise,
-        summeryDetails: response.data.summeryDetails,
-        consultationPrice: response.data.consultationPrice,
-        availability: response.data.availability,
-        displayName: response.data.displayName,
-        catagory: response.data.catagory,
-        language: response.data.languagePrimary,
-        languageSeconday: response.data.languageSeconday
-      })
-    }, (error) => {
-      if (error) {
-        Alert.alert(error)
-      }
-    });
+  //   const value1 = await AsyncStorage.getItem('userDetail');
+  //   if (value1) {
+  //     const user = JSON.parse(value1);
+  //     this.setState({
+  //       // displayName: user.displayName,
+  //       userId: user.userId,
+  //       // userType: user.userType
+  //     });
+  //   }
 
-    Axios({
-      method: 'get',
-      url: AppConstants.API_BASE_URL + "/api/user/get/" + value
-    }).then((response) => {
-      this.setState({
-        firstName: response.data.firstName,
-        lastName: response.data.lastName,
-        followCount: response.data.followCount,
-        followedBy: response.data.followedBy
-      })
-    }, (error) => {
-      if (error) {
-        Alert.alert(error)
-      }
-    });
+  //   const responselook = await fetch(AppConstants.API_BASE_URL + '/api/lookup/getalllookup');
+  //   const responseJsonlook = await responselook.json();
+  //   this.setState({
+  //     user_Type: responseJsonlook.USER_TYPE,
+  //     timelineType: responseJsonlook.TIMELINE_TYPE
+  //   });
+  //   // console.log("TimeLineTypeHere",this.state.timelineType);
 
-    Axios({
-      method: 'get',
-      url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup'
-    }).then((response) => {
-      this.setState({
-        availabilityList: response.data.AVAILABILITY,
-        catagoryList: response.data.CATAGORY,
-        languageList: response.data.LANGUAGE,
-        // userId: response.data.userId
-      })
-    }, (error) => {
-      if (error) {
-        Alert.alert(error)
-      }
-    })
-  }
+  //   try {
+  //     const response = await fetch(AppConstants.API_BASE_URL + "/api/timeline/getalltimeline/byconsultant/" + value);
+  //     const responseJson = await response.json();
+  //     // set state
+  //     this.setState({
+  //       //   isLoading: false,
+  //       dataSource: responseJson
+  //     });
+  //     console.log("dataSource", this.state.dataSource);
+  //   }
+  //   catch (error) {
+  //     console.log(error.toString());
+  //   }
+  //   // console.log("timeline",this.state.timelineType);
+  //   // const value = await AsyncStorage.getItem('userDetail');
+  //   // if (value) {
+  //   //   const user = JSON.parse(value);
+  //   //   this.setState({ userId: user.userId });
+  //   // }
+
+  //   //   const value = JSON.stringify(this.props.route.params.pid)
+  //   //   if(value !== this.state.userId){
+  //   //   console.log('userID in profile', value);
+  //   //   this.setState({
+  //   //     userId: value
+  //   //   })
+  //   // }
+
+  //   // if (value) {
+  //   //   console.log('user Details all data', value);
+  //   //   const user = JSON.parse(value);
+  //   //   this.setState({
+  //   //     userType: user.userType,
+  //   //     token: user.token,
+  //   //     userId: user.userId,
+  //   //   })
+  //   //   console.log('user data id', this.state.userId);      
+  //   // }
+  //   Axios({
+  //     method: 'get',
+  //     url: AppConstants.API_BASE_URL + '/api/profile/getprofile/' + value
+  //   }).then((response) => {
+  //     this.setState({
+  //       profileData: response.data,
+  //       backgroundExpertise: response.data.backgroundExpertise,
+  //       summeryDetails: response.data.summeryDetails,
+  //       consultationPrice: response.data.consultationPrice,
+  //       availability: response.data.availability,
+  //       displayName: response.data.displayName,
+  //       catagory: response.data.catagory,
+  //       language: response.data.languagePrimary,
+  //       languageSeconday: response.data.languageSeconday
+  //     })
+  //   }, (error) => {
+  //     if (error) {
+  //       Alert.alert(error)
+  //     }
+  //   });
+
+  //   Axios({
+  //     method: 'get',
+  //     url: AppConstants.API_BASE_URL + "/api/user/get/" + value
+  //   }).then((response) => {
+  //     this.setState({
+  //       firstName: response.data.firstName,
+  //       lastName: response.data.lastName,
+  //       followCount: response.data.followCount,
+  //       followedBy: response.data.followedBy
+  //     })
+  //   }, (error) => {
+  //     if (error) {
+  //       Alert.alert(error)
+  //     }
+  //   });
+
+  //   Axios({
+  //     method: 'get',
+  //     url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup'
+  //   }).then((response) => {
+  //     this.setState({
+  //       availabilityList: response.data.AVAILABILITY,
+  //       catagoryList: response.data.CATAGORY,
+  //       languageList: response.data.LANGUAGE,
+  //       // userId: response.data.userId
+  //     })
+  //   }, (error) => {
+  //     if (error) {
+  //       Alert.alert(error)
+  //     }
+  //   })
+  // }
 
   handleSearch() {
     const { search } = this.state
@@ -379,278 +379,22 @@ export class ProfileScreen extends Component<ProfileScreenProps & SafeAreaLayout
         style={styles.safeArea}
         insets={SaveAreaInset.TOP}>
         <Toolbar
-          title='Profile'
+          title=''
           onBackPress={this.props.navigation.goBack}
         />
         <Divider />
-        <Content style={styles.container} refreshControl={
+        {/* <Content style={styles.container} refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
             onRefresh={this._onRefresh.bind(this)}
           />
-        }>
-          <View style={{ flexDirection: 'row' }}>
-            <View style={styles.dataView}>
-              <View style={styles.ImgBgOne} />
-              <View style={styles.ImgBgTwo} />
-              <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + this.state.profileUserId + '_avatar.png' }} style={styles.image} />
-            </View>
-            <View style={{ width: '62%', height: '55%', marginRight: 10, alignContent: 'center', marginTop: '10%' }}>
-              <View style={{ alignSelf: 'center' }}>
-                <Text style={styles.data}> {this.state.firstName.toUpperCase()} {this.state.lastName.toUpperCase()} </Text>
-              </View>
-
-              {this.state.userId == this.state.profileUserId ?
-                <View style={{ flexDirection: 'column', marginTop: 5, width: '75%', alignSelf: 'center', height: '25%' }}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View>
-                      <TouchableOpacity style={styles.askButton} onPress={() => { this.props.navigation.navigate('ProfileEdit') }}>
-                        <Text style={{ color: '#ffffff' }}>Edit</Text>
-                      </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.buttonContainer}>
-                      <TouchableOpacity style={styles.goLiveButton} onPress={() => { this.props.navigation.navigate('GoLive', {channel: Number(this.state.userId)}) }}>
-                        <Text style={{ color: '#ffffff' }}>Go Live</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-
-
-                  {this.state.availabilityList.map((item, index) => {
-                    // console.log("profile category check", this.state.userId, this.state.catagory);
-
-                    if (item.lookUpId == this.state.availability) {
-                      return (
-                        <View>
-                          {/* <TouchableOpacity style={styles.askButton} onPress={() => { this.props.navigation.navigate('AskFreeQuestion', { conId: Number(this.state.profileUserId), catagory: Number(this.state.catagory) }); }}> */}
-                          <Text style={{ color: '#1DA1F2', fontSize: 12, marginLeft: 15 }}>{item.lookUpLabel}</Text>
-                          {/* </TouchableOpacity> */}
-                        </View>
-                      )
-                    }
-                  })
-                  }
-                </View>
-
-                : <View style={{ flexDirection: 'row', marginTop: 5, width: '75%', alignSelf: 'center', height: '25%' }}>
-                  <View style={{ flexDirection: 'column' }}>
-                    {this.state.followCount !== null ? (this.state.followedBy.includes(this.state.userId) ?
-                      <TouchableOpacity style={styles.myList} onPress={e => { this.followUpdate(this.state.userId, e); }} >
-                        <Text style={{ color: '#ffffff' }}>Added</Text>
-                      </TouchableOpacity>
-                      : <TouchableOpacity style={styles.myList} onPress={e => { this.followUpdate(this.state.userId, e); }} >
-                        <AntDesign size={15} name="plus" style={{ color: '#ffffff' }} />
-                        <Text style={{ color: '#ffffff' }}>My List</Text>
-                      </TouchableOpacity>)
-                      : <TouchableOpacity style={styles.myList} onPress={e => { this.followUpdate(this.state.userId, e); }} >
-                        <AntDesign size={15} name="plus" style={{ color: '#ffffff' }} />
-                        <Text style={{ color: '#ffffff' }}>My List</Text>
-                      </TouchableOpacity>}
-                    <Text style={{ fontSize: 12, color: 'black', alignSelf: 'center' }}>{this.state.followCount}</Text>
-                  </View>
-                  <View>
-                    {this.state.availabilityList.map((item, index) => {
-                      // console.log("profile category check", this.state.userId, this.state.catagory);
-
-                      if (item.lookUpId == this.state.availability) {
-                        if (item.lookUpName == 'FREE') {
-                          return (
-                            <View style={{ flexDirection: 'row' }}>
-                              <View style={{ flexDirection: 'column' }}>
-                                <View>
-                                  <TouchableOpacity style={styles.askButton} onPress={() => { this.props.navigation.navigate('AskFreeQuestion', { conId: Number(this.state.profileUserId), catagory: Number(this.state.catagory) }) }}>
-                                    <Text style={{ color: '#ffffff' }}>Ask</Text>
-                                  </TouchableOpacity>
-                                </View>
-
-                                <View style={styles.buttonContainerSeeLive}>
-                                  <TouchableOpacity style={styles.goLiveButton} onPress={() => { this.props.navigation.navigate('SeeLive', {channel: Number(this.state.profileUserId)}) }}>
-                                    <Text style={{ color: '#ffffff' }}>See Live</Text>
-                                  </TouchableOpacity>
-                                </View>
-                              </View>
-                              <View>
-                                <TouchableOpacity style={{ marginLeft: 7, backgroundColor: '#ffffff', borderRadius: 20, justifyContent: 'center', alignItems: 'center', }} onPress={() => { this.props.navigation.navigate('VideoHome') }}>
-                                  <Icon name='phone-outline' fill='#1DA1F2' height={25} width={25} />
-                                </TouchableOpacity>
-                              </View>
-                            </View>
-                          )
-                        }
-                      }
-                    })}
-                  </View>
-                </View>
-              }
-            </View>
-          </View>
-
-          {/* <Separator style={styles.seprator} bordered>
-              <Text>Search Question/Answer</Text>
-            </Separator> */}
-          {/* <Input
-            padding={0}
-            placeholder='Search '
-            style={{
-              width: '88%', alignSelf: 'center',
-              borderRadius: 25
-            }}
-            name='search'
-            value={this.state.search}
-            onChangeText={(search) => this.setState({ search })}
-            onKeyPress={this.handleSearch}
-            size='small'
-            icon={SearchIcon}
-          /> */}
-          <Divider />
-
-          <View>
-
-            <View style={{ justifyContent: 'center', alignItems: 'flex-end', paddingRight: 5 }}>
-              <TouchableOpacity style={{ height: 25, width: 25, borderRadius: 13, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.state.height < 200 ? this.setState({ height: HEIGHT }) : this.setState({ height: 150 }) }}>
-                {this.state.height < 200 ?
-                  <ArrowDownward style={{ width: 32, height: 32, }} fill='#1DA1F2' />
-                  : <ArrowUpward style={{ width: 32, height: 32, }} fill='#1DA1F2' />}
-              </TouchableOpacity>
-            </View>
-            <View style={{ height: this.state.height }}>
-              <MoreScreen id={Number(this.state.profileUserId)} />
-            </View>
-          </View>
-          <Divider />
-          {/* ***********Background expertise code here*********** */}
-          {/* <View style={styles.TextView}>
-            <Text appearance='hint' category='c1' numberOfLines={this.state.textShown === this.state.profileUserId ? undefined : 1}  >{this.state.summeryDetails}  {this.state.backgroundExpertise}</Text>
-            <TouchableOpacity style={{ width: '30%' }} onPress={() => this.toggleNumberOfLines(this.state.profileUserId)}>
-
-              <Text style={{ fontSize: 14 }} >{this.state.backgroundExpertise === this.state.profileUserId ? 'read less...' : 'read more...'}</Text>
-            </TouchableOpacity>
-          </View> */}
-          {/* ***********Background expertise code here*********** */}
-          {/* <View style={{ height: this.state.height }}>
-
-        </View> */}
-
-          {/* <View style = {{justifyContent: 'center', alignItems: 'center'}}>
-            <Text onPress={this.state.height <= 200 ? () => { this.setState({ height: 450 }) } : () => { this.setState({ height: 200 }) }}>
-              {this.state.height <= 200 ? 'Show more' : 'Less'}
-            </Text>
-
-          </View> */}
+        }> */}
+       <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center'}}>
+         <Text style={{fontSize: 20, fontWeight: 'bold'}}>This page will be added soon.</Text>
+       </View>
         
-          {/* <Separator style={styles.seprator} bordered>
-            <Text>Statistics</Text>
-          </Separator>
 
-          <View style={styles.dataView}>
-            <View style={{ flex: -1, flexDirection: 'row' }}>
-
-              <View style={{ flex: -1, flexDirection: 'column', width: '50%' }}>
-
-                <View style={{ width: "100%", }}>
-                  <Text style={styles.data}> {this.state.profileData.consultationPrice} $ </Text>
-                </View>
-
-                <View>
-                  <Text style={styles.dataHeading}> Consultation Price </Text>
-                </View>
-
-                <View style={{ width: "100%" }}>
-                  <Text style={styles.data}> {this.state.profileData.servedConsultation} </Text>
-                </View>
-
-                <View style={{ width: '100%' }}>
-                  <Text style={styles.dataHeading}> Served Consultation </Text>
-                </View>
-
-                <View style={{ width: "100%" }}>
-                  <Text style={styles.data}> {this.state.profileData.averageRating} </Text>
-                </View>
-
-                <View style={{ width: '100%' }}>
-                  <Text style={styles.dataHeading}> Average Rating </Text>
-                </View>
-
-              </View>
-
-              <View style={{ flex: 1, flexDirection: 'column', width: '50%' }}>
-
-                <View style={{ width: "100%" }}>
-                  <Text style={styles.data}> {this.state.profileData.totalEarning} </Text>
-                </View>
-
-                <View style={{ width: '100%', }}>
-                  <Text style={styles.dataHeading}> Total Earned </Text>
-                </View>
-
-                <View style={{ width: "100%" }}>
-                  <Text style={styles.data}> {this.state.profileData.averageResponseTime} </Text>
-                </View>
-
-                <View style={{ width: '100%', }}>
-                  <Text style={styles.dataHeading}> Average Response Time </Text>
-                </View>
-
-
-              </View>
-            </View>
-          </View>
-          <Separator style={{ height: 40, marginBottom: 10 }} bordered>
-            <Text>Details</Text>
-          </Separator>
-          <Separator style={{ height: 20, backgroundColor: '#F9F9F9' }} bordered>
-            <Text style={{ marginLeft: 10 }}>Availability</Text>
-          </Separator>
-          <Form style={{ width: '70%', alignSelf: 'center', backgroundColor: 'white', marginTop: 10 }}>
-
-          </Form>
-          <View style={styles.dataView}>
-
-            <View style={{ flex: -1, flexDirection: 'column' }}>
-
-              {this.state.availabilityList.map((item, index) => {
-                if (item.lookUpId === this.state.profileData.availability) {
-                  return (
-                    <Text style={{ alignSelf: 'center', marginBottom: 10 }}>{item.lookUpLabel}</Text>
-                  )
-                }
-              })}
-
-              <Separator style={{ height: 20, backgroundColor: '#F9F9F9' }} bordered>
-                <Text>Category</Text>
-              </Separator>
-
-
-              <Form style={{ width: '70%', alignSelf: 'center', backgroundColor: 'white', marginTop: 10, marginBottom: 10 }}>
-
-                {this.state.catagoryList.map((item, index) => {
-                  if (item.lookUpId === this.state.profileData.catagory) {
-                    return (
-                      <Text style={{ alignSelf: 'center' }}>{item.lookUpName}</Text>
-                    )
-                  }
-                })}
-              </Form>
-            
-              <Separator style={{ height: 20, backgroundColor: '#F9F9F9' }} bordered>
-                <Text>Language</Text>
-              </Separator>
-              <Form style={{ width: '70%', alignSelf: 'center', backgroundColor: 'white', marginTop: 10 }}>
-                {this.state.languageList.map((item, index) => {
-                  if (item.lookUpId === this.state.profileData.languagePrimary) {
-                    return (
-                      <Text style={{ alignSelf: 'center' }}>{item.lookUpName}</Text>
-                    )
-                  }
-                })}
-              </Form>
-            </View> */}
-          {/* <Button  appearance='outline' status='basic' onPress={() => this.onClickListener("UpdateProfile")}>Update</Button> */}
-          {/* </View> */}
-
-
-        </Content>
+        {/* </Content> */}
 
 
       </Container>
@@ -808,3 +552,266 @@ const styles = StyleSheet.create({
     backgroundColor: '#1DA1F2'
   }
 });
+
+
+
+
+// <View style={{ flexDirection: 'row' }}>
+// <View style={styles.dataView}>
+//   <View style={styles.ImgBgOne} />
+//   <View style={styles.ImgBgTwo} />
+//   <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + this.state.profileUserId + '_avatar.png' }} style={styles.image} />
+// </View>
+// <View style={{ width: '62%', height: '55%', marginRight: 10, alignContent: 'center', marginTop: '10%' }}>
+//   <View style={{ alignSelf: 'center' }}>
+//     <Text style={styles.data}> {this.state.firstName.toUpperCase()} {this.state.lastName.toUpperCase()} </Text>
+//   </View>
+
+//   {this.state.userId == this.state.profileUserId ?
+//     <View style={{ flexDirection: 'column', marginTop: 5, width: '75%', alignSelf: 'center', height: '25%' }}>
+//       <View style={{ flexDirection: 'row' }}>
+//         <View>
+//           <TouchableOpacity style={styles.askButton} onPress={() => { this.props.navigation.navigate('ProfileEdit') }}>
+//             <Text style={{ color: '#ffffff' }}>Edit</Text>
+//           </TouchableOpacity>
+//         </View>
+
+//         <View style={styles.buttonContainer}>
+//           <TouchableOpacity style={styles.goLiveButton} onPress={() => { this.props.navigation.navigate('GoLive', {channel: Number(this.state.userId)}) }}>
+//             <Text style={{ color: '#ffffff' }}>Go Live</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+
+
+//       {this.state.availabilityList.map((item, index) => {
+//         // console.log("profile category check", this.state.userId, this.state.catagory);
+
+//         if (item.lookUpId == this.state.availability) {
+//           return (
+//             <View>
+//               {/* <TouchableOpacity style={styles.askButton} onPress={() => { this.props.navigation.navigate('AskFreeQuestion', { conId: Number(this.state.profileUserId), catagory: Number(this.state.catagory) }); }}> */}
+//               <Text style={{ color: '#1DA1F2', fontSize: 12, marginLeft: 15 }}>{item.lookUpLabel}</Text>
+//               {/* </TouchableOpacity> */}
+//             </View>
+//           )
+//         }
+//       })
+//       }
+//     </View>
+
+//     : <View style={{ flexDirection: 'row', marginTop: 5, width: '75%', alignSelf: 'center', height: '25%' }}>
+//       <View style={{ flexDirection: 'column' }}>
+//         {this.state.followCount !== null ? (this.state.followedBy.includes(this.state.userId) ?
+//           <TouchableOpacity style={styles.myList} onPress={e => { this.followUpdate(this.state.userId, e); }} >
+//             <Text style={{ color: '#ffffff' }}>Added</Text>
+//           </TouchableOpacity>
+//           : <TouchableOpacity style={styles.myList} onPress={e => { this.followUpdate(this.state.userId, e); }} >
+//             <AntDesign size={15} name="plus" style={{ color: '#ffffff' }} />
+//             <Text style={{ color: '#ffffff' }}>My List</Text>
+//           </TouchableOpacity>)
+//           : <TouchableOpacity style={styles.myList} onPress={e => { this.followUpdate(this.state.userId, e); }} >
+//             <AntDesign size={15} name="plus" style={{ color: '#ffffff' }} />
+//             <Text style={{ color: '#ffffff' }}>My List</Text>
+//           </TouchableOpacity>}
+//         <Text style={{ fontSize: 12, color: 'black', alignSelf: 'center' }}>{this.state.followCount}</Text>
+//       </View>
+//       <View>
+//         {this.state.availabilityList.map((item, index) => {
+//           // console.log("profile category check", this.state.userId, this.state.catagory);
+
+//           if (item.lookUpId == this.state.availability) {
+//             if (item.lookUpName == 'FREE') {
+//               return (
+//                 <View style={{ flexDirection: 'row' }}>
+//                   <View style={{ flexDirection: 'column' }}>
+//                     <View>
+//                       <TouchableOpacity style={styles.askButton} onPress={() => { this.props.navigation.navigate('AskFreeQuestion', { conId: Number(this.state.profileUserId), catagory: Number(this.state.catagory) }) }}>
+//                         <Text style={{ color: '#ffffff' }}>Ask</Text>
+//                       </TouchableOpacity>
+//                     </View>
+
+//                     <View style={styles.buttonContainerSeeLive}>
+//                       <TouchableOpacity style={styles.goLiveButton} onPress={() => { this.props.navigation.navigate('SeeLive', {channel: Number(this.state.profileUserId)}) }}>
+//                         <Text style={{ color: '#ffffff' }}>See Live</Text>
+//                       </TouchableOpacity>
+//                     </View>
+//                   </View>
+//                   <View>
+//                     <TouchableOpacity style={{ marginLeft: 7, backgroundColor: '#ffffff', borderRadius: 20, justifyContent: 'center', alignItems: 'center', }} onPress={() => { this.props.navigation.navigate('VideoHome') }}>
+//                       <Icon name='phone-outline' fill='#1DA1F2' height={25} width={25} />
+//                     </TouchableOpacity>
+//                   </View>
+//                 </View>
+//               )
+//             }
+//           }
+//         })}
+//       </View>
+//     </View>
+//   }
+// </View>
+// </View>
+
+// {/* <Separator style={styles.seprator} bordered>
+//   <Text>Search Question/Answer</Text>
+// </Separator> */}
+// {/* <Input
+// padding={0}
+// placeholder='Search '
+// style={{
+//   width: '88%', alignSelf: 'center',
+//   borderRadius: 25
+// }}
+// name='search'
+// value={this.state.search}
+// onChangeText={(search) => this.setState({ search })}
+// onKeyPress={this.handleSearch}
+// size='small'
+// icon={SearchIcon}
+// /> */}
+// {/* <Divider />
+
+// <View>
+
+// <View style={{ justifyContent: 'center', alignItems: 'flex-end', paddingRight: 5 }}>
+//   <TouchableOpacity style={{ height: 25, width: 25, borderRadius: 13, justifyContent: 'center', alignItems: 'center' }} onPress={() => { this.state.height < 200 ? this.setState({ height: HEIGHT }) : this.setState({ height: 150 }) }}>
+//     {this.state.height < 200 ?
+//       <ArrowDownward style={{ width: 32, height: 32, }} fill='#1DA1F2' />
+//       : <ArrowUpward style={{ width: 32, height: 32, }} fill='#1DA1F2' />}
+//   </TouchableOpacity>
+// </View>
+// <View style={{ height: this.state.height }}>
+//   <MoreScreen id={Number(this.state.profileUserId)} />
+// </View>
+// </View>
+// <Divider /> */}
+// {/* ***********Background expertise code here*********** */}
+// {/* <View style={styles.TextView}>
+// <Text appearance='hint' category='c1' numberOfLines={this.state.textShown === this.state.profileUserId ? undefined : 1}  >{this.state.summeryDetails}  {this.state.backgroundExpertise}</Text>
+// <TouchableOpacity style={{ width: '30%' }} onPress={() => this.toggleNumberOfLines(this.state.profileUserId)}>
+
+//   <Text style={{ fontSize: 14 }} >{this.state.backgroundExpertise === this.state.profileUserId ? 'read less...' : 'read more...'}</Text>
+// </TouchableOpacity>
+// </View> */}
+// {/* ***********Background expertise code here*********** */}
+// {/* <View style={{ height: this.state.height }}>
+
+// </View> */}
+
+// {/* <View style = {{justifyContent: 'center', alignItems: 'center'}}>
+// <Text onPress={this.state.height <= 200 ? () => { this.setState({ height: 450 }) } : () => { this.setState({ height: 200 }) }}>
+//   {this.state.height <= 200 ? 'Show more' : 'Less'}
+// </Text>
+
+// </View> */}
+
+// {/* <Separator style={styles.seprator} bordered>
+// <Text>Statistics</Text>
+// </Separator>
+
+// <View style={styles.dataView}>
+// <View style={{ flex: -1, flexDirection: 'row' }}>
+
+//   <View style={{ flex: -1, flexDirection: 'column', width: '50%' }}>
+
+//     <View style={{ width: "100%", }}>
+//       <Text style={styles.data}> {this.state.profileData.consultationPrice} $ </Text>
+//     </View>
+
+//     <View>
+//       <Text style={styles.dataHeading}> Consultation Price </Text>
+//     </View>
+
+//     <View style={{ width: "100%" }}>
+//       <Text style={styles.data}> {this.state.profileData.servedConsultation} </Text>
+//     </View>
+
+//     <View style={{ width: '100%' }}>
+//       <Text style={styles.dataHeading}> Served Consultation </Text>
+//     </View>
+
+//     <View style={{ width: "100%" }}>
+//       <Text style={styles.data}> {this.state.profileData.averageRating} </Text>
+//     </View>
+
+//     <View style={{ width: '100%' }}>
+//       <Text style={styles.dataHeading}> Average Rating </Text>
+//     </View>
+
+//   </View>
+
+//   <View style={{ flex: 1, flexDirection: 'column', width: '50%' }}>
+
+//     <View style={{ width: "100%" }}>
+//       <Text style={styles.data}> {this.state.profileData.totalEarning} </Text>
+//     </View>
+
+//     <View style={{ width: '100%', }}>
+//       <Text style={styles.dataHeading}> Total Earned </Text>
+//     </View>
+
+//     <View style={{ width: "100%" }}>
+//       <Text style={styles.data}> {this.state.profileData.averageResponseTime} </Text>
+//     </View>
+
+//     <View style={{ width: '100%', }}>
+//       <Text style={styles.dataHeading}> Average Response Time </Text>
+//     </View>
+
+
+//   </View>
+// </View>
+// </View>
+// <Separator style={{ height: 40, marginBottom: 10 }} bordered>
+// <Text>Details</Text>
+// </Separator>
+// <Separator style={{ height: 20, backgroundColor: '#F9F9F9' }} bordered>
+// <Text style={{ marginLeft: 10 }}>Availability</Text>
+// </Separator>
+// <Form style={{ width: '70%', alignSelf: 'center', backgroundColor: 'white', marginTop: 10 }}>
+
+// </Form>
+// <View style={styles.dataView}>
+
+// <View style={{ flex: -1, flexDirection: 'column' }}>
+
+//   {this.state.availabilityList.map((item, index) => {
+//     if (item.lookUpId === this.state.profileData.availability) {
+//       return (
+//         <Text style={{ alignSelf: 'center', marginBottom: 10 }}>{item.lookUpLabel}</Text>
+//       )
+//     }
+//   })}
+
+//   <Separator style={{ height: 20, backgroundColor: '#F9F9F9' }} bordered>
+//     <Text>Category</Text>
+//   </Separator>
+
+
+//   <Form style={{ width: '70%', alignSelf: 'center', backgroundColor: 'white', marginTop: 10, marginBottom: 10 }}>
+
+//     {this.state.catagoryList.map((item, index) => {
+//       if (item.lookUpId === this.state.profileData.catagory) {
+//         return (
+//           <Text style={{ alignSelf: 'center' }}>{item.lookUpName}</Text>
+//         )
+//       }
+//     })}
+//   </Form>
+
+//   <Separator style={{ height: 20, backgroundColor: '#F9F9F9' }} bordered>
+//     <Text>Language</Text>
+//   </Separator>
+//   <Form style={{ width: '70%', alignSelf: 'center', backgroundColor: 'white', marginTop: 10 }}>
+//     {this.state.languageList.map((item, index) => {
+//       if (item.lookUpId === this.state.profileData.languagePrimary) {
+//         return (
+//           <Text style={{ alignSelf: 'center' }}>{item.lookUpName}</Text>
+//         )
+//       }
+//     })}
+//   </Form>
+// </View> */}
+// {/* <Button  appearance='outline' status='basic' onPress={() => this.onClickListener("UpdateProfile")}>Update</Button> */}
+// {/* </View> */}

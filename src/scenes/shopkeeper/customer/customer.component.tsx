@@ -408,7 +408,7 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
 
                                 <View style={Styles.list_price}>
                                     <View>
-                                        <Text style={Styles.customer_list_price_text}>7903032346</Text>
+                                        <Text style={Styles.customer_list_price_text}>8870563892</Text>
                                     </View>
 
                                     <View>
@@ -435,7 +435,7 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
 
                             <View style={Styles.list_price}>
                                 <View>
-                                    <Text style={Styles.customer_list_price_text}>7903032346</Text>
+                                    <Text style={Styles.customer_list_price_text}>8870563892</Text>
                                 </View>
 
                                 <View>
@@ -462,7 +462,7 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
 
                             <View style={Styles.list_price}>
                                 <View>
-                                    <Text style={Styles.customer_list_price_text}>7903032346</Text>
+                                    <Text style={Styles.customer_list_price_text}>8870563892</Text>
                                 </View>
 
                                 <View>

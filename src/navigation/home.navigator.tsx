@@ -19,6 +19,7 @@ import { AppRoute } from './app-routes';
 import {
   ContactUsScreen,
   AccountsScreen,
+  ProfileScreen,
   HomeDrawer,
   HomeTabBar,
   ChangepasswordScreen,
@@ -26,14 +27,21 @@ import {
   SettingScreen
 } from '../scenes/home';
 import {
-  StockIcon,
+  StockIcon, AddEmployeeIcon,
   ProfileIcon,
   HomeIcon,
   InfoIcon,
   AccountsIcon,
   ChangePasswordIcon,
   LogoutIcon,
-  CustomerIcon
+  AddCustomerIcon,
+  NotificationIcon,
+  WalletIcon,
+  PayNowIcon,
+  CustomerIcon,
+  MyOrderIcon,
+  ValidityIcon,
+  AddProductIcon,
 } from '../assets/icons';
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
 
@@ -45,7 +53,21 @@ type HomeDrawerNavigatorParams = {
   [AppRoute.IMAGEUPLOAD]: undefined;
   [AppRoute.LOGOUT]: undefined;
   [AppRoute.AUTH]: undefined;
-  [AppRoute.TRANSACTIONHISTORY]: undefined;
+  [AppRoute.PROFILE]: undefined;
+  [AppRoute.MY_WALLET]: undefined;
+  [AppRoute.MY_ORDER]: undefined;
+  [AppRoute.VALIDITY]: undefined;
+  [AppRoute.NOTIFICATION]: undefined;
+  [AppRoute.PAY_NOW]: undefined;
+  [AppRoute.ADD_PRODUCT]: undefined;
+  [AppRoute.ADD_CUSTOMER]: undefined;
+  [AppRoute.ADD_EMPLOYEE]: undefined;
+  [AppRoute.CUSTOMER_LIST]: undefined;
+  [AppRoute.STOCK_LIST]: undefined;
+  [AppRoute.OUT_OF_STOCK]: undefined;
+  [AppRoute.OFFERS]: undefined;
+  [AppRoute.DAILY_MESSAGE]: undefined;
+
 }
 
 type HomeBottomTabsNavigatorParams = {
@@ -111,10 +133,10 @@ export interface ImageUploadScreenProps {
 //   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.SETTING>;
 // }
 
-export interface TransactionHistoryScreenProps {
-  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.TRANSACTIONHISTORY>;
-  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.TRANSACTIONHISTORY>;
-}
+// export interface TransactionHistoryScreenProps {
+//   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.TRANSACTIONHISTORY>;
+//   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.TRANSACTIONHISTORY>;
+// }
 
 export interface ChangepasswordScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.CHANGEPASSWORD>;
@@ -126,6 +148,11 @@ export interface AuthNavigatorScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.AUTH>;
 }
 
+// export interface ProfileNavigatorScreenProps {
+//   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
+//   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
+// }
+
 // export interface InformaionNavigatorScreenProps {
 //   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.INFORMATION>;
 //   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.INFORMATION>;
@@ -136,10 +163,10 @@ export interface AuthNavigatorScreenProps {
 //   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ASKFREEQUESTION>;
 // }
 
-// export interface MoreScreenProps {
-//   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.MORE>;
-//   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.MORE>;
-// }
+export interface ProfileScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
+}
 
 
 export interface AccountsScreenProps {
@@ -215,12 +242,95 @@ export const HomeNavigator = (): React.ReactElement => (
       options={{ title: 'Home', drawerIcon: HomeIcon }}
     />
 
-    {/* <Drawer.Screen
-      name={AppRoute.ACCOUNTS}
-      component={AccountsScreen}
-      options={{ title: 'Accounts', drawerIcon: AccountsIcon }}
-    /> */}
+    <Drawer.Screen
+      name={AppRoute.PROFILE}
+      component={ProfileScreen}
+      options={{ title: 'Profile', drawerIcon: AccountsIcon }}
+    />
 
+    <Drawer.Screen
+      name={AppRoute.MY_WALLET}
+      component={ProfileScreen}
+      options={{ title: 'My Wallet', drawerIcon: WalletIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.MY_ORDER}
+      component={ProfileScreen}
+      options={{ title: 'My Order', drawerIcon: MyOrderIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.VALIDITY}
+      component={ProfileScreen}
+      options={{ title: 'Validity', drawerIcon: ValidityIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.NOTIFICATION}
+      component={ProfileScreen}
+      options={{ title: 'Notification', drawerIcon: NotificationIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.PAY_NOW}
+      component={ProfileScreen}
+      options={{ title: 'Pay Now', drawerIcon: PayNowIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.ADD_PRODUCT}
+      component={ProfileScreen}
+      options={{ title: 'Add Product', drawerIcon: AddProductIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.ADD_CUSTOMER}
+      component={ProfileScreen}
+      options={{ title: 'Add Customer', drawerIcon: AddCustomerIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.ADD_EMPLOYEE}
+      component={ProfileScreen}
+      options={{ title: 'Add Employee', drawerIcon: AddEmployeeIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.CUSTOMER_LIST}
+      component={ProfileScreen}
+      options={{ title: 'Customer List', drawerIcon: AccountsIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.STOCK_LIST}
+      component={ProfileScreen}
+      options={{ title: 'Stock List', drawerIcon: AccountsIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.OUT_OF_STOCK}
+      component={ProfileScreen}
+      options={{ title: 'Out of Stock', drawerIcon: AccountsIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.OFFERS}
+      component={ProfileScreen}
+      options={{ title: 'Offers', drawerIcon: AccountsIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.DAILY_MESSAGE}
+      component={ProfileScreen}
+      options={{ title: 'Daily Message', drawerIcon: AccountsIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.LOGOUT}
+      component={LogoutScreen}
+      options={{ title: 'Logout', drawerIcon: LogoutIcon }}
+    />
     {/* <Drawer.Screen
       name={AppRoute.SETTING}
       component={SettingScreen}

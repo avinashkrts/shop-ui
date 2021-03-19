@@ -16,7 +16,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { Color } from '../constants/LabelConstants'
+import { Color } from '../constants/LabelConstants';
+
 
 export const PeopleIcon = (style): AntDesign => (
   <SimpleLineIcons size={20} name='people' />
@@ -36,6 +37,10 @@ export const SearchIcon = (style): AntDesign => (
 
 export const CancelIcon = (style): AntDesign => (
   <MaterialCommunityIcons size={20} name='close' />
+);
+
+export const NotificationIcon = (style): AntDesign => (
+  <MaterialCommunityIcons size={20} color={'silver'} name='bell' />
 );
 
 export const CameraIcon = (style): AntDesign => (
@@ -70,11 +75,46 @@ export const RightArrowIcon = (style, app): AntDesign => (
   <AntDesign style={style} name='right' />
 );
 
+export const PayNowIcon = (style): AntDesign => (
+  <MaterialIcons size={20} color={'silver'} name='payment' />
+);
+
+export const WalletIcon = (style): AntDesign => (
+  <Fontisto size={18} color={'silver'} name='wallet' />
+);
+
+export const AddCustomerIcon = (style): AntDesign => (
+  <MaterialIcons size={20} color={'silver'} name='person-add' />
+);
+
+export const AddEmployeeIcon = (style): AntDesign => (
+  <MaterialIcons size={20} color={'silver'} name='person-add' />
+);
+
+export const MyOrderIcon = (style): AntDesign => (
+  <Entypo size={20} color={'silver'} name='archive' />
+);
+
+export const ValidityIcon = (style): AntDesign => (
+  <MaterialIcons size={20} color={'silver'} name='timer' />
+);
+
+export const AddProductIcon = (style): AntDesign => (
+  <Fontisto size={15} color={'silver'} name='shopping-basket-add' />
+);
 
 
 
 
 
+
+
+
+
+
+
+
+//old icons
 
 export const PublicIcon = (style): AntDesign => (
   <MaterialIcons size={15} color="rgba(128,128,128,1)" name='public' />
@@ -130,9 +170,6 @@ export const CompanyIcon = (style): AntDesign => (
   <MaterialCommunityIcons size={20} name='office-building' />
 );
 
-export const WalletIcon = (style): AntDesign => (
-  <Fontisto size={18} name='wallet' />
-);
 
 export const HomeIcon = (style): IconElement => (
   <Icon {...style} name='home-outline' />
