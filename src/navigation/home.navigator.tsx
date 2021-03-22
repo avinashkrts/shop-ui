@@ -50,6 +50,7 @@ import {
   DailyMessageIcon,
 } from '../assets/icons';
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
+import { DailyMessageScreen, MyOrderScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
@@ -174,6 +175,50 @@ export interface ProfileScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
 }
 
+export interface MyOrderScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.MY_ORDER>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.MY_ORDER>;
+}
+
+export interface ValidityScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.VALIDITY>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.VALIDITY>;
+}
+
+export interface NotificationScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.NOTIFICATION>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.NOTIFICATION>;
+}
+
+export interface PayNowScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.PAY_NOW>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PAY_NOW>;
+}
+
+export interface StockListScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.STOCK_LIST>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.STOCK_LIST>;
+}
+
+export interface OutOfStockScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.OUT_OF_STOCK>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.OUT_OF_STOCK>;
+}
+
+export interface OffersScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.OFFERS>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.OFFERS>;
+}
+
+export interface DailyMessageScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.DAILY_MESSAGE>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.DAILY_MESSAGE>;
+}
+
+export interface ContactUsScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.CONTACTUS>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.CONTACTUS>;
+}
 
 export interface AccountsScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ACCOUNTS>;
@@ -218,11 +263,6 @@ const HomeBottomNavigator = (): React.ReactElement => (
       options={{ title: 'Customer', tabBarIcon: CustomerIcon }}
     />
 
-    {/* <BottomTab.Screen
-      name={AppRoute.TIMELINE}
-      component={TimelineNavigator}
-      options={{ title: 'TIMELINE', tabBarIcon: TimeLineIcon }}
-    /> */}
     <BottomTab.Screen
       name={AppRoute.STOCK}
       component={StockNavigator}
@@ -239,7 +279,6 @@ const HomeBottomNavigator = (): React.ReactElement => (
 );
 
 export const HomeNavigator = (): React.ReactElement => (
-  // HomeBottomNavigator()
   // @ts-ignore: `drawerContent` also contains a DrawerNavigationProp
   <Drawer.Navigator drawerContent={props => <HomeDrawer{...props} />}>
     <Drawer.Screen
@@ -262,25 +301,25 @@ export const HomeNavigator = (): React.ReactElement => (
 
     <Drawer.Screen
       name={AppRoute.MY_ORDER}
-      component={ProfileScreen}
+      component={MyOrderScreen}
       options={{ title: 'My Order', drawerIcon: MyOrderIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.VALIDITY}
-      component={ProfileScreen}
+      component={ValidityScreen}
       options={{ title: 'Validity', drawerIcon: ValidityIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.NOTIFICATION}
-      component={ProfileScreen}
+      component={NotificationScreen}
       options={{ title: 'Notification', drawerIcon: NotificationIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.PAY_NOW}
-      component={ProfileScreen}
+      component={PayNowScreen}
       options={{ title: 'Pay Now', drawerIcon: PayNowIcon }}
     />
 
@@ -310,31 +349,31 @@ export const HomeNavigator = (): React.ReactElement => (
 
     <Drawer.Screen
       name={AppRoute.STOCK_LIST}
-      component={ProfileScreen}
+      component={StockListScreen}
       options={{ title: 'Stock List', drawerIcon: StockListIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.OUT_OF_STOCK}
-      component={ProfileScreen}
+      component={OutOfStockScreen}
       options={{ title: 'Out of Stock', drawerIcon: OutOfStockIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.OFFERS}
-      component={ProfileScreen}
+      component={OffersScreen}
       options={{ title: 'Offers', drawerIcon: OfferIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.DAILY_MESSAGE}
-      component={ProfileScreen}
+      component={DailyMessageScreen}
       options={{ title: 'Daily Message', drawerIcon: DailyMessageIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CONTACTUS}
-      component={LogoutScreen}
+      component={ContactUsScreen}
       options={{ title: 'Contact Us', drawerIcon: HelpIcon }}
     />
 
@@ -343,75 +382,6 @@ export const HomeNavigator = (): React.ReactElement => (
       component={LogoutScreen}
       options={{ title: 'Logout', drawerIcon: LogoutIcon }}
     />
-    {/* <Drawer.Screen
-      name={AppRoute.SETTING}
-      component={SettingScreen}
-      options={{ title: 'Setting', drawerIcon: AccountsIcon }}
-    /> */}
-
-    {/* <Drawer.Screen
-      name={AppRoute.PROFILEEDIT}
-      component={ProfileEditScreen}
-      options={{ title: 'Profile', drawerIcon: PersonIcon }}
-    />      */}
-
-
-    {/*     
-     <Drawer.Screen
-      name={AppRoute.WALLET}
-      component={WalletScreen}
-      options={{ title: 'Wallet', drawerIcon: WalletIcon }}
-    /> */}
-
-    {/* <Drawer.Screen
-      name={AppRoute.TRANSACTIONHISTORY}
-      component={TransactionHistoryScreen}
-      options={{ title: 'All Transactions', drawerIcon: TransactionHistoryIcon }}
-    />
-     */}
-
-
-    {/* <Drawer.Screen
-      name={AppRoute.CHANGEPASSWORD}
-      component={ChangepasswordScreen}
-      options={{ title: 'Change password', drawerIcon: ChangePasswordIcon }}
-    /> */}
-
-    {/* <Drawer.Screen
-      name={AppRoute.CONTACT}
-      component={ContactUsScreen}
-      options={{ title: 'Contact Us', drawerIcon: InfoIcon }}
-    /> */}
-    {/* <Drawer.Screen
-      name={AppRoute.LOGOUT}
-      component={LogoutScreen}
-      options={{ title: 'Logout', drawerIcon: LogoutIcon }}
-    /> */}
-    {/* <Drawer.Screen
-      name={AppRoute.IMAGEUPLOAD}
-      component={ImageUploadScreen}
-      options={{ title: 'ImageUpload', drawerIcon: InfoIcon}}
-    /> */}
-
-
-
-    {/* <Drawer.Screen
-      name={AppRoute.PROFILE}
-      component={ProfileScreen}
-      // options={{ }}
-    /> */}
-
-    {/* <Drawer.Screen
-      name={AppRoute.ASKFREEQUESTION}
-      component={AskFreeQuestionScreen}
-      // options={{ }}
-    /> */}
-
-    {/* <Drawer.Screen
-      name={AppRoute.MORE}
-      component={MoreScreen}
-      // options={{ }}
-    /> */}
 
   </Drawer.Navigator>
 );
