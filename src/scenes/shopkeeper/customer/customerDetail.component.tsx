@@ -245,7 +245,7 @@ export class CustomerDetailScreen extends React.Component<CustomerDetailScreenPr
                                 <Text style={Styles.user_detail_header_text}>{LableText.PHONE}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <Text style={Styles.user_detail_data_text}>8870563892</Text>
+                                <Text style={Styles.user_detail_data_text}>1234567890</Text>
                             </View>
                         </View>
 

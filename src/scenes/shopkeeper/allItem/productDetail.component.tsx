@@ -342,7 +342,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
 
                     <View style={[Styles.product_view, Styles.center]}>
                         <View style={[Styles.product_image, Styles.center]}>
-                            <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.product_avatar} />
+                            <Avatar source={require("../../../assets/sweets.png")} style={Styles.product_avatar} />
                         </View>
                     </View>
 
@@ -383,13 +383,13 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
 
                     <View style={Styles.product_3rd_view}>
                         <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                            <Text style={{ color: '#000', paddingVertical: 20, fontWeight: 'bold', fontSize: 20 }}>Dawat Basmati Rice</Text>
+                            <Text style={{ color: '#000', paddingVertical: 20, fontWeight: 'bold', fontSize: 20 }}>Sweets</Text>
 
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>25 Kg.</Text>
-                                <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,100</Text>
+                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>3 Kg.</Text>
+                                <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1100</Text>
                                 <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,150</Text>
-                                <Text style={{ color: Color.COLOR }}>3.5 % off</Text>
+                                <Text style={{ color: Color.COLOR }}>25 % off</Text>
                             </View>
 
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
@@ -401,7 +401,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                         <View style={Styles.product_description_view}>
                             <Text style={{fontSize: 20, fontWeight: 'bold', marginLeft: 10}}>Product Description</Text>
                             <View style={{ borderTopWidth: 2, borderColor: '#0099cc', marginTop: 10, padding: 10 }}>
-                                <Text style={{ fontSize: 18 }}>These bags are made up of high quality material from trusted vendor. Our products undergo quality checks before delivery to customers.</Text>
+                                <Text style={{ fontSize: 18 }}>A double-layered sponge and cream ganache extravaganza – creamy with indulgence in each bite!</Text>
                             </View>
                         </View>
                         {/* </ScrollView> */}

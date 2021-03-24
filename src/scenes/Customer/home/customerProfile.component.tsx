@@ -32,7 +32,7 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Add Employee'
+                    title='Profile'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
@@ -172,130 +172,27 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                             </View>
                         </View>
 
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.DESIGNATION}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.DESIGNATION} />
-                            </View>
-                        </View>
+  
+ 
 
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.SALARY}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.SALARY} />
-                            </View>
-                        </View>
 
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.SALARY_TYPE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.SALARY_TYPE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.ADVANCE_SALARY}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.ADVANCE_SALARY} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.BONUS}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.BONUS} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.INCENTIVE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.INCENTIVE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.ATTENDANCE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.ATTENDANCE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.WORKING_DAYS}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.WORKING_DAYS} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.PRESENT}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.PRESENT} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.ABSENT}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.ABSENT} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.LEAVE_FROM}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.LEAVE_FROM} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.LEAVE_TO}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.LEAVE_TO} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.LEAVE_TYPE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.LEAVE_TYPE} />
-                            </View>
-                        </View>
                                              
                     </View>
 
+
                     <View style={{ marginHorizontal: '10%' }}>
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
-                            <Text style={Styles.buttonName}>{LableText.PAYMENT}</Text>
+                            <Text style={Styles.buttonName}>{LableText.EDIT}</Text>
+                        </TouchableOpacity>
+                        </View>
+
+
+                    <View style={{ marginHorizontal: '10%' }}>
+                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
+                            <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
                         </TouchableOpacity>
                     </View>
+                    
 
                     <View style={Styles.bottomSpace}></View>
                 </Content>

@@ -134,6 +134,24 @@ export const CartIcon = (style): AntDesign => (
 );
 
 
+export const ProfileIcon = (style): IconElement => (
+  <Icon {...style} name='person-outline' />
+);
+
+export const AddressIcon = (style): AntDesign => (
+  <FontAwesome5 size={20} color={'silver'} name='address-book' />
+);
+
+export const CartNavIcon = (style): AntDesign => (
+  <MaterialIcons size={24} color={'silver'} name='shopping-cart' />
+);
+
+
+
+
+
+
+
 
 
 
@@ -208,9 +226,6 @@ export const PostJobIcon = (style): IconElement => (
   <Icon {...style} name='plus-circle-outline' />
 );
 
-export const ProfileIcon = (style): IconElement => (
-  <Icon {...style} name='person-outline' />
-);
 
 export const StockIcon = (style): IconElement => (
   <Icon {...style} name='archive-outline' />

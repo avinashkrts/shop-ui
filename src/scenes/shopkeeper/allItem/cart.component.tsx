@@ -336,15 +336,15 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                         <View style={Styles.cart_view_1}>
                             <View style={Styles.cart_view_1_1}>
                                 <View style={[Styles.cart_avatar_view, Styles.center]}>
-                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.cart_avatar} />
+                                    <Avatar source={require("../../../assets/sweets.png")} style={Styles.cart_avatar} />
                                 </View>
                             </View>
 
                             <View style={Styles.cart_view_1_2}>
-                                <Text style={Styles.cart_name_text}>Dawat Basmati Rice 25 kg</Text>
+                                <Text style={Styles.cart_name_text}>Sweets</Text>
                                 <View style={Styles.cart_price_view}>
                                     <View style={{ flexDirection: 'row' }}>
-                                        <Text style={Styles.price_text}><RupeeIcon /> 1,100</Text>
+                                        <Text style={Styles.price_text}><RupeeIcon /> 1100</Text>
                                         <Text style={Styles.offer_price_text}>1,150</Text>
                                     </View>
 
@@ -364,7 +364,7 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                                 </View>
 
                                 <View>
-                                    <Text style={Styles.cart_offer_text}>2% off</Text>
+                                    <Text style={Styles.cart_offer_text}>25% off</Text>
                                 </View>
                             </View>
                         </View>

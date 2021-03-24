@@ -24,6 +24,13 @@ import {
   ProfileIcon,
   LogoutIcon,
   PostJobIcon,
+  CameraIcon,
+  AddressIcon,
+  WalletIcon,
+  CartNavIcon,
+  NotificationIcon,
+  HelpIcon,
+  MyOrderIcon,
 } from '../../assets/icons';
 import { AuthNavigator } from '../auth.navigator';
 import { CustomerAllProductNavigator } from './customerAllProduct.navigator';
@@ -207,47 +214,47 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
     <Drawer.Screen
       name={AppRoute.CUSTOMER_PROFILE}
       component={CustomerProfileScreen}
-      options={{ title: 'Profile', drawerIcon: HomeIcon }}
+      options={{ title: 'Profile', drawerIcon: ProfileIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_ADDRESS}
       component={CustomerHomeBottomNavigator}
-      options={{ title: 'Address', drawerIcon: HomeIcon }}
+      options={{ title: 'Address', drawerIcon: AddressIcon }}
     />
     <Drawer.Screen
       name={AppRoute.CUSTOMER_WALLET}
       component={CustomerHomeBottomNavigator}
-      options={{ title: 'My wallet', drawerIcon: HomeIcon }}
+      options={{ title: 'My wallet', drawerIcon: WalletIcon }}
     />
     <Drawer.Screen
       name={AppRoute.CUSTOMER_ORDER}
       component={CustomerHomeBottomNavigator}
-      options={{ title: 'My Order', drawerIcon: HomeIcon }}
+      options={{ title: 'My Order', drawerIcon: MyOrderIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_CART}
       component={CustomerHomeBottomNavigator}
-      options={{ title: 'My cart', drawerIcon: HomeIcon }}
+      options={{ title: 'My cart', drawerIcon: CartNavIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_NOTIFICATION}
       component={CustomerHomeBottomNavigator}
-      options={{ title: 'Notification', drawerIcon: HomeIcon }}
+      options={{ title: 'Notification', drawerIcon: NotificationIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_CONTACT}
       component={CustomerHomeBottomNavigator}
-      options={{ title: 'Contact Us', drawerIcon: HomeIcon }}
+      options={{ title: 'Contact Us', drawerIcon: HelpIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.LOGOUT}
       component={CustomerHomeBottomNavigator}
-      options={{ title: 'Logout', drawerIcon: HomeIcon }}
+      options={{ title: 'Logout', drawerIcon: LogoutIcon }}
     />
 
   </Drawer.Navigator>

@@ -321,23 +321,23 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         <View style={Styles.all_Item_List}>
                             <TouchableOpacity onPress={() => this.navigationProductDetail()}>
                                 <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
+                                    <Avatar source={require("../../../assets/sweets.png")} style={Styles.all_Item_Image} />
                                     {/* <View>
                                         <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
                                     </View> */}
                                 </View>
                                 <View style={Styles.all_Item_Detail}>
                                     <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>Dawat Basmati Rice</Text>
-                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>25 Kg.</Text>
+                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>Sweets</Text>
+                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>3 Kg.</Text>
 
                                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                            <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,100</Text>
-                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,150</Text>
+                                            <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1100</Text>
+                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,500</Text>
                                         </View>
 
                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                            <Text style={{ color: Color.COLOR }}>3.5 % off</Text>
+                                            <Text style={{ color: Color.COLOR }}>25 % off</Text>
                                             <Text style={{ color: Color.COLOR }}>Offer till Tue.</Text>
                                         </View>
                                     </View>
@@ -352,24 +352,24 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
 
                         <View style={Styles.all_Item_List}>
                             <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                <Avatar source={require("../../../assets/wire.jpg")} style={Styles.all_Item_Image} />
+                                <Avatar source={require("../../../assets/rk.jpeg")} style={Styles.all_Item_Image} />
                                 {/* <View>
                                         <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
                                     </View> */}
                             </View>
                             <View style={Styles.all_Item_Detail}>
                                 <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                    <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>V-Guard Copper Wire</Text>
+                                    <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>R K Collections</Text>
                                     <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>1 Mtr.</Text>
 
                                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 20</Text>
+                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs....</Text>
                                         <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>22</Text>
                                     </View>
 
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                        <Text style={{ color: Color.COLOR }}>2.5 % off</Text>
-                                        <Text style={{ color: Color.COLOR }}>Offer till Mon.</Text>
+                                        <Text style={{ color: Color.COLOR }}>... % off</Text>
+                                        <Text style={{ color: Color.COLOR }}></Text>
                                     </View>
                                 </View>
                                 <TouchableOpacity>
