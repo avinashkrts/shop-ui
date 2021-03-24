@@ -32,7 +32,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onPasswordIconPress = this.onPasswordIconPress.bind(this);
     this.navigateHRHome = this.navigateHRHome.bind(this);
-    this.navigateHRINFORMATION = this.navigateHRINFORMATION.bind(this);
+    // this.navigateHRINFORMATION = this.navigateHRINFORMATION.bind(this);
     this.navigateHome = this.navigateHome.bind(this);
     this.navigateINFORMATION = this.navigateINFORMATION.bind(this);
     this.navigateSignUp = this.navigateSignUp.bind(this);
@@ -130,9 +130,9 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     this.props.navigation.navigate(AppRoute.INFORMATION);
   };
 
-  navigateHRINFORMATION() {
-    this.props.navigation.navigate(AppRoute.HRINFORMATION);
-  };
+  // navigateHRINFORMATION() {
+  //   this.props.navigation.navigate(AppRoute.HRINFORMATION);
+  // };
 
   navigateSignUp() {
     this.props.navigation.navigate(AppRoute.SIGN_UP);

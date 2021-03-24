@@ -1,5 +1,12 @@
 export enum AppRoute {
   AUTH = 'Auth',
+  CUSTOMER_HOME = 'Customer Home',
+  CUSTOMER_WALLET = 'Customer Wallet',
+  CUSTOMER_ADDRESS = 'Customer Address',
+  CUSTOMER_ORDER = 'Customer Order',
+  CUSTOMER_NOTIFICATION = 'Customer Notification',
+  CUSTOMER_CART = 'Customer Cart',
+  CUSTOMER_CONTACT = 'Customer Contact',
   SIGN_IN = 'Sign In',
   OTP = 'Otp',
   SIGN_UP = 'Sign Up',
@@ -19,6 +26,7 @@ export enum AppRoute {
   ITEMLIST = 'Item List',
   ADDEMPLOYEE = 'Add Employee',
   PROFILE = 'Profile',
+  CUSTOMER_PROFILE = 'Customer Profile',
   MY_WALLET = 'My Wallet',
   MY_ORDER = 'My Order',
   VALIDITY = 'Validity',
@@ -31,6 +39,10 @@ export enum AppRoute {
   DAILY_MESSAGE = 'Daily Message',
   CUSTOMER_LIST = 'Customer List',
   STOCK_LIST = 'Stock List',
+  CUSTOMER_ALL_PRODUCT = 'Customer All Product',
+  BILL_BOOK = 'Bill Book',
+  OFFERS_TAB = 'Offers Tab',
+  WISH_LIST = 'Wish List',
 
 
 

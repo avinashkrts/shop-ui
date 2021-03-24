@@ -18,21 +18,16 @@ import { StockNavigator } from './stock.navigator';
 import { AppRoute } from './app-routes';
 import {
   ContactUsScreen,
-  AccountsScreen,
   ProfileScreen,
   HomeDrawer,
   HomeTabBar,
-  ChangepasswordScreen,
-  LogoutScreen,
-  SettingScreen
+  LogoutScreen
 } from '../scenes/home';
 import {
   StockIcon, AddEmployeeIcon,
   ProfileIcon,
   HomeIcon,
-  InfoIcon,
   AccountsIcon,
-  ChangePasswordIcon,
   LogoutIcon,
   AddCustomerIcon,
   NotificationIcon,
