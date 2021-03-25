@@ -37,7 +37,8 @@ import { CustomerAllProductNavigator } from './customerAllProduct.navigator';
 import { WishListNavigator } from './wishList.navigator';
 import { BillBookNavigator } from './billBook.navigator';
 import { OffersNavigator } from './offers.navigator';
-import { CustomerProfileScreen } from '../../scenes/Customer/home/customerProfile.component';
+import { CustomerAddressScreen, CustomerCartScreen, CustomerContactScreen, CustomerNotificationScreen, CustomerOrderScreen, CustomerProfileScreen } from '../../scenes/Customer/home';
+import { LogoutScreen } from '../../scenes/profile';
 
 type CustomerHomeDrawerNavigatorParams = {
   [AppRoute.CUSTOMER_HOME]: undefined;
@@ -89,6 +90,36 @@ export type WishListTabNavigationProps = CompositeNavigationProp<
 export interface CustomerProfileScreenProps {
   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_PROFILE>;
   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_PROFILE>;
+}
+
+export interface CustomerAddressScreenProps {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ADDRESS>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ADDRESS>;
+}
+
+export interface CustomerWalletScreenProps {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_WALLET>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_WALLET>;
+}
+
+export interface CustomerOrderScreenProps {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
+}
+
+export interface CustomerCartScreenProps {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_CART>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_CART>;
+}
+
+export interface CustomerNotificationScreenProps {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_NOTIFICATION>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_NOTIFICATION>;
+}
+
+export interface CustomerContactScreenProps {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_CONTACT>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_CONTACT>;
 }
 
 // export interface ProfileEditScreenProps {
@@ -219,41 +250,41 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_ADDRESS}
-      component={CustomerHomeBottomNavigator}
+      component={CustomerAddressScreen}
       options={{ title: 'Address', drawerIcon: AddressIcon }}
     />
     <Drawer.Screen
       name={AppRoute.CUSTOMER_WALLET}
-      component={CustomerHomeBottomNavigator}
+      component={CustomerAddressScreen}
       options={{ title: 'My wallet', drawerIcon: WalletIcon }}
     />
     <Drawer.Screen
       name={AppRoute.CUSTOMER_ORDER}
-      component={CustomerHomeBottomNavigator}
+      component={CustomerOrderScreen}
       options={{ title: 'My Order', drawerIcon: MyOrderIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_CART}
-      component={CustomerHomeBottomNavigator}
+      component={CustomerCartScreen}
       options={{ title: 'My cart', drawerIcon: CartNavIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_NOTIFICATION}
-      component={CustomerHomeBottomNavigator}
+      component={CustomerNotificationScreen}
       options={{ title: 'Notification', drawerIcon: NotificationIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_CONTACT}
-      component={CustomerHomeBottomNavigator}
+      component={CustomerContactScreen}
       options={{ title: 'Contact Us', drawerIcon: HelpIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.LOGOUT}
-      component={CustomerHomeBottomNavigator}
+      component={LogoutScreen}
       options={{ title: 'Logout', drawerIcon: LogoutIcon }}
     />
 
