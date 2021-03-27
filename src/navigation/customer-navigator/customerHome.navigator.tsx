@@ -252,11 +252,7 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
       name={AppRoute.CUSTOMER_ADDRESS}
       component={CustomerAddressScreen}
       options={{ title: 'Address', drawerIcon: AddressIcon }}
-    />
-    <Drawer.Screen
-      name={AppRoute.CUSTOMER_WALLET}
-      component={CustomerAddressScreen}
-      options={{ title: 'My wallet', drawerIcon: WalletIcon }}
+
     />
     <Drawer.Screen
       name={AppRoute.CUSTOMER_ORDER}

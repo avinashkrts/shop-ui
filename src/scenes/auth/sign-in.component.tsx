@@ -31,7 +31,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
 
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onPasswordIconPress = this.onPasswordIconPress.bind(this);
-    this.navigateHRHome = this.navigateHRHome.bind(this);
+    this.navigateCustomerHome = this.navigateCustomerHome.bind(this);
     // this.navigateHRINFORMATION = this.navigateHRINFORMATION.bind(this);
     this.navigateHome = this.navigateHome.bind(this);
     this.navigateINFORMATION = this.navigateINFORMATION.bind(this);
@@ -48,7 +48,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     } else if (pwd == null || pwd === '') {
       Alert.alert("Please enter Password.");
     } else {
-    this.navigateHome();
+    this.navigateCustomerHome();
 
       // axios ({
       //   method: 'POST',
@@ -122,8 +122,8 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     this.props.navigation.navigate(AppRoute.HOME);
   };
 
-  navigateHRHome() {
-    this.props.navigation.navigate(AppRoute.HRHOME);
+  navigateCustomerHome() {
+    this.props.navigation.navigate(AppRoute.CUSTOMER_HOME);
   };
 
   navigateINFORMATION() {

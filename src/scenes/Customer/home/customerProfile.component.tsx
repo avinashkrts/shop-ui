@@ -73,14 +73,6 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                             </View>
                         </View>
 
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.FATHER_NAME}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.FATHER_NAME} />
-                            </View>
-                        </View>
 
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>

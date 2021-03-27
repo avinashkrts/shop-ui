@@ -111,5 +111,11 @@ export enum AppRoute {
   VIDEO = 'Video',
   HOMEVID = 'HomeVid',
   GOLIVE = 'GoLive',
-  SEELIVE = 'SeeLive'
+  SEELIVE = 'SeeLive',
+
+
+
+
+  
+  EDITADDRESS = 'EditAddress',
 }

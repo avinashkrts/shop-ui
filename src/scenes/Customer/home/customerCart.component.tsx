@@ -32,7 +32,7 @@ export class CustomerCartScreen extends Component<CustomerCartScreenProps, Theme
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Profile'
+                    title='My Cart'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
@@ -46,15 +46,28 @@ export class CustomerCartScreen extends Component<CustomerCartScreenProps, Theme
                         />
                     }
                 >
-                    <View style={[Styles.profile, Styles.center]}>
+                    {/* <View style={[Styles.profile, Styles.center]}>
                         <View style={Styles.profile_image}>
                             <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
                         </View>
-                    </View>
+                    </View> */}
 
                     <Divider />
 
-                    <View>
+                    <View style={Styles.order_main}>
+                    <View style={Styles.order_row}>                       
+                           <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.order_cart} />
+                           <View style={Styles.order_column}>
+                        <Text style={Styles.order_text}>H P Laptop</Text>
+                           <Text style={Styles.order_column}> Price :- 45000</Text>
+                            </View>
+                        </View>
+                </View>
+
+
+
+
+                    {/* <View>
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.FIRST_NAME}</Text>
@@ -191,7 +204,7 @@ export class CustomerCartScreen extends Component<CustomerCartScreenProps, Theme
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
                             <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                     
 
                     <View style={Styles.bottomSpace}></View>

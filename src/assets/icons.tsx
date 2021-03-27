@@ -146,9 +146,17 @@ export const CartNavIcon = (style): AntDesign => (
   <MaterialIcons size={24} color={'silver'} name='shopping-cart' />
 );
 
+export const AddressEditIcon = (style): AntDesign => (
+  <FontAwesome5 style={style} color={'silver'} name='pen' />
+);
 
+export const PencilIcon = (style): AntDesign => (
+  <Entypo style={style} color="rgba(128,128,128,1)" name='pencil' />
+);
 
-
+export const BulletIcon = (style): AntDesign => (
+  <Entypo style={style} color="rgba(128,128,128,1)" name='dot-single' />
+);
 
 
 
@@ -181,9 +189,7 @@ export const LocationIcon = (style): AntDesign => (
   <Entypo size={15} color="rgba(128,128,128,1)" name='location' />
 );
 
-export const PencilIcon = (style): AntDesign => (
-  <Entypo size={15} color="rgba(128,128,128,1)" name='pencil' />
-);
+
 
 export const LogOutIcon = (style): AntDesign => (
   <Entypo size={18} color={'#1DA1F2'} name='log-out' />

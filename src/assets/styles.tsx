@@ -437,6 +437,88 @@ export const Styles = StyleSheet.create({
     paddingHorizontal: '10%'
   },
 
+/*---------------------------------------------This Style is for Address Of Customer--------------------------------------------------------- */
+
+
+  address_container: {
+    borderWidth: 0.5,
+    borderRadius: 5,
+    borderColor: Color.SILVER,
+    width: '100%',
+    padding: 5,
+  },
+
+  address_text: {
+    fontSize: 16,
+    
+  },
+
+  address_edit_pen: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+
+
+  address_main: {
+    flexDirection: 'row', 
+  },
+
+ 
+
+
+
+  /*---------------------------------------------This Style is for order Of Customer--------------------------------------------------------- */
+
+
+  order_main: {
+    borderWidth: 0.5,
+    borderRadius: 5,
+    borderColor: Color.SILVER,
+  },
+
+  order_cart: {
+    height: 100,
+    width: 100,
+  },
+
+  order_text: {
+    alignContent: 'center', 
+    fontSize: 20,
+    padding: 5
+  },
+
+  order_row: {
+    flexDirection: 'row',
+    padding: 5
+  },
+
+  order_column: {
+    flexDirection: 'column',
+    padding: 5
+  },
+
+
+
+
+
+  /*---------------------------------------------This Style is for order Of Customer--------------------------------------------------------- */
+
+  notification_main: {
+    borderWidth: 1,
+    borderColor: 'silver',
+    backgroundColor: '#0099cc',
+    borderRadius: 10
+  },
+
+
+
+
+
+
+
+
+
+
 
   // cart_view: {
   //   width: '100%',
