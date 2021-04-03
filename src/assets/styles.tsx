@@ -507,19 +507,135 @@ export const Styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'silver',
     backgroundColor: '#0099cc',
-    borderRadius: 10
+    borderRadius: 5,
+  },
+
+  notification_text: {
+    padding: 10,
   },
 
 
 
+/*---------------------------------------------This Style is for  Contact_us Page--------------------------------------------------------- */
+
+contact_main: {
+  borderWidth: 1,
+  borderColor: 'silver',
+  backgroundColor: '#0099cc',
+  borderRadius: 5,
+},
+
+contact_text: {
+ fontSize: 15,
+ padding: 3,
+},
 
 
+/*---------------------------------------------This Style is for BillBook--------------------------------------------------------- */
+
+bill_main: {
+  borderWidth:1,
+  backgroundColor: '#0099cc',
+ },
+
+bill_row: {
+  flexDirection: 'row',
+  width: '100%'
+},
 
 
+bill_column_1: {
+  width:'16%' ,
+  flexDirection: 'column',
+},
+
+bill_column_2: {
+  width:'20%' ,
+  flexDirection: 'column',
+},
+
+bill_column_3: {
+  width:'14%' ,
+  flexDirection: 'column',
+},
+
+bill_column_4: {
+  width:'20%' ,
+  flexDirection: 'column',
+},
+
+bill_column_5: {
+  width:'15%' ,
+  flexDirection: 'column',
+},
+
+bill_column_6: {
+  width:'15%' ,
+  flexDirection: 'column',
+},
 
 
+text_design: {
+ fontSize: 14,
+ padding: 2,
+ alignSelf: 'center',
+ color: 'white'
+},
+
+bill_box: {
+  width: '100%',
+  borderColor: 'black',
+  borderWidth:0.2,
+},
+
+head_design: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  padding: 2,
+  alignSelf: 'center',
+  color: 'white'
+ },
+ 
+ bill_color1: {
+  backgroundColor: 'red',
+},
+ 
+bill_color2: {
+  backgroundColor: 'green',
+},
 
 
+bill_bottom_text: {
+  textAlign: 'right',
+  padding: 2,
+  width: '50%',
+  color: 'white',
+  fontSize: 16,
+},
+
+bill_amount: {
+  textAlign: 'center',
+  padding: 2,
+  width: '20%',
+  color: 'white',
+  fontSize: 16,
+},
+
+bill_paid: {
+  textAlign: 'center',
+  padding: 2,
+  width: '15%',
+  color: 'white',
+  fontSize: 16,
+},
+
+bill_due: {
+  textAlign: 'center',
+  padding: 2,
+  width: '15%',
+  color: 'white',
+  fontSize: 16,
+},
   // cart_view: {
   //   width: '100%',
   //   flexDirection: 'row',

@@ -9,6 +9,7 @@ import { Styles } from "../../../assets/styles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { LableText } from "../../../constants";
 import { Content } from "native-base";
+import { Padding } from "src/constants/LabelConstants";
 
 export class CustomerNotificationScreen extends Component<CustomerNotificationScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -56,8 +57,9 @@ export class CustomerNotificationScreen extends Component<CustomerNotificationSc
 
                 <View style={Styles.notification_main}>
                     <View>
-                        
+                        <View style={Styles.notification_text}>
                         <Text>HP Notebook at 15% off</Text>
+                    </View>
                     </View>
                 </View>
 
