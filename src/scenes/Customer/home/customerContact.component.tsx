@@ -32,7 +32,7 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Profile'
+                    title='Contact Us'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
@@ -46,15 +46,45 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                         />
                     }
                 >
-                    <View style={[Styles.profile, Styles.center]}>
+                    {/* <View style={[Styles.profile, Styles.center]}>
                         <View style={Styles.profile_image}>
                             <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
                         </View>
-                    </View>
+                    </View> */}
 
                     <Divider />
 
-                    <View>
+
+                <View style={Styles.contact_main}>
+                    <Text style={{fontSize:30, padding:2}}>Groccery Shop</Text>
+                    <Text style={Styles.contact_text}>101 Inorbit Complex, Near Highway Restaurant</Text>
+                    <Text style={Styles.contact_text}>Khagaul, Patna</Text>
+                    <Text style={Styles.contact_text}>Mobile No.:- 9155316625</Text>
+                </View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    {/* <View>
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.FIRST_NAME}</Text>
@@ -192,7 +222,7 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                             <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
                         </TouchableOpacity>
                     </View>
-                    
+                     */}
 
                     <View style={Styles.bottomSpace}></View>
                 </Content>

@@ -8,7 +8,7 @@ import { BackIcon, MenuIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { LableText } from "../../../constants";
-import { Content } from "native-base";
+import { Content, Image } from "native-base";
 
 export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -32,7 +32,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Profile'
+                    title='My Order'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
@@ -46,15 +46,37 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                         />
                     }
                 >
-                    <View style={[Styles.profile, Styles.center]}>
+                    {/* <View style={[Styles.profile, Styles.center]}>
                         <View style={Styles.profile_image}>
                             <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
                         </View>
-                    </View>
+                    </View> */}
 
                     <Divider />
 
-                    <View>
+
+
+
+
+
+                <View style={Styles.order_main}>
+                    <Text style={Styles.order_text}>Previous Orders</Text>
+                    <View style={Styles.order_row}>
+                        
+                           <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.order_cart} />
+                           <View style={Styles.order_column}>
+                        <Text style={Styles.order_text}>H P Laptop</Text>
+                           <Text style={Styles.order_column}> Price :- 45000</Text>
+                            </View>
+                        </View>
+                </View>
+
+
+
+
+
+
+                    {/* <View>
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.FIRST_NAME}</Text>
@@ -170,29 +192,29 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                             <View style={Styles.user_detail_data}>
                                 <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.STATE} />
                             </View>
-                        </View>
+                        </View> */}
 
   
  
 
 
                                              
-                    </View>
+                    
 
-
+{/* 
                     <View style={{ marginHorizontal: '10%' }}>
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
                             <Text style={Styles.buttonName}>{LableText.EDIT}</Text>
                         </TouchableOpacity>
-                        </View>
+                        </View> */}
 
-
+{/* 
                     <View style={{ marginHorizontal: '10%' }}>
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
                             <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
                         </TouchableOpacity>
                     </View>
-                    
+                     */}
 
                     <View style={Styles.bottomSpace}></View>
                 </Content>

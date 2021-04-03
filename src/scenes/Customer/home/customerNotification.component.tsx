@@ -9,6 +9,7 @@ import { Styles } from "../../../assets/styles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { LableText } from "../../../constants";
 import { Content } from "native-base";
+import { Padding } from "src/constants/LabelConstants";
 
 export class CustomerNotificationScreen extends Component<CustomerNotificationScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -32,7 +33,7 @@ export class CustomerNotificationScreen extends Component<CustomerNotificationSc
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Profile'
+                    title='Notifications'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
@@ -46,15 +47,31 @@ export class CustomerNotificationScreen extends Component<CustomerNotificationSc
                         />
                     }
                 >
-                    <View style={[Styles.profile, Styles.center]}>
+                    {/* <View style={[Styles.profile, Styles.center]}>
                         <View style={Styles.profile_image}>
                             <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
                         </View>
-                    </View>
+                    </View> */}
 
                     <Divider />
 
+                <View style={Styles.notification_main}>
                     <View>
+                        <View style={Styles.notification_text}>
+                        <Text>HP Notebook at 15% off</Text>
+                    </View>
+                    </View>
+                </View>
+
+
+
+
+
+
+
+
+
+                    {/* <View>
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.FIRST_NAME}</Text>
@@ -191,7 +208,7 @@ export class CustomerNotificationScreen extends Component<CustomerNotificationSc
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
                             <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                     
 
                     <View style={Styles.bottomSpace}></View>

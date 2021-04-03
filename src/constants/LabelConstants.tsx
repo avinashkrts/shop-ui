@@ -74,6 +74,8 @@ export class LableText {
     public static readonly MOBILE = 'Mobile No.';
     public static readonly SAVE = 'Save';
     public static readonly EDIT = 'Edit';
+    public static readonly ADDNEWADDRESS = 'Add New Address';
+
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/

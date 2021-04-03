@@ -4,13 +4,11 @@ import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
 import { CustomerAddressScreenProps } from "../../../navigation/customer-navigator/customerHome.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
-import { AddressEditIcon, BackIcon, MenuIcon, PencilIcon } from "../../../assets/icons";
+import { BackIcon, MenuIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { LableText } from "../../../constants";
 import { Content } from "native-base";
-import { Padding } from "src/constants/LabelConstants";
-
 
 export class CustomerAddressScreen extends Component<CustomerAddressScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -48,35 +46,14 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                         />
                     }
                 >
-
-
-
-                    <View style={Styles.address_container}>
-                        <View style={Styles.address_edit_pen}>
-                            <View>
-                                <Text style={Styles.address_text}>Name :- Avinash Kumar</Text>
-                                <Text style={Styles.address_text}>City :- Hajipur</Text>
-                                <Text style={Styles.address_text}>District :- Vaishali </Text>
-                                <Text style={Styles.address_text}>Pincode :- 800350 </Text>
-                            </View>
-
-                            <TouchableOpacity style={{padding:5}}>
-                                <Text style={Styles.address_text}><AddressEditIcon fontSize={20} />
-                                </Text>
-                            </TouchableOpacity>
+                    <View style={[Styles.profile, Styles.center]}>
+                        <View style={Styles.profile_image}>
+                            <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
                         </View>
-
-
                     </View>
 
-                    <View style={{ marginHorizontal: '10%' }}>
-                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
-                            <Text style={[{ fontSize: 18, color: 'white' }]}>{LableText.ADDNEWADDRESS}</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <Divider />
 
-
-                    {/* 
                     <View>
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
@@ -195,19 +172,26 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                             </View>
                         </View>
 
+
+
+
+
+
                     </View>
- 
 
 
-                                             
-                
+                    <View style={{ marginHorizontal: '10%' }}>
+                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
+                            <Text style={Styles.buttonName}>{LableText.EDIT}</Text>
+                        </TouchableOpacity>
+                    </View>
 
 
                     <View style={{ marginHorizontal: '10%' }}>
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
                             <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
                         </TouchableOpacity>
-</View>*/}
+                    </View>
 
 
                     <View style={Styles.bottomSpace}></View>
