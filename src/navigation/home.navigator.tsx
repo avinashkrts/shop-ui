@@ -45,7 +45,7 @@ import {
   DailyMessageIcon,
 } from '../assets/icons';
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
-import { DailyMessageScreen, MyOrderScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
+import { DailyMessageScreen, MyOrderScreen,MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
@@ -205,6 +205,11 @@ export interface OffersScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.OFFERS>;
 }
 
+export interface MyWalletScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.MY_WALLET>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.MY_WALLET>;
+}
+
 export interface DailyMessageScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.DAILY_MESSAGE>;
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.DAILY_MESSAGE>;
@@ -290,7 +295,7 @@ export const HomeNavigator = (): React.ReactElement => (
 
     <Drawer.Screen
       name={AppRoute.MY_WALLET}
-      component={ProfileScreen}
+      component={MyWalletScreen}
       options={{ title: 'My Wallet', drawerIcon: WalletIcon }}
     />
 

@@ -543,35 +543,48 @@ bill_row: {
   width: '100%'
 },
 
+bill_row_1: {
+  flexDirection: 'row',
+  width: '100%',
+  backgroundColor: 'red'
+},
+
+bill_row_2: {
+  flexDirection: 'row',
+  width: '100%',
+  backgroundColor: 'green'
+},
+
+
 
 bill_column_1: {
   width:'16%' ,
-  flexDirection: 'column',
+  
 },
 
 bill_column_2: {
   width:'20%' ,
-  flexDirection: 'column',
+
 },
 
 bill_column_3: {
   width:'14%' ,
-  flexDirection: 'column',
+
 },
 
 bill_column_4: {
   width:'20%' ,
-  flexDirection: 'column',
+ 
 },
 
 bill_column_5: {
   width:'15%' ,
-  flexDirection: 'column',
+ 
 },
 
 bill_column_6: {
   width:'15%' ,
-  flexDirection: 'column',
+ 
 },
 
 
@@ -596,14 +609,6 @@ head_design: {
   color: 'white'
  },
  
- bill_color1: {
-  backgroundColor: 'red',
-},
- 
-bill_color2: {
-  backgroundColor: 'green',
-},
-
 
 bill_bottom_text: {
   textAlign: 'right',
@@ -636,6 +641,149 @@ bill_due: {
   color: 'white',
   fontSize: 16,
 },
+
+
+
+/*---------------------------------------------This Style is for shopkeeper profile--------------------------------------------------------- */
+
+bank_row: {
+  flexDirection: 'row',
+  paddingVertical: 0
+},
+
+bank_text: {
+ color: Color.SILVER,
+ paddingVertical: 0,
+ width: '50%'
+},
+
+/*---------------------------------------------This Style is for Wallet--------------------------------------------------------- */
+
+
+
+wallet_main: {
+  borderWidth:1,
+  backgroundColor: '#0099cc',
+ },
+
+wallet_row: {
+  flexDirection: 'row',
+  width: '100%'
+},
+
+wallet_row_1: {
+  flexDirection: 'row',
+  width: '100%',
+  backgroundColor: 'red'
+},
+
+wallet_row_2: {
+  flexDirection: 'row',
+  width: '100%',
+  backgroundColor: 'green'
+},
+
+
+
+wallet_column_1: {
+  width:'8%' ,
+ 
+},
+
+wallet_column_2: {
+  width:'20%' ,
+}, 
+
+wallet_column_3: {
+  width:'30%' ,
+ 
+},
+
+wallet_column_4: {
+  width:'17%' ,
+ 
+},
+
+wallet_column_5: {
+  width:'12%' ,
+ 
+},
+
+wallet_column_6: {
+  width:'15%' ,
+ 
+},
+
+
+wallet_design: {
+ fontSize: 14,
+ padding: 2,
+ alignSelf: 'center',
+ color: 'white'
+},
+
+wallet_box: {
+  width: '100%',
+  borderColor: 'black',
+  borderWidth:0.2,
+},
+
+wallet_design1: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  padding: 2,
+  alignSelf: 'center',
+  color: 'white'
+ },
+ 
+
+wallet_bottom_text: {
+  textAlign: 'right',
+  padding: 2,
+  width: '50%',
+  color: 'white',
+  fontSize: 16,
+},
+
+wallet_amount: {
+  textAlign: 'center',
+  padding: 2,
+  width: '20%',
+  color: 'white',
+  fontSize: 16,
+},
+
+wallet_paid: {
+  textAlign: 'center',
+  padding: 2,
+  width: '15%',
+  color: 'white',
+  fontSize: 16,
+},
+
+wallet_due: {
+  textAlign: 'center',
+  padding: 2,
+  width: '15%',
+  color: 'white',
+  fontSize: 16,
+},
+
+
+
+
+/*---------------------------------------------This Style is for Shop Order--------------------------------------------------------- */
+
+shop_order_main: {
+  
+
+},
+
+
+
+
+
+
   // cart_view: {
   //   width: '100%',
   //   flexDirection: 'row',

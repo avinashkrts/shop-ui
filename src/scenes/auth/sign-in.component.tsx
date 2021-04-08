@@ -10,6 +10,8 @@ import { SafeAreaLayout, SaveAreaInset, } from '../../components/safe-area-layou
 import { Content } from 'native-base';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { Styles } from '../../assets/styles'
+import { isDate } from 'node:util';
+import DeviceInfo from 'react-native-device-info';
 
 interface State {
   email: string | undefined;
@@ -24,45 +26,69 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     super(props);
 
     this.state = {
-      emailId: '',
-      pwd: '',
-      passwordVisible: true
+      emailId: 'avi@in.com',
+      pwd: 'Welcome@0',
+      passwordVisible: true,
+      allUserType: [],
+      deviceId: '1231gdfgdfgdfh3452453',
     }
 
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onPasswordIconPress = this.onPasswordIconPress.bind(this);
     this.navigateCustomerHome = this.navigateCustomerHome.bind(this);
-    // this.navigateHRINFORMATION = this.navigateHRINFORMATION.bind(this);
     this.navigateHome = this.navigateHome.bind(this);
     this.navigateINFORMATION = this.navigateINFORMATION.bind(this);
     this.navigateSignUp = this.navigateSignUp.bind(this);
   }
 
 
-
+  componentDidMount() {
+    let deviceId = DeviceInfo.getUniqueId();
+    axios({
+      method: 'GET',
+      url: 'http://192.168.0.102:8091/api/lookup/getallusertype',
+    }).then((response) => {
+      this.setState({ allUserType: response.data })
+    });
+  }
   onFormSubmit() {
-    const { emailId, pwd } = this.state
-
+    const { emailId, pwd, allUserType, deviceId } = this.state
     if (emailId == null || emailId === '') {
       Alert.alert("Please enter Email Id.");
     } else if (pwd == null || pwd === '') {
       Alert.alert("Please enter Password.");
     } else {
-    this.navigateCustomerHome();
+      axios({
+        method: 'POST',
+        url: 'http://192.168.0.102:8091/api/user/login',
+        data: {
+          "emailId": emailId,
+          "pwd": pwd,
+          "deviceId": deviceId,
+        },
+      }).then((response) => {
+        if (response.data) {
+          if (response.data.token.length >= 30) {
+            allUserType.map((data, index) => {
+              if (response.data.userType == data.lookUpId) {
+                if (data.lookUpName === 'ADMIN') {
+                  AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
+                    this.navigateHome();
+                  })
+                } else if (data.lookUpName === 'CUSTOMER')
+                  AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
+                    this.navigateCustomerHome();
+                  })
+              }
+            })
 
-      // axios ({
-      //   method: 'POST',
-      //   url: 'http://192.168.0.105:8081/api/user/login',
-      //   data: {
-      //     "emailId": emailId,
-      //     "pwd": pwd
-      //   },
-      // }).then((response) => {
-      //   console.log(response.data);
-      // }, (error) => {
-      //   console.log(error);
-      //   Alert.alert("Please enter a valid email ID and password.")
-      // });
+          }
+        } else {
+          Alert.alert("Please enter a valid email ID and password.")
+        }
+      }, (error) => {
+        Alert.alert("Please enter a valid email ID and password.")
+      });
     }
     // this.navigateHome();
     // this.navigateHRHome();
@@ -143,7 +169,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
   };
 
   render() {
-    const {emailId, pwd} = this.state;
+    const { emailId, pwd } = this.state;
     return (
       <SafeAreaLayout
         style={Styles.safeArea}
@@ -164,7 +190,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
                 style={Styles.inputText}
                 placeholder={Placeholder.PHONE}
                 value={emailId}
-                onChangeText={(value) => {this.setState({emailId: value})}}
+                onChangeText={(value) => { this.setState({ emailId: value }) }}
               />
             </View>
 
@@ -173,7 +199,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
                 style={Styles.inputTextWithIcon}
                 placeholder={Placeholder.PASSWORD}
                 value={pwd}
-                onChangeText={(value) => {this.setState({pwd: value})}}
+                onChangeText={(value) => { this.setState({ pwd: value }) }}
               />
               <View style={[Styles.inputTextIcon, Styles.center]}>
                 {this.state.passwordVisible ?

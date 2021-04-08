@@ -25,7 +25,7 @@ export class LableText {
     public static readonly SIGN_UP = 'Sign Up';
     public static readonly FORGOT_PASSWORD = 'Forgot Password';
     public static readonly RESEND_OTP = 'Resend OTP';
-    public static readonly DONT_HAVE_ACCOUNT = "Don't Have an Account";
+    public static readonly DONT_HAVE_ACCOUNT = "You Don't Have an Account";
     public static readonly ALREADY_HAVE_ACCOUNT = "Already Have an Account";
     public static readonly SUBMIT = "Submit";
     public static readonly RESET_PASSWORD = "Reset Password";
@@ -75,6 +75,14 @@ export class LableText {
     public static readonly SAVE = 'Save';
     public static readonly EDIT = 'Edit';
     public static readonly ADDNEWADDRESS = 'Add New Address';
+    public static readonly SHOPNAME = 'Shop Name';
+    public static readonly GST = 'GST No.';
+    public static readonly BANK_ACCOUNT = 'Bank Account Details';
+    public static readonly BANK_NAME = 'State Bank Of India';
+    public static readonly BANK_ACCOUNT_NUMBER = '34514786284';
+    public static readonly BANK_ACCOUNT_NAME= 'Vishal General Store';
+    public static readonly BANK_IFSC_CODE = 'SBIN0001342';
+    
 
 }
 
@@ -146,4 +154,21 @@ export class LabelConstants {
     public static readonly com_alert_choose_availability = 'Choose Availability';
     public static readonly com_alert_choose_category = 'Choose Category';
     public static readonly com_alert_choose_language = 'Choose Language';
+   
+   
+    public static readonly customer_bill_serial_number = 'Sl. No.';
+    public static readonly customer_bill_date = 'Date';
+    public static readonly customer_bill_item = 'Items';
+    public static readonly customer_bill_amount = 'Amount';
+    public static readonly customer_bill_paid = 'Paid';
+    public static readonly customer_bill_dues = 'Dues';
+
+
+
+    public static readonly wallet_serial_number = 'Sl. No.';
+    public static readonly wallet_date = 'Date';
+    public static readonly wallet_transactionid = 'Transaction Id';
+    public static readonly wallet_amount = 'Amount';
+    public static readonly wallet_credit = 'Credit';
+    public static readonly wallet_debit = 'Debit';
 };

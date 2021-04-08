@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl } from "react-native";
+import { View, Text, RefreshControl,AsyncStorage, Alert } from "react-native";
 import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
 import { CustomerAllProductScreenProps } from "../../../navigation/customer-navigator/customerAllProduct.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
@@ -9,23 +9,53 @@ import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Color } from "../../../constants";
 import { Styles } from "../../../assets/styles";
 import { Content } from "native-base";
+import axios from 'axios';
 
 export class CustomerAllProductScreen extends Component<CustomerAllProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = { userDetail: '',
+        userName: '',
+
+    }
 
         this.onRefresh = this.onRefresh.bind(this);
     }
 
+   async componentDidMount(){
+        let value = await AsyncStorage.getItem('userDetail');
+        const userDetail = JSON.parse(value);
+        console.log('User Data', userDetail);
+        this.setState({ userDetail: 234})
+        this.setState({userName: 'Aniket'})
+        axios({
+            method: 'GET',
+            url: 'http://192.168.0.102:8081/api/user/get/51',
+          }).then((response) => {
+            if (response.data) {
+              //if (response.data.token.length >= 30) {
+                  console.log(response.data)
+                }
+              //}
+            else {
+              Alert.alert("Please enter a valid email ID and password.")
+            }
+          }), (error) => {
+            Alert.alert("Please enter a valid email ID and password.")
+          }
+
+   }
     onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
             this.setState({ refreshing: false });
         });
+
     }
 
     render() {
+        const { userDetail } = this.state;
+        const { userName } = this.state;
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -67,8 +97,8 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                 </View>
                                 <View style={Styles.all_Item_Detail}>
                                     <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>Dawat Basmati Rice</Text>
-                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>25 Kg.</Text>
+                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{userDetail}</Text>
+                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{userName}</Text>
 
                                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
                                             <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,100</Text>

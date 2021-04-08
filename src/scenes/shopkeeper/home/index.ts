@@ -1,4 +1,4 @@
-export { MyOrderScreen } from './myOrder.component';
+export { MyOrderScreen } from './myOrderDetail.component';
 export { ContactUsScreen } from './contactUs.component';
 export { DailyMessageScreen } from './dailyMessage.component';
 export { NotificationScreen } from './notification.component';
@@ -7,3 +7,5 @@ export { OutOfStockScreen } from './outOfStock.component';
 export { PayNowScreen } from './payNow.component';
 export { StockListScreen } from './stockList.component';
 export { ValidityScreen } from './validity.component';
+export { MyWalletScreen } from './myWallet.component';
+
