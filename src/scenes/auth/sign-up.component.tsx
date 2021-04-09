@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   ImageBackground,
   StyleSheet, Alert,
-  KeyboardAvoidingView, View, Image, TextInput, TouchableOpacity
+  KeyboardAvoidingView, View, Image, TextInput, TouchableOpacity, AsyncStorage
 } from 'react-native';
 import {
   EdgeInsets,
@@ -43,7 +43,7 @@ const data = [
   { text: 'Candidate' },
   { text: 'HR' },
 ];
-
+import DeviceInfo from 'react-native-device-info';
 // const useSelectChanges = (initialSelection = null) => {
 //   const [selectedOption, setSelectedOption] = React.useState(initialSelection);
 //   return {
@@ -62,63 +62,83 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
     super(props);
 
     this.state = {
-      emailId: '',
-      firstName: '',
-      lastName: '',
-      userType: '',
-      pwd: '',
-      passwordVisible: true
+      firstName: 'Aniket ',
+      lastName: 'Kumar',
+      mobileNo: '9835664127',
+      pwd: 'MilaanITProjects',
+      userType: '2',
+      passwordVisible: true,
     }
 
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onPasswordIconPress = this.onPasswordIconPress.bind(this);
   }
 
+  componentDidMount() {
+    let deviceId = DeviceInfo.getUniqueId();
+    axios({
+      method: 'GET',
+      url: 'http://192.168.0.106:8091/api/lookup/getallusertype',
+    }).then((response) => {
+      // this.setState({ userType: response.data. })
+    }, 
+    (error) => {
+      Alert.alert("Didn't got data from server")
+    });
+  }
+
   onFormSubmit() {
-    const { emailId, firstName, lastName, userType, pwd } = this.state
-    this.props.navigation.navigate(AppRoute.OTP);
+    const { firstName, lastName, userType, pwd, mobileNo } = this.state
+    //this.props.navigation.navigate(AppRoute.OTP);
+
+
 
     // let userName = values.username.split(" ", 2);
     // let userRole = largeSelectChanges.selectedOption != undefined && largeSelectChanges.selectedOption.text === 'HR' ? 28 :  29;
     //  console.log('User Role',userRole)
-    if (emailId === " " || emailId.length === 0) {
-      Alert.alert("Enter EmailId");
-    } else if (pwd === "" || pwd.length === 0) {
-      Alert.alert("Enter Password");
-    } else if (firstName === "" || firstName.length === 0) {
+    if (firstName === " " || firstName.length === 0) {
       Alert.alert("Enter First Name");
     } else if (lastName === "" || lastName.length === 0) {
       Alert.alert("Enter Last Name");
+    } else if (mobileNo === "" || mobileNo.length === 0 || mobileNo.lenght < 10 || mobileNo.length > 10) {
+      Alert.alert("Enter Mobile Number");
+    } else if (pwd === "" || pwd.length === 0 || pwd.length < 8) {
+      Alert.alert("Password Length Must Be More Than 8 Digits");
     } else {
+
+    //  console.log('User Role',firstName, lastName, mobileNo, pwd, userType)
+
+      // this.props.navigation.navigate(AppRoute.OTP);
+
+      axios({
+        method: 'post',
+        url: 'http://192.168.0.106:8091/api/user/create/signup',
+        data: {
+          firstName: firstName,
+          lastName: lastName,
+          mobileNo: mobileNo,
+          pwd: pwd,
+          userType: userType,
+        }
+      }).then((response) => {
+          // this.props.navigation.navigate(AppRoute.OTP);
+
+        if (response.data.status === "false") {
+          Alert.alert(response.data.description);
+        } else {
+          AsyncStorage.setItem('phoneForOtp', JSON.stringify(mobileNo), () => {        
           this.props.navigation.navigate(AppRoute.OTP);
+          })
+        }
 
-    //   axios({
-    //     method: 'post',
-    //     url: AppConstants.API_BASE_URL + '/api/user/create/signup',
-    //     data: {
-    //       emailId: emailId,
-    //       firstName: firstName,
-    //       lastName: lastName,
-    //       userType: userType,
-    //       pwd: pwd
-    //     }
-    //   }).then((response) => {
-    //     if (response.data.status === "false") {
-    //       // console.log("from signup",response.data.status);
-    //       Alert.alert(response.data.description + " : " + response.data.emailId);
-    //     } else {
-    //       Alert.alert("SignUp Successfull Login With Your Credential");
-    //       this.props.navigation.navigate(AppRoute.SIGN_IN);
-    //     }
+        //   this.props.navigation.navigate('Login');
+        //  alert("SignUp Successfull \n"+"\nLogin With Your Credential");
 
-    //     //   this.props.navigation.navigate('Login');
-    //     //  alert("SignUp Successfull \n"+"\nLogin With Your Credential");
-
-    //   }, (error) => {
-    //     console.log(error);
-    //   });
-    //   // Alert.alert("SignUp Successfull Login With Your Credential");
-    //   // navigateHome();
+      }, (error) => {
+        console.log(error);
+      });
+      //   // Alert.alert("SignUp Successfull Login With Your Credential");
+      //   // navigateHome();
     }
   };
 
@@ -200,6 +220,7 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
   // );
 
   render() {
+    const { firstName, lastName, mobileNo, pwd } = this.state;
     return (
       <SafeAreaLayout
         style={Styles.safeArea}
@@ -219,6 +240,8 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
               <TextInput
                 style={Styles.inputText}
                 placeholder={Placeholder.FIRSTNAME}
+                value={firstName}
+                onChangeText={(value) => { this.setState({ firstName: value }) }}
               />
             </View>
 
@@ -226,6 +249,8 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
               <TextInput
                 style={Styles.inputText}
                 placeholder={Placeholder.LASTNAME}
+                value={lastName}
+                onChangeText={(value) => { this.setState({ lastName: value }) }}
               />
             </View>
 
@@ -233,6 +258,8 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
               <TextInput
                 style={Styles.inputText}
                 placeholder={Placeholder.PHONE}
+                value={mobileNo}
+                onChangeText={(value) => { this.setState({ mobileNo: value }) }}
               />
             </View>
 
@@ -240,6 +267,8 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
               <TextInput
                 style={Styles.inputTextWithIcon}
                 placeholder={Placeholder.PASSWORD}
+                value={pwd}
+                onChangeText={(value) => { this.setState({ pwd: value }) }}
               />
               <View style={[Styles.inputTextIcon, Styles.center]}>
                 {this.state.passwordVisible ?
@@ -252,7 +281,7 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
                 }
               </View>
             </View>
-            <View style={Styles.inputTextView}>
+            {/* <View style={Styles.inputTextView}>
               <Picker
                 note
                 mode="dropdown"
@@ -263,10 +292,10 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
                 <Picker.Item label="Shop Keeper" value="key0" />
                 <Picker.Item label="Customer" value="key1" />
               </Picker>
-            </View>
+            </View> */}
 
             <View style={{ marginHorizontal: '10%' }}>
-              <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => {this.onFormSubmit()}}>
+              <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.onFormSubmit() }}>
                 <Text style={Styles.buttonName}>{LableText.SIGN_UP}</Text>
               </TouchableOpacity>
             </View>

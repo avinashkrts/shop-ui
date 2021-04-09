@@ -26,8 +26,8 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     super(props);
 
     this.state = {
-      emailId: 'avi@in.com',
-      pwd: 'Welcome@0',
+      emailId: 'admin214573@milaan.com',
+      pwd: 'Milaan',
       passwordVisible: true,
       allUserType: [],
       deviceId: '1231gdfgdfgdfh3452453',
@@ -46,13 +46,16 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     let deviceId = DeviceInfo.getUniqueId();
     axios({
       method: 'GET',
-      url: 'http://192.168.0.102:8091/api/lookup/getallusertype',
+      url: 'http://192.168.0.104:8091/api/lookup/getallusertype',
     }).then((response) => {
       this.setState({ allUserType: response.data })
+    },
+    (error) => {
+      Alert.alert("Didn't got data from server")
     });
   }
   onFormSubmit() {
-    const { emailId, pwd, allUserType, deviceId } = this.state
+    const { emailId, pwd, allUserType, deviceId} = this.state
     if (emailId == null || emailId === '') {
       Alert.alert("Please enter Email Id.");
     } else if (pwd == null || pwd === '') {
@@ -60,7 +63,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     } else {
       axios({
         method: 'POST',
-        url: 'http://192.168.0.102:8091/api/user/login',
+        url: 'http://192.168.0.104:8091/api/user/login',
         data: {
           "emailId": emailId,
           "pwd": pwd,

@@ -24,8 +24,8 @@ export class OtpScreen extends Component<OtpScreenProps, any & State & any> {
         super(props);
 
         this.state = {
-            emailId: '',
-            pwd: '',
+            mobileNo: '',
+            otp: '',
             passwordVisible: true
         }
 
@@ -41,10 +41,29 @@ export class OtpScreen extends Component<OtpScreenProps, any & State & any> {
     }
 
 
+    componentDidMount(){
+        // let value = await AsyncStorage.getItem('phoneforotp');
+    }
+        
+   
 
     onFormSubmit() {
-        const { emailId, pwd } = this.state
+        const { mobileNo, otp } = this.state
         this.navigateSignIn();
+
+
+        axios({
+            method: 'get',
+            url: 'http://192.168.0.106:8091/api/user/validatebyotp/' + mobileNo + '/' + otp,
+          }).then((response) => {    
+            if (response.data.status === "false") {
+              Alert.alert(response.data.description);
+            } else {
+              this.props.navigation.navigate(AppRoute.OTP);
+            }
+          }, (error) => {
+            console.log(error);
+          });
         // axios({
         //     method: 'post', url: AppConstants.API_BASE_URL + '/api/user/validate',
         //     data: {
@@ -129,6 +148,7 @@ export class OtpScreen extends Component<OtpScreenProps, any & State & any> {
     };
 
     render() {
+        const{ otp} = this.state;
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -148,6 +168,8 @@ export class OtpScreen extends Component<OtpScreenProps, any & State & any> {
                             <TextInput
                                 style={Styles.inputText}
                                 placeholder={Placeholder.OTP}
+                                value={otp}
+                                onChangeText={(value) => { this.setState({ otp: value }) }}
                             />
                         </View>
 
@@ -169,12 +191,12 @@ export class OtpScreen extends Component<OtpScreenProps, any & State & any> {
                         </View> */}
 
                         <View style={{ marginHorizontal: '10%' }}>
-                            <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => {this.onFormSubmit()}}>
+                            <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.onFormSubmit() }}>
                                 <Text style={Styles.buttonName}>{LableText.SUBMIT}</Text>
                             </TouchableOpacity>
                         </View>
 
-                         <TouchableOpacity>
+                        <TouchableOpacity>
                             <Text style={Styles.forgotPassword}>{LableText.RESEND_OTP}</Text>
                         </TouchableOpacity>
 
