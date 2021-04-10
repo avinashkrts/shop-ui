@@ -14,8 +14,10 @@ import axios from 'axios';
 export class CustomerAllProductScreen extends Component<CustomerAllProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
-        this.state = { userDetail: '',
-        userName: '',
+        this.state = { 
+        allProduct: [],
+        allCategory: [],
+        allBrand: [],
 
     }
 
@@ -54,8 +56,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
     }
 
     render() {
-        const { userDetail } = this.state;
-        const { userName } = this.state;
+        const { allProduct, allCategory, allBrand } = this.state;
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}

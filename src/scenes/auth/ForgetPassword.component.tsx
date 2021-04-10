@@ -24,8 +24,7 @@ export class ForgetPasswordScreen extends Component<ForgetPasswordScreenProps, a
         super(props);
 
         this.state = {
-            emailId: '',
-            pwd: '',
+            mobileNo: 'admin214573@milaan.com',
             passwordVisible: true
         }
 
@@ -42,8 +41,31 @@ export class ForgetPasswordScreen extends Component<ForgetPasswordScreenProps, a
 
 
     onFormSubmit() {
-        const { emailId, pwd } = this.state
-        this.navigateOtp();
+        const { mobileNo } = this.state
+        console.log(mobileNo)
+        if (mobileNo === '' || mobileNo == null) {
+            Alert.alert('Please Enter Mobile Number');
+        } else if (!mobileNo.includes("@") ? (mobileNo.length < 10 || mobileNo.length > 10) : !mobileNo.includes("@milaan.com")) {
+            Alert.alert('Please Enter Correct Mobile Number');
+        } else {
+            axios({
+                method: 'GET',
+                url: 'http://192.168.0.106:8091/api/user/sendotp/' + mobileNo,
+            }).then((response) => {
+                console.log(response.data)
+                if (response.data.status === "false") {
+                    Alert.alert(response.data.description);
+                } else {
+                    AsyncStorage.setItem('mobileForOtp', JSON.stringify(mobileNo), () => {
+                        this.props.navigation.navigate(AppRoute.OTP);
+                    })
+                    this.props.navigation.navigate(AppRoute.OTP);
+                }
+            }, (error) => {
+                console.log(error);
+            });
+        }
+
         // axios({
         //     method: 'post', url: AppConstants.API_BASE_URL + '/api/user/validate',
         //     data: {
@@ -124,6 +146,7 @@ export class ForgetPasswordScreen extends Component<ForgetPasswordScreenProps, a
     };
 
     render() {
+        const { mobileNo } = this.state;
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -143,6 +166,9 @@ export class ForgetPasswordScreen extends Component<ForgetPasswordScreenProps, a
                             <TextInput
                                 style={Styles.inputText}
                                 placeholder={Placeholder.PHONE}
+                                value={mobileNo}
+                                onChangeText={(value) => { this.setState({ mobileNo: value }) }}
+
                             />
                         </View>
 
@@ -164,10 +190,14 @@ export class ForgetPasswordScreen extends Component<ForgetPasswordScreenProps, a
                         </View> */}
 
                         <View style={{ marginHorizontal: '10%' }}>
-                            <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => {this.onFormSubmit()}}>
+                            <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.onFormSubmit() }}>
                                 <Text style={Styles.buttonName}>{LableText.RESET_PASSWORD}</Text>
                             </TouchableOpacity>
                         </View>
+
+                        <TouchableOpacity onPress={() => { this.props.navigation.navigate(AppRoute.SIGN_IN) }}>
+                            <Text style={[Styles.dontHaveAccount, { marginTop: 5 }]}>{LableText.BACK_TO_SIGN_IN}</Text>
+                        </TouchableOpacity>
 
                         {/* <TouchableOpacity>
                             <Text style={Styles.forgotPassword}>{LableText.FORGOT_PASSWORD}</Text>
