@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Alert, Image, Text, } from 'react-native';
+import { View, Alert, Image, Text, } from 'react-native';
 import { SignInScreenProps } from '../../navigation/auth.navigator';
 import { AppRoute } from '../../navigation/app-routes';
-import { LabelConstants, AppConstants, Placeholder, LableText, Color } from '../../constants';
+import { Placeholder, LableText, Color } from '../../constants';
 import { EyeIcon, EyeOffIcon, } from '../../assets/icons';
 import { AsyncStorage } from 'react-native';
 import axios from 'axios';
@@ -10,7 +10,6 @@ import { SafeAreaLayout, SaveAreaInset, } from '../../components/safe-area-layou
 import { Content } from 'native-base';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { Styles } from '../../assets/styles'
-import { isDate } from 'node:util';
 import DeviceInfo from 'react-native-device-info';
 
 interface State {
@@ -18,8 +17,6 @@ interface State {
   password: string | undefined;
   token: string | undefined;
 }
-// const [shouldRemember, setShouldRemember] = React.useState<boolean>(false);
-// const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
 
 export class SignInScreen extends Component<SignInScreenProps, any & State & any> {
   constructor(props) {
@@ -93,59 +90,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
         Alert.alert("Please enter a valid email ID and password.")
       });
     }
-    // this.navigateHome();
-    // this.navigateHRHome();
-
-    // axios({
-    //   method: 'post', url: AppConstants.API_BASE_URL + '/api/user/validate',
-    //   data: {
-    //     emailId: emailId,
-    //     pwd: pwd
-    //   }
-    // }).then((response) => {
-    //   this.navigateHRINFORMATION();
-
-    //   //   if (response.data.token.length > 30) {
-    //   //     console.log(response.data);
-    //   //     // AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-    //   //     //  navigateHome();
-    //   //     // });
-    //   //     if (response.data.userType == 28) {
-    //   //       console.log(response.data);
-    //   //       if (response.data.profileCreated === 'false') {
-    //   //         AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-    //   //           this.navigateHRINFORMATION();
-    //   //         });
-    //   //       } else if (response.data.profileCreated === 'true') {
-    //   //         AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-    //   //           this.navigateHRHome();
-    //   //         });
-    //   //       }
-
-    //   //     }
-
-    //   //     else if (response.data.userType == 29) {
-    //   //       console.log(response.data);
-    //   //       if (response.data.profileCreated === 'false') {
-    //   //         AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-    //   //           this.navigateINFORMATION();
-    //   //         });
-    //   //       } else if (response.data.profileCreated === 'true') {
-    //   //         AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-    //   //           this.navigateHome();
-    //   //         });
-    //   //       }
-    //   //     }
-
-    //   //   } else {
-    //   //     Alert.alert(LabelConstants.com_alert_invalid_email_or_password);
-    //   //   }
-    //   // }, (error) => {
-    //   //   Alert.alert(LabelConstants.com_alert_error_alert);
-    //   //   console.log(error);
-    // });
-
-  };
+     };
 
   navigateHome() {
     this.props.navigation.navigate(AppRoute.HOME);
@@ -158,10 +103,6 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
   navigateINFORMATION() {
     this.props.navigation.navigate(AppRoute.INFORMATION);
   };
-
-  // navigateHRINFORMATION() {
-  //   this.props.navigation.navigate(AppRoute.HRINFORMATION);
-  // };
 
   navigateSignUp() {
     this.props.navigation.navigate(AppRoute.SIGN_UP);
@@ -184,6 +125,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
               resizeMode="contain"
               style={Styles.loginImage}
             />
+            
             <View style={Styles.center}>
               <Text style={Styles.loginWelcome}>{LableText.WELCOME_TEXT}</Text>
             </View>

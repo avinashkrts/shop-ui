@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl,AsyncStorage, Alert } from "react-native";
-import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
+import { View, Text, RefreshControl, AsyncStorage, Alert } from "react-native";
+import { Avatar, Divider, ListItemElement, ThemedComponentProps } from "react-native-ui-kitten";
 import { CustomerAllProductScreenProps } from "../../../navigation/customer-navigator/customerAllProduct.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
@@ -8,45 +8,45 @@ import { CartIcon, MenuIcon, SearchIcon } from "../../../assets/icons";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Color } from "../../../constants";
 import { Styles } from "../../../assets/styles";
-import { Content } from "native-base";
+import { Content, List, ListItem } from "native-base";
 import axios from 'axios';
 
 export class CustomerAllProductScreen extends Component<CustomerAllProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
-        this.state = { 
-        allProduct: [],
-        allCategory: [],
-        allBrand: [],
+        this.state = {
+            allProduct: [],
+            allCategory: [],
+            allBrand: [],
 
-    }
+        }
 
         this.onRefresh = this.onRefresh.bind(this);
     }
 
-   async componentDidMount(){
+    async componentDidMount() {
         let value = await AsyncStorage.getItem('userDetail');
         const userDetail = JSON.parse(value);
         console.log('User Data', userDetail);
-        this.setState({ userDetail: 234})
-        this.setState({userName: 'Aniket'})
+        this.setState({ userDetail: 234 })
+        this.setState({ userName: 'Aniket' })
         axios({
             method: 'GET',
             url: 'http://192.168.0.102:8081/api/user/get/51',
-          }).then((response) => {
+        }).then((response) => {
             if (response.data) {
-              //if (response.data.token.length >= 30) {
-                  console.log(response.data)
-                }
-              //}
-            else {
-              Alert.alert("Please enter a valid email ID and password.")
+                //if (response.data.token.length >= 30) {
+                console.log(response.data)
             }
-          }), (error) => {
+            //}
+            else {
+                Alert.alert("Please enter a valid email ID and password.")
+            }
+        }), (error) => {
             Alert.alert("Please enter a valid email ID and password.")
-          }
+        }
 
-   }
+    }
     onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
@@ -54,6 +54,43 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
         });
 
     }
+
+    renderProduct = ({ item }: any): ListItemElement => (
+
+        <ListItem style={{ borderBottomColor: 'silver', borderBottomWidth: .2 }}>
+            <View style={Styles.all_Item_List}>
+                <TouchableOpacity onPress={() => {}}>
+                    <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                        <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
+                        {/* <View>
+                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
+                                    </View> */}
+                    </View>
+                    <View style={Styles.all_Item_Detail}>
+                        <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                            <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}></Text>
+                            <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}></Text>
+
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,100</Text>
+                                <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,150</Text>
+                            </View>
+
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                <Text style={{ color: Color.COLOR }}>3.5 % off</Text>
+                                <Text style={{ color: Color.COLOR }}>Offer till Tue.</Text>
+                            </View>
+                        </View>
+                        <TouchableOpacity onPress={() => { }}>
+                            <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        </ListItem>
+    );
 
     render() {
         const { allProduct, allCategory, allBrand } = this.state;
@@ -227,9 +264,9 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                     </View>
 
 
-                    {/* <List data={my_Jobs}
-                        renderItem={this.renderMyJob}
-                    /> */}
+                    <List data={allProduct}
+                        renderItem={this.renderProduct}
+                    />
                     <View style={{ height: 10, width: '100%' }} />
                 </Content>
 

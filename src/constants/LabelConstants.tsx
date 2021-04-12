@@ -18,6 +18,7 @@ export class Padding {
 
 /*------------------------------------------------------------TEXT------------------------------------------------------------*/
 export class LableText {
+    public static readonly USER = 'user';
     public static readonly WELCOME_TEXT = 'Milaan IT Projects';
     public static readonly SIGN_IN = 'Sign In';
     public static readonly ADD = 'Add';
@@ -82,8 +83,7 @@ export class LableText {
     public static readonly BANK_ACCOUNT_NUMBER = '34514786284';
     public static readonly BANK_ACCOUNT_NAME= 'Vishal General Store';
     public static readonly BANK_IFSC_CODE = 'SBIN0001342';
-    
-
+    public static readonly BACK_TO_SIGN_IN = 'Back to sign In'
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/
