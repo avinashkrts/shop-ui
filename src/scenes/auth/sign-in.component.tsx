@@ -27,7 +27,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
       pwd: 'Milaanitprojects',
       passwordVisible: true,
       allUserType: [],
-      deviceId: '1231gdfgdfgdfh3452453',
+      deviceId: '',
     }
 
     this.onFormSubmit = this.onFormSubmit.bind(this);
@@ -43,9 +43,12 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     let deviceId = DeviceInfo.getUniqueId();
     axios({
       method: 'GET',
-      url: 'http://192.168.0.104:8091/api/lookup/getallusertype',
+      url: 'http://192.168.0.106:8091/api/lookup/getallusertype',
     }).then((response) => {
-      this.setState({ allUserType: response.data })
+      this.setState({ 
+        allUserType: response.data,
+        deviceId: deviceId
+       })
     },
     (error) => {
       Alert.alert("Didn't got data from server")
@@ -60,7 +63,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     } else {
       axios({
         method: 'POST',
-        url: 'http://192.168.0.104:8091/api/user/login',
+        url: 'http://192.168.0.106:8091/api/user/login',
         data: {
           "emailId": emailId,
           "pwd": pwd,
