@@ -18,30 +18,35 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             allProduct: [],
             allCategory: [],
             allBrand: [],
-
+            allData: [{
+                url: 'http://192.168.0.104:8091/api/product/getallproduct',
+                method: 'GET',
+                variable: 'allProduct',
+            },
+            {
+                url: 'http://192.168.0.104:8091/api/product/getallproduct',
+                method: 'GET',
+                variable: 'allCategory',
+            },
+            {
+                url: 'http://192.168.0.104:8091/api/product/getallproduct',
+                method: 'GET',
+                variable: 'allBrand',
+            }],
         }
 
         this.onRefresh = this.onRefresh.bind(this);
     }
 
     async componentDidMount() {
-        let value = await AsyncStorage.getItem('userDetail');
-        const userDetail = JSON.parse(value);
-        console.log('User Data', userDetail);
-        this.setState({ userDetail: 234 })
-        this.setState({ userName: 'Aniket' })
+        
+
+
         axios({
             method: 'GET',
             url: 'http://192.168.0.102:8081/api/user/get/51',
         }).then((response) => {
-            if (response.data) {
-                //if (response.data.token.length >= 30) {
-                console.log(response.data)
-            }
-            //}
-            else {
-                Alert.alert("Please enter a valid email ID and password.")
-            }
+           
         }), (error) => {
             Alert.alert("Please enter a valid email ID and password.")
         }
