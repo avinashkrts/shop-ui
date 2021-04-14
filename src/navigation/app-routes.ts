@@ -33,7 +33,7 @@ export enum AppRoute {
   NOTIFICATION = 'Notification',
   PAY_NOW = 'Pay Now',
   ADD_PRODUCT = 'Add Product',
-  ADD_EMPLOYEE = 'Add Employee',
+   ADD_EMPLOYEE = 'Add Employee',
   OUT_OF_STOCK = 'Out of Stock',
   OFFERS = 'Offers',
   DAILY_MESSAGE = 'Daily Message',

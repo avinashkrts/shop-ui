@@ -231,6 +231,10 @@ export interface AddProductScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADD_PRODUCT>;
 }
 
+export interface AddCustomerScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ADD_CUSTOMER>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADD_CUSTOMER>;
+}
 
 // export type BottomHomeScreenProps = BottomTabBarProps & {
 //   navigation: TodoTabNavigationProp;

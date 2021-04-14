@@ -56,7 +56,7 @@ export default (): React.ReactFragment => {
         theme={light}>
         <SafeAreaProvider>
           <NavigationContainer>
-            <AppNavigator initialRouteName={AppRoute.AUTH} />
+            <AppNavigator initialRouteName={AppRoute.HOME} />
           </NavigationContainer>
         </SafeAreaProvider>
       </ApplicationProvider>

@@ -92,6 +92,14 @@ export class LableText {
     public static readonly BARCODE = 'Barcode';
     public static readonly PRODUCTNAME = 'Product Name';
     public static readonly STOCK = 'Quantity Already In Stock';
+    public static readonly CATEGORY = 'Category';
+    public static readonly BRAND = 'Brand';
+    public static readonly OFFER = 'Offer';
+    public static readonly DISCOUNT = 'Discount Percentage';
+    public static readonly FROM_DATE = 'From Which Date';
+    public static readonly TO_DATE = 'Till Last Date';
+
+
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/

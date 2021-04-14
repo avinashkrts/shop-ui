@@ -1194,5 +1194,34 @@ shop_order_main: {
     width: '90%',
     backgroundColor: '#fff',
     borderRadius: 5
-  }
+  },
+
+  user_drop_data: {
+    borderColor: Color.COLOR,
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingVertical: 0,
+    paddingRight: 5,
+
+  },
+
+  user_drop_box: {
+    borderColor: Color.COLOR,
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+
+  },
+
+  user_addproduct_header: {
+    padding: 5,
+    flexDirection: 'row'
+  },
+
+  user_add_Product_header_text: {
+    color: Color.COLOR,
+    fontSize: 18,
+    padding: 5
+  },
+
 })
