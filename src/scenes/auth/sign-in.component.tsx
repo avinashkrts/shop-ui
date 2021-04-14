@@ -23,8 +23,8 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     super(props);
 
     this.state = {
-      emailId: '9835664127',
-      pwd: 'Milaanitprojects',
+      emailId: 'admin214573@milaan.com ',
+      pwd: 'Milaan',
       passwordVisible: true,
       allUserType: [],
       deviceId: '',
@@ -43,7 +43,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     let deviceId = DeviceInfo.getUniqueId();
     axios({
       method: 'GET',
-      url: 'http://192.168.0.106:8091/api/lookup/getallusertype',
+      url: 'http://192.168.0.104:8091/api/lookup/getallusertype',
     }).then((response) => {
       this.setState({ 
         allUserType: response.data,
@@ -63,7 +63,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     } else {
       axios({
         method: 'POST',
-        url: 'http://192.168.0.106:8091/api/user/login',
+        url: 'http://192.168.0.104:8091/api/user/login',
         data: {
           "emailId": emailId,
           "pwd": pwd,

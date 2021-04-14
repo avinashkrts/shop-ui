@@ -46,6 +46,7 @@ import {
 } from '../assets/icons';
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
 import { DailyMessageScreen, MyOrderScreen,MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
+import { AddProductScreen } from '../scenes/home/addproduct.component';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
@@ -185,10 +186,10 @@ export interface NotificationScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.NOTIFICATION>;
 }
 
-export interface PayNowScreenProps {
-  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.PAY_NOW>;
-  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PAY_NOW>;
-}
+// export interface PayNowScreenProps {
+//   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.PAY_NOW>;
+//   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PAY_NOW>;
+// }
 
 export interface StockListScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.STOCK_LIST>;
@@ -224,6 +225,12 @@ export interface AccountsScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ACCOUNTS>;
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ACCOUNTS>;
 }
+
+export interface AddProductScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ADD_PRODUCT>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADD_PRODUCT>;
+}
+
 
 // export type BottomHomeScreenProps = BottomTabBarProps & {
 //   navigation: TodoTabNavigationProp;
@@ -317,15 +324,15 @@ export const HomeNavigator = (): React.ReactElement => (
       options={{ title: 'Notification', drawerIcon: NotificationIcon }}
     />
 
-    <Drawer.Screen
+    {/* <Drawer.Screen
       name={AppRoute.PAY_NOW}
       component={PayNowScreen}
       options={{ title: 'Pay Now', drawerIcon: PayNowIcon }}
-    />
+    /> */}
 
     <Drawer.Screen
       name={AppRoute.ADD_PRODUCT}
-      component={ProfileScreen}
+      component={AddProductScreen}
       options={{ title: 'Add Product', drawerIcon: AddProductIcon }}
     />
 

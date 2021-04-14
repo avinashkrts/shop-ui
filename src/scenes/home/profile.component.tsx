@@ -72,7 +72,7 @@ export class ProfileScreen extends Component<ProfileScreenProps & SafeAreaLayout
         style={Styles.safeArea}
         insets={SaveAreaInset.TOP}>
         <Toolbar
-          title='Profile'
+          title=''
           backIcon={BackIcon}
           onBackPress={this.props.navigation.goBack}
           style={{ marginTop: -5, marginLeft: -5 }}

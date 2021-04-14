@@ -9,12 +9,13 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 export const Styles = StyleSheet.create({
 
   safeArea: {
-    flex: 1
+    flex: 1,
+    backgroundColor:Color.BUTTON_NAME_COLOR
   },
 
   content: {
     backgroundColor: 'transparent',
-    padding: 10
+    padding: 10,
   },
 
   customer_content: {
@@ -311,10 +312,10 @@ export const Styles = StyleSheet.create({
     textDecorationLine: 'line-through'
   },
 
-  cart_quantity_view: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
+  // cart_quantity_view: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between'
+  // },
 
   cart_quantity_text_view: {
 
@@ -512,6 +513,7 @@ export const Styles = StyleSheet.create({
 
   notification_text: {
     padding: 10,
+    color: 'white',
   },
 
 
@@ -686,32 +688,29 @@ wallet_row_2: {
 
 
 wallet_column_1: {
-  width:'8%' ,
- 
+  width:'10%' ,
+  padding: 4,
 },
 
 wallet_column_2: {
-  width:'20%' ,
+  width:'22%',
+  padding: 4,
+
 }, 
 
 wallet_column_3: {
-  width:'30%' ,
- 
+  width:'32%' ,
+  padding: 4, 
 },
 
 wallet_column_4: {
-  width:'17%' ,
- 
+  width:'18%' ,
+  padding: 4,
 },
 
 wallet_column_5: {
-  width:'12%' ,
- 
-},
-
-wallet_column_6: {
-  width:'15%' ,
- 
+  width:'18%' ,
+  padding: 4,
 },
 
 
@@ -720,12 +719,6 @@ wallet_design: {
  padding: 2,
  alignSelf: 'center',
  color: 'white'
-},
-
-wallet_box: {
-  width: '100%',
-  borderColor: 'black',
-  borderWidth:0.2,
 },
 
 wallet_design1: {
@@ -740,23 +733,16 @@ wallet_design1: {
 wallet_bottom_text: {
   textAlign: 'right',
   padding: 2,
-  width: '50%',
+  width: '64%',
   color: 'white',
   fontSize: 16,
 },
 
-wallet_amount: {
-  textAlign: 'center',
-  padding: 2,
-  width: '20%',
-  color: 'white',
-  fontSize: 16,
-},
 
 wallet_paid: {
   textAlign: 'center',
   padding: 2,
-  width: '15%',
+  width: '18%',
   color: 'white',
   fontSize: 16,
 },
@@ -764,7 +750,7 @@ wallet_paid: {
 wallet_due: {
   textAlign: 'center',
   padding: 2,
-  width: '15%',
+  width: '18%',
   color: 'white',
   fontSize: 16,
 },
@@ -784,143 +770,143 @@ shop_order_main: {
 
 
 
-  // cart_view: {
-  //   width: '100%',
-  //   flexDirection: 'row',
-  //   padding: 2,
-  //   paddingVertical: 5,
-  //   backgroundColor: Color.COLOR,
-  //   borderTopLeftRadius: 5,
-  //   borderTopRightRadius: 5
-  // },
+  cart_view: {
+    width: '100%',
+    flexDirection: 'row',
+    padding: 2,
+    paddingVertical: 5,
+    backgroundColor: Color.COLOR,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5
+  },
 
-  // cart_sl_view: {
-  //   backgroundColor: Color.COLOR,
-  //   width: '15%',
-  // },
+  cart_sl_view: {
+    backgroundColor: Color.COLOR,
+    width: '15%',
+  },
 
-  // cart_sl_text: {
-  //   color: Color.BUTTON_NAME_COLOR,
-  //   fontSize: 15,
-  //   fontWeight: 'bold'
-  // },
+  cart_sl_text: {
+    color: Color.BUTTON_NAME_COLOR,
+    fontSize: 15,
+    fontWeight: 'bold'
+  },
 
-  // cart_name_view: {
-  //   backgroundColor: Color.COLOR,
-  //   width: '25%',
-  // },
+  cart_name_view: {
+    backgroundColor: Color.COLOR,
+    width: '25%',
+  },
 
-  // cart_quantity_view: {
-  //   backgroundColor: Color.COLOR,
-  //   width: '30%',
-  // },
+  cart_quantity_view: {
+    backgroundColor: Color.COLOR,
+    width: '30%',
+  },
 
-  // cart_amount_view: {
-  //   backgroundColor: Color.COLOR,
-  //   width: '23%',
-  // },
+  cart_amount_view: {
+    backgroundColor: Color.COLOR,
+    width: '23%',
+  },
 
-  // cart_cancle_view: {
-  //   backgroundColor: Color.COLOR,
-  //   width: '7%',
-  // },
+  cart_cancle_view: {
+    backgroundColor: Color.COLOR,
+    width: '7%',
+  },
 
-  // /* ----------Odd Row Data----------- */
-  // cart_data_view: {
-  //   width: '100%',
-  //   flexDirection: 'row',
-  //   padding: 2,
-  //   paddingVertical: 8,
-  //   backgroundColor: Color.CART_LIST_ODD
-  // },
+  /* ----------Odd Row Data----------- */
+  cart_data_view: {
+    width: '100%',
+    flexDirection: 'row',
+    padding: 2,
+    paddingVertical: 8,
+    backgroundColor: Color.CART_LIST_ODD
+  },
 
-  // cart_sl_data_view: {
-  //   backgroundColor: Color.CART_LIST_ODD,
-  //   width: '10%',
-  //   alignItems: 'flex-end',
-  //   paddingRight: 5
-  // },
+  cart_sl_data_view: {
+    backgroundColor: Color.CART_LIST_ODD,
+    width: '10%',
+    alignItems: 'flex-end',
+    paddingRight: 5
+  },
 
-  // cart_sl_data_text: {
-  //   color: Color.BUTTON_NAME_COLOR,
-  //   fontSize: 15,
-  // },
+  cart_sl_data_text: {
+    color: Color.BUTTON_NAME_COLOR,
+    fontSize: 15,
+  },
 
-  // cart_name_data_view: {
-  //   flexWrap: 'wrap',
-  //   backgroundColor: Color.CART_LIST_ODD,
-  //   width: '30%',
-  // },
+  cart_name_data_view: {
+    flexWrap: 'wrap',
+    backgroundColor: Color.CART_LIST_ODD,
+    width: '30%',
+  },
 
-  // cart_quantity_data_view: {
-  //   backgroundColor: Color.CART_LIST_ODD,
-  //   width: '30%',
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   paddingHorizontal: 5,
-  //   alignItems: 'center'
-  // },
+  cart_quantity_data_view: {
+    backgroundColor: Color.CART_LIST_ODD,
+    width: '30%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 5,
+    alignItems: 'center'
+  },
 
-  // cart_amount_data_view: {
-  //   backgroundColor: Color.CART_LIST_ODD,
-  //   width: '23%',
-  //   paddingRight: 10,
-  //   alignItems: 'flex-end',
-  // },
+  cart_amount_data_view: {
+    backgroundColor: Color.CART_LIST_ODD,
+    width: '23%',
+    paddingRight: 10,
+    alignItems: 'flex-end',
+  },
 
-  // cart_cancle_data_view: {
-  //   backgroundColor: Color.CART_LIST_ODD,
-  //   width: '7%',
-  // },
+  cart_cancle_data_view: {
+    backgroundColor: Color.CART_LIST_ODD,
+    width: '7%',
+  },
 
-  //  /* ----------Even Row Data----------- */
-  //  cart_data_view_even: {
-  //   width: '100%',
-  //   flexDirection: 'row',
-  //   padding: 2,
-  //   paddingVertical: 8,
-  //   backgroundColor: Color.CART_LIST_EVEN
-  // },
+   /* ----------Even Row Data----------- */
+   cart_data_view_even: {
+    width: '100%',
+    flexDirection: 'row',
+    padding: 2,
+    paddingVertical: 8,
+    backgroundColor: Color.CART_LIST_EVEN
+  },
 
-  // cart_sl_data_view_even: {
-  //   backgroundColor: Color.CART_LIST_EVEN,
-  //   width: '10%',
-  //   alignItems: 'flex-end',
-  //   paddingRight: 5
-  // },
+  cart_sl_data_view_even: {
+    backgroundColor: Color.CART_LIST_EVEN,
+    width: '10%',
+    alignItems: 'flex-end',
+    paddingRight: 5
+  },
 
-  // cart_sl_data_text_even: {
-  //   color: Color.BUTTON_NAME_COLOR,
-  //   fontSize: 15,
-  //   // fontWeight: 'bold'
-  // },
+  cart_sl_data_text_even: {
+    color: Color.BUTTON_NAME_COLOR,
+    fontSize: 15,
+    // fontWeight: 'bold'
+  },
 
-  // cart_name_data_view_even: {
-  //   flexWrap: 'wrap',
-  //   backgroundColor: Color.CART_LIST_EVEN,
-  //   width: '30%',
-  // },
+  cart_name_data_view_even: {
+    flexWrap: 'wrap',
+    backgroundColor: Color.CART_LIST_EVEN,
+    width: '30%',
+  },
 
-  // cart_quantity_data_view_even: {
-  //   backgroundColor: Color.CART_LIST_EVEN,
-  //   width: '30%',
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   paddingHorizontal: 5,
-  //   alignItems: 'center'
-  // },
+  cart_quantity_data_view_even: {
+    backgroundColor: Color.CART_LIST_EVEN,
+    width: '30%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 5,
+    alignItems: 'center'
+  },
 
-  // cart_amount_data_view_even: {
-  //   backgroundColor: Color.CART_LIST_EVEN,
-  //   width: '23%',
-  //   paddingRight: 10,
-  //   alignItems: 'flex-end',
-  // },
+  cart_amount_data_view_even: {
+    backgroundColor: Color.CART_LIST_EVEN,
+    width: '23%',
+    paddingRight: 10,
+    alignItems: 'flex-end',
+  },
 
-  // cart_cancle_data_view_even: {
-  //   backgroundColor: Color.CART_LIST_EVEN,
-  //   width: '7%',
-  // },
+  cart_cancle_data_view_even: {
+    backgroundColor: Color.CART_LIST_EVEN,
+    width: '7%',
+  },
 
   /*---------------------------------------------This Style is for Item Category List--------------------------------------------------------- */
   itemCategoryName: {
@@ -1118,7 +1104,73 @@ shop_order_main: {
     fontSize: 14,
     fontFamily: "roboto-regular"
   },
+  /*---------------------------------------------This Style is for Text Input Box--------------------------------------------------------- */
+  validity: {
+    borderWidth: 0.5,
+    borderRadius: 5,
+    backgroundColor: '#0099cc',
+    padding: 10,
+ 
+  },
 
+  validity_text: {
+    alignSelf: 'center',
+    fontSize: 15,
+    color: 'white',
+  },
+
+  validity_button: {
+    borderWidth: 0.5,
+    borderRadius: 5,
+    backgroundColor: '#0099cc',
+    padding: 10,
+    alignSelf: 'center',
+    marginTop: '20%',
+  },
+  /*---------------------------------------------This Style is for Search Box-------------------------------------------------------------- */
+ 
+
+  daily_message_text_view: {
+    borderColor: Color.COLOR,
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingVertical: 5,
+    paddingLeft: 5,
+    // height: 200,
+    // alignItems: 'flex-start',
+  },
+
+  daily_message_input: {
+    paddingVertical: 0,
+    backgroundColor: 'red'
+  },
+
+  
+  daily_message_button: {
+    borderWidth: 0.5,
+    borderRadius: 10,
+    paddingVertical: 0,
+    backgroundColor: '#0099cc',
+    marginTop: 40,
+    width: '40%',
+    marginHorizontal: 5,
+  },
+
+
+  daily_message_text: {
+    // textAlign: 'center',
+    padding: 10,
+    color: 'white',
+    fontSize: 15
+  },
+
+
+  
+  daily_message_row: {
+   flexDirection:'row',
+   justifyContent: 'space-between',
+   paddingHorizontal: 20,
+  },
   /*---------------------------------------------This Style is for Search Box-------------------------------------------------------------- */
   searchBox: {
     flexDirection: 'row',

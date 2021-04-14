@@ -84,6 +84,14 @@ export class LableText {
     public static readonly BANK_ACCOUNT_NAME= 'Vishal General Store';
     public static readonly BANK_IFSC_CODE = 'SBIN0001342';
     public static readonly BACK_TO_SIGN_IN = 'Back to sign In'
+    public static readonly SELLINGPRICE= 'Selling Price';
+    public static readonly COSTPRICE = 'Cost Price';
+    public static readonly OLDPRICE = 'Old Price';
+    public static readonly QUANTITY = 'Quantity';
+    public static readonly DESCRIPTION = 'Description';
+    public static readonly BARCODE = 'Barcode';
+    public static readonly PRODUCTNAME = 'Product Name';
+    public static readonly STOCK = 'Quantity Already In Stock';
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/
@@ -97,6 +105,13 @@ export class Placeholder {
     public static readonly AMOUNT = 'Amount';
     public static readonly CATEGORY = 'Category';
     public static readonly NAME = 'Name';
+    public static readonly SELLINGPRICE= 'Selling Price';
+    public static readonly COSTPRICE = 'Cost Price';
+    public static readonly OLDPRICE = 'Old Price';
+    public static readonly QUANTITY = 'Quantity';
+    public static readonly DESCRIPTION = 'Description';
+    public static readonly BARCODE = 'Barcode';
+    public static readonly STOCK = 'Stock';
 }
 
 export class AlertConstants {

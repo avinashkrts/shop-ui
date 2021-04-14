@@ -6,6 +6,7 @@ import { NotificationScreenProps } from "../../../navigation/home.navigator";
 import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { BackIcon } from "../../../assets/icons";
+import { Styles } from "../../../assets/styles";
 
 export class NotificationScreen extends Component<NotificationScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -26,7 +27,7 @@ export class NotificationScreen extends Component<NotificationScreenProps, Theme
         return (
             <SafeAreaLayout>
                 <Toolbar
-                    title='My Order'
+                    title='Notification'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
@@ -40,9 +41,14 @@ export class NotificationScreen extends Component<NotificationScreenProps, Theme
                         />
                     }
                 > */}
-                <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>This page will be added soon.</Text>
+                 <View style={Styles.notification_main}>
+                    
+                        <Text style={Styles.notification_text}>One Order Received From Avinash Kumar</Text>
+                   
                 </View>
+
+
+
                 {/* </Content> */}
             </SafeAreaLayout>
         );

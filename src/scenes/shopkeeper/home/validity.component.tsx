@@ -6,6 +6,8 @@ import { ValidityScreenProps } from "../../../navigation/home.navigator";
 import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { BackIcon } from "../../../assets/icons";
+import { Styles } from "../../../assets/styles";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export class ValidityScreen extends Component<ValidityScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -24,14 +26,14 @@ export class ValidityScreen extends Component<ValidityScreenProps, ThemedCompone
 
     render() {
         return (
-            <SafeAreaLayout>
+            <SafeAreaLayout style={Styles.content}>
                 <Toolbar
-                    title='My Order'
+                    title='Validity'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
-                <Divider/>
+                <Divider />
                 {/* <Content style={styles.content}
                     refreshControl={
                         <RefreshControl
@@ -40,9 +42,14 @@ export class ValidityScreen extends Component<ValidityScreenProps, ThemedCompone
                         />
                     }
                 > */}
-                <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>This page will be added soon.</Text>
+                <View style={Styles.validity}>
+                    <Text style={Styles.validity_text}>Validity of Your Subscription Will Expire in 10 days</Text>
                 </View>
+
+                <TouchableOpacity style={Styles.validity_button}>
+                    <Text style={Styles.validity_text}>Recharge</Text>
+                </TouchableOpacity>
+
                 {/* </Content> */}
             </SafeAreaLayout>
         );

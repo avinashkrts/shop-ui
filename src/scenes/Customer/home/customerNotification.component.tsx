@@ -56,11 +56,10 @@ export class CustomerNotificationScreen extends Component<CustomerNotificationSc
                     <Divider />
 
                 <View style={Styles.notification_main}>
-                    <View>
-                        <View style={Styles.notification_text}>
-                        <Text>HP Notebook at 15% off</Text>
-                    </View>
-                    </View>
+                    
+                        <Text  style={Styles.notification_text}>HP Notebook at 15% off</Text>
+                 
+                   
                 </View>
 
 
