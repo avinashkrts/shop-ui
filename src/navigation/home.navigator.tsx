@@ -47,7 +47,7 @@ import {
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
 import { DailyMessageScreen, MyOrderScreen,MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
 import { AddProductScreen } from '../scenes/home/addproduct.component';
-import { AddCustomerScreen } from 'src/scenes/shopkeeper/customer';
+import { AddCustomerScreen } from '../scenes/shopkeeper/customer';
 import { AddEducationScreen } from 'src/scenes/profile';
 
 type HomeDrawerNavigatorParams = {
