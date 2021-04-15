@@ -23,8 +23,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             allProduct: [],
             allCategory: [],
             allBrand: [],
-            selectedCategory: '',
-            selectedBrand: '',
+            selectedCategory: 1,
 
             allData: [{
                 url: 'http://192.168.0.106:8091/api/product/getallproduct',
@@ -63,7 +62,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                     console.log(data.variable, response.data)
                     this.setState({
                         allCategory: response.data,
-                        selectedCategory: response.data[0].id
+                        // selectedCategory: response.data[0].id
                     })
                 } else if (data.variable === 'allBrand') {
                     console.log(data.variable, response.data)
@@ -144,13 +143,20 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
-               
-                <Animated.View style={{
+                <Toolbar
+                    title='Item'
+                    backIcon={MenuIcon}
+                    onBackPress={this.props.navigation.openDrawer}
+                    onRightPress={() => { }}
+                    menuIcon={CartIcon}
+                    style={{ marginTop: -5, marginLeft: -5 }}
+                />
+                {/* <Animated.View style={{
           position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
-          backgroundColor: 'white',
+          backgroundColor: 'lightskyblue',
           height: HEADER_MIN_HEIGHT,
           zIndex: headerZIndex,
           transform: [{ translateY: headerY }]

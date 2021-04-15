@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet,View } from 'react-native';
 import {
   Divider,
   Layout,
   Text,
 } from 'react-native-ui-kitten';
+import { Styles } from "../../assets/styles";
 import { ContactUsScreenProps } from '../../navigation/home.navigator';
 import { Toolbar } from '../../components/toolbar.component';
 import {
@@ -24,11 +25,13 @@ export const ContactUsScreen = (props: ContactUsScreenProps): SafeAreaLayoutElem
       onBackPress={props.navigation.goBack}
     />
     <Divider/>
-    <Layout style={styles.container}>
-      <Text category='h1'>
-    Contact Us
-      </Text>
-    </Layout>
+    <View style={Styles.contact_milaan}>
+                    <Text style={{fontSize:30, paddingTop:20, padding: 5}}>Milaan IT Projects Pvt. Ltd.</Text>
+                    <Text style={Styles.contact_text}>101 Inorbit Complex, Near Highway Restaurant</Text>
+                    <Text style={Styles.contact_text}>Khagaul, Patna</Text>
+                    <Text style={Styles.contact_text}>Mobile No.:- 9155316625</Text>
+                </View>
+
   </SafeAreaLayout>
 );
 

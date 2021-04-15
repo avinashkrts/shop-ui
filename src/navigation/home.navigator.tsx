@@ -47,8 +47,10 @@ import {
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
 import { DailyMessageScreen, MyOrderScreen,MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
 import { AddProductScreen } from '../scenes/home/addproduct.component';
-import { AddCustomerScreen } from '../scenes/shopkeeper/customer';
-import { AddEducationScreen } from 'src/scenes/profile';
+import { AddCustomerScreen, CustomerDetailScreen, CustomerScreen } from '../scenes/shopkeeper/customer';
+import { AddEducationScreen } from '../scenes/profile';
+import { AddEmployeeScreen } from '../scenes/shopkeeper/Employee';
+import { CustomerContactScreen } from '../scenes/Customer/home';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
@@ -350,13 +352,13 @@ export const HomeNavigator = (): React.ReactElement => (
 
     <Drawer.Screen
       name={AppRoute.ADD_EMPLOYEE}
-      component={ProfileScreen}
+      component={AddEmployeeScreen}
       options={{ title: 'Add Employee', drawerIcon: AddEmployeeIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_LIST}
-      component={ProfileScreen}
+      component={CustomerScreen}
       options={{ title: 'Customer List', drawerIcon: CustomerListIcon }}
     />
 
@@ -372,11 +374,11 @@ export const HomeNavigator = (): React.ReactElement => (
       options={{ title: 'Out of Stock', drawerIcon: OutOfStockIcon }}
     />
 
-    <Drawer.Screen
+    {/* <Drawer.Screen
       name={AppRoute.OFFERS}
       component={OffersScreen}
       options={{ title: 'Offers', drawerIcon: OfferIcon }}
-    />
+    /> */}
 
     <Drawer.Screen
       name={AppRoute.DAILY_MESSAGE}

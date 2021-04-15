@@ -1252,4 +1252,14 @@ shop_order_main: {
     padding: 5
   },
 
+
+  contact_milaan: {
+    borderWidth: 1,
+    borderColor: 'silver',
+    backgroundColor: '#0099cc',
+    borderRadius: 5,
+   
+  },
+
+
 })
