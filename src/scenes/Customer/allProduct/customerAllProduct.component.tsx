@@ -8,11 +8,12 @@ import { CartIcon, MenuIcon, SearchIcon } from "../../../assets/icons";
 import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Color } from "../../../constants";
 import { Styles } from "../../../assets/styles";
-import { Content, Header, ListItem } from "native-base";
+import { Content, Header, Item, ListItem } from "native-base";
 import axios from 'axios';
 import Animated from "react-native-reanimated";
+import { AppRoute } from "../../../navigation/app-routes";
 
-const HEADER_MAX_HEIGHT = 120;
+const HEADER_MAX_HEIGHT = 180;
 const HEADER_MIN_HEIGHT = 70;
 
 export class CustomerAllProductScreen extends Component<CustomerAllProductScreenProps, ThemedComponentProps & any> {
@@ -22,20 +23,21 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             allProduct: [],
             allCategory: [],
             allBrand: [],
-            selectedCategory: 1,
+            selectedCategory: '',
+            selectedBrand: '',
 
             allData: [{
-                url: 'http://192.168.0.104:8091/api/product/getallproduct',
+                url: 'http://192.168.0.106:8091/api/product/getallproduct',
                 method: 'GET',
                 variable: 'allProduct',
             },
             {
-                url: 'http://192.168.0.104:8091/api/category/getallcategory',
+                url: 'http://192.168.0.106:8091/api/category/getallcategory',
                 method: 'GET',
                 variable: 'allCategory',
             },
             {
-                url: 'http://192.168.0.104:8091/api/brand/getallbrand',
+                url: 'http://192.168.0.106:8091/api/brand/getallbrand',
                 method: 'GET',
                 variable: 'allBrand',
             }],
@@ -61,11 +63,14 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                     console.log(data.variable, response.data)
                     this.setState({
                         allCategory: response.data,
-                        // selectedCategory: response.data[0].id
+                        selectedCategory: response.data[0].id
                     })
                 } else if (data.variable === 'allBrand') {
                     console.log(data.variable, response.data)
-                    this.setState({ allBrand: response.data })
+                    this.setState({ 
+                        allBrand: response.data,
+                        selectedBrand: response.data[0].id
+                    })
                 }
             }, (error) => {
                 Alert.alert("Please enter a valid email ID and password.")
@@ -73,6 +78,17 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
         })
     }
 
+    addToCart(id) {
+       axios({
+           method: 'GET',
+           url: '',
+       }).then((response) => {
+
+       },(error) => {
+
+       });
+    }
+    
     onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
@@ -81,12 +97,20 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
 
     }
 
+    selectCategory(id) {
+        this.setState({ selectedCategory: id })
+    }
+
+    selectBrand(id) {
+        this.setState({ selectedBrand: id })
+    }
+
     navigateProductDetail(id) {
         Alert.alert(id)
     }
 
     render() {
-        const { allProduct, allCategory, allBrand } = this.state;
+        const { allProduct, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -120,24 +144,25 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
-                <Toolbar
-                    title='Item'
+               
+                <Animated.View style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: 'white',
+          height: HEADER_MIN_HEIGHT,
+          zIndex: headerZIndex,
+          transform: [{ translateY: headerY }]
+        }}>
+             <Toolbar
+                    title='Product'
                     backIcon={MenuIcon}
                     onBackPress={this.props.navigation.openDrawer}
                     onRightPress={() => { }}
                     menuIcon={CartIcon}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
-                {/* <Animated.View style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: 'lightskyblue',
-          height: HEADER_MIN_HEIGHT,
-          zIndex: headerZIndex,
-          transform: [{ translateY: headerY }]
-        }}> */}
                 {/* <Header style={styles.header}> */}
                 <View style={Styles.searchBox}>
                     <Text style={Styles.searchIcon}><SearchIcon /></Text>
@@ -158,9 +183,9 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                 data={allCategory}
                                 renderItem={({ item, index }) => {
                                     return (
-                                        <TouchableOpacity onPress={e => { }}>
-                                            <View style={{ padding: 10, marginTop: 5, backgroundColor: '#ffffff' }}>
-                                                <Text style={this.state.selectedCategory == item.id ? styles.selected : styles.notSelected}>{item.name}</Text>
+                                        <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
+                                            <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
                                             </View>
                                         </TouchableOpacity>
                                     )
@@ -170,7 +195,8 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                         </View>
                     </View>
                 </Header>
-                {/* <Header style={{ backgroundColor: '#ffffff', height: 30, marginTop: -5 }}>
+                <Divider/>
+                <Header style={{ backgroundColor: '#ffffff', height: 30, marginTop: 15 }}>
 
                     <View style={{ flex: 1, flexDirection: 'column' }}>
                         <View style={{ marginTop: -10 }}>
@@ -181,9 +207,9 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                 data={allBrand}
                                 renderItem={({ item, index }) => {
                                     return (
-                                        <TouchableOpacity onPress={e => { }}>
-                                            <View style={{ padding: 10, marginTop: 5, backgroundColor: '#ffffff' }}>
-                                                <Text style={{}}>{item.name}</Text>
+                                        <TouchableOpacity onPress={() => { this.selectBrand(item.id) }}>
+                                            <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
                                             </View>
                                         </TouchableOpacity>
                                     )
@@ -192,9 +218,18 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                             </FlatList>
                         </View>
                     </View>
-                </Header> */}
-                {/* </Animated.View> */}
-                <Content style={Styles.customer_content} showsVerticalScrollIndicator={false}
+                </Header>
+                </Animated.View>
+                <Animated.ScrollView style={{ flex: 1 }}
+          bounces={false}
+          scrollEventThrottle={16}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}>
+          <Animated.View style={{
+            height: '100%',
+            width: '100%',
+            marginTop: profileImageMarginTop
+          }}>
+                <Content style={[Styles.customer_content,{marginTop: 110}]} showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -216,11 +251,19 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                         </View>
                                         <View style={Styles.all_Item_Detail}>
                                             <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}></Text>
-                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}></Text>
+                                                {allBrand.map((brand, index) => {
+                                                    if (brand.id == data.brand) {
+                                                        return (
+                                                            <>
+                                                                <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{brand.name}</Text>
+                                                            </>
+                                                        );
+                                                    }
+                                                })}
+                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.name}</Text>
 
                                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                                    <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,100</Text>
+                                                    <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
                                                     <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,150</Text>
                                                 </View>
 
@@ -229,7 +272,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                                     <Text style={{ color: Color.COLOR }}>Offer till Tue.</Text>
                                                 </View>
                                             </View>
-                                            <TouchableOpacity onPress={() => { }}>
+                                            <TouchableOpacity onPress={() => {this.addToCart(data.id) }}>
                                                 <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
                                                     <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
                                                 </View>
@@ -242,6 +285,8 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                     </View>
                     <View style={{ height: 10, width: '100%' }} />
                 </Content>
+                </Animated.View>
+                </Animated.ScrollView>
 
             </SafeAreaLayout>
         );

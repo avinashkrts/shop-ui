@@ -14,7 +14,6 @@ import { AllItemScreen, ProductDetailScreen, CartScreen } from '../../scenes/sho
 type AllItemNavigatorParams = {
     [AppRoute.ALLITEM]: undefined;
     [AppRoute.PRODUCT_DETAIL]: undefined;
-    [AppRoute.CART]: undefined;
 }
 
 export interface AllItemScreenProps {
@@ -33,20 +32,11 @@ export interface ProductDetailScreenProps {
     route: RouteProp<AllItemNavigatorParams, AppRoute.PRODUCT_DETAIL>;
 }
 
-export interface CartScreenProps {
-    navigation: CompositeNavigationProp<
-        EmployeeTabNavigationProp,
-        StackNavigationProp<AllItemNavigatorParams, AppRoute.CART>
-    >;
-    route: RouteProp<AllItemNavigatorParams, AppRoute.CART>;
-}
-
 const Stack = createStackNavigator<AllItemNavigatorParams>();
 
 export const AllItemNavigator = (): React.ReactElement => (
     <Stack.Navigator headerMode='none'>
         <Stack.Screen name={AppRoute.ALLITEM} component={AllItemScreen} />
         <Stack.Screen name={AppRoute.PRODUCT_DETAIL} component={ProductDetailScreen} />
-        <Stack.Screen name={AppRoute.CART} component={CartScreen} />
     </Stack.Navigator>
 );

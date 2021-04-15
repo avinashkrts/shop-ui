@@ -15,7 +15,7 @@ export const Styles = StyleSheet.create({
 
   content: {
     backgroundColor: 'transparent',
-    padding: 10,
+    padding: 10
   },
 
   customer_content: {
@@ -149,6 +149,34 @@ export const Styles = StyleSheet.create({
 
   all_Item_Detail: {
     backgroundColor: Color.BUTTON_NAME_COLOR
+  },
+
+  product_nav_button_selected: {
+    backgroundColor: Color.COLOR,
+    padding: 1,
+    borderRadius: 20
+  },
+
+  product_nav_button: {
+    backgroundColor: Color.BUTTON_NAME_COLOR,
+    padding: 1,
+    borderRadius: 20
+  },
+
+  product_nav_button_selected_text: {
+    color: Color.BUTTON_NAME_COLOR,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    fontWeight: 'bold',
+    fontSize: 12
+  },
+
+  product_nav_button_text: {
+    color: Color.COLOR,
+    fontSize: 12,
+    paddingVertical: 5,
+    fontWeight: 'bold',
+    paddingHorizontal: 10
   },
 
   /*---------------------------------------------This Style is for Blank Space at bottom of Page--------------------------------------------------------- */

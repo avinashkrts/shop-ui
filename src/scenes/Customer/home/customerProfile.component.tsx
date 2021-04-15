@@ -9,13 +9,43 @@ import { Styles } from "../../../assets/styles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { LableText } from "../../../constants";
 import { Content } from "native-base";
+import Axios from "axios";
 
 export class CustomerProfileScreen extends Component<CustomerProfileScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            isEditable: true,
+            userId: '',
+            emailId: '',
+            firstName: '',
+            lastName: '',
+            lastLoginDate: '',
+            dob: '',
+            mobileNo: '',
+            city: '',
+        }
 
         this.onRefresh = this.onRefresh.bind(this);
+    }
+
+    componentDidMount() {
+        Axios({
+            method: 'GET',
+            url: 'http://192.168.0.106:8091/api/user/get/51'
+        }).then((response) => {
+            this.setState({
+                firstName: response.data.firstName,
+                emailId: response.data.emailId,
+                lastName: response.data.lastName,
+                lastLoginDate: response.data.lastLoginDate,
+                dob: response.data.dob,
+                mobileNo: response.data.mobileNo,
+                city: response.data.city,
+            })
+        }, (error) => {
+
+        });
     }
 
     onRefresh() {
@@ -26,7 +56,7 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
     }
 
     render() {
-        const { isEditable } = this.state
+        const { firstName, isEditable } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -60,7 +90,7 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                                 <Text style={Styles.user_detail_header_text}>{LableText.FIRST_NAME}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.FIRST_NAME} />
+                                <TextInput editable={isEditable} value={firstName} onChangeText={(value) => { this.setState({ firstName: value }) }} style={Styles.cash_pay_input} placeholder={LableText.FIRST_NAME} />
                             </View>
                         </View>
 
@@ -69,7 +99,7 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                                 <Text style={Styles.user_detail_header_text}>{LableText.LAST_NAME}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.LAST_NAME} />
+                                <TextInput editable={isEditable} value={firstName} style={Styles.cash_pay_input} placeholder={LableText.LAST_NAME} />
                             </View>
                         </View>
 
@@ -79,7 +109,7 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                                 <Text style={Styles.user_detail_header_text}>{LableText.PHONE}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.PHONE} />
+                                <TextInput editable={isEditable} value={firstName} style={Styles.cash_pay_input} placeholder={LableText.PHONE} />
                             </View>
                         </View>
 
@@ -88,7 +118,7 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                                 <Text style={Styles.user_detail_header_text}>{LableText.EMAIL_ID}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.EMAIL_ID} />
+                                <TextInput editable={isEditable} value={firstName} style={Styles.cash_pay_input} placeholder={LableText.EMAIL_ID} />
                             </View>
                         </View>
 
@@ -176,7 +206,7 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
                             <Text style={Styles.buttonName}>{LableText.EDIT}</Text>
                         </TouchableOpacity>
-                        </View>
+                    </View>
 
 
                     <View style={{ marginHorizontal: '10%' }}>
