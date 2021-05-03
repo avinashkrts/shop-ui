@@ -41,7 +41,7 @@ import Share from 'react-native-share';
 import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
-import { Styles } from '../../../assets/styles'
+import { styles, Styles } from '../../../assets/styles'
 import { Color } from '../../../constants/LabelConstants';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';

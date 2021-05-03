@@ -23,7 +23,8 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             allProduct: [],
             allCategory: [],
             allBrand: [],
-            selectedCategory: 1,
+            selectedCategory: '',
+            selectedBrand: '',
 
             allData: [{
                 url: 'http://192.168.0.106:8091/api/product/getallproduct',
@@ -62,7 +63,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                     console.log(data.variable, response.data)
                     this.setState({
                         allCategory: response.data,
-                        // selectedCategory: response.data[0].id
+                        selectedCategory: response.data[0].id
                     })
                 } else if (data.variable === 'allBrand') {
                     console.log(data.variable, response.data)
@@ -87,6 +88,10 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
 
        });
     }
+
+    navigateToCart() {
+       this.props.navigation.navigate(AppRoute.CUSTOMER_CART)
+     }
     
     onRefresh() {
         this.setState({ refreshing: true });
@@ -143,20 +148,13 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
-                <Toolbar
-                    title='Item'
-                    backIcon={MenuIcon}
-                    onBackPress={this.props.navigation.openDrawer}
-                    onRightPress={() => { }}
-                    menuIcon={CartIcon}
-                    style={{ marginTop: -5, marginLeft: -5 }}
-                />
-                {/* <Animated.View style={{
+               
+                <Animated.View style={{
           position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
-          backgroundColor: 'lightskyblue',
+          backgroundColor: 'white',
           height: HEADER_MIN_HEIGHT,
           zIndex: headerZIndex,
           transform: [{ translateY: headerY }]
@@ -165,7 +163,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                     title='Product'
                     backIcon={MenuIcon}
                     onBackPress={this.props.navigation.openDrawer}
-                    onRightPress={() => { }}
+                    onRightPress={() => {this.navigateToCart()}}
                     menuIcon={CartIcon}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
@@ -270,12 +268,12 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
 
                                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
                                                     <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
-                                                    <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,150</Text>
+                                                    <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
                                                 </View>
 
                                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                    <Text style={{ color: Color.COLOR }}>3.5 % off</Text>
-                                                    <Text style={{ color: Color.COLOR }}>Offer till Tue.</Text>
+                                                    <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
+                                                    <Text style={{ color: Color.COLOR }}>{data.offerLast}</Text>
                                                 </View>
                                             </View>
                                             <TouchableOpacity onPress={() => {this.addToCart(data.id) }}>

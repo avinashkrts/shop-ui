@@ -46,7 +46,7 @@ import {
 } from '../assets/icons';
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
 import { DailyMessageScreen, MyOrderScreen,MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
-import { AddProductScreen } from '../scenes/home/addproduct.component';
+// import { AddProductScreen } from '../scenes/home/addproduct.component';
 import { AddCustomerScreen, CustomerDetailScreen, CustomerScreen } from '../scenes/shopkeeper/customer';
 import { AddEducationScreen } from '../scenes/profile';
 import { AddEmployeeScreen } from '../scenes/shopkeeper/Employee';
@@ -338,11 +338,11 @@ export const HomeNavigator = (): React.ReactElement => (
       options={{ title: 'Pay Now', drawerIcon: PayNowIcon }}
     /> */}
 
-    <Drawer.Screen
+    {/* <Drawer.Screen
       name={AppRoute.ADD_PRODUCT}
       component={AddProductScreen}
       options={{ title: 'Add Product', drawerIcon: AddProductIcon }}
-    />
+    /> */}
 
     <Drawer.Screen
       name={AppRoute.ADD_CUSTOMER}
