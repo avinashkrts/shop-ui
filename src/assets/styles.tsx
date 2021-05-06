@@ -10,7 +10,7 @@ export const Styles = StyleSheet.create({
 
   safeArea: {
     flex: 1,
-    backgroundColor:Color.BUTTON_NAME_COLOR
+    backgroundColor: Color.BUTTON_NAME_COLOR
   },
 
   content: {
@@ -262,14 +262,14 @@ export const Styles = StyleSheet.create({
   },
 
   product_3rd_view_1: {
-    textAlign:'left',
+    textAlign: 'left',
   },
 
   product_description_view: {
-    width:'100%',
-    borderWidth:2,
-    marginTop:10,
-    borderRadius:10,
+    width: '100%',
+    borderWidth: 2,
+    marginTop: 10,
+    borderRadius: 10,
     borderColor: Color.COLOR,
     paddingVertical: 10,
   },
@@ -314,7 +314,7 @@ export const Styles = StyleSheet.create({
   cart_view_1_2: {
     width: '70%',
     height: 110,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
 
   cart_name_text: {
@@ -439,7 +439,7 @@ export const Styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold'
   },
-  
+
   cart_bottom_box_view: {
     flexDirection: 'row',
     paddingHorizontal: Padding.HORIZONTAL_PADDING,
@@ -466,7 +466,7 @@ export const Styles = StyleSheet.create({
     paddingHorizontal: '10%'
   },
 
-/*---------------------------------------------This Style is for Address Of Customer--------------------------------------------------------- */
+  /*---------------------------------------------This Style is for Address Of Customer--------------------------------------------------------- */
 
 
   address_container: {
@@ -479,7 +479,7 @@ export const Styles = StyleSheet.create({
 
   address_text: {
     fontSize: 16,
-    
+
   },
 
   address_edit_pen: {
@@ -489,12 +489,25 @@ export const Styles = StyleSheet.create({
 
 
   address_main: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
   },
 
- 
+  modal: {
+    justifyContent: 'flex-start',
+    backgroundColor: "#fafafa",
+    height: '90%',
+    width: '90%',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#fafafa',
+    marginTop: 10,
+    padding: 10
+  },
 
-
+  modalHeader: {
+    height: 20,
+    alignItems: 'flex-end'
+  },
 
   /*---------------------------------------------This Style is for order Of Customer--------------------------------------------------------- */
 
@@ -511,7 +524,7 @@ export const Styles = StyleSheet.create({
   },
 
   order_text: {
-    alignContent: 'center', 
+    alignContent: 'center',
     fontSize: 20,
     padding: 5
   },
@@ -546,257 +559,252 @@ export const Styles = StyleSheet.create({
 
 
 
-/*---------------------------------------------This Style is for  Contact_us Page--------------------------------------------------------- */
-
-contact_main: {
-  borderWidth: 1,
-  borderColor: 'silver',
-  backgroundColor: '#0099cc',
-  borderRadius: 5,
-},
-
-contact_text: {
- fontSize: 15,
- padding: 3,
-},
-
-
-/*---------------------------------------------This Style is for BillBook--------------------------------------------------------- */
-
-bill_main: {
-  borderWidth:1,
-  backgroundColor: '#0099cc',
- },
-
-bill_row: {
-  flexDirection: 'row',
-  width: '100%'
-},
-
-bill_row_1: {
-  flexDirection: 'row',
-  width: '100%',
-  backgroundColor: 'red'
-},
-
-bill_row_2: {
-  flexDirection: 'row',
-  width: '100%',
-  backgroundColor: 'green'
-},
-
-
-
-bill_column_1: {
-  width:'16%' ,
-  
-},
-
-bill_column_2: {
-  width:'20%' ,
-
-},
-
-bill_column_3: {
-  width:'14%' ,
-
-},
-
-bill_column_4: {
-  width:'20%' ,
- 
-},
-
-bill_column_5: {
-  width:'15%' ,
- 
-},
-
-bill_column_6: {
-  width:'15%' ,
- 
-},
-
-
-text_design: {
- fontSize: 14,
- padding: 2,
- alignSelf: 'center',
- color: 'white'
-},
-
-bill_box: {
-  width: '100%',
-  borderColor: 'black',
-  borderWidth:0.2,
-},
-
-head_design: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  padding: 2,
-  alignSelf: 'center',
-  color: 'white'
- },
- 
-
-bill_bottom_text: {
-  textAlign: 'right',
-  padding: 2,
-  width: '50%',
-  color: 'white',
-  fontSize: 16,
-},
-
-bill_amount: {
-  textAlign: 'center',
-  padding: 2,
-  width: '20%',
-  color: 'white',
-  fontSize: 16,
-},
-
-bill_paid: {
-  textAlign: 'center',
-  padding: 2,
-  width: '15%',
-  color: 'white',
-  fontSize: 16,
-},
-
-bill_due: {
-  textAlign: 'center',
-  padding: 2,
-  width: '15%',
-  color: 'white',
-  fontSize: 16,
-},
-
-
-
-/*---------------------------------------------This Style is for shopkeeper profile--------------------------------------------------------- */
-
-bank_row: {
-  flexDirection: 'row',
-  paddingVertical: 0
-},
-
-bank_text: {
- color: Color.SILVER,
- paddingVertical: 0,
- width: '50%'
-},
-
-/*---------------------------------------------This Style is for Wallet--------------------------------------------------------- */
-
-
-
-wallet_main: {
-  borderWidth:1,
-  backgroundColor: '#0099cc',
- },
+  /*---------------------------------------------This Style is for  Contact_us Page--------------------------------------------------------- */
 
-wallet_row: {
-  flexDirection: 'row',
-  width: '100%'
-},
+  contact_main: {
+    borderWidth: 1,
+    borderColor: 'silver',
+    backgroundColor: '#0099cc',
+    borderRadius: 5,
+  },
 
-wallet_row_1: {
-  flexDirection: 'row',
-  width: '100%',
-  backgroundColor: 'red'
-},
+  contact_text: {
+    fontSize: 15,
+    padding: 3,
+  },
 
-wallet_row_2: {
-  flexDirection: 'row',
-  width: '100%',
-  backgroundColor: 'green'
-},
 
+  /*---------------------------------------------This Style is for BillBook--------------------------------------------------------- */
 
+  bill_main: {
+    borderWidth: 1,
+    backgroundColor: '#0099cc',
+  },
 
-wallet_column_1: {
-  width:'10%' ,
-  padding: 4,
-},
+  bill_row: {
+    flexDirection: 'row',
+    width: '100%'
+  },
 
-wallet_column_2: {
-  width:'22%',
-  padding: 4,
+  bill_row_1: {
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: 'red'
+  },
 
-}, 
+  bill_row_2: {
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: 'green'
+  },
 
-wallet_column_3: {
-  width:'32%' ,
-  padding: 4, 
-},
 
-wallet_column_4: {
-  width:'18%' ,
-  padding: 4,
-},
 
-wallet_column_5: {
-  width:'18%' ,
-  padding: 4,
-},
+  bill_column_1: {
+    width: '16%',
 
+  },
 
-wallet_design: {
- fontSize: 14,
- padding: 2,
- alignSelf: 'center',
- color: 'white'
-},
+  bill_column_2: {
+    width: '20%',
 
-wallet_design1: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  padding: 2,
-  alignSelf: 'center',
-  color: 'white'
- },
- 
+  },
 
-wallet_bottom_text: {
-  textAlign: 'right',
-  padding: 2,
-  width: '64%',
-  color: 'white',
-  fontSize: 16,
-},
+  bill_column_3: {
+    width: '14%',
 
+  },
 
-wallet_paid: {
-  textAlign: 'center',
-  padding: 2,
-  width: '18%',
-  color: 'white',
-  fontSize: 16,
-},
+  bill_column_4: {
+    width: '20%',
 
-wallet_due: {
-  textAlign: 'center',
-  padding: 2,
-  width: '18%',
-  color: 'white',
-  fontSize: 16,
-},
+  },
 
+  bill_column_5: {
+    width: '15%',
 
+  },
 
+  bill_column_6: {
+    width: '15%',
 
-/*---------------------------------------------This Style is for Shop Order--------------------------------------------------------- */
+  },
 
-shop_order_main: {
-  
 
-},
+  text_design: {
+    fontSize: 14,
+    padding: 2,
+    alignSelf: 'center',
+    color: 'white'
+  },
 
+  bill_box: {
+    width: '100%',
+    borderColor: 'black',
+    borderWidth: 0.2,
+  },
 
+  head_design: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    padding: 2,
+    alignSelf: 'center',
+    color: 'white'
+  },
 
 
+  bill_bottom_text: {
+    textAlign: 'right',
+    padding: 2,
+    width: '50%',
+    color: 'white',
+    fontSize: 16,
+  },
+
+  bill_amount: {
+    textAlign: 'center',
+    padding: 2,
+    width: '20%',
+    color: 'white',
+    fontSize: 16,
+  },
+
+  bill_paid: {
+    textAlign: 'center',
+    padding: 2,
+    width: '15%',
+    color: 'white',
+    fontSize: 16,
+  },
+
+  bill_due: {
+    textAlign: 'center',
+    padding: 2,
+    width: '15%',
+    color: 'white',
+    fontSize: 16,
+  },
+
+
+
+  /*---------------------------------------------This Style is for shopkeeper profile--------------------------------------------------------- */
+
+  bank_row: {
+    flexDirection: 'row',
+    paddingVertical: 0
+  },
+
+  bank_text: {
+    color: Color.SILVER,
+    paddingVertical: 0,
+    width: '50%'
+  },
 
+  /*---------------------------------------------This Style is for Wallet--------------------------------------------------------- */
+
+
+
+  wallet_main: {
+    borderWidth: 1,
+    backgroundColor: '#0099cc',
+  },
+
+  wallet_row: {
+    flexDirection: 'row',
+    width: '100%'
+  },
+
+  wallet_row_1: {
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: 'red'
+  },
+
+  wallet_row_2: {
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: 'green'
+  },
+
+
+
+  wallet_column_1: {
+    width: '10%',
+    padding: 4,
+  },
+
+  wallet_column_2: {
+    width: '22%',
+    padding: 4,
+
+  },
+
+  wallet_column_3: {
+    width: '32%',
+    padding: 4,
+  },
+
+  wallet_column_4: {
+    width: '18%',
+    padding: 4,
+  },
+
+  wallet_column_5: {
+    width: '18%',
+    padding: 4,
+  },
+
+
+  wallet_design: {
+    fontSize: 14,
+    padding: 2,
+    alignSelf: 'center',
+    color: 'white'
+  },
+
+  wallet_design1: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    padding: 2,
+    alignSelf: 'center',
+    color: 'white'
+  },
+
+
+  wallet_bottom_text: {
+    textAlign: 'right',
+    padding: 2,
+    width: '64%',
+    color: 'white',
+    fontSize: 16,
+  },
+
+
+  wallet_paid: {
+    textAlign: 'center',
+    padding: 2,
+    width: '18%',
+    color: 'white',
+    fontSize: 16,
+  },
+
+  wallet_due: {
+    textAlign: 'center',
+    padding: 2,
+    width: '18%',
+    color: 'white',
+    fontSize: 16,
+  },
+
+
+
+
+  /*---------------------------------------------This Style is for Shop Order--------------------------------------------------------- */
+
+  shop_order_main: {
+
+
+  },
 
   cart_view: {
     width: '100%',
@@ -825,8 +833,12 @@ shop_order_main: {
   },
 
   cart_quantity_view: {
+    flexDirection: 'row',
     backgroundColor: Color.COLOR,
-    width: '30%',
+    width: '45%',
+    justifyContent: 'space-between',
+    padding: 5,
+    borderRadius: 5
   },
 
   cart_amount_view: {
@@ -887,8 +899,8 @@ shop_order_main: {
     width: '7%',
   },
 
-   /* ----------Even Row Data----------- */
-   cart_data_view_even: {
+  /* ----------Even Row Data----------- */
+  cart_data_view_even: {
     width: '100%',
     flexDirection: 'row',
     padding: 2,
@@ -973,6 +985,7 @@ shop_order_main: {
     shadowRadius: 4,
     elevation: 5
   },
+
   /*---------------------------------------------This Style is for Customer List--------------------------------------------------------- */
   customer_list: {
     backgroundColor: Color.BUTTON_NAME_COLOR,
@@ -1138,7 +1151,7 @@ shop_order_main: {
     borderRadius: 5,
     backgroundColor: '#0099cc',
     padding: 10,
- 
+
   },
 
   validity_text: {
@@ -1156,7 +1169,7 @@ shop_order_main: {
     marginTop: '20%',
   },
   /*---------------------------------------------This Style is for Search Box-------------------------------------------------------------- */
- 
+
 
   daily_message_text_view: {
     borderColor: Color.COLOR,
@@ -1173,7 +1186,7 @@ shop_order_main: {
     backgroundColor: 'red'
   },
 
-  
+
   daily_message_button: {
     borderWidth: 0.5,
     borderRadius: 10,
@@ -1193,11 +1206,11 @@ shop_order_main: {
   },
 
 
-  
+
   daily_message_row: {
-   flexDirection:'row',
-   justifyContent: 'space-between',
-   paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
   },
   /*---------------------------------------------This Style is for Search Box-------------------------------------------------------------- */
   searchBox: {
@@ -1258,7 +1271,7 @@ shop_order_main: {
     borderColor: 'silver',
     backgroundColor: '#0099cc',
     borderRadius: 5,
-   
+
   },
 
 

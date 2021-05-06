@@ -41,8 +41,9 @@ import Share from 'react-native-share';
 import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
-import { styles, Styles } from '../../../assets/styles'
+import { Styles } from '../../../assets/styles'
 import { Color } from '../../../constants/LabelConstants';
+import Axios from 'axios';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -76,23 +77,35 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
     constructor(props) {
         super(props)
         this.state = {
-
+            cartData: []
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
     }
 
+
+    componentDidMount() {
+        SCREEN_WIDTH = Dimensions.get('window').width;
+
+        Axios({
+            method: 'GET',
+            url: '192.168.106:8082/api/cart/get/1'
+        }).then((response) => {
+            this.setState({
+                cartData: response.data
+            })
+        },(error) => {
+            Alert.alert("Server problem")
+        })
+    }
+
+    
     _onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
             this.setState({ refreshing: false });
         });
     }
-
-    componentDidMount() {
-        SCREEN_WIDTH = Dimensions.get('window').width;
-    }
-
     // renderMyJob = ({ item }: any): ListItemElement => (
     //     <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 10 }}>
     //         {item != null ?

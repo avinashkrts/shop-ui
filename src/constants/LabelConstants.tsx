@@ -61,6 +61,7 @@ export class LableText {
     public static readonly EMAIL_ID = 'Email ID';
     public static readonly STREET = 'Street';
     public static readonly LAND_MARK = 'Land Mark';
+    public static readonly COUNTRY = 'Country';
     public static readonly PHONE = 'Phone';
     public static readonly TOTAL_AMT = 'Total Amount';
     public static readonly DUES = 'Dues';
@@ -98,8 +99,9 @@ export class LableText {
     public static readonly DISCOUNT = 'Discount Percentage';
     public static readonly FROM_DATE = 'From Which Date';
     public static readonly TO_DATE = 'Till Last Date';
-
-
+    public static readonly GST_PERCENT = 'GST Percent';
+    public static readonly GST_AMOUNT = 'GST Amount';
+    public static readonly MEASUREMENT = 'Measurement';
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/

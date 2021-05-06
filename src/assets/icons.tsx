@@ -36,7 +36,7 @@ export const SearchIcon = (style): AntDesign => (
 );
 
 export const CancelIcon = (style): AntDesign => (
-  <MaterialCommunityIcons size={20} name='close' />
+  <MaterialCommunityIcons style={style} name='close' />
 );
 
 export const NotificationIcon = (style): AntDesign => (

@@ -27,17 +27,17 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             selectedBrand: '',
 
             allData: [{
-                url: 'http://192.168.0.106:8091/api/product/getallproduct',
+                url: 'http://192.168.0.106:8082/api/product/getallproduct',
                 method: 'GET',
                 variable: 'allProduct',
             },
             {
-                url: 'http://192.168.0.106:8091/api/category/getallcategory',
+                url: 'http://192.168.0.106:8082/api/category/getallcategory',
                 method: 'GET',
                 variable: 'allCategory',
             },
             {
-                url: 'http://192.168.0.106:8091/api/brand/getallbrand',
+                url: 'http://192.168.0.106:8082/api/brand/getallbrand',
                 method: 'GET',
                 variable: 'allBrand',
             }],
@@ -67,7 +67,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                     })
                 } else if (data.variable === 'allBrand') {
                     console.log(data.variable, response.data)
-                    this.setState({ 
+                    this.setState({
                         allBrand: response.data,
                         selectedBrand: response.data[0].id
                     })
@@ -79,20 +79,20 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
     }
 
     addToCart(id) {
-       axios({
-           method: 'GET',
-           url: '',
-       }).then((response) => {
+        axios({
+            method: 'GET',
+            url: '',
+        }).then((response) => {
 
-       },(error) => {
+        }, (error) => {
 
-       });
+        });
     }
 
     navigateToCart() {
-       this.props.navigation.navigate(AppRoute.CUSTOMER_CART)
-     }
-    
+        this.props.navigation.navigate(AppRoute.CUSTOMER_CART)
+    }
+
     onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
@@ -148,148 +148,146 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
-               
+
                 <Animated.View style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: 'white',
-          height: HEADER_MIN_HEIGHT,
-          zIndex: headerZIndex,
-          transform: [{ translateY: headerY }]
-        }}>
-             <Toolbar
-                    title='Product'
-                    backIcon={MenuIcon}
-                    onBackPress={this.props.navigation.openDrawer}
-                    onRightPress={() => {this.navigateToCart()}}
-                    menuIcon={CartIcon}
-                    style={{ marginTop: -5, marginLeft: -5 }}
-                />
-                {/* <Header style={styles.header}> */}
-                <View style={Styles.searchBox}>
-                    <Text style={Styles.searchIcon}><SearchIcon /></Text>
-                    <TextInput
-                        placeholder="Search"
-                        style={Styles.searchInput}
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: 'white',
+                    height: HEADER_MIN_HEIGHT,
+                    zIndex: headerZIndex,
+                    transform: [{ translateY: headerY }]
+                }}>
+                    <Toolbar
+                        title='Product'
+                        backIcon={MenuIcon}
+                        onBackPress={this.props.navigation.openDrawer}
+                        onRightPress={() => { this.navigateToCart() }}
+                        menuIcon={CartIcon}
+                        style={{ marginTop: -5, marginLeft: -5 }}
                     />
-                </View>
-                {/* </Header> */}
-                <Header style={{ backgroundColor: '#ffffff', height: 30, marginTop: -5 }}>
-
-                    <View style={{ flex: 1, flexDirection: 'column' }}>
-                        <View style={{ marginTop: -10 }}>
-                            <FlatList
-                                style={{}}
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                data={allCategory}
-                                renderItem={({ item, index }) => {
-                                    return (
-                                        <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
-                                            <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                }}
-                            >
-                            </FlatList>
-                        </View>
+                    {/* <Header style={styles.header}> */}
+                    <View style={Styles.searchBox}>
+                        <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                        <TextInput
+                            placeholder="Search"
+                            style={Styles.searchInput}
+                        />
                     </View>
-                </Header>
-                <Divider/>
-                <Header style={{ backgroundColor: '#ffffff', height: 30, marginTop: 15 }}>
+                    {/* </Header> */}
+                    <Header style={{ backgroundColor: '#ffffff', height: 30, marginTop: -5 }}>
 
-                    <View style={{ flex: 1, flexDirection: 'column' }}>
-                        <View style={{ marginTop: -10 }}>
-                            <FlatList
-                                style={{}}
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                data={allBrand}
-                                renderItem={({ item, index }) => {
-                                    return (
-                                        <TouchableOpacity onPress={() => { this.selectBrand(item.id) }}>
-                                            <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                }}
-                            >
-                            </FlatList>
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
+                            <View style={{ marginTop: -10 }}>
+                                <FlatList
+                                    style={{}}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    data={allCategory}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
+                                                <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                    <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    }}
+                                >
+                                </FlatList>
+                            </View>
                         </View>
-                    </View>
-                </Header>
+                    </Header>
+                    <Divider />
+                    <Header style={{ backgroundColor: '#ffffff', height: 30, marginTop: 15 }}>
+
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
+                            <View style={{ marginTop: -10 }}>
+                                <FlatList
+                                    style={{}}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    data={allBrand}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id) }}>
+                                                <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                    <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    }}
+                                >
+                                </FlatList>
+                            </View>
+                        </View>
+                    </Header>
                 </Animated.View>
                 <Animated.ScrollView style={{ flex: 1 }}
-          bounces={false}
-          scrollEventThrottle={16}
-          onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}>
-          <Animated.View style={{
-            height: '100%',
-            width: '100%',
-            marginTop: profileImageMarginTop
-          }}>
-                <Content style={[Styles.customer_content,{marginTop: 110}]} showsVerticalScrollIndicator={false}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.refreshing}
-                            onRefresh={this.onRefresh.bind(this)}
-                        />
-                    }
-                >
+                    bounces={false}
+                    scrollEventThrottle={16}
+                    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}>
+                    <Animated.View style={{
+                        height: '100%',
+                        width: '100%',
+                        marginTop: profileImageMarginTop
+                    }}>
+                        <Content style={[Styles.customer_content, { marginTop: 110 }]} showsVerticalScrollIndicator={false}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this.onRefresh.bind(this)}
+                                />
+                            }
+                        >
 
-                    <View style={Styles.all_Item_Main_View}>
-                        {allProduct.map((data, index) => {
-                            return (
-                                <View style={Styles.all_Item_List}>
-                                    <TouchableOpacity onPress={() => { }}>
-                                        <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                            <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
-                                            {/* <View>
-                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                                    </View> */}
-                                        </View>
-                                        <View style={Styles.all_Item_Detail}>
-                                            <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                {allBrand.map((brand, index) => {
-                                                    if (brand.id == data.brand) {
-                                                        return (
-                                                            <>
-                                                                <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{brand.name}</Text>
-                                                            </>
-                                                        );
-                                                    }
-                                                })}
-                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.name}</Text>
-
-                                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                                    <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
-                                                    <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
+                            <View style={Styles.all_Item_Main_View}>
+                                {allProduct.map((data, index) => {
+                                    return (
+                                        <View style={Styles.all_Item_List}>
+                                            <TouchableOpacity onPress={() => { }}>
+                                                <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
                                                 </View>
 
-                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                    <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
-                                                    <Text style={{ color: Color.COLOR }}>{data.offerLast}</Text>
-                                                </View>
-                                            </View>
-                                            <TouchableOpacity onPress={() => {this.addToCart(data.id) }}>
-                                                <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                    <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                                <View style={Styles.all_Item_Detail}>
+                                                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                                        {allBrand.map((brand, index) => {
+                                                            if (brand.id == data.brand) {
+                                                                return (
+                                                                    <>
+                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{brand.name}</Text>
+                                                                    </>
+                                                                );
+                                                            }
+                                                        })}
+                                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.name}</Text>
+
+                                                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                                            <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
+                                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
+                                                        </View>
+
+                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                            <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
+                                                            <Text style={{ color: Color.COLOR }}>{data.offerLast.substr(8, 2) + "/" + data.offerLast.substr(5, 2) + "/" + data.offerLast.substr(0, 4)}</Text>
+                                                        </View>
+                                                    </View>
+                                                    <TouchableOpacity onPress={() => { this.addToCart(data.id) }}>
+                                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                                        </View>
+                                                    </TouchableOpacity>
                                                 </View>
                                             </TouchableOpacity>
                                         </View>
-                                    </TouchableOpacity>
-                                </View>
-                            )
-                        })}
-                    </View>
-                    <View style={{ height: 10, width: '100%' }} />
-                </Content>
-                </Animated.View>
+                                    )
+                                })}
+                            </View>
+                            <View style={{ height: 10, width: '100%' }} />
+                        </Content>
+                    </Animated.View>
                 </Animated.ScrollView>
 
             </SafeAreaLayout>

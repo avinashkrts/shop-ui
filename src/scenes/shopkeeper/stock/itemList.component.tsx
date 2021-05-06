@@ -97,6 +97,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
         this.submitExperienced = this.submitExperienced.bind(this);
         this.submitQButton = this.submitQButton.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
+        this.navigationAddProduct = this.navigationAddProduct.bind(this);
     }
 
     navigationCart() {
@@ -105,6 +106,10 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
 
     navigationProductDetail() {
         this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL)
+    }
+
+    navigationAddProduct() {
+        this.props.navigation.navigate(AppRoute.ADD_PRODUCT)
     }
 
     submitFresher() {
@@ -134,61 +139,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
         )
     }
 
-    // async componentDidMount() {
-    //     const value = await AsyncStorage.getItem('userDetail');
-    //     if (value) {
-    //         // console.log('user Details all data', value);
-    //         const user = JSON.parse(value);
-    //         this.setState({
-    //             userType: user.userType,
-    //             token: user.token,
-    //             userId: user.userId,
-    //         })
-    //         // console.log('user data id', this.state.userId);      
-    //     }
-
-    //     axios({
-    //         method: 'get',
-    //         url: AppConstants.API_BASE_URL + '/api/job/getalljob',
-
-    //     }).then((response) => {
-    //         this.setState({
-    //             ...this.state,
-    //             my_Jobs: response.data
-    //         })
-    //         console.log("Profile Data", response.data);
-    //     },
-    //         (error) => {
-    //             console.log(error);
-    //             if (error) {
-    //                 Alert.alert("UserId or Password is invalid");
-    //             }
-    //         }
-    //     );
-
-    //     axios({
-    //         method: 'get',
-    //         url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',
-    //     }).then((response) => {
-    //         this.setState({
-    //             ...this.state,
-    //             salary_Type: response.data.SALARY_TYPE,
-    //             job_Industry: response.data.JOB_CATEGORY,
-    //             min_Qualification: response.data.QUALIFICATION,
-    //             experience_Required: response.data.EXPERIENCE,
-    //             employment_Type: response.data.EMPLOYMENT_TYPE,
-    //             skill: response.data.SKILL
-    //         })
-    //         // console.log("Profile Data", response.data);
-    //     },
-    //         (error) => {
-    //             console.log(error);
-    //             if (error) {
-    //                 Alert.alert("UserId or Password is invalid");
-    //             }
-    //         }
-    //     );
-    // }
+   
 
     handleJobSubmit() {
         // this.props.navigation.navigate(AppRoute.SHOP_CUSTOMER_DETAIL);
@@ -407,7 +358,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                     title='Item List'
                     backIcon={BackIcon}
                     menuIcon={PlusCircle}
-                    onRightPress={() => {}}
+                    onRightPress={() => {this.navigationAddProduct()}}
                     onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
