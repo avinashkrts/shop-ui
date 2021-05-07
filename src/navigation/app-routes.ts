@@ -16,6 +16,7 @@ export enum AppRoute {
   ADD_CUSTOMER = 'Add Customer',
   ITEM_CATEGORY = 'Item Category',
   ADD_CATEGORY = 'Add Category',
+  ADD_BRAND = 'Add Brand',
   EMPLOYEE = 'Employee',
   ALLITEM = 'All Item',
   PRODUCT_DETAIL = 'Product Detail',

@@ -1074,8 +1074,7 @@ export const Styles = StyleSheet.create({
     borderColor: Color.COLOR,
     borderWidth: 1,
     borderRadius: 5,
-    paddingVertical: 5,
-    paddingLeft: 5,
+    padding: 5,
   },
 
   user_detail_data_text: {

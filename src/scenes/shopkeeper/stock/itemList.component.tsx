@@ -77,456 +77,381 @@ const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
 export class ItemListScreen extends React.Component<ItemListScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            userId: '',
-            userType: '',
-            token: '',
-            isFresher: false,
-            isExperience: false,
-            qButton: '',
-            my_Jobs: [],
-            salary_Type: [],
-            job_Industry: [],
-            min_Qualification: [],
-            experience_Required: [],
-            employment_Type: [],
-            skill: [],
+            allProduct: [],
+            allCategory: [],
+            allBrand: [],
+            selectedCategory: '',
+            selectedBrand: '',
+
+            allData: [{
+                url: 'http://192.168.0.106:8082/api/product/getallproduct',
+                method: 'GET',
+                variable: 'allProduct',
+            },
+            {
+                url: 'http://192.168.0.106:8082/api/category/getallcategory',
+                method: 'GET',
+                variable: 'allCategory',
+            },
+            {
+                url: 'http://192.168.0.106:8082/api/brand/getallbrand',
+                method: 'GET',
+                variable: 'allBrand',
+            }],
+            scrollY: new Animated.Value(0),
         }
-        this.submitFresher = this.submitFresher.bind(this);
-        this.submitExperienced = this.submitExperienced.bind(this);
-        this.submitQButton = this.submitQButton.bind(this);
-        this._onRefresh = this._onRefresh.bind(this);
+
+        this.onRefresh = this.onRefresh.bind(this);
         this.navigationAddProduct = this.navigationAddProduct.bind(this);
     }
 
-    navigationCart() {
-        this.props.navigation.navigate(AppRoute.CART)
+    async componentDidMount() {
+        const { allData } = this.state;
+
+        allData.map((data, index) => {
+            // console.log(allData)
+            axios({
+                method: data.method,
+                url: data.url,
+            }).then((response) => {
+                if (data.variable === 'allProduct') {
+                    console.log(data.variable, response.data)
+                    this.setState({ allProduct: response.data })
+                } else if (data.variable === 'allCategory') {
+                    console.log(data.variable, response.data)
+                    this.setState({
+                        allCategory: response.data,
+                        selectedCategory: response.data[0].id
+                    })
+                } else if (data.variable === 'allBrand') {
+                    console.log(data.variable, response.data)
+                    this.setState({
+                        allBrand: response.data,
+                        selectedBrand: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Please enter a valid email ID and password.")
+            });
+        })
     }
 
-    navigationProductDetail() {
-        this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL)
+    addToCart(id) {
+        axios({
+            method: 'GET',
+            url: '',
+        }).then((response) => {
+
+        }, (error) => {
+
+        });
     }
 
-    navigationAddProduct() {
-        this.props.navigation.navigate(AppRoute.ADD_PRODUCT)
+    navigateToCart() {
+        this.props.navigation.navigate(AppRoute.CUSTOMER_CART)
     }
 
-    submitFresher() {
-        this.setState(
-            {
-                isFresher: true,
-                isExperience: false
-            }
-        )
-    }
-
-    submitExperienced() {
-        this.setState(
-            {
-                isExperience: true,
-                isFresher: false
-            }
-        )
-    }
-
-    submitQButton(e, selected) {
-        // console.log(selected)
-        this.setState(
-            {
-                qButton: selected
-            }
-        )
-    }
-
-   
-
-    handleJobSubmit() {
-        // this.props.navigation.navigate(AppRoute.SHOP_CUSTOMER_DETAIL);
-        // const jobData = {
-        //     jobId: jobId,
-        //     jobUserId: jobUserId
-        // }
-        // AsyncStorage.setItem('jobId', JSON.stringify(jobData), () => {
-        //     AsyncStorage.getItem('jobId', (err, result) => {
-        //         console.log('Job Id is', result);
-        //     })
-        //     this.props.navigation.navigate(AppRoute.JOBDETAIL);
-        // })
-    }
-
-    _onRefresh() {
+    onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
             this.setState({ refreshing: false });
         });
+
     }
 
-    // renderMyJob = ({ item }: any): ListItemElement => (
-    //     <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 10 }}>
-    //         {item != null ?
-    //             <View>
-    //                 <TouchableOpacity onPress={(e) => this.handleJobSubmit(e, item.id, item.userId)}>
-    //                     <View style={styles.card}>
-    //                         <View style={styles.card1}>
-    //                             <View style={styles.card1_1}></View>
-    //                             <View style={styles.card1_2}>
-    //                                 <Text style={styles.softwareEngineer}>{item.jobTitle}</Text>
-    //                             </View>
-    //                             <View style={styles.card1_3}>
-    //                                 <Image
-    //                                     source={require("../../../assets/logo.png")}
-    //                                     resizeMode="contain"
-    //                                     style={styles.image}
-    //                                 />
-    //                             </View>
-    //                         </View>
-
-    //                         <View style={styles.card1}>
-    //                             <View style={styles.card1_1}>
-    //                                 <Text><ExperienceIcon /></Text>
-    //                             </View>
-    //                             <View style={styles.card2}>
-    //                                 {this.state.experience_Required.map((data, index) => {
-    //                                     if (data.lookUpId == item.experienceRequired)
-    //                                         return (
-    //                                             <Text style={styles.loremIpsum}>{data.lookUpLabel}</Text>
-    //                                         )
-    //                                 })}
-
-    //                             </View>
-    //                         </View>
-
-    //                         <View style={styles.card1}>
-    //                             <View style={styles.card1_1}>
-    //                                 <Text><LocationIcon /></Text>
-    //                             </View>
-    //                             <View style={styles.card2}>
-    //                                 <Text style={styles.bangalore}>{item.location}</Text>
-    //                             </View>
-    //                         </View>
-
-    //                         <View style={styles.card1}>
-    //                             <View style={styles.card1_1}>
-    //                                 <Text><PencilIcon /></Text>
-    //                             </View>
-    //                             <View style={[styles.card2, { flexWrap: 'wrap', flexDirection: 'row' }]}>
-    //                                 {this.state.skill.map((data, index) => {
-    //                                     return (
-    //                                         <View>
-    //                                             {item.skill.split(',').map((data1, index) => {
-    //                                                 if (data1 == data.lookUpId)
-    //                                                     return (
-    //                                                         <View style={styles.skill}>
-    //                                                             <Text style={styles.loremIpsum2}>{data.lookUpLabel}</Text>
-    //                                                         </View>
-    //                                                     )
-    //                                             })
-    //                                             }
-    //                                         </View>
-    //                                     )
-    //                                 })}
-
-    //                             </View>
-    //                         </View>
-
-    //                         <View style={styles.card1}>
-    //                             <View style={styles.card1_1}>
-    //                                 <Text><PublicIcon /></Text>
-    //                             </View>
-    //                             <View style={styles.card2}>
-    //                                 <Text style={styles.loremIpsum5}>5 Mar 2020</Text>
-    //                             </View>
-    //                         </View>
-
-    //                         <View style={[styles.card1, { marginTop: 15 }]}>
-    //                             <View style={styles.card1_1}></View>
-    //                             <View style={styles.card2}>
-    //                                 <Text style={styles.softwareEngineer}>{item.companyName}</Text>
-    //                             </View>
-    //                         </View>
-    //                     </View>
-
-    //                     {/* <View style={styles.card1}>
-    //                     <View style={styles.cardInner1}>
-    //                         <View>
-    //                             <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-    //                         </View>
-    //                     </View>
-
-    //                     <View style={styles.cardInner2}>
-    //                         <View style={styles.cardInner2_1}>
-    //                             <Text style={styles.jobType}>{item.jobTitle}</Text>
-    //                             <Text style={styles.companyName}>{item.companyName}</Text>
-    //                             <Text style={styles.location}>{item.location}</Text>
-    //                         </View>
-
-    //                         <View style={styles.cardInner2_1}>
-    //                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10 }}>
-
-    //                                 {this.state.salary_Type.map((data, index) => {
-    //                                     if (data.lookUpId == item.salaryType)
-    //                                         return (
-    //                                             <View style={{ flexDirection: 'column' }}>
-    //                                                 <Text style={styles.subHeading}>Salary {data.lookUpLabel}</Text>
-    //                                                 <Text style={styles.subData}>{item.salaryFrom} - {item.salaryTo}</Text>
-    //                                             </View>
-    //                                         )
-    //                                 })}
-
-    //                                 {this.state.experience_Required.map((data, index) => {
-    //                                     if (data.lookUpId == item.experienceRequired)
-    //                                         return (
-    //                                             <View style={{ flexDirection: 'column' }}>
-    //                                                 <Text style={styles.subHeading}>Experience</Text>
-    //                                                 <Text style={styles.subData}>{data.lookUpLabel}</Text>
-    //                                             </View>
-    //                                         )
-    //                                 })}
-
-    //                                 {this.state.employment_Type.map((data, index) => {
-    //                                     if (data.lookUpId == item.employmentType)
-    //                                         return (
-    //                                             <View style={{ flexDirection: 'column' }}>
-    //                                                 <Text style={styles.subHeading}>Employment</Text>
-    //                                                 <Text style={styles.subData}>{data.lookUpLabel}</Text>
-    //                                             </View>
-    //                                         )
-    //                                 })}
-
-
-    //                             </View>
-    //                             {this.state.job_Industry.map((data, index) => {
-    //                                 if (data.lookUpId == item.jobIndustry)
-    //                                     return (
-    //                                         <View style={{ flexDirection: 'column' }}>
-    //                                             <Text style={styles.subHeading}>Job Category</Text>
-    //                                             <Text style={styles.subData}>{data.lookUpLabel}</Text>
-    //                                         </View>
-    //                                     )
-    //                             })}
-
-    //                             {this.state.skill.map((data, index) => {
-    //                                 if (data.lookUpId == item.skill)
-    //                                     return (
-    //                                         <View>
-    //                                             <Text style={styles.skill}>Skills: {data.lookUpLabel}</Text>
-    //                                         </View>
-    //                                     )
-    //                             })}
-
-
-    //                         </View>
-
-    //                         <View style={styles.cardInner2_2}>
-    //                             <Text style={styles.subHeading}>30 Applicants</Text>
-    //                             <Text style={styles.subHeading}>30 days ago</Text>
-    //                         </View>
-
-    //                     </View>
-    //                 </View> */}
-    //                 </TouchableOpacity>
-
-    //                 {/* <Footer>
-    //                 <FooterTab style={styles.footerTab}>
-    //                     <TouchableOpacity style={styles.applyButton} onPress={() => this.props.navigation.navigate(AppRoute.HOME)}>
-    //                         <Text style={styles.applyButtonText}>Apply Now</Text>
-    //                     </TouchableOpacity>
-    //                 </FooterTab>
-    //             </Footer> */}
-
-    //             </View> :
-    //             <ActivityIndicator size='large' color='green' />}
-
-    //     </ListItem>
-    // )
-
-    navigationItemList() {
-        this.props.navigation.navigate(AppRoute.ITEMLIST)
+    selectCategory(id) {
+        this.setState({ selectedCategory: id })
     }
 
-    handleAddCart() {
-        this.navigationCart();
+    selectBrand(id) {
+        this.setState({ selectedBrand: id })
     }
+
+    navigateProductDetail(id) {
+        Alert.alert(id)
+    }
+
+    navigationAddProduct() {
+        this.props.navigation.navigate(AppRoute.ADD_PRODUCT);
+    }
+
     render() {
-        const { my_Jobs } = this.state
+        const { allProduct, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
+        const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
+        const headerHeight = this.state.scrollY.interpolate({
+            inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
+            outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+            extrapolate: 'clamp'
+        })
+
+        const headerZIndex = Animated.interpolate(diffClamp, {
+            inputRange: [0, 1000],
+            outputRange: [1000, 0]
+        })
+
+        const containtZIndex = Animated.interpolate(diffClamp, {
+            inputRange: [1000, 1000],
+            outputRange: [1000, 1000]
+        })
+
+
+        // const scrollY = new Animated.Value(0);
+
+        const headerY = Animated.interpolate(diffClamp, {
+            inputRange: [0, HEADER_MAX_HEIGHT],
+            outputRange: [0, -HEADER_MAX_HEIGHT],
+        })
+
+        const profileImageMarginTop = Animated.interpolate(diffClamp, {
+            inputRange: [0, HEADER_MIN_HEIGHT],
+            outputRange: [HEADER_MIN_HEIGHT, HEADER_MIN_HEIGHT]
+        })
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
+
+                {/* <Animated.View style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: 'white',
+                    height: HEADER_MIN_HEIGHT,
+                    zIndex: headerZIndex,
+                    transform: [{ translateY: headerY }]
+                }}> */}
                 <Toolbar
                     title='Item List'
                     backIcon={BackIcon}
                     menuIcon={PlusCircle}
-                    onRightPress={() => {this.navigationAddProduct()}}
+                    onRightPress={() => { this.navigationAddProduct() }}
                     onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
-                <Content style={Styles.customer_content}
+                {/* <Header style={styles.header}> */}
+                <View style={Styles.searchBox}>
+                    <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                    <TextInput
+                        placeholder="Search"
+                        style={Styles.searchInput}
+                    />
+                </View>
+                {/* </Header> */}
+                {/* <Header style={{ backgroundColor: '#ffffff', height: 30, marginTop: -5 }}>
+
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
+                            <View style={{ marginTop: -10 }}>
+                                <FlatList
+                                    style={{}}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    data={allCategory}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
+                                                <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                    <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    }}
+                                >
+                                </FlatList>
+                            </View>
+                        </View>
+                    </Header>
+                    <Divider />
+                    <Header style={{ backgroundColor: '#ffffff', height: 30, marginTop: 15 }}>
+
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
+                            <View style={{ marginTop: -10 }}>
+                                <FlatList
+                                    style={{}}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    data={allBrand}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id) }}>
+                                                <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                    <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    }}
+                                >
+                                </FlatList>
+                            </View>
+                        </View>
+                    </Header>
+                </Animated.View> */}
+                {/* <Animated.ScrollView style={{ flex: 1 }}
+                    bounces={false}
+                    scrollEventThrottle={16}
+                    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}>
+                    <Animated.View style={{
+                        height: '100%',
+                        width: '100%',
+                        marginTop: profileImageMarginTop
+                    }}> */}
+                <Content style={[Styles.customer_content, { marginTop: 0 }]} showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
-                            onRefresh={this._onRefresh.bind(this)}
+                            onRefresh={this.onRefresh.bind(this)}
                         />
                     }
                 >
-                    {/* <Header style={styles.header}> */}
-                    <View style={Styles.searchBox}>
-                        <Text style={Styles.searchIcon}><SearchIcon /></Text>
-                        <TextInput
-                            placeholder="Search"
-                            style={Styles.searchInput}
-                        />
-                    </View>
-                    {/* </Header> */}
+
                     <View style={Styles.all_Item_Main_View}>
-
-                        <View style={Styles.all_Item_List}>
-                            <TouchableOpacity onPress={() => this.navigationProductDetail()}>
-                                <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
-                                    {/* <View>
-                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                                    </View> */}
-                                </View>
-                                <View style={Styles.all_Item_Detail}>
-                                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>Dawat Basmati Rice</Text>
-                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>25 Kg.</Text>
-
-                                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                            <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,100</Text>
-                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,150</Text>
+                        {allProduct.map((data, index) => {
+                            return (
+                                <View style={Styles.all_Item_List}>
+                                    <TouchableOpacity onPress={() => { }}>
+                                        <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                            <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                            <Text style={{ color: Color.COLOR }}>3.5 % off</Text>
-                                            <Text style={{ color: Color.COLOR }}>Offer till Tue.</Text>
-                                        </View>
-                                    </View>
-                                    <TouchableOpacity onPress={() => { this.handleAddCart() }}>
-                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                        <View style={Styles.all_Item_Detail}>
+                                            <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                                {/* {allBrand.map((brand, index) => {
+                                                            if (brand.id == data.brand) {
+                                                                return (
+                                                                    <> */}
+                                                <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name}</Text>
+                                                {/* </>
+                                                                );
+                                                            }
+                                                        })} */}
+                                                {allBrand.map((brand, index) => {
+                                                    if (brand.id == data.brand) {
+                                                        return (
+                                                            <>
+                                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{brand.name}</Text>
+                                                            </>
+                                                        );
+                                                    }
+                                                })}
+                                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                                    <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
+                                                    {data.offerActiveInd ?
+                                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
+                                                        : null
+                                                    }
+                                                </View>
+                                                {data.offerActiveInd ?
+                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                        <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
+                                                        <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
+                                                    </View> : null
+                                                }
+
+                                            </View>
+                                            {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
+                                            <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.quantity}</Text>
+                                            </View>
+                                            {/* </TouchableOpacity> */}
                                         </View>
                                     </TouchableOpacity>
                                 </View>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={Styles.all_Item_List}>
-                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                <Avatar source={require("../../../assets/wire.jpg")} style={Styles.all_Item_Image} />
-                                {/* <View>
-                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                                    </View> */}
-                            </View>
-                            <View style={Styles.all_Item_Detail}>
-                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                    <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>V-Guard Copper Wire</Text>
-                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>1 Mtr.</Text>
-
-                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 20</Text>
-                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>22</Text>
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                        <Text style={{ color: Color.COLOR }}>2.5 % off</Text>
-                                        <Text style={{ color: Color.COLOR }}>Offer till Mon.</Text>
-                                    </View>
-                                </View>
-                                <TouchableOpacity>
-                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        <View style={Styles.all_Item_List}>
-                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.all_Item_Image} />
-                                {/* <View>
-                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                                    </View> */}
-                            </View>
-                            <View style={Styles.all_Item_Detail}>
-                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                    <Text style={{ color: '#000', marginVertical: 5, fontWeight: 'bold' }}>Hp Probook 6460b</Text>
-                                    <Text style={{ color: Color.COLOR_ITEM_NAME }}>1 Pc.</Text>
-
-                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 64,999</Text>
-                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>67,999</Text>
-                                    </View>
-                                </View>
-                                <TouchableOpacity>
-                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        <View style={Styles.all_Item_List}>
-                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                <Avatar source={require("../../../assets/vivo_mobile.jpeg")} style={Styles.all_Item_Image} />
-                                {/* <View>
-                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                                    </View> */}
-                            </View>
-                            <View style={Styles.all_Item_Detail}>
-                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                    <Text style={{ color: '#000', marginVertical: 5, fontWeight: 'bold' }}>Vivo V 17</Text>
-                                    <Text style={{ color: Color.COLOR_ITEM_NAME }}>1 Pcs.</Text>
-
-                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 21,999</Text>
-                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>24,999</Text>
-                                    </View>
-                                </View>
-                                <TouchableOpacity>
-                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        <View style={Styles.all_Item_List}>
-                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                <Avatar source={require("../../../assets/chair.jpg")} style={Styles.all_Item_Image} />
-                                {/* <View>
-                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                                    </View> */}
-                            </View>
-                            <View style={Styles.all_Item_Detail}>
-                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                    <Text style={{ color: '#000', marginVertical: 5, fontWeight: 'bold' }}>Nilkamal Chair</Text>
-                                    <Text style={{ color: Color.COLOR_ITEM_NAME }}>1 Pc.</Text>
-
-                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. 1,500</Text>
-                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>1,700</Text>
-                                    </View>
-                                </View>
-                                <TouchableOpacity>
-                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                            )
+                        })}
                     </View>
-
-                    {/* <List data={my_Jobs}
-                        renderItem={this.renderMyJob}
-                    /> */}
-                    <View style={{ height: 10, width: '100%' }}/>
+                    <View style={{ height: 10, width: '100%' }} />
                 </Content>
+                {/* </Animated.View>
+                </Animated.ScrollView> */}
 
             </SafeAreaLayout>
-        )
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    ImgBgTwo: {
+        position: 'absolute',
+        borderRadius: 55,
+        alignSelf: 'center',
+        height: 11, width: 11,
+        transform: [{ scaleX: 2 }],
+        backgroundColor: 'white',
+        marginTop: 20
+    },
+    ImgBgOne: {
+        height: 9,
+        width: 9,
+        backgroundColor: 'white',
+        borderRadius: 50,
+        alignSelf: 'center',
+        marginTop: 9,
+        position: 'absolute'
+    },
+    askButton: {
+        backgroundColor: '#D8D8D899',
+        width: 50,
+        height: 50,
+        borderRadius: 30,
+        position: 'absolute',
+        alignSelf: 'flex-end',
+        zIndex: 100,
+        bottom: 0,
+        right: 0,
+        marginBottom: 2,
+        marginRight: 2
+    },
+    Search: {
+        width: '88%', alignSelf: 'flex-end',
+        position: 'absolute', zIndex: 100, marginTop: 5, borderRadius: 25
+    },
+
+    name: {
+        fontSize: 12,
+        marginRight: 5,
+        marginTop: -5,
+        marginLeft: 10,
+        fontWeight: 'bold',
+        marginBottom: 2
+    },
+
+    TextView: {
+        width: '85%'
+    },
+    text: {
+        textAlign: 'justify',
+        fontSize: 15,
+        color: 'black',
+        marginRight: 5
+    },
+    safeArea: {
+        flex: 1,
+        paddingBottom: 0,
+        // paddingHorizontal: 16,
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    horizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 10
+    },
+
+    selected: {
+        color: 'blue',
+        borderBottomColor: 'blue',
+        borderBottomWidth: 2,
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+
+    notSelected: {
+        color: 'silver'
     }
 
-}
+});

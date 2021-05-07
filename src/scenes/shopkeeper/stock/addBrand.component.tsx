@@ -15,8 +15,8 @@ import {
     withStyles, TabBar,
     styled, Divider, Avatar, Icon, Button
 } from 'react-native-ui-kitten';
-import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab } from 'native-base';
-import { AddCategoryScreenProps } from '../../../navigation/stock.navigator';
+import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab, Picker } from 'native-base';
+import { AddBrandScreenProps } from '../../../navigation/stock.navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
 import { SearchIcon, EditIcon, BackIcon } from '../../../assets/icons';
@@ -81,7 +81,7 @@ const HEADER_MIN_HEIGHT = 70;
 const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
-export class AddCategoryScreen extends React.Component<AddCategoryScreenProps & ThemedComponentProps, MyState & any> {
+export class AddBrandScreen extends React.Component<AddBrandScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
@@ -89,6 +89,7 @@ export class AddCategoryScreen extends React.Component<AddCategoryScreenProps & 
             file: null,
             name: '',
             title: '',
+            category: '',
             shopId: 'AVI123'
         }
         this._onRefresh = this._onRefresh.bind(this);
@@ -106,6 +107,8 @@ export class AddCategoryScreen extends React.Component<AddCategoryScreenProps & 
                 const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
 
                 this.setState({
+                    category: '',
+                    categoryData: [],
                     imageSource: source,
                     file: file,
                     isVisible: true
@@ -115,31 +118,45 @@ export class AddCategoryScreen extends React.Component<AddCategoryScreenProps & 
     }
 
 
-componentDidMount() {
-    this.setState({
-        name: ''
-    })
-}
+    async componentDidMount() {
+        Axios({
+            method: 'GET',
+            url: 'http://192.168.0.106:8082/api/category/getallcategory',
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    categoryData: response.data
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+    }
 
     _onRefresh() {
         this.setState({ refreshing: true });
-            this.setState({name: '', refreshing: false });
+        this.componentDidMount().then(() => {
+            this.setState({ refreshing: false });
+        });
     }
 
-    handleAddCategory() {
-        const { name, title, shopId } = this.state;
+    handleAddBrand() {
+        const { name, category, shopId } = this.state;
 
         if (name == null || name === '') {
-            Alert.alert("Please enter category name.");
+            Alert.alert("Please enter brand name.");
+        } else if (category == null || category === '') {
+            Alert.alert("Please select category.");
         } else {
             console.log(name.toUpperCase(), name.replace(" ", "_"),)
             const catName = name.toUpperCase();
             const catTitle = catName.replace(" ", "_");
             Axios({
                 method: 'POST',
-                url: 'http://192.168.0.106:8082/api/category/create',
+                url: 'http://192.168.0.106:8082/api/brand/create',
                 data: {
                     name: catName,
+                    category: category,
                     shopId: shopId,
                     title: catTitle
                 }
@@ -158,8 +175,18 @@ componentDidMount() {
         }
     }
 
+    handleAddCategory(value) {
+        if (value === 'add') {
+            this.props.navigation.navigate(AppRoute.ADD_CATEGORY)
+        } else {
+            this.setState({
+                category: value
+            })
+        }
+    }
+
     render() {
-        const { modalVisible, name, imageSource } = this.state
+        const { categoryData, category, name, imageSource } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -202,9 +229,35 @@ componentDidMount() {
                                 />
                             </View>
 
+                            <View style={[{ width: '90%' }]}>
+                                {/* <View style={Styles.inputTextView}>
+                                    <Text style={Styles.user_detail_header_text}>{LableText.CATEGORY}</Text>
+                                </View> */}
+                                <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                    <Picker
+                                        note
+                                        mode="dropdown"
+                                        style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
+                                        selectedValue={category}
+                                        onValueChange={(value) => { this.handleAddCategory(value) }}
+                                    >
+                                        <Picker.Item label="Select category" value="" />
+                                        {null != categoryData ? categoryData.map((data, index) => {
+                                            return (
+                                                <Picker.Item label={data.name} value={data.id} />
+                                            )
+                                        }) : null}
+                                        <Picker.Item label="Add category" value="add" />
+
+                                        {/* <Picker.Item label="Mobile" value="1" />
+                                        <Picker.Item label="Laptop" value="2" /> */}
+                                    </Picker>
+                                </View>
+                            </View>
+
                             <View style={{ flexDirection: 'row' }}>
                                 <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
-                                    <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} onPress={() => { this.handleAddCategory() }}>
+                                    <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} onPress={() => { this.handleAddBrand() }}>
                                         <Text style={Styles.buttonName}>{LableText.ADD}</Text>
                                     </TouchableOpacity>
                                 </View>

@@ -253,26 +253,38 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
 
                                                 <View style={Styles.all_Item_Detail}>
                                                     <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                                        {/* {allBrand.map((brand, index) => {
+                                                            if (brand.id == data.brand) {
+                                                                return (
+                                                                    <> */}
+                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name}</Text>
+                                                        {/* </>
+                                                                );
+                                                            }
+                                                        })} */}
                                                         {allBrand.map((brand, index) => {
                                                             if (brand.id == data.brand) {
                                                                 return (
                                                                     <>
-                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{brand.name}</Text>
+                                                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{brand.name}</Text>
                                                                     </>
                                                                 );
                                                             }
                                                         })}
-                                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.name}</Text>
-
                                                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
                                                             <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
-                                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
+                                                            {data.offerActiveInd ?
+                                                                <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
+                                                                : null
+                                                            }
                                                         </View>
+                                                        {data.offerActiveInd ?
+                                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                                <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
+                                                                <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
+                                                            </View> : null
+                                                        }
 
-                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerLast.substr(8, 2) + "/" + data.offerLast.substr(5, 2) + "/" + data.offerLast.substr(0, 4)}</Text>
-                                                        </View>
                                                     </View>
                                                     <TouchableOpacity onPress={() => { this.addToCart(data.id) }}>
                                                         <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>

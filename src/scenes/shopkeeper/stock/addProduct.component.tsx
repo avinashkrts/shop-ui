@@ -8,16 +8,18 @@ import { BackIcon, MenuIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { Color, LableText } from "../../../constants";
-import { Content, Picker } from "native-base";
+import { CheckBox, Content, Picker } from "native-base";
 import Axios from "axios";
+import DatePicker from 'react-native-datepicker'
+import { AppRoute } from "../../../navigation/app-routes";
 
 export class AddProductScreen extends Component<AddProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
         this.state = {
             name: '',
-            category: '1',
-            brand: '1',
+            category: '',
+            brand: '',
             shopId: 'AVI123',
             avatar: '123asd',
             price: '',
@@ -28,45 +30,76 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
             sellingPrice: '',
             costPrice: '',
             oldPrice: '',
-            offerPercent: '5',
-            offerFrom: '',
-            offerTo: '',
+            offerPercent: '',
+            offerFrom: String(new Date().getFullYear() + '-' + Number(new Date().getMonth() + 1) + '-' + new Date().getDate()),
+            offerTo: String(new Date().getFullYear() + '-' + Number(new Date().getMonth() + 1) + '-' + new Date().getDate()),
             offerActiveInd: false,
             gstAmount: '',
             measurement: '1',
             deliveryCharge: '',
             gstPercent: '',
+            minDate: String(new Date().getFullYear() + '-' + Number(new Date().getMonth() + 1) + '-' + new Date().getDate()),
+            allCategory: [],
+            allBrand: [],
+            allMeasurement: [],
+            allData: [{
+                url: 'http://192.168.0.106:8082/api/lookup/getallmeasurementtype',
+                method: 'GET',
+                variable: 'allMeasurement',
+            },
+            {
+                url: 'http://192.168.0.106:8082/api/category/getallcategory',
+                method: 'GET',
+                variable: 'allCategory',
+            },
+            {
+                url: 'http://192.168.0.106:8082/api/brand/getallbrand',
+                method: 'GET',
+                variable: 'allBrand',
+            }],
         }
         this.onRefresh = this.onRefresh.bind(this);
     }
 
-    componentDidMount() {
-        // Axios({
-        //     method: 'GET',
-        //     url: 'http://192.168.0.106:8091/api/user/get/51'
-        // }).then((response) => {
-        //     this.setState({
-        //         firstName: response.data.firstName,
-        //         emailId: response.data.emailId,
-        //         lastName: response.data.lastName,
-        //         lastLoginDate: response.data.lastLoginDate,
-        //         dob: response.data.dob,
-        //         mobileNo: response.data.mobileNo,
-        //         city: response.data.city,
-        //     })
-        // }, (error) => {
+    async componentDidMount() {
+        const { allData } = this.state;
 
-        // });
+        allData.map((data, index) => {
+            // console.log(allData)
+            Axios({
+                method: data.method,
+                url: data.url,
+            }).then((response) => {
+                if (data.variable === 'allCategory') {
+                    console.log(data.variable, response.data)
+                    this.setState({
+                        allCategory: response.data,
+                    })
+                } else if (data.variable === 'allBrand') {
+                    console.log(data.variable, response.data)
+                    this.setState({
+                        allBrand: response.data,
+                    })
+                } else if (data.variable === 'allMeasurement') {
+                    console.log(data.variable, response.data)
+                    this.setState({
+                        allMeasurement: response.data,
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Please enter a valid email ID and password.")
+            });
+        })
     }
 
     handleSubmit() {
         const { isEditable, name, category, brand, shopId, avatar, price, quantity, description, barcode,
             stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
-            gstAmount, measurement, deliveryCharge, gstPercent, review } = this.state
+            gstAmount, measurement, deliveryCharge, gstPercent } = this.state
 
-        console.log('Product Data', name, category, brand, shopId, avatar, price, quantity, description, barcode,
-            stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
-            gstAmount, measurement, deliveryCharge, gstPercent, review);
+        // console.log('Product Data', name, category, brand, shopId, avatar, price, quantity, description, barcode,
+        //     stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
+        //     gstAmount, measurement, deliveryCharge, gstPercent);
 
         if (name == null || name === '') {
             Alert.alert("Please enter product name.");
@@ -85,9 +118,11 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
         } else if (measurement == null || measurement === '') {
             Alert.alert("Please select measurement.");
         } else if (barcode == null || barcode === '') {
-            Alert.alert("Please select category.");
+            Alert.alert("Please enter barcode.");
         } else if (description == null || description === '') {
             Alert.alert("Please enter description.");
+        } else if (offerActiveInd && (offerPercent == null || offerPercent === '')) {
+            Alert.alert("Please enter offer percent.");
         } else {
             Axios({
                 method: 'POST',
@@ -103,9 +138,9 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                     sellingPrice: sellingPrice,
                     costPrice: costPrice,
                     offerPercent: offerPercent,
-                    offerFrom: "2021-05-01",
-                    offerTo: "2021-06-01",
-                    offerActiveInd: true,
+                    offerFrom: offerActiveInd ? offerFrom : '',
+                    offerTo: offerActiveInd ? offerTo : '',
+                    offerActiveInd: offerActiveInd,
                     measurement: measurement,
                     gstPercent: gstPercent,
                 }
@@ -113,6 +148,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                 if (null != response.data) {
                     if (response.data.status === 'true') {
                         Alert.alert("Product created.")
+                        this.props.navigation.goBack()
                     } else if (response.data.status === 'false') {
                         Alert.alert("Product allready exists.")
                     }
@@ -120,6 +156,36 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
             }, (error) => {
                 Alert.alert("Server error!.")
             });
+        }
+    }
+
+    handleAddCategory(value) {
+        if (value === 'add') {
+            this.props.navigation.navigate(AppRoute.ADD_CATEGORY)
+        } else {
+            this.setState({
+                category: value
+            })
+        }
+    }
+
+    handleAddBrand(value) {
+        if (value === 'add') {
+            this.props.navigation.navigate(AppRoute.ADD_BRAND)
+        } else {
+            this.setState({
+                category: value
+            })
+        }
+    }
+
+    handleAddMeasurement(value) {
+        if (value === 'add') {
+            // this.props.navigation.navigate(AppRoute.ADD_CATEGORY)
+        } else {
+            this.setState({
+                category: value
+            })
         }
     }
 
@@ -131,9 +197,9 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
     }
 
     render() {
-        const { isEditable, name, category, brand, shopId, avatar, price, quantity, description, barcode,
+        const { isEditable, allCategory, allBrand, name, category, brand, shopId, avatar, price, quantity, description, barcode,
             stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
-            gstAmount, measurement, deliveryCharge, gstPercent, review } = this.state
+            gstAmount, measurement, gstPercent, minDate, allMeasurement } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -187,10 +253,18 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                                     mode="dropdown"
                                     style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
                                     selectedValue={category}
-                                    onValueChange={(value) => { this.setState({ category: value }) }}
+                                    onValueChange={(value) => { this.handleAddCategory(value) }}
                                 >
-                                    <Picker.Item label="Mobile" value="1" />
-                                    <Picker.Item label="Laptop" value="2" />
+                                    <Picker.Item label="Select category" value="" />
+                                    {null != allCategory ? allCategory.map((data, index) => {
+                                        return (
+                                            <Picker.Item label={data.name} value={data.id} />
+                                        )
+                                    }) : null}
+                                    <Picker.Item label="Add category" value="add" />
+
+                                    {/* <Picker.Item label="Mobile" value="1" />
+                                        <Picker.Item label="Laptop" value="2" /> */}
                                 </Picker>
                             </View>
                         </View>
@@ -205,10 +279,18 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                                     mode="dropdown"
                                     style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
                                     selectedValue={brand}
-                                    onValueChange={(value) => { this.setState({ brand: value }) }}
+                                    onValueChange={(value) => { this.handleAddBrand(value) }}
                                 >
-                                    <Picker.Item label="Samsung" value="1" />
-                                    <Picker.Item label="Apple" value="2" />
+                                    <Picker.Item label="Select category" value="" />
+                                    {null != allBrand ? allBrand.map((data, index) => {
+                                        return (
+                                            <Picker.Item label={data.name} value={data.id} />
+                                        )
+                                    }) : null}
+                                    <Picker.Item label="Add Brand" value="add" />
+
+                                    {/* <Picker.Item label="Mobile" value="1" />
+                                        <Picker.Item label="Laptop" value="2" /> */}
                                 </Picker>
                             </View>
                         </View>
@@ -244,21 +326,6 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                             </View>
                         </View>
 
-                        {/* <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.OLD_PRICE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    value={oldPrice}
-                                    onChangeText={(value) => { this.setState({ oldPrice: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.OLD_PRICE}
-                                />
-                            </View>
-                        </View> */}
-
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.GST_PERCENT}</Text>
@@ -273,21 +340,6 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                                 />
                             </View>
                         </View>
-
-                        {/* <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.GST_AMOUNT}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    value={gstAmount}
-                                    onChangeText={(value) => { this.setState({ gstAmount: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.GST_AMOUNT}
-                                />
-                            </View>
-                        </View> */}
 
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
@@ -314,10 +366,18 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                                     mode="dropdown"
                                     style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
                                     selectedValue={measurement}
-                                    onValueChange={(value) => { this.setState({ measurement: value }) }}
+                                    onValueChange={(value) => { this.handleAddMeasurement(value) }}
                                 >
-                                    <Picker.Item label="Pcs" value="1" />
-                                    <Picker.Item label="K.G" value="2" />
+                                    <Picker.Item label="Select category" value="" />
+                                    {null != allMeasurement ? allMeasurement.map((data, index) => {
+                                        return (
+                                            <Picker.Item label={data.lookUpName} value={data.lookUpId} />
+                                        )
+                                    }) : null}
+                                    <Picker.Item label="Add measurement" value="add" />
+
+                                    {/* <Picker.Item label="Mobile" value="1" />
+                                        <Picker.Item label="Laptop" value="2" /> */}
                                 </Picker>
                             </View>
                         </View>
@@ -353,23 +413,96 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                             </View>
                         </View>
 
-                        {/* <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.OLD_PRICE}</Text>
+                        <View style={Styles.user_detail}>
+                            <View style={[Styles.user_detail_header, { flexDirection: 'row' }]}>
+                                <Text style={Styles.user_detail_header_text}>{LableText.OFFER}</Text>
+                                <CheckBox style={{ marginLeft: 10 }} checked={offerActiveInd} onPress={(value) => { this.setState({ offerActiveInd: !offerActiveInd }) }} />
                             </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    value={oldPrice}
-                                    onChangeText={(value) => { this.setState({ oldPrice: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.OLD_PRICE}
-                                />
-                            </View>
-                        </View> */}
-                        <View>
-
                         </View>
+
+                        {offerActiveInd ?
+                            <View style={Styles.user_detail_data}>
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.OFFER_PERCENT}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            multiline={true}
+                                            editable={isEditable}
+                                            value={offerPercent}
+                                            onChangeText={(value) => { this.setState({ offerPercent: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.OFFER_PERCENT}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.OFFER_FROM}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <DatePicker
+                                            style={{ width: '100%' }}
+                                            date={offerFrom}
+                                            mode="date"
+                                            placeholder="select date"
+                                            format="YYYY-MM-DD"
+                                            minDate={minDate}
+                                            // maxDate="2016-06-01"
+                                            confirmBtnText="Confirm"
+                                            cancelBtnText="Cancel"
+                                            customStyles={{
+                                                dateIcon: {
+                                                    position: 'absolute',
+                                                    left: 0,
+                                                    top: 5,
+                                                    marginLeft: 0
+                                                },
+                                                dateInput: {
+                                                    borderColor: '#fff'
+                                                }
+                                            }}
+                                            onDateChange={(date) => { this.setState({ offerFrom: date }) }}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.OFFER_TO}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <DatePicker
+                                            style={{ width: '100%' }}
+                                            date={offerTo}
+                                            mode="date"
+                                            placeholder="select date"
+                                            format="YYYY-MM-DD"
+                                            minDate={minDate}
+                                            // maxDate="2016-06-01"
+                                            confirmBtnText="Confirm"
+                                            cancelBtnText="Cancel"
+                                            customStyles={{
+                                                dateIcon: {
+                                                    position: 'absolute',
+                                                    left: 0,
+                                                    top: 5,
+                                                    marginLeft: 0
+                                                },
+                                                dateInput: {
+                                                    borderColor: '#fff'
+                                                }
+                                            }}
+                                            onDateChange={(date) => { this.setState({ offerTo: date }) }}
+                                        />
+                                    </View>
+                                </View>
+
+
+                            </View>
+                            : null}
 
                     </View>
 

@@ -356,13 +356,11 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
     //     </ListItem>
     // )
 
-    navigateAddCategory() {
-        this.props.navigation.navigate(AppRoute.ADD_CATEGORY)
+    navigateAddBrand() {
+        this.props.navigation.navigate(AppRoute.ADD_BRAND)
     }
 
-    handleAddBrand() {
-        this.navigateAddCategory();
-    }
+    
 
 
     render() {
@@ -376,7 +374,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     menuIcon={PlusCircle}
-                    onRightPress={() => {this.handleAddBrand()}}
+                    onRightPress={() => {this.navigateAddBrand()}}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Content style={Styles.customer_content}

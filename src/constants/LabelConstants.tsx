@@ -96,6 +96,9 @@ export class LableText {
     public static readonly CATEGORY = 'Category';
     public static readonly BRAND = 'Brand';
     public static readonly OFFER = 'Offer';
+    public static readonly OFFER_FROM = 'Offer From';
+    public static readonly OFFER_TO = 'Offer To';
+    public static readonly OFFER_PERCENT = 'Offer Percent';
     public static readonly DISCOUNT = 'Discount Percentage';
     public static readonly FROM_DATE = 'From Which Date';
     public static readonly TO_DATE = 'Till Last Date';
