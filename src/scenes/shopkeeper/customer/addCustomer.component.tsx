@@ -43,7 +43,9 @@ import { pathToFileURL, fileURLToPath } from 'url';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import { Placeholder, LableText, Color } from '../../../constants';
-import ImagePicker from 'react-native-image-picker';  
+import ImagePicker from 'react-native-image-picker';
+import { getFirstInstallTime } from 'react-native-device-info';
+import Axios from 'axios';
 
 const allTodos: TimeLineData[] = [
     TimeLineData.getAllTimelineData()
@@ -85,10 +87,17 @@ export class AddCustomerScreen extends React.Component<AddCustomerScreenProps & 
         super(props)
         this.state = {
             imageSource: '',
-            file: null
+            file: null,
+            firstName: '',
+            lastName: '',
+            emailId: '',
+            mobileNo: '',
+            userType: '2',
+            pwd: 'Milaan',
+            isVisible: false,
         }
         this._onRefresh = this._onRefresh.bind(this);
-        this.handleAddCategory = this.handleAddCategory.bind(this);
+        this.handleAddCustomer = this.handleAddCustomer.bind(this);
     }
 
     selectPhoto() {
@@ -104,7 +113,8 @@ export class AddCustomerScreen extends React.Component<AddCustomerScreenProps & 
                 this.setState({
                     imageSource: source,
                     file: file,
-                    isVisible: true
+                    isVisible: true,
+
                 });
             }
         });
@@ -174,12 +184,49 @@ export class AddCustomerScreen extends React.Component<AddCustomerScreenProps & 
         });
     }
 
-    handleAddCategory() {
+    handleAddCustomer() {
+        const { modalVisible, imageSource, firstName, lastName, emailId, mobileNo, userType, pwd } = this.state
+        console.log(modalVisible, imageSource, firstName, lastName, emailId, mobileNo, userType)
+        if (firstName == null || firstName === '') {
+            Alert.alert("Please enter first name.");
+        } else if (lastName == null || lastName === '') {
+            Alert.alert("Please enter last name.");
+        } else if (emailId == null || emailId === '') {
+            Alert.alert("Please enter emailId.");
+        } else if (mobileNo == null || mobileNo === '') {
+            Alert.alert("Please enter  mobile number.");
+
+        } else {
+            Axios({
+                method: 'POST',
+                url: 'http://192.168.0.106:8082/api/user/create/signup',
+                data: {
+                    firstName: firstName,
+                    lastName: lastName,
+                    emailId: emailId,
+                    mobileNo: mobileNo,
+                    userType: userType,
+                    pwd: pwd
+                }
+            }).then((response) => {
+                if (null != response.data) {
+                    if (response.data.status === 'true') {
+                        Alert.alert("Customer created.")
+                        this.props.navigation.goBack()
+                    } else if (response.data.status === 'false') {
+                        Alert.alert("Customer allready exists.")
+                    }
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+        }
 
     }
 
     render() {
-        const { modalVisible, imageSource } = this.state
+        const { modalVisible, imageSource, firstName, lastName, emailId, mobileNo, userType } = this.state
+
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -204,40 +251,65 @@ export class AddCustomerScreen extends React.Component<AddCustomerScreenProps & 
                             <View style={[Styles.profile, Styles.center]}>
                                 <View style={Styles.categoryImage}>
                                     <View>
-                                        <TouchableOpacity onPress={() => {this.selectPhoto()}}>
+                                        <TouchableOpacity onPress={() => { this.selectPhoto() }}>
                                             <View style={Styles.ImgBgOne} />
                                             <View style={Styles.ImgBgTwo} />
                                             <Avatar source={imageSource} style={Styles.profile_avatar} />
                                         </TouchableOpacity>
-                                    </View>                                   
+                                    </View>
                                 </View>
                             </View>
 
                             <View style={[Styles.inputTextView, { width: '90%' }]}>
                                 <TextInput
                                     style={[Styles.inputText, { width: '90%' }]}
-                                    placeholder={LableText.NAME}
+                                    placeholder={LableText.FIRST_NAME}
+                                    value={firstName}
+                                    onChangeText={(value) => { this.setState({ firstName: value }) }}
                                 />
                             </View>
 
                             <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                <TextInput
+                                    style={[Styles.inputText, { width: '90%' }]}
+                                    placeholder={LableText.LAST_NAME}
+                                    value={lastName}
+                                    onChangeText={(value) => { this.setState({ lastName: value }) }}
+                                />
+                            </View>
+
+                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                <TextInput
+                                    style={[Styles.inputText, { width: '90%' }]}
+                                    placeholder={LableText.EMAIL_ID}
+                                    value={emailId}
+                                    onChangeText={(value) => { this.setState({ emailId: value }) }}
+                                />
+                            </View>
+
+
+                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                <TextInput
+                                    style={[Styles.inputText, { width: '90%' }]}
+                                    placeholder={LableText.MOBILE}
+                                    value={mobileNo}
+                                    onChangeText={(value) => { this.setState({ mobileNo: value }) }}
+                                />
+                            </View>
+
+                            {/* <View style={[Styles.inputTextView, { width: '90%' }]}>
                                 <TextInput
                                     style={[Styles.inputText, { width: '90%' }]}
                                     placeholder={LableText.ADDRESS}
                                 />
-                            </View>
+                            </View> */}
 
-                            <View style={[Styles.inputTextView, { width: '90%' }]}>
-                                <TextInput
-                                    style={[Styles.inputText, { width: '90%' }]}
-                                    placeholder={LableText.PHONE}
-                                />
-                            </View>
+
 
 
                             <View style={{ flexDirection: 'row' }}>
                                 <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
-                                    <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} onPress={() => {  }}>
+                                    <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} onPress={() => { this.handleAddCustomer() }}>
                                         <Text style={Styles.buttonName}>{LableText.ADD}</Text>
                                     </TouchableOpacity>
                                 </View>
