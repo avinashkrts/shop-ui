@@ -7,7 +7,7 @@ import { Toolbar } from "../../../components/toolbar.component";
 import { BackIcon, MenuIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { Color, LableText } from "../../../constants";
+import { AppConstants, Color, LableText } from "../../../constants";
 import { CheckBox, Content, Picker } from "native-base";
 import Axios from "axios";
 import DatePicker from 'react-native-datepicker'
@@ -43,17 +43,17 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
             allBrand: [],
             allMeasurement: [],
             allData: [{
-                url: 'http://192.168.0.106:8082/api/lookup/getallmeasurementtype',
+                url: '/api/lookup/getallmeasurementtype',
                 method: 'GET',
                 variable: 'allMeasurement',
             },
             {
-                url: 'http://192.168.0.106:8082/api/category/getallcategory',
+                url: '/api/category/getallcategory',
                 method: 'GET',
                 variable: 'allCategory',
             },
             {
-                url: 'http://192.168.0.106:8082/api/brand/getallbrand',
+                url: '/api/brand/getallbrand',
                 method: 'GET',
                 variable: 'allBrand',
             }],
@@ -68,7 +68,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
             // console.log(allData)
             Axios({
                 method: data.method,
-                url: data.url,
+                url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
                 if (data.variable === 'allCategory') {
                     console.log(data.variable, response.data)
@@ -126,7 +126,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
         } else {
             Axios({
                 method: 'POST',
-                url: 'http://192.168.0.106:8082/api/product/create',
+                url: AppConstants.API_BASE_URL + '/api/product/create',
                 data: {
                     name: name,
                     category: category,
@@ -174,7 +174,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
             this.props.navigation.navigate(AppRoute.ADD_BRAND)
         } else {
             this.setState({
-                category: value
+                brand: value
             })
         }
     }
@@ -184,7 +184,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
             // this.props.navigation.navigate(AppRoute.ADD_CATEGORY)
         } else {
             this.setState({
-                category: value
+                measurement: value
             })
         }
     }

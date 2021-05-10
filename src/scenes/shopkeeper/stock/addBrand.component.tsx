@@ -121,7 +121,7 @@ export class AddBrandScreen extends React.Component<AddBrandScreenProps & Themed
     async componentDidMount() {
         Axios({
             method: 'GET',
-            url: 'http://192.168.0.106:8082/api/category/getallcategory',
+            url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
         }).then((response) => {
             if (null != response.data) {
                 this.setState({
@@ -153,7 +153,7 @@ export class AddBrandScreen extends React.Component<AddBrandScreenProps & Themed
             const catTitle = catName.replace(" ", "_");
             Axios({
                 method: 'POST',
-                url: 'http://192.168.0.106:8082/api/brand/create',
+                url: AppConstants.API_BASE_URL + '/api/brand/create',
                 data: {
                     name: catName,
                     category: category,

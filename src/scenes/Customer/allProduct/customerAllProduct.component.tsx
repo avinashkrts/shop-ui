@@ -6,12 +6,13 @@ import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-lay
 import { Toolbar } from "../../../components/toolbar.component";
 import { CartIcon, MenuIcon, SearchIcon } from "../../../assets/icons";
 import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { Color } from "../../../constants";
+import { AppConstants, Color } from "../../../constants";
 import { Styles } from "../../../assets/styles";
 import { Content, Header, Item, ListItem } from "native-base";
 import axios from 'axios';
 import Animated from "react-native-reanimated";
 import { AppRoute } from "../../../navigation/app-routes";
+import Axios from "axios";
 
 const HEADER_MAX_HEIGHT = 180;
 const HEADER_MIN_HEIGHT = 70;
@@ -25,19 +26,20 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             allBrand: [],
             selectedCategory: '',
             selectedBrand: '',
-
+            userData: [],
+            shopId: '',
             allData: [{
-                url: 'http://192.168.0.106:8082/api/product/getallproduct',
+                url: '/api/product/getallproduct',
                 method: 'GET',
                 variable: 'allProduct',
             },
             {
-                url: 'http://192.168.0.106:8082/api/category/getallcategory',
+                url: '/api/category/getallcategory',
                 method: 'GET',
                 variable: 'allCategory',
             },
             {
-                url: 'http://192.168.0.106:8082/api/brand/getallbrand',
+                url: '/api/brand/getallbrand',
                 method: 'GET',
                 variable: 'allBrand',
             }],
@@ -45,28 +47,38 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
         }
 
         this.onRefresh = this.onRefresh.bind(this);
+        this.handleAddToCart = this.handleAddToCart.bind(this);
     }
 
     async componentDidMount() {
         const { allData } = this.state;
 
+        let userDetail = await AsyncStorage.getItem('userDetail');
+        let userData = JSON.parse(userDetail);
+        // Alert.alert(""+userData.userId);
+        // console.log("User Data",userData.userId)
+
+        this.setState({
+            userData: userData
+        })
+
         allData.map((data, index) => {
             // console.log(allData)
             axios({
                 method: data.method,
-                url: data.url,
+                url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
                 if (data.variable === 'allProduct') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({ allProduct: response.data })
                 } else if (data.variable === 'allCategory') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allCategory: response.data,
                         selectedCategory: response.data[0].id
                     })
                 } else if (data.variable === 'allBrand') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allBrand: response.data,
                         selectedBrand: response.data[0].id
@@ -79,14 +91,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
     }
 
     addToCart(id) {
-        axios({
-            method: 'GET',
-            url: '',
-        }).then((response) => {
 
-        }, (error) => {
-
-        });
     }
 
     navigateToCart() {
@@ -111,6 +116,36 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
 
     navigateProductDetail(id) {
         Alert.alert(id)
+    }
+
+    async handleAddToCart(productId) {
+        const { userData } = this.state;
+        const logedIn = await AsyncStorage.getItem('logedIn');
+        if (null != logedIn && logedIn === 'true') {
+            // Alert.alert(''+ userData.userId + productId + logedIn)
+            Axios({
+                method: 'POST',
+                url: AppConstants.API_BASE_URL + '/api/cart/create',
+                data: {
+                    shopId: "AVI123",
+                    userId: userData.userId,
+                    productId: productId,
+                    productQuantity: 1
+                }
+            }).then((response) => {
+                if (null != response.data) {
+                    if (response.data.status === 'true') {
+                        Alert.alert("Product added to cart.")
+                    } else {
+                        Alert.alert("Product allready exists in your cart.")
+                    }
+                }
+            }, (error) => {
+                Alert.alert("Server error.")
+            });
+        } else {
+            this.props.navigation.navigate(AppRoute.AUTH);
+        }
     }
 
     render() {
@@ -286,7 +321,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                                         }
 
                                                     </View>
-                                                    <TouchableOpacity onPress={() => { this.addToCart(data.id) }}>
+                                                    <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId) }}>
                                                         <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
                                                             <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
                                                         </View>

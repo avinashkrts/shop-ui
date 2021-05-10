@@ -10,6 +10,7 @@ import {
   SignInScreen,
   SignUpScreen,
   OtpScreen,
+  LogoutScreen,
   ForgetPasswordScreen
 } from '../scenes/auth';
 
@@ -18,6 +19,7 @@ type AuthNavigatorParams = AppNavigatorParams & {
   [AppRoute.OTP]: undefined;
   [AppRoute.SIGN_UP]: undefined;
   [AppRoute.FORGET_PASSWORD]: undefined;
+  [AppRoute.LOG_OUT]: undefined;
 }
 
 export interface SignInScreenProps {
@@ -40,6 +42,11 @@ export interface OtpScreenProps {
   route: RouteProp<AuthNavigatorParams, AppRoute.OTP>;
 }
 
+export interface LogoutScreenProps {
+  navigation: StackNavigationProp<AuthNavigatorParams, AppRoute.LOG_OUT>;
+  route: RouteProp<AuthNavigatorParams, AppRoute.LOG_OUT>;
+}
+
 const Stack = createStackNavigator<AuthNavigatorParams>();
 
 export const AuthNavigator = (): React.ReactElement => (
@@ -48,5 +55,6 @@ export const AuthNavigator = (): React.ReactElement => (
     <Stack.Screen name={AppRoute.SIGN_UP} component={SignUpScreen}/>
     <Stack.Screen name={AppRoute.FORGET_PASSWORD} component={ForgetPasswordScreen}/>
     <Stack.Screen name={AppRoute.OTP} component={OtpScreen}/>
+    <Stack.Screen name={AppRoute.LOG_OUT} component={LogoutScreen}/>
   </Stack.Navigator>
 );

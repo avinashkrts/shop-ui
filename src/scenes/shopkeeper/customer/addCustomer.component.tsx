@@ -199,7 +199,7 @@ export class AddCustomerScreen extends React.Component<AddCustomerScreenProps & 
         } else {
             Axios({
                 method: 'POST',
-                url: 'http://192.168.0.106:8082/api/user/create/signup',
+                url: AppConstants.API_BASE_URL + '/api/user/create/signup',
                 data: {
                     firstName: firstName,
                     lastName: lastName,

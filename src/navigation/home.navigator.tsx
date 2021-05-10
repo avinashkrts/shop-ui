@@ -21,8 +21,8 @@ import {
   ProfileScreen,
   HomeDrawer,
   HomeTabBar,
-  LogoutScreen
 } from '../scenes/home';
+import {LogoutScreen} from '../scenes/auth';
 import {
   StockIcon, AddEmployeeIcon,
   ProfileIcon,

@@ -99,6 +99,7 @@ export enum AppRoute {
   WALLET = 'Wallet',
   IMAGEUPLOAD = 'ImageUpload',
   LOGOUT = 'Logout',
+  LOG_OUT = 'Log Out',
   ASKFREEQUESTION = 'AskFreeQuestion',
   TRANSACTIONHISTORY = 'TransactionHistory',
   MORE = 'More',

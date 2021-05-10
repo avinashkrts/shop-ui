@@ -86,17 +86,12 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
             selectedBrand: '',
 
             allData: [{
-                url: 'http://192.168.0.106:8082/api/product/getallproduct',
-                method: 'GET',
-                variable: 'allProduct',
-            },
-            {
-                url: 'http://192.168.0.106:8082/api/category/getallcategory',
+                url: '/api/category/getallcategory',
                 method: 'GET',
                 variable: 'allCategory',
             },
             {
-                url: 'http://192.168.0.106:8082/api/brand/getallbrand',
+                url: '/api/brand/getallbrand',
                 method: 'GET',
                 variable: 'allBrand',
             }],
@@ -109,17 +104,23 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
 
     async componentDidMount() {
         const { allData } = this.state;
+        const brandId = await AsyncStorage.getItem("brandId")
+        axios({
+            method: "GET",
+            url: AppConstants.API_BASE_URL + '/api/product/getproductbybrand/' + brandId,
+        }).then((response) => {
+                this.setState({ allProduct: response.data })          
+        }, (error) => {
+            Alert.alert("Please enter a valid email ID and password.")
+        });
 
         allData.map((data, index) => {
             // console.log(allData)
             axios({
                 method: data.method,
-                url: data.url,
+                url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
-                if (data.variable === 'allProduct') {
-                    console.log(data.variable, response.data)
-                    this.setState({ allProduct: response.data })
-                } else if (data.variable === 'allCategory') {
+                if (data.variable === 'allCategory') {
                     console.log(data.variable, response.data)
                     this.setState({
                         allCategory: response.data,
@@ -136,21 +137,6 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                 Alert.alert("Please enter a valid email ID and password.")
             });
         })
-    }
-
-    addToCart(id) {
-        axios({
-            method: 'GET',
-            url: '',
-        }).then((response) => {
-
-        }, (error) => {
-
-        });
-    }
-
-    navigateToCart() {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_CART)
     }
 
     onRefresh() {

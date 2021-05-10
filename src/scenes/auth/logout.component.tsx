@@ -8,7 +8,7 @@ import {
   Button,
   Input
 } from 'react-native-ui-kitten';
-import { ProfileScreenProps } from '../../navigation/home.navigator';
+// import { ProfileScreenProps } from '../../navigation/home.navigator';
 import { Toolbar } from '../../components/toolbar.component';
 import {
   SafeAreaLayout,
@@ -22,13 +22,14 @@ import { LabelConstants } from '../../constants/LabelConstants';
 import { AsyncStorage } from 'react-native';
 import { AppNavigator } from '../../navigation/app.navigator';
 import { AppRoute } from 'src/navigation/app-routes';
-import {SignInScreen} from '../auth'
+import {SignInScreen} from '.'
+import { LogoutScreenProps } from '../../navigation/auth.navigator';
 
 type Mystate = {
 
 }
 // const prop = (props: AboutScreenProps):
-export class LogoutScreen extends Component<ProfileScreenProps & SafeAreaLayoutElement & any, Mystate & any> {
+export class LogoutScreen extends Component<LogoutScreenProps & SafeAreaLayoutElement & any, Mystate & any> {
   constructor(props) {
     super(props)
     this.state = {}

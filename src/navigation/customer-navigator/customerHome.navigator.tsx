@@ -38,7 +38,7 @@ import { WishListNavigator } from './wishList.navigator';
 import { BillBookNavigator } from './billBook.navigator';
 import { OffersNavigator } from './offers.navigator';
 import { CustomerAddressScreen, CustomerCartScreen, CustomerContactScreen, CustomerNotificationScreen, CustomerOrderScreen, CustomerProfileScreen } from '../../scenes/Customer/home';
-import { LogoutScreen } from '../../scenes/profile';
+import { LogoutScreen } from '../../scenes/auth';
 
 type CustomerHomeDrawerNavigatorParams = {
   [AppRoute.CUSTOMER_HOME]: undefined;

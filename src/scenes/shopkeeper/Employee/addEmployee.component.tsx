@@ -152,7 +152,7 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
         } else {
             Axios({
                 method: 'POST',
-                url: 'http://192.168.0.106:8082/api/employee/create',
+                url: AppConstants.API_BASE_URL + '/api/employee/create',
                 data: {
                     firstName: firstName,
                     lastName: lastName,

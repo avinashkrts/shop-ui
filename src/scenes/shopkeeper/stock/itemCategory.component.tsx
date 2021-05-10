@@ -78,67 +78,27 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
     constructor(props) {
         super(props)
         this.state = {
-            modalVisible: false
+            modalVisible: false,
+            categoryData: []
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.handleAddCategory = this.handleAddCategory.bind(this);
     }
 
-    // async componentDidMount() {
-    //     const value = await AsyncStorage.getItem('userDetail');
-    //     if (value) {
-    //         // console.log('user Details all data', value);
-    //         const user = JSON.parse(value);
-    //         this.setState({
-    //             userType: user.userType,
-    //             token: user.token,
-    //             userId: user.userId,
-    //         })
-    //         // console.log('user data id', this.state.userId);      
-    //     }
-
-    //     axios({
-    //         method: 'get',
-    //         url: AppConstants.API_BASE_URL + '/api/job/getalljob',
-
-    //     }).then((response) => {
-    //         this.setState({
-    //             ...this.state,
-    //             my_Jobs: response.data
-    //         })
-    //         console.log("Profile Data", response.data);
-    //     },
-    //         (error) => {
-    //             console.log(error);
-    //             if (error) {
-    //                 Alert.alert("UserId or Password is invalid");
-    //             }
-    //         }
-    //     );
-
-    //     axios({
-    //         method: 'get',
-    //         url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',
-    //     }).then((response) => {
-    //         this.setState({
-    //             ...this.state,
-    //             salary_Type: response.data.SALARY_TYPE,
-    //             job_Industry: response.data.JOB_CATEGORY,
-    //             min_Qualification: response.data.QUALIFICATION,
-    //             experience_Required: response.data.EXPERIENCE,
-    //             employment_Type: response.data.EMPLOYMENT_TYPE,
-    //             skill: response.data.SKILL
-    //         })
-    //         // console.log("Profile Data", response.data);
-    //     },
-    //         (error) => {
-    //             console.log(error);
-    //             if (error) {
-    //                 Alert.alert("UserId or Password is invalid");
-    //             }
-    //         }
-    //     );
-    // }
+    async componentDidMount() {
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    categoryData: response.data
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+    }
 
     handleJobSubmit() {
         // this.props.navigation.navigate(AppRoute.SHOP_CUSTOMER_DETAIL);
@@ -161,190 +121,44 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
         });
     }
 
-    // renderMyJob = ({ item }: any): ListItemElement => (
-    //     <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 10 }}>
-    //         {item != null ?
-    //             <View>
-    //                 <TouchableOpacity onPress={(e) => this.handleJobSubmit(e, item.id, item.userId)}>
-    //                     <View style={styles.card}>
-    //                         <View style={styles.card1}>
-    //                             <View style={styles.card1_1}></View>
-    //                             <View style={styles.card1_2}>
-    //                                 <Text style={styles.softwareEngineer}>{item.jobTitle}</Text>
-    //                             </View>
-    //                             <View style={styles.card1_3}>
-    //                                 <Image
-    //                                     source={require("../../../assets/logo.png")}
-    //                                     resizeMode="contain"
-    //                                     style={styles.image}
-    //                                 />
-    //                             </View>
-    //                         </View>
+    renderMyJob = ({ item }: any): ListItemElement => (
+        <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
+            {item != null ?
+                <View>
+                    <TouchableOpacity onPress={() => { this.handleBrandList(item.id) }}>
+                        <View style={Styles.customer_list}>
+                            <View style={[Styles.customer_list_image, Styles.center]}>
+                                <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.image} />
+                                {/* <View>
+                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
+                            </View> */}
+                            </View>
 
-    //                         <View style={styles.card1}>
-    //                             <View style={styles.card1_1}>
-    //                                 <Text><ExperienceIcon /></Text>
-    //                             </View>
-    //                             <View style={styles.card2}>
-    //                                 {this.state.experience_Required.map((data, index) => {
-    //                                     if (data.lookUpId == item.experienceRequired)
-    //                                         return (
-    //                                             <Text style={styles.loremIpsum}>{data.lookUpLabel}</Text>
-    //                                         )
-    //                                 })}
+                            <View style={Styles.itemCategoryName}>
+                                <View>
+                                    <Text style={Styles.itemCategoryText}>{item.name}</Text>
+                                </View>
+                            </View>
 
-    //                             </View>
-    //                         </View>
+                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
+                                <View>
+                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon /></Text>
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </View> :
+                <ActivityIndicator size='large' color='green' />}
 
-    //                         <View style={styles.card1}>
-    //                             <View style={styles.card1_1}>
-    //                                 <Text><LocationIcon /></Text>
-    //                             </View>
-    //                             <View style={styles.card2}>
-    //                                 <Text style={styles.bangalore}>{item.location}</Text>
-    //                             </View>
-    //                         </View>
-
-    //                         <View style={styles.card1}>
-    //                             <View style={styles.card1_1}>
-    //                                 <Text><PencilIcon /></Text>
-    //                             </View>
-    //                             <View style={[styles.card2, { flexWrap: 'wrap', flexDirection: 'row' }]}>
-    //                                 {this.state.skill.map((data, index) => {
-    //                                     return (
-    //                                         <View>
-    //                                             {item.skill.split(',').map((data1, index) => {
-    //                                                 if (data1 == data.lookUpId)
-    //                                                     return (
-    //                                                         <View style={styles.skill}>
-    //                                                             <Text style={styles.loremIpsum2}>{data.lookUpLabel}</Text>
-    //                                                         </View>
-    //                                                     )
-    //                                             })
-    //                                             }
-    //                                         </View>
-    //                                     )
-    //                                 })}
-
-    //                             </View>
-    //                         </View>
-
-    //                         <View style={styles.card1}>
-    //                             <View style={styles.card1_1}>
-    //                                 <Text><PublicIcon /></Text>
-    //                             </View>
-    //                             <View style={styles.card2}>
-    //                                 <Text style={styles.loremIpsum5}>5 Mar 2020</Text>
-    //                             </View>
-    //                         </View>
-
-    //                         <View style={[styles.card1, { marginTop: 15 }]}>
-    //                             <View style={styles.card1_1}></View>
-    //                             <View style={styles.card2}>
-    //                                 <Text style={styles.softwareEngineer}>{item.companyName}</Text>
-    //                             </View>
-    //                         </View>
-    //                     </View>
-
-    //                     {/* <View style={styles.card1}>
-    //                     <View style={styles.cardInner1}>
-    //                         <View>
-    //                             <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-    //                         </View>
-    //                     </View>
-
-    //                     <View style={styles.cardInner2}>
-    //                         <View style={styles.cardInner2_1}>
-    //                             <Text style={styles.jobType}>{item.jobTitle}</Text>
-    //                             <Text style={styles.companyName}>{item.companyName}</Text>
-    //                             <Text style={styles.location}>{item.location}</Text>
-    //                         </View>
-
-    //                         <View style={styles.cardInner2_1}>
-    //                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10 }}>
-
-    //                                 {this.state.salary_Type.map((data, index) => {
-    //                                     if (data.lookUpId == item.salaryType)
-    //                                         return (
-    //                                             <View style={{ flexDirection: 'column' }}>
-    //                                                 <Text style={styles.subHeading}>Salary {data.lookUpLabel}</Text>
-    //                                                 <Text style={styles.subData}>{item.salaryFrom} - {item.salaryTo}</Text>
-    //                                             </View>
-    //                                         )
-    //                                 })}
-
-    //                                 {this.state.experience_Required.map((data, index) => {
-    //                                     if (data.lookUpId == item.experienceRequired)
-    //                                         return (
-    //                                             <View style={{ flexDirection: 'column' }}>
-    //                                                 <Text style={styles.subHeading}>Experience</Text>
-    //                                                 <Text style={styles.subData}>{data.lookUpLabel}</Text>
-    //                                             </View>
-    //                                         )
-    //                                 })}
-
-    //                                 {this.state.employment_Type.map((data, index) => {
-    //                                     if (data.lookUpId == item.employmentType)
-    //                                         return (
-    //                                             <View style={{ flexDirection: 'column' }}>
-    //                                                 <Text style={styles.subHeading}>Employment</Text>
-    //                                                 <Text style={styles.subData}>{data.lookUpLabel}</Text>
-    //                                             </View>
-    //                                         )
-    //                                 })}
-
-
-    //                             </View>
-    //                             {this.state.job_Industry.map((data, index) => {
-    //                                 if (data.lookUpId == item.jobIndustry)
-    //                                     return (
-    //                                         <View style={{ flexDirection: 'column' }}>
-    //                                             <Text style={styles.subHeading}>Job Category</Text>
-    //                                             <Text style={styles.subData}>{data.lookUpLabel}</Text>
-    //                                         </View>
-    //                                     )
-    //                             })}
-
-    //                             {this.state.skill.map((data, index) => {
-    //                                 if (data.lookUpId == item.skill)
-    //                                     return (
-    //                                         <View>
-    //                                             <Text style={styles.skill}>Skills: {data.lookUpLabel}</Text>
-    //                                         </View>
-    //                                     )
-    //                             })}
-
-
-    //                         </View>
-
-    //                         <View style={styles.cardInner2_2}>
-    //                             <Text style={styles.subHeading}>30 Applicants</Text>
-    //                             <Text style={styles.subHeading}>30 days ago</Text>
-    //                         </View>
-
-    //                     </View>
-    //                 </View> */}
-    //                 </TouchableOpacity>
-
-    //                 {/* <Footer>
-    //                 <FooterTab style={styles.footerTab}>
-    //                     <TouchableOpacity style={styles.applyButton} onPress={() => this.props.navigation.navigate(AppRoute.HOME)}>
-    //                         <Text style={styles.applyButtonText}>Apply Now</Text>
-    //                     </TouchableOpacity>
-    //                 </FooterTab>
-    //             </Footer> */}
-
-    //             </View> :
-    //             <ActivityIndicator size='large' color='green' />}
-
-    //     </ListItem>
-    // )
+        </ListItem>
+    )
 
     handleAddCategory() {
         this.navigationAddCategory()
     }
 
-    handleBrandList() {
+    handleBrandList(categoryId) {
+        AsyncStorage.setItem("categoryId", JSON.stringify(categoryId));
         this.navigationBrandList()
     }
 
@@ -357,7 +171,7 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
     }
 
     render() {
-        const { modalVisible } = this.state
+        const { modalVisible, categoryData } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -386,82 +200,11 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
                             style={Styles.searchInput}
                         />
                     </View>
-                    {/* </Header> */}
-                    <TouchableOpacity onPress={() => { this.handleBrandList() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
+                    {/* </Header> */}                   
 
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Laptop</Text>
-                                </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon /></Text>
-                                </View>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    <Divider />
-
-                    <TouchableOpacity onPress={() => { this.handleBrandList() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/pulse.jpg")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
-
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Pulse</Text>
-                                </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon /></Text>
-                                </View>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    <Divider />
-
-                    <TouchableOpacity onPress={() => { this.handleBrandList() }}>
-                        <View style={Styles.customer_list}>
-                            <View style={[Styles.customer_list_image, Styles.center]}>
-                                <Avatar source={require("../../../assets/rice.jpg")} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
-                            </View>
-
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>Rice</Text>
-                                </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon /></Text>
-                                </View>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    <Divider />
-
-                    {/* <List data={my_Jobs}
+                    <List data={categoryData}
                         renderItem={this.renderMyJob}
-                    /> */}
+                    />
 
 
                     <View style={{ height: 10, width: '100%' }}></View>

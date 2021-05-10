@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Alert, Image, Text, } from 'react-native';
 import { SignInScreenProps } from '../../navigation/auth.navigator';
 import { AppRoute } from '../../navigation/app-routes';
-import { Placeholder, LableText, Color } from '../../constants';
+import { Placeholder, LableText, Color, AppConstants } from '../../constants';
 import { EyeIcon, EyeOffIcon, } from '../../assets/icons';
 import { AsyncStorage } from 'react-native';
 import axios from 'axios';
@@ -23,8 +23,8 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     super(props);
 
     this.state = {
-      emailId: 'admin214573@milaan.com ',
-      pwd: 'Milaan',
+      emailId: '',
+      pwd: '',
       passwordVisible: true,
       allUserType: [],
       deviceId: '',
@@ -43,19 +43,20 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     let deviceId = DeviceInfo.getUniqueId();
     axios({
       method: 'GET',
-      url: 'http://192.168.0.104:8091/api/lookup/getallusertype',
+      url: AppConstants.API_BASE_URL + '/api/lookup/getallusertype',
     }).then((response) => {
-      this.setState({ 
+      console.log('LookUp', response.data);
+      this.setState({
         allUserType: response.data,
         deviceId: deviceId
-       })
+      })
     },
-    (error) => {
-      Alert.alert("Didn't got data from server")
-    });
+      (error) => {
+        Alert.alert("Didn't got data from server")
+      });
   }
   onFormSubmit() {
-    const { emailId, pwd, allUserType, deviceId} = this.state
+    const { emailId, pwd, allUserType, deviceId } = this.state
     if (emailId == null || emailId === '') {
       Alert.alert("Please enter Email Id.");
     } else if (pwd == null || pwd === '') {
@@ -63,7 +64,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     } else {
       axios({
         method: 'POST',
-        url: 'http://192.168.0.104:8091/api/user/login',
+        url: AppConstants.API_BASE_URL + '/api/user/login',
         data: {
           "emailId": emailId,
           "pwd": pwd,
@@ -74,14 +75,17 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
           if (response.data.token.length >= 30) {
             allUserType.map((data, index) => {
               if (response.data.userType == data.lookUpId) {
-                if (data.lookUpName === 'ADMIN') {
+                console.log('LookUp Name', data.lookUpName)
+                if (data.lookUpName == 'ADMIN') {
+                  AsyncStorage.setItem("logedIn", JSON.stringify(true))
                   AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
                     this.navigateHome();
                   })
-                } else if (data.lookUpName === 'CUSTOMER')
-                  AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-                    this.navigateCustomerHome();
-                  })
+                } else if (data.lookUpName == 'CUSTOMER')
+                  AsyncStorage.setItem("logedIn", JSON.stringify(true))
+                AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
+                  this.navigateCustomerHome();
+                })
               }
             })
 
@@ -93,7 +97,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
         Alert.alert("Please enter a valid email ID and password.")
       });
     }
-     };
+  };
 
   navigateHome() {
     this.props.navigation.navigate(AppRoute.HOME);
@@ -128,7 +132,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
               resizeMode="contain"
               style={Styles.loginImage}
             />
-            
+
             <View style={Styles.center}>
               <Text style={Styles.loginWelcome}>{LableText.WELCOME_TEXT}</Text>
             </View>

@@ -86,20 +86,37 @@ export class CustomerCartScreen extends React.Component<CustomerCartScreenProps 
 
 
 
-    componentDidMount() {
+   async componentDidMount() {
         SCREEN_WIDTH = Dimensions.get('window').width;
-
+        let userDetail = await AsyncStorage.getItem('userDetail');
+        let logedIn = await AsyncStorage.getItem('logedIn');
+        let userData = JSON.parse(userDetail);
+        if(null != logedIn && logedIn === 'true') {
+            // Alert.alert("" + userData.userId)
         axios({
             method: 'GET',
-            url: 'http://192.168.0.106:8082/api/cart/get/1'
+            url: AppConstants.API_BASE_URL + '/api/cart/getcartbyuserid/' + userData.userId
         }).then((response) => {
             this.setState({
-                cartData: response.data,
-                productList: response.data.productList
+                cartData: response.data[0],
             })
         }, (error) => {
             Alert.alert("Server problem")
         })
+
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/productlist/getproductlistbyuserid/' + userData.userId
+        }).then((response) => {
+            this.setState({
+                productList: response.data
+            })
+        }, (error) => {
+            Alert.alert("Server problem")
+        })
+    } else {
+        this.props.navigation.navigate(AppRoute.AUTH)
+    }
     }
 
     _onRefresh() {
@@ -234,13 +251,13 @@ export class CustomerCartScreen extends React.Component<CustomerCartScreenProps 
 
                         <View style={Styles.price_detail_2}>
                             <View style={Styles.price_detail_2_1}>
-                                <Text style={Styles.cart_price_text_head}>Price ({productList.length} items)</Text>
-                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{cartData.totalAmount}</Text>
+                                <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} items)</Text>
+                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
                             </View>
 
                             <View style={Styles.price_detail_2_1}>
                                 <Text style={Styles.cart_price_text_head}>Discount</Text>
-                                <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{cartData.totalAmount}</Text>
+                                <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData ? cartData.discount : null}</Text>
                             </View>
 
                             <View style={Styles.price_detail_2_1}>
@@ -251,10 +268,10 @@ export class CustomerCartScreen extends React.Component<CustomerCartScreenProps 
 
                         <View style={Styles.cart_total_view}>
                             <Text style={Styles.cart_total_text_head}>Total Amount</Text>
-                            <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{cartData.totalAmount}</Text>
+                            <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
                         </View>
                         <View style={Styles.price_detail_2}>
-                            <Text style={Styles.cart_price_text_data}>You will save <RupeeIcon fontSize={18} />{cartData.totalAmount} on this order.</Text>
+                            <Text style={Styles.cart_price_text_data}>You will save <RupeeIcon fontSize={18} />{null != cartData ? cartData.discount : null} on this order.</Text>
                         </View>
                     </View>
 
@@ -266,7 +283,7 @@ export class CustomerCartScreen extends React.Component<CustomerCartScreenProps 
 
                 <View style={Styles.cart_bottom_box_view}>
                     <View>
-                        <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />{cartData.totalAmount}</Text>
+                        <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />{null != cartData ? cartData.totalAmount : null}</Text>
                         <TouchableOpacity onPress={() => { }}>
                             {/* <Text style={Styles.cart_price_text_data}>View price details</Text> */}
                         </TouchableOpacity>

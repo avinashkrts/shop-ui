@@ -137,7 +137,7 @@ componentDidMount() {
             const catTitle = catName.replace(" ", "_");
             Axios({
                 method: 'POST',
-                url: 'http://192.168.0.106:8082/api/category/create',
+                url: AppConstants.API_BASE_URL + '/api/category/create',
                 data: {
                     name: catName,
                     shopId: shopId,

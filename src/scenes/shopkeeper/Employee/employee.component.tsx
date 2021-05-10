@@ -83,10 +83,10 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
         this.navigateAddEmployee = this.navigateAddEmployee.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
     }
-    componentDidMount() {
+   async componentDidMount() {
         Axios({
             method: 'GET',
-            url: 'http://192.168.0.106:8082/api/employee/getallemployee',
+            url: AppConstants.API_BASE_URL + '/api/employee/getallemployee',
         }).then((response) => {
             if (null != response.data) {
                 this.setState({
@@ -140,7 +140,7 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
 
                                 <View style={Styles.list_price}>
                                     <View>
-                                        <Text style={Styles.customer_list_price_text}>{item.molileNo}</Text>
+                                        <Text style={Styles.customer_list_price_text}>{item.mobileNo}</Text>
                                     </View>
 
                                     <View>

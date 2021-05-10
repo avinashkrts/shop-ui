@@ -85,17 +85,17 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
             selectedBrand: '',
 
             allData: [{
-                url: 'http://192.168.0.106:8082/api/product/getallproduct',
+                url: '/api/product/getallproduct',
                 method: 'GET',
                 variable: 'allProduct',
             },
             {
-                url: 'http://192.168.0.106:8082/api/category/getallcategory',
+                url: '/api/category/getallcategory',
                 method: 'GET',
                 variable: 'allCategory',
             },
             {
-                url: 'http://192.168.0.106:8082/api/brand/getallbrand',
+                url: '/api/brand/getallbrand',
                 method: 'GET',
                 variable: 'allBrand',
             }],
@@ -103,6 +103,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
         }
 
         this.onRefresh = this.onRefresh.bind(this);
+        this.handleAddProduct = this.handleAddProduct.bind(this);
     }
 
     async componentDidMount() {
@@ -112,7 +113,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
             // console.log(allData)
             axios({
                 method: data.method,
-                url: data.url,
+                url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
                 if (data.variable === 'allProduct') {
                     console.log(data.variable, response.data)
@@ -171,6 +172,10 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
         Alert.alert(id)
     }
 
+    handleAddProduct() {
+        this.props.navigation.navigate(AppRoute.ADD_PRODUCT)
+    }
+
     render() {
         const { allProduct, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
@@ -221,8 +226,8 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         title='Product'
                         backIcon={MenuIcon}
                         onBackPress={this.props.navigation.openDrawer}
-                        onRightPress={() => { this.navigateToCart() }}
-                        menuIcon={CartIcon}
+                        onRightPress={() => { this.handleAddProduct() }}
+                        menuIcon={PlusCircle}
                         style={{ marginTop: -5, marginLeft: -5 }}
                     />
                     {/* <Header style={styles.header}> */}

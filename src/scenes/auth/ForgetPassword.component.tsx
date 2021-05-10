@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Alert, Image, Text, } from 'react-native';
 import { ForgetPasswordScreenProps } from '../../navigation/auth.navigator';
 import { AppRoute } from '../../navigation/app-routes';
-import { Placeholder, LableText } from '../../constants';
+import { Placeholder, LableText, AppConstants } from '../../constants';
 import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 import { SafeAreaLayout, SaveAreaInset, } from '../../components/safe-area-layout.component';
@@ -45,7 +45,7 @@ export class ForgetPasswordScreen extends Component<ForgetPasswordScreenProps, a
         } else {
             axios({
                 method: 'GET',
-                url: 'http://192.168.0.106:8091/api/user/sendotp/' + mobileNo,
+                url: AppConstants.API_BASE_URL + '/api/user/sendotp/' + mobileNo,
             }).then((response) => {
                 console.log(response.data)
                 if (response.data.status === "false") {

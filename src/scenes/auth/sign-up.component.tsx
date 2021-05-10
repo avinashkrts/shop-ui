@@ -8,7 +8,7 @@ import { AppRoute } from '../../navigation/app-routes';
 import { EyeIcon, EyeOffIcon, } from '../../assets/icons';
 import axios from 'axios';
 import { Styles } from '../../assets/styles'
-import { Color, LableText, Placeholder } from '../../constants';
+import { AppConstants, Color, LableText, Placeholder } from '../../constants';
 import DeviceInfo from 'react-native-device-info';
 
 const data = [
@@ -22,10 +22,10 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
     super(props);
 
     this.state = {
-      firstName: 'Aniket ',
-      lastName: 'Kumar',
-      mobileNo: '9835664127',
-      pwd: 'MilaanITProjects',
+      firstName: '',
+      lastName: '',
+      mobileNo: '',
+      pwd: '',
       userType: '2',
       passwordVisible: true,
     }
@@ -38,7 +38,7 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
     let deviceId = DeviceInfo.getUniqueId();
     axios({
       method: 'GET',
-      url: 'http://192.168.0.106:8091/api/lookup/getallusertype',
+      url: AppConstants.API_BASE_URL + '/api/lookup/getallusertype',
     }).then((response) => {
 
     }, (error) => {
@@ -59,7 +59,7 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
     } else {
       axios({
         method: 'post',
-        url: 'http://192.168.0.106:8091/api/user/create/signup',
+        url: AppConstants.API_BASE_URL + '/api/user/create/signup',
         data: {
           firstName: firstName,
           lastName: lastName,
