@@ -9,12 +9,14 @@ import {
 } from '@react-navigation/stack';
 import { EmployeeTabNavigationProp } from './home.navigator';
 import { AppRoute } from './app-routes';
-import { EmployeeScreen, AddEmployeeScreen } from '../scenes/shopkeeper/Employee';
+import { EmployeeScreen, AddEmployeeScreen, AttendanceScreen, EditEmployeeScreen } from '../scenes/shopkeeper/Employee';
 // import { ProfileScreen, EditProfileScreen, ResumeScreen, AddAchivementScreen, AddEducationScreen, AddCertificateScreen, AddExperienceScreen, LogoutScreen } from '../scenes/profile';
 
 type EmployeeNavigatorParams = {
     [AppRoute.EMPLOYEE]: undefined; 
     [AppRoute.ADDEMPLOYEE]: undefined; 
+    [AppRoute.EDIT_EMPLOYEE]: undefined; 
+    [AppRoute.ATTENDANCE]: undefined; 
       
 }
 
@@ -34,17 +36,29 @@ export interface AddEmployeeScreenProps {
     route: RouteProp<EmployeeNavigatorParams, AppRoute.ADDEMPLOYEE>;
 }
 
+export interface EditEmployeeScreenProps {
+    navigation: CompositeNavigationProp<
+    EmployeeTabNavigationProp,
+        StackNavigationProp<EmployeeNavigatorParams, AppRoute.EDIT_EMPLOYEE>
+    >;
+    route: RouteProp<EmployeeNavigatorParams, AppRoute.EDIT_EMPLOYEE>;
+}
+
+export interface AttendanceScreenProps {
+    navigation: CompositeNavigationProp<
+    EmployeeTabNavigationProp,
+        StackNavigationProp<EmployeeNavigatorParams, AppRoute.ATTENDANCE>
+    >;
+    route: RouteProp<EmployeeNavigatorParams, AppRoute.ATTENDANCE>;
+}
+
 const Stack = createStackNavigator<EmployeeNavigatorParams>();
 
 export const EmployeeNavigator = (): React.ReactElement => (
     <Stack.Navigator headerMode='none'>
         <Stack.Screen name={AppRoute.EMPLOYEE} component={EmployeeScreen} />        
          <Stack.Screen name={AppRoute.ADDEMPLOYEE} component={AddEmployeeScreen} />        
-        {/*<Stack.Screen name={AppRoute.EDITPROFILE} component={EditProfileScreen} />        
-        <Stack.Screen name={AppRoute.ADDACHIVEMENT} component={AddAchivementScreen} />        
-        <Stack.Screen name={AppRoute.ADDCERTIFICATE} component={AddCertificateScreen} />        
-        <Stack.Screen name={AppRoute.ADDEDUCATION} component={AddEducationScreen} />        
-        <Stack.Screen name={AppRoute.ADDEXPERIENCE} component={AddExperienceScreen} />        
-        <Stack.Screen name={AppRoute.LOGOUT} component={LogoutScreen} />         */}
+         <Stack.Screen name={AppRoute.EDIT_EMPLOYEE} component={EditEmployeeScreen} />     
+         <Stack.Screen name={AppRoute.ATTENDANCE} component={AttendanceScreen} />     
     </Stack.Navigator>
 );

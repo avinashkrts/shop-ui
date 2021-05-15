@@ -68,7 +68,7 @@ const renderItem = ({ item, index }) => (
     <ListItem title={`${item.title} ${index + 1}`} />
 );
 
-const HEADER_MAX_HEIGHT = 120;
+const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 70;
 const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
@@ -83,11 +83,17 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
             allBrand: [],
             selectedCategory: '',
             selectedBrand: '',
+            allMeasurement: [],
 
             allData: [{
                 url: '/api/product/getallproduct',
                 method: 'GET',
                 variable: 'allProduct',
+            },
+            {
+                url: '/api/lookup/getallmeasurementtype',
+                method: 'GET',
+                variable: 'allMeasurement',
             },
             {
                 url: '/api/category/getallcategory',
@@ -130,6 +136,11 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         allBrand: response.data,
                         selectedBrand: response.data[0].id
                     })
+                } else if (data.variable === 'allMeasurement') {
+                    console.log(data.variable, response.data)
+                    this.setState({
+                        allMeasurement: response.data,
+                    })
                 }
             }, (error) => {
                 Alert.alert("Please enter a valid email ID and password.")
@@ -169,7 +180,8 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
     }
 
     navigateProductDetail(id) {
-        Alert.alert(id)
+        // Alert.alert(String(id))
+        this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL, {productId: String(id)})
     }
 
     handleAddProduct() {
@@ -177,7 +189,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
     }
 
     render() {
-        const { allProduct, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allProduct, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -228,21 +240,22 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         onBackPress={this.props.navigation.openDrawer}
                         onRightPress={() => { this.handleAddProduct() }}
                         menuIcon={PlusCircle}
-                        style={{ marginTop: -5, marginLeft: -5 }}
+                        style={{ marginTop: 0, marginLeft: -5 }}
                     />
                     {/* <Header style={styles.header}> */}
-                    <View style={Styles.searchBox}>
+                    <View style={[Styles.searchBox, {marginBottom: -5}]}>
                         <Text style={Styles.searchIcon}><SearchIcon /></Text>
                         <TextInput
                             placeholder="Search"
                             style={Styles.searchInput}
                         />
                     </View>
+                    <Divider />
                     {/* </Header> */}
-                    <Header style={{ backgroundColor: '#ffffff', height: 30, marginTop: -5 }}>
+                    <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
 
                         <View style={{ flex: 1, flexDirection: 'column' }}>
-                            <View style={{ marginTop: -10 }}>
+                            <View style={{ marginTop: 10 }}>
                                 <FlatList
                                     style={{}}
                                     horizontal={true}
@@ -263,10 +276,10 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         </View>
                     </Header>
                     <Divider />
-                    <Header style={{ backgroundColor: '#ffffff', height: 30, marginTop: 15 }}>
+                    <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
 
                         <View style={{ flex: 1, flexDirection: 'column' }}>
-                            <View style={{ marginTop: -10 }}>
+                            <View style={{ marginTop: 10 }}>
                                 <FlatList
                                     style={{}}
                                     horizontal={true}
@@ -296,7 +309,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         width: '100%',
                         marginTop: profileImageMarginTop
                     }}>
-                        <Content style={[Styles.customer_content, { marginTop: 110 }]} showsVerticalScrollIndicator={false}
+                        <Content style={[Styles.customer_content, { marginTop: 135 }]} showsVerticalScrollIndicator={false}
                             refreshControl={
                                 <RefreshControl
                                     refreshing={this.state.refreshing}
@@ -306,34 +319,34 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         >
 
                             <View style={Styles.all_Item_Main_View}>
-                                {allProduct.map((data, index) => {
+                                {null != allProduct ? allProduct.map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
-                                            <TouchableOpacity onPress={() => { }}>
+                                            <TouchableOpacity onPress={() => {this.navigateProductDetail(data.productId) }}>
                                                 <View style={[Styles.all_Item_Image_1, Styles.center]}>
                                                     <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
                                                 </View>
 
                                                 <View style={Styles.all_Item_Detail}>
                                                     <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                        {/* {allBrand.map((brand, index) => {
-                                                            if (brand.id == data.brand) {
-                                                                return (
-                                                                    <> */}
-                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name}</Text>
-                                                        {/* </>
-                                                                );
-                                                            }
-                                                        })} */}
-                                                        {allBrand.map((brand, index) => {
+                                                        {null != allBrand ? allBrand.map((brand, index) => {
                                                             if (brand.id == data.brand) {
                                                                 return (
                                                                     <>
-                                                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{brand.name}</Text>
+                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {brand.name}</Text>
                                                                     </>
                                                                 );
                                                             }
-                                                        })}
+                                                        }) : null}
+                                                        {null != allMeasurement ? allMeasurement.map((brand, index) => {
+                                                            if (brand.lookUpId == data.measurement) {
+                                                                return (
+                                                                    <>
+                                                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
+                                                                    </>
+                                                                );
+                                                            }
+                                                        }) : null}
                                                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
                                                             <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
                                                             {data.offerActiveInd ?
@@ -341,24 +354,27 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                                                 : null
                                                             }
                                                         </View>
-                                                        {data.offerActiveInd ?
+                                                        {null != data.offerActiveInd ?data.offerActiveInd ?
                                                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
                                                                 <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
                                                                 <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
-                                                            </View> : null
+                                                            </View> : 
+                                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                            <Text style={{ color: Color.COLOR, marginTop: 2.5}}></Text>
+                                                            <Text style={{ color: Color.COLOR }}></Text>
+                                                        </View>  : null
                                                         }
-
                                                     </View>
                                                     {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
-                                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.quantity}</Text>
-                                                        </View>
+                                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.stock}</Text>
+                                                    </View>
                                                     {/* </TouchableOpacity> */}
                                                 </View>
                                             </TouchableOpacity>
                                         </View>
                                     )
-                                })}
+                                }) : null}
                             </View>
                             <View style={{ height: 10, width: '100%' }} />
                         </Content>

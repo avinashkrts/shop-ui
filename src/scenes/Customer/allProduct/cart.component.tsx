@@ -79,6 +79,7 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
         this.state = {
             cartData: [],
             productList: [],
+            cartId: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -99,6 +100,7 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
         }).then((response) => {
             this.setState({
                 cartData: response.data[0],
+                cartId: response.data[0].cartId
             })
         }, (error) => {
             Alert.alert("Server problem")
@@ -126,6 +128,31 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
         });
     }
 
+    handleIncrease(productId) {
+        const {cartId} = this.state;
+        // Alert.alert(productId + cartId)
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/cart/cartincrease/' + cartId + '/' + productId
+        }).then((response) => {
+           this._onRefresh();
+        }, (error) => {
+            Alert.alert("Server problem")
+        })
+    }
+
+    handleDecrease(productId) {
+        const {cartId} = this.state;
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/cart/cartdecrease/' + cartId + '/' + productId
+        }).then((response) => {
+           this._onRefresh();
+        }, (error) => {
+            Alert.alert("Server problem")
+        })
+    }
+
     renderCart = ({ item }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
@@ -148,7 +175,7 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                                 </View>
 
                                 <View style={Styles.cart_quantity_view}>
-                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
+                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleDecrease(item.productId) }}>
                                         <Text style={Styles.cart_button_text}><MinusIcon /></Text>
                                     </TouchableOpacity>
 
@@ -156,7 +183,7 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                                         <Text style={Styles.cart_quantity_text}>{item.productQuantity}</Text>
                                     </View>
 
-                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
+                                    <TouchableOpacity style={Styles.cart_button} onPress={() => {this.handleIncrease(item.productId) }}>
                                         <Text style={Styles.cart_button_text}><AddIcon /></Text>
                                     </TouchableOpacity>
                                 </View>

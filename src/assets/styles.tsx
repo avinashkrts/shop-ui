@@ -131,7 +131,7 @@ export const Styles = StyleSheet.create({
   all_Item_List: {
     width: '48%',
     backgroundColor: '#000',
-    margin: '1%'
+    margin: '1%',
   },
 
   all_Item_Image: {
@@ -474,7 +474,7 @@ export const Styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: Color.SILVER,
     width: '100%',
-    padding: 5,
+    padding: 10,
   },
 
   address_text: {
@@ -813,7 +813,8 @@ export const Styles = StyleSheet.create({
     paddingVertical: 5,
     backgroundColor: Color.COLOR,
     borderTopLeftRadius: 5,
-    borderTopRightRadius: 5
+    borderTopRightRadius: 5,
+    flexWrap: 'wrap',
   },
 
   cart_sl_view: {
@@ -849,6 +850,50 @@ export const Styles = StyleSheet.create({
   cart_cancle_view: {
     backgroundColor: Color.COLOR,
     width: '7%',
+  },
+
+  /*-------------------------------------------------ATENDANCE----------------------------------------- */
+  attendance_view: {
+    width: '100%',
+    flexDirection: 'row',
+    padding: 2,
+    paddingVertical: 5,
+    backgroundColor: Color.COLOR,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5
+  },
+
+  attendance_header: {
+    width: '100%',
+  },
+
+  attendance_header_text: {
+    color: Color.BUTTON_NAME_COLOR,
+    fontSize: 25,
+    paddingTop: 12
+  },
+
+  week_views: {
+    width: '14%',
+    borderWidth: 0.6,
+    paddingVertical: 5,
+    backgroundColor: Color.BUTTON_NAME_COLOR,
+    borderColor: Color.SILVER
+  },
+
+  week_views_text: {
+    color: Color.COLOR,
+    fontSize: 18
+  },
+
+  a_text: {
+    color: 'red',
+    fontSize: 20
+  },
+
+  p_text: {
+    color: Color.COLOR,
+    fontSize: 20
   },
 
   /* ----------Odd Row Data----------- */
@@ -1217,7 +1262,7 @@ export const Styles = StyleSheet.create({
     borderColor: 'rgba(2,15,20,0.05)',
     borderWidth: 5,
     borderRadius: 5,
-    marginBottom: 5,
+    // marginBottom: 5,
     padding: -20,
     backgroundColor: '#fff',
     height: 50

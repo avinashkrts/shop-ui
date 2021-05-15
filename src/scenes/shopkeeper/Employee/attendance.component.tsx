@@ -15,11 +15,11 @@ import {
     withStyles, TabBar,
     styled, Divider, Avatar, Icon, Button
 } from 'react-native-ui-kitten';
-import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab, Picker } from 'native-base';
-import { ProductDetailScreenProps } from '../../../navigation/shopKeeperNavigator/allItem.Navigator';
+import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab } from 'native-base';
+import { AttendanceScreenProps } from '../../../navigation/employee.Navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, EditIcon, PlusCircle, BackIcon } from '../../../assets/icons';
+import { SearchIcon, MinusIcon, AddIcon, PlusCircle, BackIcon, CancelIcon } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -28,7 +28,7 @@ import {
     SafeAreaLayoutElement,
     SaveAreaInset,
 } from '../../../components/safe-area-layout.component';
-import { MenuIcon, ExperienceIcon, LocationIcon, PublicIcon, WishIcon } from '../../../assets/icons';
+import { MenuIcon, ExperienceIcon, LocationIcon, PublicIcon, PencilIcon } from '../../../assets/icons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { any } from 'prop-types';
@@ -42,8 +42,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
-import { Color, LableText } from '../../../constants/LabelConstants';
-
+import { Color } from '../../../constants/LabelConstants';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -64,56 +63,25 @@ type MyState = {
     selectedIndex: number;
 }
 
-
-const renderItem = ({ item, index }) => (
-    <ListItem title={`${item.title} ${index + 1}`} />
-);
-
 const HEADER_MAX_HEIGHT = 120;
 const HEADER_MIN_HEIGHT = 70;
 const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
 
-export class ProductDetailScreen extends React.Component<ProductDetailScreenProps & ThemedComponentProps, MyState & any> {
+export class AttendanceScreen extends React.Component<AttendanceScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
-            isSelectedWish: false,
-            productId: '',
-            allProduct: [],
-            allCategory: [],
-            allBrand: [],
-            selectedCategory: '',
-            selectedBrand: '',
-            allMeasurement: [],
-
-            allData: [
-                {
-                    url: '/api/product/get/' + this.props.route.params.productId,
-                    method: 'GET',
-                    variable: 'allProduct',
-                },
-                {
-                    url: '/api/lookup/getallmeasurementtype',
-                    method: 'GET',
-                    variable: 'allMeasurement',
-                },
-                {
-                    url: '/api/category/getallcategory',
-                    method: 'GET',
-                    variable: 'allCategory',
-                },
-                {
-                    url: '/api/brand/getallbrand',
-                    method: 'GET',
-                    variable: 'allBrand',
-                }],
+            employeeId: '',
+            attendanceData: [],
+            attendanceLookUp: [],
+            absent: 0,
+            present: 0,
+            monthName: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
-        this.handleWishList = this.handleWishList.bind(this);
-        this.navigationCart = this.navigationCart.bind(this);
-        this.handleCart = this.handleCart.bind(this);
+        this.navigationProductDetail = this.navigationProductDetail.bind(this);
     }
 
     _onRefresh() {
@@ -302,98 +270,108 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
     //     </ListItem>
     // )
 
-    navigationCart() {
-        this.props.navigation.navigate(AppRoute.CART)
-    }
+    async componentDidMount() {
+        const employeeId = this.props.route.params.employeeId;
 
+        this.setState({
+
+        })
+        axios({
+            method: 'get',
+            url: 'http://192.168.0.106:8082' + '/api/attendance/get/' + employeeId,
+
+        }).then((response) => {
+            this.setState({
+                ...this.state,
+                attendanceData: response.data,
+                monthName: response.data[0].createdOn
+            })
+            // console.log("Profile Data", response.data);
+        },
+            (error) => {
+                console.log(error);
+                if (error) {
+                    Alert.alert("Server error.");
+                }
+            }
+        );
+
+        axios({
+            method: 'get',
+            url: 'http://192.168.0.106:8082' + '/api/lookup/getallattendance',
+
+        }).then((response) => {
+            this.setState({
+                ...this.state,
+                attendanceLookUp: response.data
+            })
+            // console.log("Profile Data", response.data);
+        },
+            (error) => {
+                console.log(error);
+                if (error) {
+                    Alert.alert("Server error.");
+                }
+            }
+        );
+    }
     navigationItemList() {
         // this.props.navigation.navigate(AppRoute.ITEMLIST)
     }
 
-    async componentDidMount() {
-        const { allData } = this.state;
-
-        const productId = this.props.route.params.productId
-        // Alert.alert(productId)
-        this.setState({
-            productId: productId
-        })
-
-        allData.map((data, index) => {
-            // console.log(allData)
-            axios({
-                method: data.method,
-                url: AppConstants.API_BASE_URL + data.url,
-            }).then((response) => {
-                if (data.variable === 'allProduct') {
-                    console.log(data.variable, response.data)
-                    this.setState({ allProduct: response.data })
-                } else if (data.variable === 'allCategory') {
-                    console.log(data.variable, response.data)
-                    this.setState({
-                        allCategory: response.data,
-                        selectedCategory: response.data[0].id
-                    })
-                } else if (data.variable === 'allBrand') {
-                    console.log(data.variable, response.data)
-                    this.setState({
-                        allBrand: response.data,
-                        selectedBrand: response.data[0].id
-                    })
-                } else if (data.variable === 'allMeasurement') {
-                    console.log(data.variable, response.data)
-                    this.setState({
-                        allMeasurement: response.data,
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Please enter a valid email ID and password.")
-            });
-        })
+    navigationProductDetail() {
+        this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL)
     }
-
-    //     ImageResizer.createResizedImage(path: "../../../assets/profile.jpeg", maxWidth: 100, maxHeight: 200, compressFormat, quality, rotation, outputPath)
-    //   .then(response => {
-    //         // response.uri is the URI of the new image that can now be displayed, uploaded...
-    //         // response.path is the path of the new image
-    //         // response.name is the name of the new image with the extension
-    //         // response.size is the size of the new image
-    //     })
-    //   .catch(err => {
-    //         // Oops, something went wrong. Check that the filename is correct and
-    //         // inspect err to get more details.
-    //     });
 
     addItem() { }
 
-    handleCart() {
-        this.navigationCart();
-    }
-
-    handleWishList() {
-        const { isSelectedWish } = this.state
-        this.setState({
-            isSelectedWish: !isSelectedWish
-        })
-    }
-
-
     render() {
-        const { isSelectedWish, allProduct } = this.state
+        const { attendanceData, attendanceLookUp,monthName } = this.state;
         return (
             <SafeAreaLayout
-                style={Styles.safeArea}
+                style={[Styles.safeArea, { paddingHorizontal: 5 }]}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Product Details'
+                    title='Cart'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
+                    onRightPress={() => { this.addItem() }}
+                    menuIcon={PlusCircle}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
-
                 <Divider />
 
-                <Content style={Styles.customer_content}
+                <View style={Styles.attendance_view}>
+                    <View style={[Styles.attendance_header, Styles.center]}>
+                        <Text style={Styles.attendance_header_text}>Attendance</Text>
+                    </View>
+                </View>
+
+                {/* <View style={[Styles.cart_view, Styles.center]}>
+                    <View style={[Styles.week_views, Styles.center]}>
+                        <Text style={[Styles.week_views_text]}>Sun</Text>
+                    </View>
+                    <View style={[Styles.week_views, Styles.center]}>
+                        <Text style={Styles.week_views_text}>Mon</Text>
+                    </View>
+                    <View style={[Styles.week_views, Styles.center]}>
+                        <Text style={Styles.week_views_text}>Tue</Text>
+                    </View>
+                    <View style={[Styles.week_views, Styles.center]}>
+                        <Text style={Styles.week_views_text}>Wed</Text>
+                    </View>
+                    <View style={[Styles.week_views, Styles.center]}>
+                        <Text style={Styles.week_views_text}>Thu</Text>
+                    </View>
+                    <View style={[Styles.week_views, Styles.center]}>
+                        <Text style={Styles.week_views_text}>Fri</Text>
+                    </View>
+                    <View style={[Styles.week_views, Styles.center]}>
+                        <Text style={Styles.week_views_text}>Sat</Text>
+                    </View>
+                </View> */}
+
+                <Content style={Styles.cart_content} showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -402,95 +380,166 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                     }
                 >
 
-                    {/* <Header style={styles.header}>
-                        <View style={Styles.searchBox}>
-                            <Text style={Styles.searchIcon}><SearchIcon /></Text>
-                            <TextInput
-                                placeholder="Search"
-                                style={Styles.searchInput}
-                            />
+                    {/* <Header style={styles.header}> */}
+                    {/* <View style={Styles.searchBox}>
+                        <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                        <TextInput
+                            placeholder="Search"
+                            style={Styles.searchInput}
+                        />
+                    </View> */}
+
+
+                    {null != attendanceData ?
+                        <View style={[Styles.cart_view]}>
+                            {null != attendanceData ? attendanceData.map((att, attIndex) => {
+                                return (
+                                    <>
+                                        {null != attendanceLookUp ? attendanceLookUp.map((lookAtt, lookIndex) => {
+                                            if (lookAtt.lookUpId == att.attendance) {
+                                                // { lookAtt.lookUpName === "PRESENT" ? present : absent }
+                                                return (
+                                                    <View style={[Styles.week_views, Styles.center]}>
+                                                        <Text style={lookAtt.lookUpName === "PRESENT" ? Styles.p_text : Styles.a_text}>{att.createdOn.substring(8,10)}</Text>
+                                                        <Text style={lookAtt.lookUpName === "PRESENT" ? Styles.p_text : Styles.a_text}>{lookAtt.lookUpName === "PRESENT" ? "P" : "A"}</Text>
+                                                    </View>
+                                                )
+                                            }
+                                        }) : null}
+                                    </>
+                                )
+                            }) : null}
                         </View>
-                    </Header> */}
-                    {null != allProduct ?
-                        <>
-                            <View style={[Styles.product_view, Styles.center]}>
-                                <View style={[Styles.product_image, Styles.center]}>
-                                    <Avatar source={require("../../../assets/sweets.png")} style={Styles.product_avatar} />
+                        : null
+                    }
+                    {/* <View style={[Styles.week_views, Styles.center]}>
+                            <Text style={Styles.a_text}>2</Text>
+                            <Text style={Styles.a_text}>A</Text>
+                        </View>
+
+                        <View style={[Styles.week_views, Styles.center]}>
+                            <Text style={Styles.p_text}>3</Text>
+                            <Text style={Styles.p_text}>P</Text>
+                        </View>
+                        <View style={[Styles.week_views, Styles.center]}>
+                            <Text style={Styles.p_text}>4</Text>
+                            <Text style={Styles.p_text}>P</Text>
+                        </View>
+                        <View style={[Styles.week_views, Styles.center]}>
+                            <Text style={Styles.p_text}>5</Text>
+                            <Text style={Styles.p_text}>P</Text>
+                        </View>
+                        <View style={[Styles.week_views, Styles.center]}>
+                            <Text style={Styles.p_text}>6</Text>
+                            <Text style={Styles.p_text}>P</Text>
+                        </View>
+                        <View style={[Styles.week_views, Styles.center]}>
+                            <Text style={Styles.p_text}>7</Text>
+                            <Text style={Styles.p_text}>P</Text>
+                        </View>
+                        <View style={[Styles.week_views, Styles.center]}>
+                            <Text style={Styles.p_text}>7</Text>
+                            <Text style={Styles.p_text}>P</Text>
+                        </View> 
+                        </View>
+
+                    <View style={Styles.cart_data_view_even}>
+                        <View style={Styles.cart_sl_data_view_even}>
+                            <Text style={Styles.cart_sl_data_text_even}>2.</Text>
+                        </View>
+                        <View style={Styles.cart_name_data_view_even}>
+                            <Text style={Styles.cart_sl_data_text_even}>Vivo Mobile</Text>
+                        </View>
+                        <View style={Styles.cart_quantity_data_view_even}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <View>
+                                    <Text style={Styles.cart_sl_data_text_even}><MinusIcon /></Text>
                                 </View>
+                            </TouchableOpacity>
+
+                            <View>
+                                <Text style={Styles.cart_sl_data_text_even}>1</Text>
                             </View>
 
-                            <View style={Styles.product_2nd_view}>
-                                <View style={Styles.product_2nd_view_1}>
-                                    <View style={Styles.product_2nd_quantity_view}>
-                                        <Picker
-                                            note
-                                            mode="dropdown"
-                                            style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: 80 }]}
-                                            selectedValue={this.state.selected}
-                                            onValueChange={() => { }}
-                                        >
-                                            <Picker.Item label="1" value="key0" />
-                                            <Picker.Item label="2" value="key1" />
-                                        </Picker>
-                                    </View>
-
-                                    <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
-                                        <View>
-                                            <Text style={Styles.product_2nd_buy_text}>{LableText.CART}</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
-                                        <View>
-                                            <Text style={Styles.product_2nd_buy_text} onPress={() => { this.handleCart() }}>{LableText.BUY}</Text>
-                                        </View>
-                                    </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { }}>
+                                <View>
+                                    <Text style={Styles.cart_sl_data_text_even}><AddIcon /></Text>
                                 </View>
+                            </TouchableOpacity>
+                        </View>
 
-                                <View style={Styles.product_2nd_wish_view}>
-                                    <Text onPress={() => { this.handleWishList() }} style={isSelectedWish ? Styles.selected_wish_icon : Styles.wish_icon}><WishIcon /></Text>
+                        <View style={Styles.cart_amount_data_view_even}>
+                            <Text style={Styles.cart_sl_data_text_even}>11,000</Text>
+                        </View>
+
+                        <View style={[Styles.cart_cancle_data_view_even, Styles.center]}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <Text style={Styles.cart_sl_data_text_even}><CancelIcon /></Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    <View style={Styles.cart_data_view}>
+                        <View style={Styles.cart_sl_data_view}>
+                            <Text style={Styles.cart_sl_data_text}>3.</Text>
+                        </View>
+                        <View style={Styles.cart_name_data_view}>
+                            <Text style={Styles.cart_sl_data_text}>HP Laptop</Text>
+                        </View>
+                        <View style={Styles.cart_quantity_data_view}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <View>
+                                    <Text style={Styles.cart_sl_data_text}><MinusIcon /></Text>
                                 </View>
+                            </TouchableOpacity>
 
-
+                            <View>
+                                <Text style={Styles.cart_sl_data_text}>1</Text>
                             </View>
 
-                            <View style={Styles.product_3rd_view}>
-                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                    <Text style={{ color: '#000', paddingVertical: 20, fontWeight: 'bold', fontSize: 20 }}>{allProduct.name}</Text>
-
-                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{allProduct.quantity} Kg.</Text>
-                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {allProduct.price}</Text>
-                                        {allProduct.offerActiveInd ?
-                                            <>
-                                                <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{allProduct.oldPrice}</Text>
-                                                <Text style={{ color: Color.COLOR }}>{allProduct.offerPercent} % off</Text>
-                                            </> : null}
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                        {allProduct.offerActiveInd ?
-                                            <>
-                                                <Text style={{ color: Color.COLOR }}>Offer till {allProduct.offerTo.substr(8, 2) + "/" + allProduct.offerTo.substr(5, 2) + "/" + allProduct.offerTo.substr(0, 4)}.</Text>
-                                            </> : null}
-                                    </View>
+                            <TouchableOpacity onPress={() => { }}>
+                                <View>
+                                    <Text style={Styles.cart_sl_data_text}><AddIcon /></Text>
                                 </View>
-                                {/* <View style={Styles.product_3rd_view_1}> */}
-                                {/* <ScrollView> */}
-                                <View style={Styles.product_description_view}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>Product Description</Text>
-                                    <View style={{ borderTopWidth: 2, borderColor: '#0099cc', marginTop: 10, padding: 10 }}>
-                                        <Text style={{ fontSize: 18 }}>{allProduct.description}</Text>
-                                    </View>
-                                </View>
-                                {/* </ScrollView> */}
-                            </View>
-                            <View style={{ height: 100, width: '100%' }} />
-                        </> : null}
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={Styles.cart_amount_data_view}>
+                            <Text style={Styles.cart_sl_data_text}>40,000</Text>
+                        </View>
+
+                        <View style={[Styles.cart_cancle_data_view, Styles.center]}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <Text style={Styles.cart_sl_data_text}><CancelIcon /></Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View> */}
+
+                    <View style={[Styles.cart_data_view_even, { borderBottomLeftRadius: 5, borderBottomRightRadius: 5 }]}>
+                        <View style={Styles.cart_sl_data_view_even}>
+                        </View>
+                        <View style={Styles.cart_name_data_view_even}>
+                            <Text style={Styles.cart_sl_text}> Total: </Text>
+                        </View>
+                        <View style={Styles.cart_quantity_data_view_even}>
+
+                        </View>
+
+                        <View style={Styles.cart_amount_data_view_even}>
+                            <Text style={Styles.cart_sl_text}>{attendanceData.length} Days</Text>
+                        </View>
+
+                        <View style={[Styles.cart_cancle_data_view_even, Styles.center]}>
+
+                        </View>
+                    </View>
+
+                    {/* <List data={my_Jobs}
+                        renderItem={this.renderMyJob}
+                    /> */}
+                    <View style={{ height: 10, width: '100%' }} />
                 </Content>
-
             </SafeAreaLayout>
         )
     }
-
 }

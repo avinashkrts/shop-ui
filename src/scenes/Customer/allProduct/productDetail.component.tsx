@@ -16,7 +16,7 @@ import {
     styled, Divider, Avatar, Icon, Button
 } from 'react-native-ui-kitten';
 import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab, Picker } from 'native-base';
-import { ProductDetailScreenProps } from '../../../navigation/shopKeeperNavigator/allItem.Navigator';
+import { CustProductDetailScreenProps } from '../../../navigation/customer-navigator/customerAllProduct.navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
 import { SearchIcon, EditIcon, PlusCircle, BackIcon } from '../../../assets/icons';
@@ -75,7 +75,7 @@ const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
 
-export class ProductDetailScreen extends React.Component<ProductDetailScreenProps & ThemedComponentProps, MyState & any> {
+export class CustProductDetailScreen extends React.Component<CustProductDetailScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
@@ -87,6 +87,8 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
             selectedCategory: '',
             selectedBrand: '',
             allMeasurement: [],
+            userData: [],
+            wishList: '',
 
             allData: [
                 {
@@ -313,11 +315,36 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
     async componentDidMount() {
         const { allData } = this.state;
 
+        let userDetail = await AsyncStorage.getItem('userDetail');
+        let userData = JSON.parse(userDetail);
+        // Alert.alert(""+userData.userId);
+        // console.log("User Data",userData.userId)
+
+        this.setState({
+            userData: userData
+        })
+
         const productId = this.props.route.params.productId
+
         // Alert.alert(productId)
         this.setState({
             productId: productId
         })
+
+        const logedIn = await AsyncStorage.getItem('logedIn');
+        if (null != logedIn && logedIn === 'true') {
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/user/get/' + userData.userId,
+            }).then((response) => {
+                this.setState({
+                    userData: response.data,
+                    wishList: response.data.wishList
+                })
+            }, (error) => {
+                Alert.alert("Server error.")
+            });
+        }
 
         allData.map((data, index) => {
             // console.log(allData)
@@ -326,22 +353,22 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                 url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
                 if (data.variable === 'allProduct') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({ allProduct: response.data })
                 } else if (data.variable === 'allCategory') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allCategory: response.data,
                         selectedCategory: response.data[0].id
                     })
                 } else if (data.variable === 'allBrand') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allBrand: response.data,
                         selectedBrand: response.data[0].id
                     })
                 } else if (data.variable === 'allMeasurement') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allMeasurement: response.data,
                     })
@@ -370,16 +397,28 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
         this.navigationCart();
     }
 
-    handleWishList() {
-        const { isSelectedWish } = this.state
-        this.setState({
-            isSelectedWish: !isSelectedWish
-        })
+    async handleWishList(productId) {
+        const { isSelectedWish, userData } = this.state
+        const logedIn = await AsyncStorage.getItem('logedIn');
+        if (null != logedIn && logedIn === 'true') {
+            axios({
+                method: "GET",
+                url: AppConstants.API_BASE_URL + '/api/user/wishlist/add/' + userData.userId + "/" + productId,
+            }).then((response) => {
+                this.setState({
+                    isSelectedWish: !isSelectedWish
+                })
+                this._onRefresh();
+            }, (error) => {
+                Alert.alert("Server error.")
+            });
+        } else {
+            this.props.navigation.navigate(AppRoute.AUTH);
+        }
     }
 
-
     render() {
-        const { isSelectedWish, allProduct } = this.state
+        const { isSelectedWish, userData, wishList, allProduct } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -446,12 +485,19 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                                         </View>
                                     </TouchableOpacity>
                                 </View>
-
-                                <View style={Styles.product_2nd_wish_view}>
-                                    <Text onPress={() => { this.handleWishList() }} style={isSelectedWish ? Styles.selected_wish_icon : Styles.wish_icon}><WishIcon /></Text>
-                                </View>
-
-
+                                {null !== wishList ?
+                                    <View style={Styles.product_2nd_wish_view}>
+                                        <Text
+                                            onPress={() => { this.handleWishList(allProduct.productId) }}
+                                            style={wishList.includes(allProduct.productId) ?
+                                                Styles.selected_wish_icon :
+                                                Styles.wish_icon
+                                            }
+                                        >
+                                            <WishIcon />
+                                        </Text>
+                                    </View> : null
+                                }
                             </View>
 
                             <View style={Styles.product_3rd_view}>
@@ -472,7 +518,9 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                                         {allProduct.offerActiveInd ?
                                             <>
                                                 <Text style={{ color: Color.COLOR }}>Offer till {allProduct.offerTo.substr(8, 2) + "/" + allProduct.offerTo.substr(5, 2) + "/" + allProduct.offerTo.substr(0, 4)}.</Text>
-                                            </> : null}
+                                            </> :
+                                            null
+                                        }
                                     </View>
                                 </View>
                                 {/* <View style={Styles.product_3rd_view_1}> */}

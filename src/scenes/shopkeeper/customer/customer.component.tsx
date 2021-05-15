@@ -82,7 +82,7 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
         }
         this.navigationAddCustomer = this.navigationAddCustomer.bind(this);
         this.handleAddCustomer = this.handleAddCustomer.bind(this);
-        // this.submitQButton = this.submitQButton.bind(this);
+        this.navigationEditCustomer = this.navigationEditCustomer.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
     }
 
@@ -90,10 +90,15 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
         this.props.navigation.navigate(AppRoute.ADD_CUSTOMER);
     }
 
+    navigationEditCustomer(userId) {
+        this.props.navigation.navigate(AppRoute.EDIT_CUSTOMER, {userId: userId});
+    }
+
+
     async componentDidMount() {
         Axios({
             method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/user/getalluser/200',
+            url:  AppConstants.API_BASE_URL + '/api/user/getalluser/200',
         }).then((response) => {
             if (null != response.data) {
                 this.setState({
@@ -130,7 +135,7 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
                 <View>
-                   <TouchableOpacity onPress={() => {  }}>
+                   <TouchableOpacity onPress={() => { this.navigationEditCustomer(item.userId) }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.image} />

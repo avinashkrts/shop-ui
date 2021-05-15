@@ -43,6 +43,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import Axios from 'axios';
+import { Color, LableText } from '../../../constants';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -81,9 +82,11 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
             employeeData: []
         }
         this.navigateAddEmployee = this.navigateAddEmployee.bind(this);
+        this.handleAbsent = this.handleAbsent.bind(this);
+        this.handlePresent = this.handlePresent.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
     }
-   async componentDidMount() {
+    async componentDidMount() {
         Axios({
             method: 'GET',
             url: AppConstants.API_BASE_URL + '/api/employee/getallemployee',
@@ -104,15 +107,62 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
 
 
     navigateEmployeeDetails(id) {
-
-     //   this.props.navigation.navigate(AppRoute.ADDEMPLOYEE);
-
+        this.props.navigation.navigate(AppRoute.EDIT_EMPLOYEE, { employeeId: String(id) });
     }
 
     handleAddEmployee() {
         this.navigateAddEmployee()
 
     }
+
+    handleAbsent(id) {
+        // Alert.alert("Absent" + id);
+        const attendance = "2", shopId = "AVI123";
+        Axios({
+            method: 'POST',
+            url: AppConstants.API_BASE_URL + '/api/attendance/create',
+            data: {
+                shopId: shopId,
+                attendance: attendance,
+                employeeId: id
+            }
+        }).then((response) => {
+            if (null != response.data) {
+                if (response.data.status === 'true') {
+                    Alert.alert("Attendance done.")
+                } else if (response.data.status === 'false') {
+                    Alert.alert("Attendance updated.")
+                }
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+    }
+
+    handlePresent(id) {
+        // Alert.alert("Present" + id);
+        const attendance = "1", shopId = "AVI123";
+        Axios({
+            method: 'POST',
+            url: AppConstants.API_BASE_URL + '/api/attendance/create',
+            data: {
+                shopId: shopId,
+                attendance: attendance,
+                employeeId: id
+            }
+        }).then((response) => {
+            if (null != response.data) {
+                if (response.data.status === 'true') {
+                    Alert.alert("Attendance done.")
+                } else if (response.data.status === 'false') {
+                    Alert.alert("Attendance updated.")
+                }
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+    }
+
     _onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
@@ -134,18 +184,22 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
                             </View>
 
                             <View style={Styles.list_name}>
-                                <View style={{ width: '80%' }}>
+                                <View style={[Styles.list_price, { width: '100%' }]}>
                                     <Text style={Styles.customer_list_name_text}>{item.firstName}</Text>
+                                    <View>
+                                        <Text style={Styles.customer_list_price_text}>Rs: {item.salary}</Text>
+                                    </View>
                                 </View>
 
                                 <View style={Styles.list_price}>
                                     <View>
                                         <Text style={Styles.customer_list_price_text}>{item.mobileNo}</Text>
                                     </View>
-
-                                    <View>
-                                        <Text style={Styles.customer_list_price_text}>Rs: {item.salary}</Text>
+                                    <View style={[Styles.center, { alignItems: 'center', width: '35%' }]}>
+                                        <Text onPress={() => { this.handlePresent(item.id) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 5, borderRadius: 5, marginBottom: 3 }]}>{LableText.PRESENT}</Text>
+                                        <Text onPress={() => { this.handleAbsent(item.id) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 5, borderRadius: 5, marginTop: 3 }]}>{LableText.ABSENT}</Text>
                                     </View>
+
                                 </View>
                             </View>
                         </View>
@@ -191,7 +245,7 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
                         />
                     </View>
                     {/* </Header> */}
-                   
+
                     <List data={employeeData}
                         renderItem={this.renderEmployee}
                     />

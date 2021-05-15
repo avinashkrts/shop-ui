@@ -51,6 +51,7 @@ import { AddCustomerScreen, CustomerDetailScreen, CustomerScreen } from '../scen
 import { AddEducationScreen } from '../scenes/profile';
 import { AddEmployeeScreen } from '../scenes/shopkeeper/Employee';
 import { CustomerContactScreen } from '../scenes/Customer/home';
+import { AddProductScreen } from '../scenes/shopkeeper/stock';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
@@ -338,11 +339,11 @@ export const HomeNavigator = (): React.ReactElement => (
       options={{ title: 'Pay Now', drawerIcon: PayNowIcon }}
     /> */}
 
-    {/* <Drawer.Screen
+    <Drawer.Screen
       name={AppRoute.ADD_PRODUCT}
       component={AddProductScreen}
       options={{ title: 'Add Product', drawerIcon: AddProductIcon }}
-    /> */}
+    />
 
     <Drawer.Screen
       name={AppRoute.ADD_CUSTOMER}

@@ -84,11 +84,16 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
             allBrand: [],
             selectedCategory: '',
             selectedBrand: '',
-
+            allMeasurement: [],
             allData: [{
                 url: '/api/category/getallcategory',
                 method: 'GET',
                 variable: 'allCategory',
+            },
+            {
+                url: '/api/lookup/getallmeasurementtype',
+                method: 'GET',
+                variable: 'allMeasurement',
             },
             {
                 url: '/api/brand/getallbrand',
@@ -132,6 +137,11 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                         allBrand: response.data,
                         selectedBrand: response.data[0].id
                     })
+                } else if (data.variable === 'allMeasurement') {
+                    console.log(data.variable, response.data)
+                    this.setState({
+                        allMeasurement: response.data,
+                    })
                 }
             }, (error) => {
                 Alert.alert("Please enter a valid email ID and password.")
@@ -164,7 +174,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
     }
 
     render() {
-        const { allProduct, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allProduct, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -283,72 +293,75 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                         width: '100%',
                         marginTop: profileImageMarginTop
                     }}> */}
-                <Content style={[Styles.customer_content, { marginTop: 0 }]} showsVerticalScrollIndicator={false}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.refreshing}
-                            onRefresh={this.onRefresh.bind(this)}
-                        />
-                    }
-                >
+              <Content style={[Styles.customer_content, { marginTop: 5 }]} showsVerticalScrollIndicator={false}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this.onRefresh.bind(this)}
+                                />
+                            }
+                        >
 
-                    <View style={Styles.all_Item_Main_View}>
-                        {allProduct.map((data, index) => {
-                            return (
-                                <View style={Styles.all_Item_List}>
-                                    <TouchableOpacity onPress={() => { }}>
-                                        <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                            <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
-                                        </View>
+                            <View style={Styles.all_Item_Main_View}>
+                                {null != allProduct ? allProduct.map((data, index) => {
+                                    return (
+                                        <View style={Styles.all_Item_List}>
+                                            <TouchableOpacity onPress={() => { }}>
+                                                <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
+                                                </View>
 
-                                        <View style={Styles.all_Item_Detail}>
-                                            <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                {/* {allBrand.map((brand, index) => {
+                                                <View style={Styles.all_Item_Detail}>
+                                                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                                        {null != allBrand ? allBrand.map((brand, index) => {
                                                             if (brand.id == data.brand) {
                                                                 return (
-                                                                    <> */}
-                                                <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name}</Text>
-                                                {/* </>
+                                                                    <>
+                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {brand.name}</Text>
+                                                                    </>
                                                                 );
                                                             }
-                                                        })} */}
-                                                {allBrand.map((brand, index) => {
-                                                    if (brand.id == data.brand) {
-                                                        return (
-                                                            <>
-                                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{brand.name}</Text>
-                                                            </>
-                                                        );
-                                                    }
-                                                })}
-                                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                                    <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
-                                                    {data.offerActiveInd ?
-                                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
-                                                        : null
-                                                    }
+                                                        }) : null}
+                                                        {null != allMeasurement ? allMeasurement.map((brand, index) => {
+                                                            if (brand.lookUpId == data.measurement) {
+                                                                return (
+                                                                    <>
+                                                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
+                                                                    </>
+                                                                );
+                                                            }
+                                                        }) : null}
+                                                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                                            <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
+                                                            {data.offerActiveInd ?
+                                                                <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
+                                                                : null
+                                                            }
+                                                        </View>
+                                                        {null != data.offerActiveInd ?data.offerActiveInd ?
+                                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                                <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
+                                                                <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
+                                                            </View> : 
+                                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                            <Text style={{ color: Color.COLOR, marginTop: 2.5}}></Text>
+                                                            <Text style={{ color: Color.COLOR }}></Text>
+                                                        </View>  : null
+                                                        }
+                                                    </View>
+                                                    {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
+                                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.stock}</Text>
+                                                    </View>
+                                                    {/* </TouchableOpacity> */}
                                                 </View>
-                                                {data.offerActiveInd ?
-                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                        <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
-                                                        <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
-                                                    </View> : null
-                                                }
-
-                                            </View>
-                                            {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
-                                            <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.quantity}</Text>
-                                            </View>
-                                            {/* </TouchableOpacity> */}
+                                            </TouchableOpacity>
                                         </View>
-                                    </TouchableOpacity>
-                                </View>
-                            )
-                        })}
-                    </View>
-                    <View style={{ height: 10, width: '100%' }} />
-                </Content>
+                                    )
+                                }) : null}
+                            </View>
+                            <View style={{ height: 10, width: '100%' }} />
+                        </Content>
                 {/* </Animated.View>
                 </Animated.ScrollView> */}
 

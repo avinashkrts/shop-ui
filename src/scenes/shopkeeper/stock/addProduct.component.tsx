@@ -113,6 +113,8 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
             Alert.alert("Please enter selling price.");
         } else if (gstPercent == null || gstPercent === '') {
             Alert.alert("Please enter GST percent.");
+        } else if (stock == null || stock === '') {
+            Alert.alert("Please enter stock.");
         } else if (quantity == null || quantity === '') {
             Alert.alert("Please enter quantity.");
         } else if (measurement == null || measurement === '') {
@@ -137,6 +139,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                     barcode: barcode,
                     sellingPrice: sellingPrice,
                     costPrice: costPrice,
+                    stock: stock,
                     offerPercent: offerPercent,
                     offerFrom: offerActiveInd ? offerFrom : '',
                     offerTo: offerActiveInd ? offerTo : '',
@@ -337,6 +340,21 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                                     onChangeText={(value) => { this.setState({ gstPercent: value }) }}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.GST_PERCENT}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={Styles.user_detail}>
+                            <View style={Styles.user_detail_header}>
+                                <Text style={Styles.user_detail_header_text}>{LableText.STOCK}</Text>
+                            </View>
+                            <View style={Styles.user_detail_data}>
+                                <TextInput
+                                    editable={isEditable}
+                                    value={stock}
+                                    onChangeText={(value) => { this.setState({ stock: value }) }}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.STOCK}
                                 />
                             </View>
                         </View>

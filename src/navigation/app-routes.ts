@@ -14,6 +14,7 @@ export enum AppRoute {
   SHOP_CUSTOMER = 'Shop Customer',
   SHOP_CUSTOMER_DETAIL = 'Shop Customer Detail',
   ADD_CUSTOMER = 'Add Customer',
+  EDIT_CUSTOMER = 'Edit Customer',
   ITEM_CATEGORY = 'Item Category',
   ADD_CATEGORY = 'Add Category',
   ADD_BRAND = 'Add Brand',
@@ -26,6 +27,8 @@ export enum AppRoute {
   BRANDLIST = 'Brand List',
   ITEMLIST = 'Item List',
   ADDEMPLOYEE = 'Add Employee',
+  EDIT_EMPLOYEE = 'Edit Employee',
+  ATTENDANCE = 'Attendance',
   PROFILE = 'Profile',
   CUSTOMER_PROFILE = 'Customer Profile',
   MY_WALLET = 'My Wallet',
@@ -34,13 +37,14 @@ export enum AppRoute {
   NOTIFICATION = 'Notification',
   PAY_NOW = 'Pay Now',
   ADD_PRODUCT = 'Add Product',
-   ADD_EMPLOYEE = 'Add Employee',
+  ADD_EMPLOYEE = 'Add Employee',
   OUT_OF_STOCK = 'Out of Stock',
   OFFERS = 'Offers',
   DAILY_MESSAGE = 'Daily Message',
   CUSTOMER_LIST = 'Customer List',
   STOCK_LIST = 'Stock List',
   CUSTOMER_ALL_PRODUCT = 'Customer All Product',
+  CUSTOMER_PRODUCT_DETAIL = 'Customer Product Detail',
   BILL_BOOK = 'Bill Book',
   OFFERS_TAB = 'Offers Tab',
   WISH_LIST = 'Wish List',
@@ -118,6 +122,6 @@ export enum AppRoute {
 
 
 
-  
+
   EDITADDRESS = 'EditAddress',
 }
