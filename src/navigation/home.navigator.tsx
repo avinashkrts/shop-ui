@@ -45,7 +45,7 @@ import {
   DailyMessageIcon,
 } from '../assets/icons';
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
-import { DailyMessageScreen, MyOrderScreen,MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
+import { AdminProfileScreen, DailyMessageScreen, MyOrderScreen,MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
 // import { AddProductScreen } from '../scenes/home/addproduct.component';
 import { AddCustomerScreen, CustomerDetailScreen, CustomerScreen } from '../scenes/shopkeeper/customer';
 import { AddEducationScreen } from '../scenes/profile';
@@ -76,6 +76,7 @@ type HomeDrawerNavigatorParams = {
   [AppRoute.OFFERS]: undefined;
   [AppRoute.DAILY_MESSAGE]: undefined;
   [AppRoute.CONTACTUS]: undefined;
+  [AppRoute.ADMIN_PROFILE]: undefined;
 }
 
 type HomeBottomTabsNavigatorParams = {
@@ -216,6 +217,11 @@ export interface MyWalletScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.MY_WALLET>;
 }
 
+export interface AdminProfileScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ADMIN_PROFILE>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADMIN_PROFILE>;
+}
+
 export interface DailyMessageScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.DAILY_MESSAGE>;
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.DAILY_MESSAGE>;
@@ -304,8 +310,8 @@ export const HomeNavigator = (): React.ReactElement => (
     />
 
     <Drawer.Screen
-      name={AppRoute.PROFILE}
-      component={ProfileScreen}
+      name={AppRoute.ADMIN_PROFILE}
+      component={AdminProfileScreen}
       options={{ title: 'Profile', drawerIcon: AccountsIcon }}
     />
 

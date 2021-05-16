@@ -105,6 +105,12 @@ export class LableText {
     public static readonly GST_PERCENT = 'GST Percent';
     public static readonly GST_AMOUNT = 'GST Amount';
     public static readonly MEASUREMENT = 'Measurement';
+    public static readonly SHOP_ID= 'Shop Id';
+    public static readonly PAYMENT_STATUS= 'Payment Status';
+    public static readonly SHOP_TYPE= 'Shop Type';
+    public static readonly VALIDITY= 'Validity';
+    public static readonly WALLET= 'Wallet';
+    public static readonly GST_NUMBER= 'GST Number';
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/

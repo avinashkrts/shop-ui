@@ -95,6 +95,7 @@ export enum AppRoute {
   TODO_DONE = 'ToDo Done',
   TODO_DETAILS = 'ToDo Details',
   CONTACTUS = 'ContactUs',
+  ADMIN_PROFILE = 'Admin Profile',
   CHANGEPASSWORD = 'Changepassword',
   ASK = 'Ask',
   TIMELINE = 'TimeLine',
