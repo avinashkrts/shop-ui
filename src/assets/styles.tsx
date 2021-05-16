@@ -1263,13 +1263,13 @@ export const Styles = StyleSheet.create({
     borderWidth: 5,
     borderRadius: 5,
     // marginBottom: 5,
-    padding: -20,
+    // padding: -20,
     backgroundColor: '#fff',
     height: 50
   },
 
   searchIcon: {
-    width: '10%',
+    width: '100%',
     color: '#aaa',
     alignSelf: 'center',
     textAlign: 'center',
@@ -1278,7 +1278,7 @@ export const Styles = StyleSheet.create({
   searchInput: {
     width: '90%',
     backgroundColor: '#fff',
-    borderRadius: 5
+    borderRadius: 5,
   },
 
   user_drop_data: {

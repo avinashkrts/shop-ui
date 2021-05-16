@@ -44,6 +44,7 @@ export enum AppRoute {
   CUSTOMER_LIST = 'Customer List',
   STOCK_LIST = 'Stock List',
   CUSTOMER_ALL_PRODUCT = 'Customer All Product',
+  CUSTOMER_ALL_SHOP = 'Customer All Shop',
   CUSTOMER_PRODUCT_DETAIL = 'Customer Product Detail',
   BILL_BOOK = 'Bill Book',
   OFFERS_TAB = 'Offers Tab',

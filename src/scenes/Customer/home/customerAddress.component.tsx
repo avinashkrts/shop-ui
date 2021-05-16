@@ -11,6 +11,7 @@ import { AppConstants, Color, LableText } from "../../../constants";
 import { Content } from "native-base";
 import Modal from "react-native-modal";
 import Axios from "axios";
+import { isDate } from "util";
 
 
 export class CustomerAddressScreen extends Component<CustomerAddressScreenProps, ThemedComponentProps & any> {
@@ -32,7 +33,8 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
             longitude: '',
             isEditable: true,
             modalVisible: false,
-            allAddress: []
+            allAddress: [],
+            edit: false
         }
 
         this.onRefresh = this.onRefresh.bind(this);
@@ -70,8 +72,8 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
     }
 
     handleSubmit() {
-        // Alert.alert("Clicked")
         const { isEditable, city, shopId, userId, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType } = this.state
+        // Alert.alert("Clicked"+ userId)
         console.log(isEditable, city, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType);
         if (city == null || city === '') {
             Alert.alert("Please enter city.");
@@ -93,7 +95,7 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
 
             Axios({
                 method: 'POST',
-                url: AppConstants.API_BASE_URL + '/api/address/create',
+                url: 'http://192.168.0.106:8082' + '/api/address/create',
                 data: {
                     city: city,
                     postOffice: postOffice,
@@ -104,7 +106,7 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                     state: state,
                     country: country,
                     shopId: shopId,
-                    userId: userId,
+                    userId: String(userId),
                     userType: userType
                 }
             }).then((response) => {
@@ -117,7 +119,21 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
 
     }
 
-    handleEdit() {
+    handleEdit(index) {
+        const { allAddress } = this.state;
+        // Alert.alert("" + allAddress[index].landmark)
+        this.setState({
+            id: allAddress[index].id,
+            city: allAddress[index].city,
+            postOffice: allAddress[index].postOffice,
+            landMark: String(allAddress[index].landmark),
+            policeStation: allAddress[index].policeStation,
+            district: allAddress[index].district,
+            pinCode: String(allAddress[index].pinCode),
+            state: allAddress[index].state,
+            country: allAddress[index].country,
+            edit: true
+        })
         this.toggleModal();
     }
 
@@ -128,6 +144,58 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
         })
     }
 
+    handleEditSubmit() {
+        const { isEditable, id, city, shopId, userId, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType } = this.state
+        // Alert.alert("Clicked"+ userId)
+        console.log(isEditable, city, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType);
+        if (city == null || city === '') {
+            Alert.alert("Please enter city.");
+        } else if (postOffice == null || postOffice === '') {
+            Alert.alert("Please enter postOffice.");
+        } else if (policeStation == null || policeStation === '') {
+            Alert.alert("Please enter policeStation.");
+        } else if (district == null || district === '') {
+            Alert.alert("Please enter district.");
+        } else if (landMark == null || landMark === '') {
+            Alert.alert("Please enter landmark.");
+        } else if (pinCode == null || pinCode === '') {
+            Alert.alert("Please enter pincode.");
+        } else if (state == null || state === '') {
+            Alert.alert("Please enter state.");
+        } else if (country == null || country === '') {
+            Alert.alert("Please enter country.");
+        } else {
+
+            Axios({
+                method: 'PUT',
+                url: 'http://192.168.0.106:8082' + '/api/address/update',
+                data: {
+                    id: id,
+                    city: city,
+                    postOffice: postOffice,
+                    landMark: landMark,
+                    policeStation: policeStation,
+                    district: district,
+                    pinCode: pinCode,
+                    state: state,
+                    country: country,
+                    shopId: shopId,
+                    userId: String(userId),
+                    userType: userType
+                }
+            }).then((response) => {
+                this.setState({
+                    edit: false
+                })
+                this.toggleModal();
+                this.onRefresh()
+            }, (error) => {
+                Alert.alert("Server error!");
+            })
+        }
+
+    }
+
     onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
@@ -136,33 +204,32 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
     }
 
 
-    renderAddress = ({ item }: any): ListItemElement => (
+    renderAddress = ({ item, index }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
                 // <View>
-                    <View style={Styles.address_container}>
-                        <View style={Styles.address_edit_pen}>
-                            <View>
-                                <Text style={Styles.address_text}>City :- {item.city}</Text>
-                                <Text style={Styles.address_text}>Post Office :- {item.postOffice}</Text>
-                                <Text style={Styles.address_text}>District :- {item.district} </Text>
-                                <Text style={Styles.address_text}>Pincode :- {item.pinCode} </Text>
-                            </View>
-
-                            <TouchableOpacity style={{ padding: 5 }} onPress={() => { this.handleEdit() }}>
-                                <Text style={Styles.address_text}><AddressEditIcon fontSize={20} />
-                                </Text>
-                            </TouchableOpacity>
+                <View style={Styles.address_container}>
+                    <View style={Styles.address_edit_pen}>
+                        <View>
+                            <Text style={Styles.address_text}>City :- {item.city}</Text>
+                            <Text style={Styles.address_text}>Post Office :- {item.postOffice}</Text>
+                            <Text style={Styles.address_text}>District :- {item.district} </Text>
+                            <Text style={Styles.address_text}>Pincode :- {item.pinCode} </Text>
                         </View>
+
+                        <TouchableOpacity style={{ padding: 5 }} onPress={() => { this.handleEdit(index) }}>
+                            <Text style={Styles.address_text}><AddressEditIcon fontSize={20} />
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                     {/* </View> */}
                 </View> :
                 <ActivityIndicator size='large' color='green' />}
-
         </ListItem>
     )
 
     render() {
-        const { allAddress, modalVisible, isEditable, city, postOffice, policeStation, district, landMark, pinCode, state, latitude, longitude, country } = this.state
+        const { allAddress, edit, modalVisible, isEditable, city, postOffice, policeStation, district, landMark, pinCode, state, latitude, longitude, country } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -200,9 +267,9 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                     </View> */}
 
                     {null != allAddress ?
-                    <List data={allAddress}
-                        renderItem={this.renderAddress}
-                    /> : null}
+                        <List data={allAddress}
+                            renderItem={this.renderAddress}
+                        /> : null}
 
                     <View style={{ marginHorizontal: '10%' }}>
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.toggleModal() }}>
@@ -367,12 +434,20 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                                 </View>
                             </View>
 
+                            {null != edit ? edit ?
+                                <View style={{ marginHorizontal: '10%' }}>
+                                    <View style={[{ marginVertical: 20 }, Styles.center]} >
+                                        <Text onPress={() => { this.handleEditSubmit() }} style={[Styles.buttonName, { backgroundColor: Color.COLOR, paddingHorizontal: '30%', paddingVertical: 10, borderRadius: 40 }]}>{LableText.EDIT}</Text>
+                                    </View>
+                                </View> :
 
-                            <View style={{ marginHorizontal: '10%' }}>
-                                <View style={[{ marginVertical: 20 }, Styles.center]} >
-                                    <Text onPress={() => { this.handleSubmit() }} style={[Styles.buttonName, { backgroundColor: Color.COLOR, paddingHorizontal: '30%', paddingVertical: 10, borderRadius: 40 }]}>{LableText.SAVE}</Text>
-                                </View>
-                            </View>
+                                <View style={{ marginHorizontal: '10%' }}>
+                                    <View style={[{ marginVertical: 20 }, Styles.center]} >
+                                        <Text onPress={() => { this.handleSubmit() }} style={[Styles.buttonName, { backgroundColor: Color.COLOR, paddingHorizontal: '30%', paddingVertical: 10, borderRadius: 40 }]}>{LableText.SAVE}</Text>
+                                    </View>
+                                </View> :
+                                null
+                            }
                         </ScrollView>
                     </Modal>
                     <View style={Styles.bottomSpace}></View>

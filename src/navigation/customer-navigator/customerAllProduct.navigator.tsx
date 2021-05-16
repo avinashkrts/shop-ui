@@ -3,9 +3,10 @@ import { CompositeNavigationProp, RouteProp,} from '@react-navigation/core';
 import { createStackNavigator, StackNavigationProp, } from '@react-navigation/stack';
 import { CustomerAllProductTabNavigationProps } from './customerHome.navigator';
 import { AppRoute } from '../app-routes';
-import { CartScreen, CustomerAllProductScreen, CustProductDetailScreen } from '../../scenes/Customer/allProduct';
+import { CartScreen, CustomerAllProductScreen, CustomerAllShopScreen, CustProductDetailScreen } from '../../scenes/Customer/allProduct';
 type CustomerAllProductNavigatorParams = {
     [AppRoute.CUSTOMER_ALL_PRODUCT]: undefined;   
+    [AppRoute.CUSTOMER_ALL_SHOP]: undefined;   
     [AppRoute.CUSTOMER_PRODUCT_DETAIL]: undefined;   
     [AppRoute.CUSTOMER_CART]: undefined;   
 }
@@ -16,6 +17,14 @@ export interface CustomerAllProductScreenProps {
         StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_ALL_PRODUCT>
     >;
     route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_ALL_PRODUCT>;
+}
+
+export interface CustomerAllShopScreenProps {
+    navigation: CompositeNavigationProp<
+    CustomerAllProductTabNavigationProps,
+        StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_ALL_SHOP>
+    >;
+    route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_ALL_SHOP>;
 }
 
 export interface CartScreenProps {
@@ -39,6 +48,7 @@ const Stack = createStackNavigator<CustomerAllProductNavigatorParams>();
 
 export const CustomerAllProductNavigator = (): React.ReactElement => (
     <Stack.Navigator headerMode='none'>
+        <Stack.Screen name={AppRoute.CUSTOMER_ALL_SHOP} component={CustomerAllShopScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_ALL_PRODUCT} component={CustomerAllProductScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_CART} component={CartScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_PRODUCT_DETAIL} component={CustProductDetailScreen} />        

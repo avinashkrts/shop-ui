@@ -84,6 +84,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
             selectedCategory: '',
             selectedBrand: '',
             allMeasurement: [],
+            search: '',
 
             allData: [{
                 url: '/api/product/getallproduct',
@@ -110,6 +111,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
 
         this.onRefresh = this.onRefresh.bind(this);
         this.handleAddProduct = this.handleAddProduct.bind(this);
+        this.handleSearch = this.handleSearch.bind(this);
     }
 
     async componentDidMount() {
@@ -143,7 +145,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                     })
                 }
             }, (error) => {
-                Alert.alert("Please enter a valid email ID and password.")
+                Alert.alert("Server error.")
             });
         })
     }
@@ -156,6 +158,18 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
 
         }, (error) => {
 
+        });
+    }
+
+    handleSearch() {
+        const { search } = this.state;
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/product/search/' + search,
+        }).then((response) => {
+            this.setState({ allProduct: response.data })
+        }, (error) => {
+            Alert.alert("Server error.")
         });
     }
 
@@ -181,7 +195,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
 
     navigateProductDetail(id) {
         // Alert.alert(String(id))
-        this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL, {productId: String(id)})
+        this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL, { productId: String(id) })
     }
 
     handleAddProduct() {
@@ -189,7 +203,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
     }
 
     render() {
-        const { allProduct, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allProduct, search, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -243,11 +257,15 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         style={{ marginTop: 0, marginLeft: -5 }}
                     />
                     {/* <Header style={styles.header}> */}
-                    <View style={[Styles.searchBox, {marginBottom: -5}]}>
-                        <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                    <View style={[Styles.searchBox, { marginBottom: 0, }]}>
+                        <TouchableOpacity style={[{ width: '10%' }, Styles.center]} onPress={() => { this.handleSearch() }}>
+                            <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                        </TouchableOpacity>
                         <TextInput
                             placeholder="Search"
-                            style={Styles.searchInput}
+                            style={[Styles.searchInput]}
+                            value={search}
+                            onChangeText={(value) => { this.setState({ search: value }) }}
                         />
                     </View>
                     <Divider />
@@ -322,7 +340,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                 {null != allProduct ? allProduct.map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
-                                            <TouchableOpacity onPress={() => {this.navigateProductDetail(data.productId) }}>
+                                            <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId) }}>
                                                 <View style={[Styles.all_Item_Image_1, Styles.center]}>
                                                     <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
                                                 </View>
@@ -354,15 +372,15 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                                                 : null
                                                             }
                                                         </View>
-                                                        {null != data.offerActiveInd ?data.offerActiveInd ?
+                                                        {null != data.offerActiveInd ? data.offerActiveInd ?
                                                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
                                                                 <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
                                                                 <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
-                                                            </View> : 
+                                                            </View> :
                                                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR, marginTop: 2.5}}></Text>
-                                                            <Text style={{ color: Color.COLOR }}></Text>
-                                                        </View>  : null
+                                                                <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
+                                                                <Text style={{ color: Color.COLOR }}></Text>
+                                                            </View> : null
                                                         }
                                                     </View>
                                                     {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
