@@ -60,14 +60,14 @@ export const Styles = StyleSheet.create({
     height: 42,
     width: 35,
     transform: [{ scaleX: 2 }],
-    backgroundColor: 'white',
-    marginTop: 50
+    backgroundColor: 'black',
+    marginTop: 100
   },
 
   ImgBgOne: {
     height: 30,
     width: 30,
-    backgroundColor: 'white',
+    backgroundColor: 'black',
     borderRadius: 50,
     alignSelf: 'center',
     marginTop: 18,
@@ -132,6 +132,7 @@ export const Styles = StyleSheet.create({
     width: '48%',
     backgroundColor: '#000',
     margin: '1%',
+    // height: 1000
   },
 
   all_Item_Image: {
@@ -257,6 +258,7 @@ export const Styles = StyleSheet.create({
 
   product_3rd_view: {
     // backgroundColor: 'red',
+    padding: 10,
     width: '100%',
     height: 200
   },
@@ -1044,7 +1046,7 @@ export const Styles = StyleSheet.create({
   },
 
   customer_list_image: {
-    margin: 5,
+    margin: 10,
     width: '15%',
   },
 
@@ -1073,6 +1075,13 @@ export const Styles = StyleSheet.create({
     fontSize: 15,
   },
 
+  /*---------------------------------------------This Style is for Add Product Image--------------------------------------------------------- */
+  image_view: {
+    // width: '100%',
+    backgroundColor: Color.BUTTON_NAME_COLOR,
+    paddingVertical: 10
+  },
+  
   /*---------------------------------------------This Style is for Customer Detail--------------------------------------------------------- */
   profile: {
     width: '100%',

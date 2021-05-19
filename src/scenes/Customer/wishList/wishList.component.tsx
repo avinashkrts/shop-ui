@@ -206,7 +206,7 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                         <View style={Styles.cart_view_1}>
                             <View style={Styles.cart_view_1_1}>
                                 <View style={[Styles.cart_avatar_view, Styles.center]}>
-                                    <Avatar source={require("../../../assets/sweets.png")} style={Styles.cart_avatar} />
+                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.productId + '_avatar.png' }} style={Styles.product_avatar} />
                                 </View>
                             </View>
 

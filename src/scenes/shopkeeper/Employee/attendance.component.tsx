@@ -278,7 +278,7 @@ export class AttendanceScreen extends React.Component<AttendanceScreenProps & Th
         })
         axios({
             method: 'get',
-            url: 'http://192.168.0.106:8082' + '/api/attendance/get/' + employeeId,
+            url: AppConstants.API_BASE_URL + '/api/attendance/get/' + employeeId,
 
         }).then((response) => {
             this.setState({
@@ -298,7 +298,7 @@ export class AttendanceScreen extends React.Component<AttendanceScreenProps & Th
 
         axios({
             method: 'get',
-            url: 'http://192.168.0.106:8082' + '/api/lookup/getallattendance',
+            url: AppConstants.API_BASE_URL + '/api/lookup/getallattendance',
 
         }).then((response) => {
             this.setState({
@@ -332,11 +332,9 @@ export class AttendanceScreen extends React.Component<AttendanceScreenProps & Th
                 style={[Styles.safeArea, { paddingHorizontal: 5 }]}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Cart'
+                    title='Total Attendance'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
-                    onRightPress={() => { this.addItem() }}
-                    menuIcon={PlusCircle}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />

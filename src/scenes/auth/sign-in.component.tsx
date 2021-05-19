@@ -78,14 +78,17 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
                 console.log('LookUp Name', data.lookUpName)
                 if (data.lookUpName == 'ADMIN') {
                   AsyncStorage.setItem("logedIn", JSON.stringify(true))
+                  AsyncStorage.setItem('adminType', JSON.stringify(data.lookUpId));
                   AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
                     this.navigateHome();
                   })
-                } else if (data.lookUpName == 'CUSTOMER')
+                } else if (data.lookUpName == 'CUSTOMER') {
                   AsyncStorage.setItem("logedIn", JSON.stringify(true))
-                AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-                  this.navigateCustomerHome();
-                })
+                  AsyncStorage.setItem('customerType', JSON.stringify(data.lookUpId));
+                  AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
+                    this.navigateCustomerHome();
+                  })
+                }
               }
             })
 
@@ -94,7 +97,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
           Alert.alert("Please enter a valid email ID and password.")
         }
       }, (error) => {
-        Alert.alert("Please enter a valid email ID and password.")
+        Alert.alert("Server error.")
       });
     }
   };

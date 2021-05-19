@@ -1,5 +1,5 @@
-import React from 'react';
-import { YellowBox, AsyncStorage } from 'react-native';
+import React, { useEffect } from 'react';
+import { YellowBox, AsyncStorage, Alert, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {
@@ -10,6 +10,7 @@ import {
 import {
   ApplicationProvider,
   IconRegistry,
+  Text,
 } from 'react-native-ui-kitten';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { AppNavigator } from './navigation/app.navigator';
@@ -20,30 +21,51 @@ export default (): React.ReactFragment => {
   // This value is used to determine the initial screen
   // const isAuthorized: boolean = false;
   const [isAuthorized, setIsAuthorized] = React.useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = React.useState<boolean>(false);
   const [isUser, setIsUser] = React.useState<boolean>(false);
-  const [isProfile, setIsProfile] = React.useState<boolean>(true);
+  const [userTypea, setUserTypea] = React.useState<String>('');
+  const [wait, setWait] = React.useState<String>('');
+
+
+
+  useEffect(() => {
+    // Alert.alert("HI")
+    // check();
+  })
 
   const check = async () => {
     const value = await AsyncStorage.getItem('userDetail');
-    if (value) {
+    const value1 = await AsyncStorage.getItem('adminType');
+    const value2 = await AsyncStorage.getItem('customerType');
+    if (value && (value1 || value2)) {
       const user = JSON.parse(value);
+      const admin = Number(JSON.parse(value1));
+      const customer = Number(JSON.parse(value2));
+      // console.log('UserType' + 'admin: ', admin + "customer", customer)
       if (user) {
-        const userType = user.userType;
+        // console.log('User Type in' + ' admin: ', admin + "customer", customer)
+
+        const userType = Number(user.userType);
         const token = user.token;
-        const profileCreated = user.profileCreated;
         if (token !== '' && token.length !== null) {
           if (token.length > 30 && isAuthorized !== true) {
+            // console.log('User Type in admin:', admin, isAuthorized, isUser, isAdmin, userType )
+
             setIsAuthorized(!isAuthorized);
-            if(profileCreated === 'false') {
-              setIsProfile(!isProfile);
-            }
-            if(userType == 28 && isUser !== true) {
+            if (userType == customer && isUser == false) {
               setIsUser(!isUser);
+              setUserTypea("user")
+              console.log('User Type in customer:' + customer, isAuthorized, isUser, isAdmin, userType)
+            } if (userType == admin && isAdmin == false) {
+              setIsAdmin(!isAdmin);
+              setUserTypea("admin")
+              console.log('User Type in admin' + admin, isAuthorized, isUser, isAdmin, userType)
             }
           }
         }
       }
     }
+    setWait('Milaan')
   }
 
   // check();
@@ -55,8 +77,12 @@ export default (): React.ReactFragment => {
         mapping={mapping}
         theme={light}>
         <SafeAreaProvider>
+          {/* <Text>{userTypea}</Text> */}
           <NavigationContainer>
-            <AppNavigator initialRouteName={AppRoute.CUSTOMER_HOME}/>
+            {/* {wait !== '' ? */}
+              <AppNavigator initialRouteName={AppRoute.HOME} />
+              {/* : <ActivityIndicator style={{flex: 1,justifyContent: 'center', alignItems: 'center'}} size='large'/>
+            } */}
           </NavigationContainer>
         </SafeAreaProvider>
       </ApplicationProvider>

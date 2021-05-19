@@ -194,13 +194,15 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
                 >
                     {/* <Header style={styles.header}> */}
                     <View style={Styles.searchBox}>
-                        <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                        <View style={[{width: '10%'}, Styles.center]}>
+                            <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                        </View>
                         <TextInput
                             placeholder="Search"
                             style={Styles.searchInput}
                         />
                     </View>
-                    {/* </Header> */}                   
+                    {/* </Header> */}
 
                     <List data={categoryData}
                         renderItem={this.renderMyJob}

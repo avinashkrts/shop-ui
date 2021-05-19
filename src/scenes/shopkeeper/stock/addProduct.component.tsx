@@ -92,7 +92,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
         })
     }
 
-    handleSubmit() {
+    handleSubmit() {        
         const { isEditable, name, category, brand, shopId, avatar, price, quantity, description, barcode,
             stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
             gstAmount, measurement, deliveryCharge, gstPercent } = this.state
@@ -151,7 +151,8 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                 if (null != response.data) {
                     if (response.data.status === 'true') {
                         Alert.alert("Product created.")
-                        this.props.navigation.goBack()
+                        console.log("product Created Id", response.data.productId)
+                        this.props.navigation.navigate(AppRoute.ADD_PRODUCT_IMAGE, {productId: response.data.productId})
                     } else if (response.data.status === 'false') {
                         Alert.alert("Product allready exists.")
                     }
@@ -180,6 +181,41 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                 brand: value
             })
         }
+    }
+
+    selectPhoto() {
+        ImagePicker.showImagePicker(options, (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled Image picker');
+            } else if (response.error) {
+                console.log('Image Picker Error: ', response.error);
+            } else {
+                const source = { uri: response.uri };
+                const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
+
+                this.setState({
+                    imageSource: source,
+                    file: file,
+                    isVisible: true
+                });
+            }
+        });
+    }
+
+    oploadImage() {
+        const formData = new FormData();
+        formData.append('file', this.state.selectedFile);
+        console.log(this.state.userId);
+        fetch(AppConstants.API_BASE_URL + '/api/file/upload/avatar/' + this.state.userId, {
+            method: 'post',
+            body: formData
+        }).then(res => {
+            if (res.ok) {
+                //   console.log(res.data);
+                Alert.alert("File uploaded successfully.");
+                //   window.location.reload(false);
+            }
+        });
     }
 
     handleAddMeasurement(value) {
@@ -534,7 +570,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
 
                     <View style={{ marginHorizontal: '10%' }}>
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleSubmit() }}>
-                            <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
+                            <Text style={Styles.buttonName}>{LableText.NEXT}</Text>
                         </TouchableOpacity>
                     </View>
 

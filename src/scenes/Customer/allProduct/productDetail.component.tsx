@@ -418,7 +418,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
     }
 
     render() {
-        const { isSelectedWish, userData, wishList, allProduct } = this.state
+        const { isSelectedWish, userData, wishList, allProduct, productId } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -454,7 +454,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                         <>
                             <View style={[Styles.product_view, Styles.center]}>
                                 <View style={[Styles.product_image, Styles.center]}>
-                                    <Avatar source={require("../../../assets/sweets.png")} style={Styles.product_avatar} />
+                                <Avatar source={{uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + productId + '_avatar.png'}} style={Styles.product_avatar} />
                                 </View>
                             </View>
 

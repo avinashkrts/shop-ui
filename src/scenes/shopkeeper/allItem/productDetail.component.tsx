@@ -43,7 +43,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import { Color, LableText } from '../../../constants/LabelConstants';
-
+import ImageSlider from 'react-native-image-slider';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -87,10 +87,12 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
             selectedCategory: '',
             selectedBrand: '',
             allMeasurement: [],
+            allImages: [],
+            shopId: '',
 
             allData: [
                 {
-                    url: '/api/product/get/' + this.props.route.params.productId,
+                    url: '/api/product/getproductbyproductidandshopid/' + this.props.route.params.productId + '/' + this.props.route.params.shopId,
                     method: 'GET',
                     variable: 'allProduct',
                 },
@@ -314,9 +316,11 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
         const { allData } = this.state;
 
         const productId = this.props.route.params.productId
-        // Alert.alert(productId)
+        const shop = this.props.route.params.shopId
+        // Alert.alert(shop)
         this.setState({
-            productId: productId
+            productId: productId,
+            shopId: shop
         })
 
         allData.map((data, index) => {
@@ -326,8 +330,18 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                 url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
                 if (data.variable === 'allProduct') {
-                    console.log(data.variable, response.data)
-                    this.setState({ allProduct: response.data })
+                    console.log(data.variable, response.data[0].image)
+                    const image1 = []
+                    response.data[0].image.map((image) => {
+                        image1.push(AppConstants.IMAGE_BASE_URL + '/product/' + image.avatarName)
+                    })
+                    console.log('allImages Url', image1)
+                    this.setState({
+                        allProduct: response.data,
+                        allImages: image1
+                    })
+
+
                 } else if (data.variable === 'allCategory') {
                     console.log(data.variable, response.data)
                     this.setState({
@@ -347,7 +361,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                     })
                 }
             }, (error) => {
-                Alert.alert("Please enter a valid email ID and password.")
+                Alert.alert("Server error.")
             });
         })
     }
@@ -379,7 +393,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
 
 
     render() {
-        const { isSelectedWish, allProduct } = this.state
+        const { isSelectedWish, shopId, allImages, productId, allProduct } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -393,7 +407,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
 
                 <Divider />
 
-                <Content style={Styles.customer_content}
+                <Content style={[Styles.customer_content, {padding: 0}]}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -401,7 +415,6 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                         />
                     }
                 >
-
                     {/* <Header style={styles.header}>
                         <View style={Styles.searchBox}>
                             <Text style={Styles.searchIcon}><SearchIcon /></Text>
@@ -413,9 +426,10 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                     </Header> */}
                     {null != allProduct ?
                         <>
+
                             <View style={[Styles.product_view, Styles.center]}>
-                                <View style={[Styles.product_image, Styles.center]}>
-                                    <Avatar source={require("../../../assets/sweets.png")} style={Styles.product_avatar} />
+                                <View style={[Styles.product_image,]}>
+                                    <ImageSlider images={allImages} />
                                 </View>
                             </View>
 
@@ -454,7 +468,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
 
                             </View>
 
-                            <View style={Styles.product_3rd_view}>
+                            <View style={[Styles.product_3rd_view]}>
                                 <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
                                     <Text style={{ color: '#000', paddingVertical: 20, fontWeight: 'bold', fontSize: 20 }}>{allProduct.name}</Text>
 

@@ -203,15 +203,15 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
     handleSearch() {
         const { search } = this.state;
         if (search != '' && search != null) {
-        axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/product/search/' + search,
-        }).then((response) => {
-            this.setState({ allProduct: response.data })
-        }, (error) => {
-            Alert.alert("Server error.")
-        });
-    }
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/product/search/' + search,
+            }).then((response) => {
+                this.setState({ allProduct: response.data })
+            }, (error) => {
+                Alert.alert("Server error.")
+            });
+        }
     }
 
     render() {
@@ -270,7 +270,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                     />
                     {/* <Header style={styles.header}> */}
                     <View style={[Styles.searchBox, { marginBottom: 0 }]}>
-                        <View style={[{ width: '10%',}, Styles.center]}>
+                        <View style={[{ width: '10%', }, Styles.center]}>
                             <TouchableOpacity onPress={() => { this.handleSearch() }}>
                                 <Text style={Styles.searchIcon}><SearchIcon /></Text>
                             </TouchableOpacity>
@@ -354,12 +354,19 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                 {null != allProduct ? allProduct.map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
-                                            <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId) }}>
+                                            <View style={{ height: 200 }}>
+                                                <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId) }}>
+                                                    <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + data.productId + '_avatar.png' }} style={Styles.product_avatar} />
+                                                    </View>
+                                                </TouchableOpacity>
+                                            </View>
+                                            {/* <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId) }}>
                                                 <View style={[Styles.all_Item_Image_1, Styles.center]}>
                                                     <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
                                                 </View>
 
-                                            </TouchableOpacity>
+                                            </TouchableOpacity> */}
 
                                             <View style={Styles.all_Item_Detail}>
                                                 <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>

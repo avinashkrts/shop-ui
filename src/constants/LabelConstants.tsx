@@ -19,6 +19,9 @@ export class Padding {
 /*------------------------------------------------------------TEXT------------------------------------------------------------*/
 export class LableText {
     public static readonly USER = 'user';
+    public static readonly CHOOSE_IMAGE = 'Choose Image';
+    public static readonly UPLOAD = 'Upload';
+    public static readonly NEXT = 'Next';
     public static readonly WELCOME_TEXT = 'Milaan IT Projects';
     public static readonly SIGN_IN = 'Sign In';
     public static readonly ADD = 'Add';

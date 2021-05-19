@@ -81,6 +81,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
             allProduct: [],
             allCategory: [],
             allBrand: [],
+            shopId: '',
             selectedCategory: '',
             selectedBrand: '',
             allMeasurement: [],
@@ -116,7 +117,13 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
 
     async componentDidMount() {
         const { allData } = this.state;
+        const value = await AsyncStorage.getItem("userDetail")
+        const user = JSON.parse(value);
 
+        console.log("productId", user.shopId)
+        this.setState({
+            shopId: user.shopId
+        })
         allData.map((data, index) => {
             // console.log(allData)
             axios({
@@ -193,9 +200,9 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
         this.setState({ selectedBrand: id })
     }
 
-    navigateProductDetail(id) {
+    navigateProductDetail(id, shopId) {
         // Alert.alert(String(id))
-        this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL, { productId: String(id) })
+        this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL, { productId: String(id), shopId: String(shopId) })
     }
 
     handleAddProduct() {
@@ -203,7 +210,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
     }
 
     render() {
-        const { allProduct, search, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allProduct, shopId, search, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -340,10 +347,13 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                 {null != allProduct ? allProduct.map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
-                                            <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId) }}>
-                                                <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
-                                                </View>
+                                           <View style={{height: 200}}>
+                                        <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId, data.shopId) }}>
+                                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + shopId + '_product.png' }} style={Styles.product_avatar} />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
 
                                                 <View style={Styles.all_Item_Detail}>
                                                     <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
@@ -389,7 +399,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                                     </View>
                                                     {/* </TouchableOpacity> */}
                                                 </View>
-                                            </TouchableOpacity>
+                                            {/* </TouchableOpacity> */}
                                         </View>
                                     )
                                 }) : null}

@@ -3,7 +3,7 @@ import { StyleSheet, View, TextInput, Alert, TouchableOpacity, PermissionsAndroi
 import {
   Divider,
   Layout,
-  Text, ThemedComponentProps, Avatar, Button, Select,Input
+  Text, ThemedComponentProps, Avatar, Button, Select, Input
 } from 'react-native-ui-kitten';
 import { ImageUploadScreenProps } from '../../navigation/home.navigator';
 import { Toolbar } from '../../components/toolbar.component';
@@ -45,12 +45,12 @@ export class ImageUploadScreen extends React.Component<ThemedComponentProps & an
       selectedIndex: 0,
       categoryList: [],
       Ask: '',
-   
+
       timelineBody: '',
       timelineType: '54',
-      selectedFile:null,
+      selectedFile: null,
       userId: '',
-   
+
 
     }
 
@@ -58,36 +58,37 @@ export class ImageUploadScreen extends React.Component<ThemedComponentProps & an
 
 
 
-  fileSelectedHandler = (e) =>{
+  fileSelectedHandler = (e) => {
     this.setState({
       selectedFile: e.target.files[0]
-  });
-    console.log("picture",e.target.files[0]);
-   }
-   async componentWillMount() {
+    });
+    console.log("picture", e.target.files[0]);
+  }
+  async componentWillMount() {
     const value = await AsyncStorage.getItem('userDetail');
     if (value) {
-        const user = JSON.parse(value);
-        this.setState({userId : user.userId});
-    } 
+      const user = JSON.parse(value);
+      this.setState({ userId: user.userId });
+    }
   }
-     onFileChangeHandler = (e) => {
-      e.preventDefault();
-      
-      const formData = new FormData();
-      formData.append('file', this.state.selectedFile);
-console.log(this.state.userId);
-      fetch(AppConstants.API_BASE_URL +'/api/file/upload/avatar/'+this.state.userId, {
-          method: 'post',
-          body: formData
-      }).then(res => {
-          if(res.ok) {
-            //   console.log(res.data);
-              Alert.alert("File uploaded successfully.");
-            //   window.location.reload(false);
-          }
-      });
-    
+  
+  onFileChangeHandler = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('file', this.state.selectedFile);
+    console.log(this.state.userId);
+    fetch(AppConstants.API_BASE_URL + '/api/file/upload/avatar/' + this.state.userId, {
+      method: 'post',
+      body: formData
+    }).then(res => {
+      if (res.ok) {
+        //   console.log(res.data);
+        Alert.alert("File uploaded successfully.");
+        //   window.location.reload(false);
+      }
+    });
+
   };
 
 
@@ -95,31 +96,31 @@ console.log(this.state.userId);
 
 
 
- 
+
   render() {
 
     return (
-        <View >
-             <Input
+      <View >
+        <Input
           padding={0}
-          type='file' 
-            style={styles.Input}
-            label='Email Address'
-            placeholder='Enter Email Address'
-            value={this.state.emailId}
-            onChangeText={(emailId) => this.setState({ emailId })}
-            onChange={this.fileSelectedHandler}
-            // ref={fileInput=>this.fileInput = fileInput}
-            />
-            <Button 
-            // onPress={()=>this.FileInput.click()}
-            >camera Icon here</Button>
-            <Text style={{borderRadius:20}} onPress={this.onFileChangeHandler} >
-               Upload</Text>
-        
-        
-    </View>
-    
+          type='file'
+          style={styles.Input}
+          label='Email Address'
+          placeholder='Enter Email Address'
+          value={this.state.emailId}
+          onChangeText={(emailId) => this.setState({ emailId })}
+          onChange={this.fileSelectedHandler}
+        // ref={fileInput=>this.fileInput = fileInput}
+        />
+        <Button
+        // onPress={()=>this.FileInput.click()}
+        >camera Icon here</Button>
+        <Text style={{ borderRadius: 20 }} onPress={this.onFileChangeHandler} >
+          Upload</Text>
+
+
+      </View>
+
     );
   };
 }

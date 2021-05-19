@@ -86,6 +86,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
             selectedBrand: '',
             allMeasurement: [],
             search: '',
+            shopId: '',
             allData: [{
                 url: '/api/category/getallcategory',
                 method: 'GET',
@@ -111,6 +112,14 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
     async componentDidMount() {
         const { allData } = this.state;
         const brandId = await AsyncStorage.getItem("brandId")
+        const value = await AsyncStorage.getItem("userDetail")
+        const user = JSON.parse(value);
+
+        console.log("productId", user.shopId)
+
+        this.setState({
+            shopId: user.shopId
+        })
         axios({
             method: "GET",
             url: AppConstants.API_BASE_URL + '/api/product/getproductbybrand/' + brandId,
@@ -127,19 +136,19 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                 url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
                 if (data.variable === 'allCategory') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allCategory: response.data,
                         selectedCategory: response.data[0].id
                     })
                 } else if (data.variable === 'allBrand') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allBrand: response.data,
                         selectedBrand: response.data[0].id
                     })
                 } else if (data.variable === 'allMeasurement') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allMeasurement: response.data,
                     })
@@ -187,8 +196,13 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
         this.props.navigation.navigate(AppRoute.ADD_PRODUCT);
     }
 
+    handleItemDetails(productId) {
+        this.props.navigation.navigate(AppRoute.ITEM_DETAILS, { productId: String(productId) })
+
+    }
+
     render() {
-        const { allProduct, search, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allProduct, search, shopId, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -324,56 +338,57 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                         {null != allProduct ? allProduct.map((data, index) => {
                             return (
                                 <View style={Styles.all_Item_List}>
-                                    <TouchableOpacity onPress={() => { }}>
-                                        <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                            <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
-                                        </View>
-
-                                        <View style={Styles.all_Item_Detail}>
-                                            <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                {null != allBrand ? allBrand.map((brand, index) => {
-                                                    if (brand.id == data.brand) {
-                                                        return (
-                                                            <>
-                                                                <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {brand.name}</Text>
-                                                            </>
-                                                        );
-                                                    }
-                                                }) : null}
-                                                {null != allMeasurement ? allMeasurement.map((brand, index) => {
-                                                    if (brand.lookUpId == data.measurement) {
-                                                        return (
-                                                            <>
-                                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
-                                                            </>
-                                                        );
-                                                    }
-                                                }) : null}
-                                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                                    <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
-                                                    {data.offerActiveInd ?
-                                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
-                                                        : null
-                                                    }
-                                                </View>
-                                                {null != data.offerActiveInd ? data.offerActiveInd ?
-                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                        <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
-                                                        <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
-                                                    </View> :
-                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                        <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
-                                                        <Text style={{ color: Color.COLOR }}></Text>
-                                                    </View> : null
+                                    <View style={{height: 200}}>
+                                        <TouchableOpacity onPress={() => { this.handleItemDetails(data.productId) }}>
+                                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + shopId + '_product.png' }} style={Styles.product_avatar} />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={Styles.all_Item_Detail}>
+                                        <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                            {null != allBrand ? allBrand.map((brand, index) => {
+                                                if (brand.id == data.brand) {
+                                                    return (
+                                                        <>
+                                                            <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {brand.name}</Text>
+                                                        </>
+                                                    );
+                                                }
+                                            }) : null}
+                                            {null != allMeasurement ? allMeasurement.map((brand, index) => {
+                                                if (brand.lookUpId == data.measurement) {
+                                                    return (
+                                                        <>
+                                                            <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
+                                                        </>
+                                                    );
+                                                }
+                                            }) : null}
+                                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                                <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
+                                                {data.offerActiveInd ?
+                                                    <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
+                                                    : null
                                                 }
                                             </View>
-                                            {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
-                                            <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.stock}</Text>
-                                            </View>
-                                            {/* </TouchableOpacity> */}
+                                            {null != data.offerActiveInd ? data.offerActiveInd ?
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                    <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
+                                                    <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
+                                                </View> :
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                    <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
+                                                    <Text style={{ color: Color.COLOR }}></Text>
+                                                </View> : null
+                                            }
                                         </View>
-                                    </TouchableOpacity>
+                                        {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
+                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.stock}</Text>
+                                        </View>
+                                        {/* </TouchableOpacity> */}
+                                    </View>
                                 </View>
                             )
                         }) : null}

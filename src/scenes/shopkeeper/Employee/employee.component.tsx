@@ -79,7 +79,9 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
     constructor(props) {
         super(props)
         this.state = {
-            employeeData: []
+            employeeData: [],
+            attendance: [],
+            shopId: ''
         }
         this.navigateAddEmployee = this.navigateAddEmployee.bind(this);
         this.handleAbsent = this.handleAbsent.bind(this);
@@ -87,13 +89,34 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
         this._onRefresh = this._onRefresh.bind(this);
     }
     async componentDidMount() {
+        let userDetail = await AsyncStorage.getItem('userDetail');
+        let userData = JSON.parse(userDetail);
+
+        if (null != userData) {
+            this.setState({
+                shopId: userData.shopId
+            })
+        }
         Axios({
             method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/employee/getallemployee',
+            url: AppConstants.API_BASE_URL + '/api/employee/getemployeebyshopId/' + userData.shopId,
         }).then((response) => {
             if (null != response.data) {
                 this.setState({
                     employeeData: response.data
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+
+        Axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/lookup/getallattendance',
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    attendance: response.data
                 })
             }
         }, (error) => {
@@ -117,50 +140,66 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
 
     handleAbsent(id) {
         // Alert.alert("Absent" + id);
-        const attendance = "2", shopId = "AVI123";
-        Axios({
-            method: 'POST',
-            url: AppConstants.API_BASE_URL + '/api/attendance/create',
-            data: {
-                shopId: shopId,
-                attendance: attendance,
-                employeeId: id
-            }
-        }).then((response) => {
-            if (null != response.data) {
-                if (response.data.status === 'true') {
-                    Alert.alert("Attendance done.")
-                } else if (response.data.status === 'false') {
-                    Alert.alert("Attendance updated.")
+        const { attendance } = this.state;
+        if (null != attendance) {
+            attendance.map((data, index) => {
+                if (data.lookUpName === 'ABSENT') {
+                    const absent = data.lookUpId
+                    const shopId = "AVI123";
+                    Axios({
+                        method: 'POST',
+                        url: AppConstants.API_BASE_URL + '/api/attendance/create',
+                        data: {
+                            shopId: shopId,
+                            attendance: absent,
+                            employeeId: id
+                        }
+                    }).then((response) => {
+                        if (null != response.data) {
+                            if (response.data.status === 'true') {
+                                Alert.alert("Attendance done.")
+                            } else if (response.data.status === 'false') {
+                                Alert.alert("Attendance updated.")
+                            }
+                        }
+                    }, (error) => {
+                        Alert.alert("Server error!.")
+                    });
                 }
-            }
-        }, (error) => {
-            Alert.alert("Server error!.")
-        });
+            })
+        }
     }
 
     handlePresent(id) {
         // Alert.alert("Present" + id);
-        const attendance = "1", shopId = "AVI123";
-        Axios({
-            method: 'POST',
-            url: AppConstants.API_BASE_URL + '/api/attendance/create',
-            data: {
-                shopId: shopId,
-                attendance: attendance,
-                employeeId: id
-            }
-        }).then((response) => {
-            if (null != response.data) {
-                if (response.data.status === 'true') {
-                    Alert.alert("Attendance done.")
-                } else if (response.data.status === 'false') {
-                    Alert.alert("Attendance updated.")
+        const { attendance } = this.state;
+        if (null != attendance) {
+            attendance.map((data, index) => {
+                if (data.lookUpName === 'PRESENT') {
+                    const present = data.lookUpId
+                    const shopId = "AVI123";
+                    Axios({
+                        method: 'POST',
+                        url: AppConstants.API_BASE_URL + '/api/attendance/create',
+                        data: {
+                            shopId: shopId,
+                            attendance: present,
+                            employeeId: id
+                        }
+                    }).then((response) => {
+                        if (null != response.data) {
+                            if (response.data.status === 'true') {
+                                Alert.alert("Attendance done.")
+                            } else if (response.data.status === 'false') {
+                                Alert.alert("Attendance updated.")
+                            }
+                        }
+                    }, (error) => {
+                        Alert.alert("Server error!.")
+                    });
                 }
-            }
-        }, (error) => {
-            Alert.alert("Server error!.")
-        });
+            })
+        }
     }
 
     _onRefresh() {
@@ -174,36 +213,36 @@ export class EmployeeScreen extends React.Component<EmployeeScreenProps & Themed
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
                 <View>
-                    <TouchableOpacity onPress={() => { this.navigateEmployeeDetails(item.id) }}>
-                        <View style={Styles.customer_list}>
+                    <View style={Styles.customer_list}>
+                        <TouchableOpacity onPress={() => { this.navigateEmployeeDetails(item.id) }}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.image} />
                                 {/* <View>
                         <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
                     </View> */}
                             </View>
-
-                            <View style={Styles.list_name}>
-                                <View style={[Styles.list_price, { width: '100%' }]}>
-                                    <Text style={Styles.customer_list_name_text}>{item.firstName}</Text>
-                                    <View>
-                                        <Text style={Styles.customer_list_price_text}>Rs: {item.salary}</Text>
-                                    </View>
-                                </View>
-
-                                <View style={Styles.list_price}>
-                                    <View>
-                                        <Text style={Styles.customer_list_price_text}>{item.mobileNo}</Text>
-                                    </View>
-                                    <View style={[Styles.center, { alignItems: 'center', width: '35%' }]}>
-                                        <Text onPress={() => { this.handlePresent(item.id) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 5, borderRadius: 5, marginBottom: 3 }]}>{LableText.PRESENT}</Text>
-                                        <Text onPress={() => { this.handleAbsent(item.id) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 5, borderRadius: 5, marginTop: 3 }]}>{LableText.ABSENT}</Text>
-                                    </View>
-
+                        </TouchableOpacity>
+                        
+                        <View style={Styles.list_name}>
+                            <View style={[Styles.list_price, { width: '100%' }]}>
+                                <Text style={Styles.customer_list_name_text}>{item.firstName}</Text>
+                                <View>
+                                    <Text style={Styles.customer_list_price_text}>Rs: {item.salary}</Text>
                                 </View>
                             </View>
+
+                            <View style={Styles.list_price}>
+                                <View>
+                                    <Text style={Styles.customer_list_price_text}>{item.mobileNo}</Text>
+                                </View>
+                                <View style={[Styles.center, { alignItems: 'center', width: '35%' }]}>
+                                    <Text onPress={() => { this.handlePresent(item.id) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 5, borderRadius: 5, marginBottom: 3 }]}>{LableText.PRESENT}</Text>
+                                    <Text onPress={() => { this.handleAbsent(item.id) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 5, borderRadius: 5, marginTop: 3 }]}>{LableText.ABSENT}</Text>
+                                </View>
+
+                            </View>
                         </View>
-                    </TouchableOpacity>
+                    </View>
                 </View>
 
                 :

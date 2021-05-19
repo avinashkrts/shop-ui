@@ -8,4 +8,5 @@ export { PayNowScreen } from './payNow.component';
 export { StockListScreen } from './stockList.component';
 export { ValidityScreen } from './validity.component';
 export { MyWalletScreen } from './myWallet.component';
+export { AdminProfileScreen } from './adminProfile';
 
