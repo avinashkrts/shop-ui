@@ -82,7 +82,7 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
             allBrand: [],
             selectedCategory: '',
             selectedBrand: '',
-            shopId: 'AVI123',
+            shopId: '',
             allMeasurement: [],
 
             allData: [

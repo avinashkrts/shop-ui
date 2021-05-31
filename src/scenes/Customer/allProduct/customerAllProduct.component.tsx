@@ -67,7 +67,8 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
         // console.log("User Data",userData.userId)
 
         this.setState({
-            userData: userData
+            userData: userData,
+            shopId: this.props.route.params.id
         })
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
@@ -146,8 +147,8 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
         this.setState({ selectedBrand: id })
     }
 
-    navigateProductDetail(id) {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_PRODUCT_DETAIL, { productId: String(id) })
+    navigateProductDetail(id, shopId) {
+        this.props.navigation.navigate(AppRoute.CUSTOMER_PRODUCT_DETAIL, { productId: String(id), shopId: String(shopId) })
     }
 
     async handleAddToCart(productId) {
@@ -215,7 +216,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
     }
 
     render() {
-        const { allProduct, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allProduct, shopId, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -355,9 +356,9 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                     return (
                                         <View style={Styles.all_Item_List}>
                                             <View style={{ height: 200 }}>
-                                                <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId) }}>
+                                                <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId, data.shopId) }}>
                                                     <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + data.productId + '_avatar.png' }} style={Styles.product_avatar} />
+                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + shopId + '_product.png' }} style={Styles.product_avatar} />
                                                     </View>
                                                 </TouchableOpacity>
                                             </View>

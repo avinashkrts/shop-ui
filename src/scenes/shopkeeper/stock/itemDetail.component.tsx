@@ -45,6 +45,7 @@ import { Styles } from '../../../assets/styles'
 import { Color, LableText } from '../../../constants/LabelConstants';
 import ImagePicker from 'react-native-image-picker';
 import { url } from 'inspector';
+import ImageSlider from 'react-native-image-slider';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -90,10 +91,11 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
             allMeasurement: [],
             file: null,
             selectedFile: null,
+            allImages: [],
 
             allData: [
                 {
-                    url: '/api/product/get/' + this.props.route.params.productId,
+                    url: '/api/product/getproductbyproductidandshopid/' + this.props.route.params.productId + '/' + this.props.route.params.shopId,
                     method: 'GET',
                     variable: 'allProduct',
                 },
@@ -368,21 +370,31 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
             }).then((response) => {
                 if (data.variable === 'allProduct') {
                     console.log(data.variable, response.data)
-                    this.setState({ allProduct: response.data })
+
+                    const image1 = []
+                    response.data[0].image.map((image) => {
+                        image1.push(AppConstants.IMAGE_BASE_URL + '/product/' + image.avatarName)
+                    console.log(image.avatarName)
+                    })
+                    console.log('allImages Url', image1)
+                    this.setState({
+                        allProduct: response.data,
+                        allImages: image1
+                    })
                 } else if (data.variable === 'allCategory') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allCategory: response.data,
                         selectedCategory: response.data[0].id
                     })
                 } else if (data.variable === 'allBrand') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allBrand: response.data,
                         selectedBrand: response.data[0].id
                     })
                 } else if (data.variable === 'allMeasurement') {
-                    console.log(data.variable, response.data)
+                    // console.log(data.variable, response.data)
                     this.setState({
                         allMeasurement: response.data,
                     })
@@ -420,7 +432,7 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
 
 
     render() {
-        const { isSelectedWish, productId, allProduct } = this.state
+        const { isSelectedWish, allImages, productId, allProduct } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -455,11 +467,13 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
                     {null != allProduct ?
                         <>
                             <View style={[Styles.product_view]}>
-                                <TouchableOpacity style={[{justifyContent: 'flex-end', marginTop: 5, marginRight: 5, alignItems: 'flex-end'}]} onPress={() => { this.selectPhoto() }}>
+                                <TouchableOpacity style={[{ justifyContent: 'flex-end', marginTop: 5, marginRight: 5, alignItems: 'flex-end' }]} onPress={() => { this.selectPhoto() }}>
                                     <Text><EditIcon /></Text>
                                 </TouchableOpacity>
-                                <View style={[Styles.product_image, Styles.center]}>
-                                    <Avatar source={{uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + productId + '_avatar.png'}} style={Styles.product_avatar} />
+                                <View style={[Styles.product_view, Styles.center]}>
+                                    <View style={[Styles.product_image]}>
+                                        <ImageSlider images={allImages} />
+                                    </View>
                                 </View>
                             </View>
 

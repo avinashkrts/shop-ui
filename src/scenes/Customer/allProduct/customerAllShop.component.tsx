@@ -401,7 +401,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                                             );
                                                         }
                                                     }) : null} */}
-                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.adminAddress[0].city}, {data.adminAddress[0].state}</Text>
+                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.adminAddress[0] != null ? data.adminAddress[0].city : null}, {null != data.adminAddress[0] ? data.adminAddress[0].state : null}</Text>
 
                                                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
                                                         <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>{data.shopType == 1 ? "Software" : "Test"}</Text>

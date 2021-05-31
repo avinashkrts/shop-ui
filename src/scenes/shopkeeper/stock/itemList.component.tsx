@@ -196,8 +196,8 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
         this.props.navigation.navigate(AppRoute.ADD_PRODUCT);
     }
 
-    handleItemDetails(productId) {
-        this.props.navigation.navigate(AppRoute.ITEM_DETAILS, { productId: String(productId) })
+    handleItemDetails(id, shopId) {
+        this.props.navigation.navigate(AppRoute.ITEM_DETAILS,  { productId: String(id), shopId: String(shopId) })
 
     }
 
@@ -339,9 +339,9 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                             return (
                                 <View style={Styles.all_Item_List}>
                                     <View style={{height: 200}}>
-                                        <TouchableOpacity onPress={() => { this.handleItemDetails(data.productId) }}>
+                                        <TouchableOpacity onPress={() => { this.handleItemDetails(data.productId, data.shopId) }}>
                                             <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + shopId + '_product.png' }} style={Styles.product_avatar} />
+                                            <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + shopId + '_product.png' }} style={Styles.product_avatar} />
                                             </View>
                                         </TouchableOpacity>
                                     </View>

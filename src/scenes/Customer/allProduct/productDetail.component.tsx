@@ -43,6 +43,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import { Color, LableText } from '../../../constants/LabelConstants';
+import ImageSlider from 'react-native-image-slider';
 
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
@@ -89,10 +90,10 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
             allMeasurement: [],
             userData: [],
             wishList: '',
-
+            allImages: [],
             allData: [
                 {
-                    url: '/api/product/get/' + this.props.route.params.productId,
+                    url: '/api/product/getproductbyproductidandshopid/' + this.props.route.params.productId + '/' + this.props.route.params.shopId,
                     method: 'GET',
                     variable: 'allProduct',
                 },
@@ -320,8 +321,10 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
         // Alert.alert(""+userData.userId);
         // console.log("User Data",userData.userId)
 
+        const shop = this.props.route.params.shopId
         this.setState({
-            userData: userData
+            userData: userData,
+            shopId: shop
         })
 
         const productId = this.props.route.params.productId
@@ -354,7 +357,15 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
             }).then((response) => {
                 if (data.variable === 'allProduct') {
                     // console.log(data.variable, response.data)
-                    this.setState({ allProduct: response.data })
+                    const image1 = []
+                    response.data[0].image.map((image) => {
+                        image1.push(AppConstants.IMAGE_BASE_URL + '/product/' + image.avatarName)
+                    })
+                    console.log('allImages Url', image1)
+                    this.setState({
+                        allProduct: response.data,
+                        allImages: image1
+                    })
                 } else if (data.variable === 'allCategory') {
                     // console.log(data.variable, response.data)
                     this.setState({
@@ -418,7 +429,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
     }
 
     render() {
-        const { isSelectedWish, userData, wishList, allProduct, productId } = this.state
+        const { isSelectedWish, userData, allImages, wishList, allProduct, productId } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -453,8 +464,8 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                     {null != allProduct ?
                         <>
                             <View style={[Styles.product_view, Styles.center]}>
-                                <View style={[Styles.product_image, Styles.center]}>
-                                <Avatar source={{uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + productId + '_avatar.png'}} style={Styles.product_avatar} />
+                                <View style={[Styles.product_image]}>
+                                    <ImageSlider images={allImages} />
                                 </View>
                             </View>
 

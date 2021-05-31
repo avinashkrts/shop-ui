@@ -37,6 +37,7 @@ export enum AppRoute {
   NOTIFICATION = 'Notification',
   PAY_NOW = 'Pay Now',
   ADD_PRODUCT = 'Add Product',
+  ADD_DRAWER_PRODUCT = 'Add Drawer Product',
   ADD_PRODUCT_IMAGE = 'Add Product Image',
   ITEM_DETAILS = 'Item Details',
   ADD_EMPLOYEE = 'Add Employee',

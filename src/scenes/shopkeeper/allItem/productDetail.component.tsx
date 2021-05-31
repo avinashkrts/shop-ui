@@ -428,7 +428,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                         <>
 
                             <View style={[Styles.product_view, Styles.center]}>
-                                <View style={[Styles.product_image,]}>
+                                <View style={[Styles.product_image]}>
                                     <ImageSlider images={allImages} />
                                 </View>
                             </View>

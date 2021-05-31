@@ -67,7 +67,7 @@ type HomeDrawerNavigatorParams = {
   [AppRoute.VALIDITY]: undefined;
   [AppRoute.NOTIFICATION]: undefined;
   [AppRoute.PAY_NOW]: undefined;
-  [AppRoute.ADD_PRODUCT]: undefined;
+  [AppRoute.ADD_DRAWER_PRODUCT]: undefined;
   [AppRoute.ADD_CUSTOMER]: undefined;
   [AppRoute.ADD_EMPLOYEE]: undefined;
   [AppRoute.CUSTOMER_LIST]: undefined;
@@ -238,8 +238,8 @@ export interface AccountsScreenProps {
 }
 
 export interface AddProductScreenProps {
-  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ADD_PRODUCT>;
-  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADD_PRODUCT>;
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ADD_DRAWER_PRODUCT>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADD_DRAWER_PRODUCT>;
 }
 
 export interface AddCustomerScreenProps {
