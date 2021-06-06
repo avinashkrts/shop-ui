@@ -193,7 +193,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
     }
 
     navigationAddProduct() {
-        this.props.navigation.navigate(AppRoute.ADD_PRODUCT);
+        this.props.navigation.navigate(AppRoute.ADD_PRODUCT_NAVIGATOR);
     }
 
     handleItemDetails(id, shopId) {
@@ -351,7 +351,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                                                 if (brand.id == data.brand) {
                                                     return (
                                                         <>
-                                                            <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {brand.name}</Text>
+                                                            <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
                                                         </>
                                                     );
                                                 }

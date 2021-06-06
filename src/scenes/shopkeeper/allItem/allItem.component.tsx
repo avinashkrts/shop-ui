@@ -1,54 +1,18 @@
-import React from 'react';
-import {
-    ListRenderItemInfo, View, StyleSheet, TouchableOpacity,
-    ActivityIndicator, Image, Alert, FlatList, ScrollView, RefreshControl, TextInput
-} from 'react-native';
-import {
-    // Input,
-    Layout,
-    List,
-    ListElement,
-    ListItem,
-    ListItemElement,
-    Text,
-    ThemedComponentProps,
-    withStyles, TabBar,
-    styled, Divider, Avatar, Icon, Button
-} from 'react-native-ui-kitten';
-import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab } from 'native-base';
-import { AllItemScreenProps } from '../../../navigation/shopKeeperNavigator/allItem.Navigator';
-import { AppRoute } from '../../../navigation/app-routes';
-import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, CartIcon, PlusCircle } from '../../../assets/icons';
-import { TimeLineData } from '../../../data/TimeLineData.model';
-import { AppConstants } from '../../../constants/AppConstants';
-import { Toolbar } from '../../../components/toolbar.component';
-import {
-    SafeAreaLayout,
-    SafeAreaLayoutElement,
-    SaveAreaInset,
-} from '../../../components/safe-area-layout.component';
-import { MenuIcon, ExperienceIcon, LocationIcon, PublicIcon, PencilIcon } from '../../../assets/icons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { any } from 'prop-types';
-import { AsyncStorage } from 'react-native';
+import React, { Component } from "react";
+import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet } from "react-native";
+import { Avatar, List, Divider, ListItemElement, ThemedComponentProps } from "react-native-ui-kitten";
+import { AllItemScreenProps } from "../../../navigation/shopKeeperNavigator/allItem.Navigator";
+import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
+import { Toolbar } from "../../../components/toolbar.component";
+import { BackIcon, CartIcon, MenuIcon, PlusCircle, SearchIcon, WishIcon } from "../../../assets/icons";
+import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { AppConstants, Color } from "../../../constants";
+import { Styles } from "../../../assets/styles";
+import { Content, Header, Item, ListItem } from "native-base";
 import axios from 'axios';
-import { truncate, open } from 'fs';
-// import VideoPlayer from 'react-native-video-player';
-// import { FlatList } from 'react-native-gesture-handler';
-import Share from 'react-native-share';
-import { pathToFileURL, fileURLToPath } from 'url';
-// import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
-import Animated from 'react-native-reanimated';
-import { Styles } from '../../../assets/styles'
-import { Color } from '../../../constants/LabelConstants';
-// import axios from 'axios';  
-// import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
-
-const allTodos: TimeLineData[] = [
-    TimeLineData.getAllTimelineData()
-];
+import Animated from "react-native-reanimated";
+import { AppRoute } from "../../../navigation/app-routes";
+import Axios from "axios";
 
 type MyState = {
     displayName: String,
@@ -63,16 +27,8 @@ type MyState = {
     selectedIndex: number;
 }
 
-
-const renderItem = ({ item, index }) => (
-    <ListItem title={`${item.title} ${index + 1}`} />
-);
-
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 70;
-const PROFILE_IMAGE_MAX_HEIGHT = 80;
-const PROFILE_IMAGE_MIN_HEIGHT = 40;
-
 
 export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
@@ -87,26 +43,12 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
             allMeasurement: [],
             search: '',
 
-            allData: [{
-                url: '/api/product/getallproduct',
-                method: 'GET',
-                variable: 'allProduct',
-            },
-            {
-                url: '/api/lookup/getallmeasurementtype',
-                method: 'GET',
-                variable: 'allMeasurement',
-            },
-            {
-                url: '/api/category/getallcategory',
-                method: 'GET',
-                variable: 'allCategory',
-            },
-            {
-                url: '/api/brand/getallbrand',
-                method: 'GET',
-                variable: 'allBrand',
-            }],
+            allData: [
+                {
+                    url: '/api/lookup/getallmeasurementtype',
+                    method: 'GET',
+                    variable: 'allMeasurement',
+                }],
             scrollY: new Animated.Value(0),
         }
 
@@ -124,28 +66,59 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
         this.setState({
             shopId: user.shopId
         })
+
+        if (value) {
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/product/getproductbyshopid/' + user.shopId,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allProduct: response.data,
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/category/getcategoryforuserbyshopid/' + user.shopId,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allCategory: response.data,
+                        selectedCategory: 'all'
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/brand/getbrandforuserbyshopid/' + user.shopId,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allBrand: response.data,
+                        selectedBrand: 'all'
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+        } else {
+            this.props.navigation.navigate(AppRoute.AUTH)
+        }
+
         allData.map((data, index) => {
             // console.log(allData)
             axios({
                 method: data.method,
                 url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
-                if (data.variable === 'allProduct') {
-                    console.log(data.variable, response.data)
-                    this.setState({ allProduct: response.data })
-                } else if (data.variable === 'allCategory') {
-                    console.log(data.variable, response.data)
-                    this.setState({
-                        allCategory: response.data,
-                        selectedCategory: response.data[0].id
-                    })
-                } else if (data.variable === 'allBrand') {
-                    console.log(data.variable, response.data)
-                    this.setState({
-                        allBrand: response.data,
-                        selectedBrand: response.data[0].id
-                    })
-                } else if (data.variable === 'allMeasurement') {
+                if (data.variable === 'allMeasurement') {
                     console.log(data.variable, response.data)
                     this.setState({
                         allMeasurement: response.data,
@@ -166,6 +139,55 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
         }, (error) => {
 
         });
+    }
+
+    selectCategory(id) {
+        const { shopId } = this.state;
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/brand/getallDeactivebrandbyshopid/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allBrand: response.data,
+                    selectedCategory: id
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/product/getproductbyshopidandcategory/' + shopId + '/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allProduct: response.data,
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+        // this.setState({ selectedCategory: id })
+    }
+
+    selectBrand(id, brandName) {
+        const { shopId } = this.state
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/product/getproduct/shopid/brand/' + shopId + '/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allProduct: response.data,
+                    selectedBrand: id
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+        // this.setState({ selectedBrand: id })
     }
 
     handleSearch() {
@@ -192,21 +214,13 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
 
     }
 
-    selectCategory(id) {
-        this.setState({ selectedCategory: id })
-    }
-
-    selectBrand(id) {
-        this.setState({ selectedBrand: id })
-    }
-
     navigateProductDetail(id, shopId) {
         // Alert.alert(String(id))
         this.props.navigation.navigate(AppRoute.PRODUCT_DETAIL, { productId: String(id), shopId: String(shopId) })
     }
 
     handleAddProduct() {
-        this.props.navigation.navigate(AppRoute.ADD_PRODUCT)
+        this.props.navigation.navigate(AppRoute.ADD_PRODUCT_NAVIGATOR)
     }
 
     render() {
@@ -258,16 +272,18 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                     <Toolbar
                         title='Product'
                         backIcon={MenuIcon}
-                        onBackPress={this.props.navigation.openDrawer}
+                        onBackPress={this.props.navigation.toggleDrawer}
                         onRightPress={() => { this.handleAddProduct() }}
                         menuIcon={PlusCircle}
-                        style={{ marginTop: 0, marginLeft: -5 }}
+                        style={{ marginTop: -5, marginLeft: -5 }}
                     />
                     {/* <Header style={styles.header}> */}
-                    <View style={[Styles.searchBox, { marginBottom: 0, }]}>
-                        <TouchableOpacity style={[{ width: '10%' }, Styles.center]} onPress={() => { this.handleSearch() }}>
-                            <Text style={Styles.searchIcon}><SearchIcon /></Text>
-                        </TouchableOpacity>
+                    <View style={[Styles.searchBox, { marginBottom: 0 }]}>
+                        <View style={[{ width: '10%', }, Styles.center]}>
+                            <TouchableOpacity onPress={() => { this.handleSearch() }}>
+                                <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                            </TouchableOpacity>
+                        </View>
                         <TextInput
                             placeholder="Search"
                             style={[Styles.searchInput]}
@@ -281,6 +297,10 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
 
                         <View style={{ flex: 1, flexDirection: 'column' }}>
                             <View style={{ marginTop: 10 }}>
+                                {/* <View style={selectedCategory === 'all' ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                    <Text style={selectedCategory === 'all' ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>All</Text>
+                                </View> */}
+
                                 <FlatList
                                     style={{}}
                                     horizontal={true}
@@ -290,6 +310,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                         return (
                                             <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
                                                 <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                    {/* <Text style={selectedCategory === 'all' ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>All</Text> */}
                                                     <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
                                                 </View>
                                             </TouchableOpacity>
@@ -312,7 +333,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                     data={allBrand}
                                     renderItem={({ item, index }) => {
                                         return (
-                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id) }}>
+                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id, item.name) }}>
                                                 <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
                                                     <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
                                                 </View>
@@ -347,58 +368,58 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                 {null != allProduct ? allProduct.map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
-                                           <View style={{height: 200}}>
-                                        <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId, data.shopId) }}>
-                                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + shopId + '_product.png' }} style={Styles.product_avatar} />
+                                            <View style={{ height: 200 }}>
+                                                <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId, data.shopId) }}>
+                                                    <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + data.shopId + '_product.png' }} style={Styles.product_avatar} />
+                                                    </View>
+                                                </TouchableOpacity>
                                             </View>
-                                        </TouchableOpacity>
-                                    </View>
 
-                                                <View style={Styles.all_Item_Detail}>
-                                                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                        {null != allBrand ? allBrand.map((brand, index) => {
-                                                            if (brand.id == data.brand) {
-                                                                return (
-                                                                    <>
-                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {brand.name}</Text>
-                                                                    </>
-                                                                );
-                                                            }
-                                                        }) : null}
-                                                        {null != allMeasurement ? allMeasurement.map((brand, index) => {
-                                                            if (brand.lookUpId == data.measurement) {
-                                                                return (
-                                                                    <>
-                                                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
-                                                                    </>
-                                                                );
-                                                            }
-                                                        }) : null}
-                                                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                                            <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
-                                                            {data.offerActiveInd ?
-                                                                <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
-                                                                : null
-                                                            }
-                                                        </View>
-                                                        {null != data.offerActiveInd ? data.offerActiveInd ?
-                                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                                <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
-                                                                <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
-                                                            </View> :
-                                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                                <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
-                                                                <Text style={{ color: Color.COLOR }}></Text>
-                                                            </View> : null
+                                            <View style={Styles.all_Item_Detail}>
+                                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                                    {null != allBrand ? allBrand.map((brand, index) => {
+                                                        if (brand.id == data.brand) {
+                                                            return (
+                                                                <>
+                                                                    <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
+                                                                </>
+                                                            );
+                                                        }
+                                                    }) : null}
+                                                    {null != allMeasurement ? allMeasurement.map((brand, index) => {
+                                                        if (brand.lookUpId == data.measurement) {
+                                                            return (
+                                                                <>
+                                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
+                                                                </>
+                                                            );
+                                                        }
+                                                    }) : null}
+                                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
+                                                        {data.offerActiveInd ?
+                                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
+                                                            : null
                                                         }
                                                     </View>
-                                                    {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
-                                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.stock}</Text>
-                                                    </View>
-                                                    {/* </TouchableOpacity> */}
+                                                    {null != data.offerActiveInd ? data.offerActiveInd ?
+                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                            <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
+                                                            <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
+                                                        </View> :
+                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                            <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
+                                                            <Text style={{ color: Color.COLOR }}></Text>
+                                                        </View> : null
+                                                    }
                                                 </View>
+                                                {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
+                                                <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                    <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.stock}</Text>
+                                                </View>
+                                                {/* </TouchableOpacity> */}
+                                            </View>
                                             {/* </TouchableOpacity> */}
                                         </View>
                                     )

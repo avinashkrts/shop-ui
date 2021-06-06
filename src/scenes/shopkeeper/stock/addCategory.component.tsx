@@ -89,7 +89,7 @@ export class AddCategoryScreen extends React.Component<AddCategoryScreenProps & 
             file: null,
             name: '',
             title: '',
-            shopId: 'AVI123'
+            shopId: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.handleAddCategory = this.handleAddCategory.bind(this);
@@ -115,15 +115,23 @@ export class AddCategoryScreen extends React.Component<AddCategoryScreenProps & 
     }
 
 
-componentDidMount() {
-    this.setState({
-        name: ''
-    })
-}
+    async componentDidMount() {
+        const value = await AsyncStorage.getItem("userDetail")
+        const user = JSON.parse(value);
+
+        // console.log("productId", user.shopId)
+
+        if (value) {
+            this.setState({
+                shopId: user.shopId
+            })
+
+        }
+    }
 
     _onRefresh() {
         this.setState({ refreshing: true });
-            this.setState({name: '', refreshing: false });
+        this.setState({ name: '', refreshing: false });
     }
 
     handleAddCategory() {
@@ -181,7 +189,7 @@ componentDidMount() {
                 >
                     <View style={Styles.center}>
                         <View style={[Styles.center, { flex: 1 }]}>
-                            <View style={[Styles.profile, Styles.center]}>
+                            {/* <View style={[Styles.profile, Styles.center]}>
                                 <View style={Styles.categoryImage}>
                                     <View>
                                         <TouchableOpacity onPress={() => { this.selectPhoto() }}>
@@ -191,7 +199,7 @@ componentDidMount() {
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                            </View>
+                            </View> */}
 
                             <View style={[Styles.inputTextView, { width: '90%' }]}>
                                 <TextInput

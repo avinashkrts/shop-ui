@@ -1,5 +1,7 @@
 export enum AppRoute {
   AUTH = 'Auth',
+  USER_DECIDE = 'User Decide',
+  ADD_PRODUCT_NAVIGATOR = 'Add Product Navigator',
   CUSTOMER_HOME = 'Customer Home',
   CUSTOMER_WALLET = 'Customer Wallet',
   CUSTOMER_ADDRESS = 'Customer Address',
@@ -8,6 +10,7 @@ export enum AppRoute {
   CUSTOMER_CART = 'Customer Cart',
   CUSTOMER_CONTACT = 'Customer Contact',
   SIGN_IN = 'Sign In',
+  USER_LOG_IN = 'User Log In',
   OTP = 'Otp',
   SIGN_UP = 'Sign Up',
   FORGET_PASSWORD = 'Forget Passrord',
@@ -39,6 +42,7 @@ export enum AppRoute {
   ADD_PRODUCT = 'Add Product',
   ADD_DRAWER_PRODUCT = 'Add Drawer Product',
   ADD_PRODUCT_IMAGE = 'Add Product Image',
+  ADD_DRAWER_PRODUCT_IMAGE = 'Add Drawer Product Image',
   ITEM_DETAILS = 'Item Details',
   ADD_EMPLOYEE = 'Add Employee',
   OUT_OF_STOCK = 'Out of Stock',
@@ -51,6 +55,7 @@ export enum AppRoute {
   CUSTOMER_PRODUCT_DETAIL = 'Customer Product Detail',
   BILL_BOOK = 'Bill Book',
   OFFERS_TAB = 'Offers Tab',
+  OFFERS_DETAIL_TAB = 'Offers Detail Tab',
   WISH_LIST = 'Wish List',
 
 

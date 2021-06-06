@@ -26,7 +26,7 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
             pinCode: '',
             state: '',
             country: '',
-            shopId: 'AVI23',
+            shopId: '',
             userId: '',
             userType: '2',
             latitude: '',
@@ -51,13 +51,14 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
 
         this.setState({
             userData: userData,
-            userId: userData.userId
+            userId: userData.userId,
+            shopId: userData.shopId
         })
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
             Axios({
                 method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/address/getbyuserid/' + userData.userId,
+                url: AppConstants.API_BASE_URL + '/api/address/getby/userid/' + userData.userId,
             }).then((response) => {
                 console.log("Address", response.data)
                 if (null != response.data) {
@@ -74,7 +75,7 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
     handleSubmit() {
         const { isEditable, city, shopId, userId, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType } = this.state
         // Alert.alert("Clicked"+ userId)
-        console.log(isEditable, city, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType);
+        console.log(userId, isEditable, shopId, city, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType);
         if (city == null || city === '') {
             Alert.alert("Please enter city.");
         } else if (postOffice == null || postOffice === '') {
@@ -95,11 +96,11 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
 
             Axios({
                 method: 'POST',
-                url: 'http://192.168.0.106:8082' + '/api/address/create',
+                url: AppConstants.API_BASE_URL + '/api/address/create',
                 data: {
                     city: city,
                     postOffice: postOffice,
-                    landMark: landMark,
+                    landmark: landMark,
                     policeStation: policeStation,
                     district: district,
                     pinCode: pinCode,
@@ -107,7 +108,7 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                     country: country,
                     shopId: shopId,
                     userId: String(userId),
-                    userType: userType
+                    userType: String(userType)
                 }
             }).then((response) => {
                 this.toggleModal();
@@ -168,7 +169,7 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
 
             Axios({
                 method: 'PUT',
-                url: 'http://192.168.0.106:8082' + '/api/address/update',
+                url: AppConstants.API_BASE_URL + '/api/address/update',
                 data: {
                     id: id,
                     city: city,
@@ -196,6 +197,21 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
 
     }
 
+    handleDefault(id) {
+        const { userId} = this.state;
+        Axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/address/change/defaultaddress/' + userId + '/' + id,
+        }).then((response) => {
+            console.log("Address", response.data)
+            if (null != response.data) {
+                this.onRefresh();
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+    }
+
     onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
@@ -220,6 +236,10 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                         <TouchableOpacity style={{ padding: 5 }} onPress={() => { this.handleEdit(index) }}>
                             <Text style={Styles.address_text}><AddressEditIcon fontSize={20} />
                             </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{ padding: 5, backgroundColor: Color.COLOR, borderRadius: 10 }} onPress={() => { this.handleDefault(item.id) }}>
+                            <Text style={[Styles.address_text, {padding: 4, color: Color.BUTTON_NAME_COLOR}]}>{item.defaultAddress ? 'Default Address' : 'Set Default'}</Text>
                         </TouchableOpacity>
                     </View>
                     {/* </View> */}

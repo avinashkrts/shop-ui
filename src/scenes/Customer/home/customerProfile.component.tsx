@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl, Alert } from "react-native";
+import { View, Text, RefreshControl, Alert, AsyncStorage } from "react-native";
 import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
 import { CustomerProfileScreenProps } from "../../../navigation/customer-navigator/customerHome.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
@@ -42,46 +42,54 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
     }
 
     async componentDidMount() {
-        Axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/user/get/' + 1
-        }).then((response) => {
-            this.setState({
-                firstName: response.data.firstName,
-                emailId: response.data.emailId,
-                lastName: response.data.lastName,
-                lastLoginDate: response.data.lastLoginDate,
-                dob: response.data.dob,
-                mobileNo: String(response.data.mobileNo),
-            })
-        }, (error) => {
+        let userDetail = await AsyncStorage.getItem('userDetail');
+        let logedIn = await AsyncStorage.getItem('logedIn');
+        let userData = JSON.parse(userDetail);
+        // Alert.alert(userData.userId)
 
-        });
+        if (userData) {
+            // Alert.alert(''+userData.userId)
+            Axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/user/get/' + userData.userId
+            }).then((response) => {
+                this.setState({
+                    firstName: response.data.firstName,
+                    emailId: response.data.emailId,
+                    lastName: response.data.lastName,
+                    lastLoginDate: response.data.lastLoginDate,
+                    dob: response.data.dob,
+                    mobileNo: String(response.data.mobileNo),
+                })
+            }, (error) => {
 
-        Axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/address/getby/userid/' + 1
-        }).then((response) => {
-            this.setState({
-                mobileNo: response.data[0].mobileNo,
-                city: String(response.data[0].city),
-                pinCode: String(response.data[0].pinCode),
-                state: response.data[0].state,
-                country: response.data[0].country,
-                longitude: response.data[0].longitude,
-                latitude: response.data[0].latitude,
-                userType: response.data[0].userType,
-                shopId: response.data[0].shopId,
-                district: response.data[0].district,
-                postOffice: response.data[0].postOffice,
-                policeStation: response.data[0].policeStation,
-                landmark: response.data[0].landmark,
-                userId: response.data[0].userId,
-                id: response.data[0].id
-            })
-        }, (error) => {
+            });
 
-        });
+            Axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/address/getby/userid/' + userData.userId
+            }).then((response) => {
+                this.setState({
+                    mobileNo: response.data[0].mobileNo,
+                    city: String(response.data[0].city),
+                    pinCode: String(response.data[0].pinCode),
+                    state: response.data[0].state,
+                    country: response.data[0].country,
+                    longitude: response.data[0].longitude,
+                    latitude: response.data[0].latitude,
+                    userType: response.data[0].userType,
+                    shopId: response.data[0].shopId,
+                    district: response.data[0].district,
+                    postOffice: response.data[0].postOffice,
+                    policeStation: response.data[0].policeStation,
+                    landmark: response.data[0].landmark,
+                    userId: response.data[0].userId,
+                    id: response.data[0].id
+                })
+            }, (error) => {
+
+            });
+        }
     }
 
     handleEditSubmit() {
@@ -363,14 +371,14 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                             <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.setState({ isEditable: !isEditable }) }}>
                                 <Text style={Styles.buttonName}>{LableText.EDIT}</Text>
                             </TouchableOpacity>
-                        </View> : null }
+                        </View> : null}
 
-                        <View style={{ marginHorizontal: '10%' }}>
-                            <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleEditSubmit() }}>
-                                <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    
+                    <View style={{ marginHorizontal: '10%' }}>
+                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleEditSubmit() }}>
+                            <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
+                        </TouchableOpacity>
+                    </View>
+
 
 
                     <View style={Styles.bottomSpace}></View>

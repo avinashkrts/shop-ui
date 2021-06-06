@@ -93,8 +93,7 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
             selectedFile: null,
             allImages: [],
 
-            allData: [
-                {
+            allData: [{
                     url: '/api/product/getproductbyproductidandshopid/' + this.props.route.params.productId + '/' + this.props.route.params.shopId,
                     method: 'GET',
                     variable: 'allProduct',
@@ -374,11 +373,11 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
                     const image1 = []
                     response.data[0].image.map((image) => {
                         image1.push(AppConstants.IMAGE_BASE_URL + '/product/' + image.avatarName)
-                    console.log(image.avatarName)
+                        console.log(image.avatarName)
                     })
                     console.log('allImages Url', image1)
                     this.setState({
-                        allProduct: response.data,
+                        allProduct: response.data[0],
                         allImages: image1
                     })
                 } else if (data.variable === 'allCategory') {
@@ -432,7 +431,7 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
 
 
     render() {
-        const { isSelectedWish, allImages, productId, allProduct } = this.state
+        const { isSelectedWish, allMeasurement, allImages, productId, allProduct } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -466,7 +465,7 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
                     </Header> */}
                     {null != allProduct ?
                         <>
-                            <View style={[Styles.product_view]}>
+                            {/* <View style={[Styles.product_view]}>
                                 <TouchableOpacity style={[{ justifyContent: 'flex-end', marginTop: 5, marginRight: 5, alignItems: 'flex-end' }]} onPress={() => { this.selectPhoto() }}>
                                     <Text><EditIcon /></Text>
                                 </TouchableOpacity>
@@ -475,11 +474,16 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
                                         <ImageSlider images={allImages} />
                                     </View>
                                 </View>
+                            </View> */}
+                            <View style={[Styles.product_view, Styles.center]}>
+                                <View style={[Styles.product_image]}>
+                                    <ImageSlider images={allImages} />
+                                </View>
                             </View>
 
                             <View style={Styles.product_2nd_view}>
                                 <View style={Styles.product_2nd_view_1}>
-                                    <View style={Styles.product_2nd_quantity_view}>
+                                    {/* <View style={Styles.product_2nd_quantity_view}>
                                         <Picker
                                             note
                                             mode="dropdown"
@@ -490,24 +494,26 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
                                             <Picker.Item label="1" value="key0" />
                                             <Picker.Item label="2" value="key1" />
                                         </Picker>
-                                    </View>
+                                    </View> */}
 
-                                    <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
-                                        <View>
-                                            <Text style={Styles.product_2nd_buy_text}>{LableText.CART}</Text>
+
+                                    {/* <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}> */}
+                                        <View style={[Styles.product_2nd_buy_view, Styles.center]}>
+                                            <Text style={Styles.product_2nd_buy_text}>{null != allProduct ? allProduct.stock : null}</Text>
                                         </View>
-                                    </TouchableOpacity>
+                                    {/* </TouchableOpacity> */}
 
-                                    <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
+
+                                    {/* <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
                                         <View>
                                             <Text style={Styles.product_2nd_buy_text} onPress={() => { this.handleCart() }}>{LableText.BUY}</Text>
                                         </View>
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
                                 </View>
 
-                                <View style={Styles.product_2nd_wish_view}>
+                                {/* <View style={Styles.product_2nd_wish_view}>
                                     <Text onPress={() => { this.handleWishList() }} style={isSelectedWish ? Styles.selected_wish_icon : Styles.wish_icon}><WishIcon /></Text>
-                                </View>
+                                </View> */}
 
 
                             </View>
@@ -517,7 +523,13 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
                                     <Text style={{ color: '#000', paddingVertical: 20, fontWeight: 'bold', fontSize: 20 }}>{allProduct.name}</Text>
 
                                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{allProduct.quantity} Kg.</Text>
+                                        {null != allMeasurement ? allMeasurement.map((measurement, mIndex) => {
+                                            if (allProduct.measurement == measurement.lookUpId) {
+                                                return (
+                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{allProduct.quantity} {measurement.lookUpName}</Text>
+                                                );
+                                            }
+                                        }) : null}
                                         <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {allProduct.price}</Text>
                                         {allProduct.offerActiveInd ?
                                             <>

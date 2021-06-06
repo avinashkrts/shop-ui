@@ -119,18 +119,28 @@ export class AddBrandScreen extends React.Component<AddBrandScreenProps & Themed
 
 
     async componentDidMount() {
-        Axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
-        }).then((response) => {
-            if (null != response.data) {
-                this.setState({
-                    categoryData: response.data
-                })
-            }
-        }, (error) => {
-            Alert.alert("Server error!.")
-        });
+       
+        const value = await AsyncStorage.getItem('userDetail');
+        if (value) {
+            const user = JSON.parse(value);
+            // Alert.alert(user.shopId)
+
+            this.setState({
+                shopId: user.shopId,
+            })
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/category/getcategoryforuserbyshopid/' + user.shopId,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        categoryData: response.data
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });           
+        }
     }
 
     _onRefresh() {
@@ -183,7 +193,7 @@ export class AddBrandScreen extends React.Component<AddBrandScreenProps & Themed
                 category: value
             })
         }
-    }
+    }   
 
     render() {
         const { categoryData, category, name, imageSource } = this.state
@@ -208,7 +218,7 @@ export class AddBrandScreen extends React.Component<AddBrandScreenProps & Themed
                 >
                     <View style={Styles.center}>
                         <View style={[Styles.center, { flex: 1 }]}>
-                            <View style={[Styles.profile, Styles.center]}>
+                            {/* <View style={[Styles.profile, Styles.center]}>
                                 <View style={Styles.categoryImage}>
                                     <View>
                                         <TouchableOpacity onPress={() => { this.selectPhoto() }}>
@@ -218,7 +228,7 @@ export class AddBrandScreen extends React.Component<AddBrandScreenProps & Themed
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                            </View>
+                            </View> */}
 
                             <View style={[Styles.inputTextView, { width: '90%' }]}>
                                 <TextInput

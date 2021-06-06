@@ -9,4 +9,6 @@ export { StockListScreen } from './stockList.component';
 export { ValidityScreen } from './validity.component';
 export { MyWalletScreen } from './myWallet.component';
 export { AdminProfileScreen } from './adminProfile';
+export { AddDrawerProductScreen } from './addDrawerProduct.component';
+export { AddDrawerProductImageScreen } from './addDrawerProductImage.component';
 

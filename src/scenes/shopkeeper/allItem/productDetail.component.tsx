@@ -44,6 +44,7 @@ import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import { Color, LableText } from '../../../constants/LabelConstants';
 import ImageSlider from 'react-native-image-slider';
+import { ItemDetailScreenProps } from '../../../navigation/stock.navigator';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -75,7 +76,7 @@ const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
 
-export class ProductDetailScreen extends React.Component<ProductDetailScreenProps & ThemedComponentProps, MyState & any> {
+export class ProductDetailScreen extends React.Component<ProductDetailScreenProps & ItemDetailScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
@@ -337,7 +338,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                     })
                     console.log('allImages Url', image1)
                     this.setState({
-                        allProduct: response.data,
+                        allProduct: response.data[0],
                         allImages: image1
                     })
 
@@ -391,9 +392,23 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
         })
     }
 
+    handleDeleteCategory(id) {
+        // Alert.alert(String(id));
+        axios({
+            method: 'DELETE',
+            url: AppConstants.API_BASE_URL + '/api/product/delete/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.props.navigation.goBack()
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+    }
+
 
     render() {
-        const { isSelectedWish, shopId, allImages, productId, allProduct } = this.state
+        const { isSelectedWish, allMeasurement, shopId, allImages, productId, allProduct } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -407,7 +422,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
 
                 <Divider />
 
-                <Content style={[Styles.customer_content, {padding: 0}]}
+                <Content style={[Styles.customer_content, { padding: 0 }]}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -435,7 +450,7 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
 
                             <View style={Styles.product_2nd_view}>
                                 <View style={Styles.product_2nd_view_1}>
-                                    <View style={Styles.product_2nd_quantity_view}>
+                                    {/* <View style={Styles.product_2nd_quantity_view}>
                                         <Picker
                                             note
                                             mode="dropdown"
@@ -446,23 +461,23 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                                             <Picker.Item label="1" value="key0" />
                                             <Picker.Item label="2" value="key1" />
                                         </Picker>
+                                    </View> */}
+
+                                    {/* <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}> */}
+                                    <View style={[Styles.product_2nd_buy_view, Styles.center]}>
+                                        <Text style={Styles.product_2nd_buy_text}>{null != allProduct ? allProduct.stock : null}</Text>
                                     </View>
+                                    {/* </TouchableOpacity> */}
 
-                                    <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
-                                        <View>
-                                            <Text style={Styles.product_2nd_buy_text}>{LableText.CART}</Text>
-                                        </View>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
+                                    {/* <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
                                         <View>
                                             <Text style={Styles.product_2nd_buy_text} onPress={() => { this.handleCart() }}>{LableText.BUY}</Text>
                                         </View>
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
                                 </View>
 
-                                <View style={Styles.product_2nd_wish_view}>
-                                    <Text onPress={() => { this.handleWishList() }} style={isSelectedWish ? Styles.selected_wish_icon : Styles.wish_icon}><WishIcon /></Text>
+                                <View style={[Styles.product_2nd_wish_view, Styles.center, {backgroundColor: Color.COLOR, borderRadius: 5}]}>
+                                    <Text style={Styles.product_2nd_buy_text} onPress={() => {this.handleDeleteCategory(allProduct.productId)}}>Delete</Text>
                                 </View>
 
 
@@ -473,7 +488,13 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                                     <Text style={{ color: '#000', paddingVertical: 20, fontWeight: 'bold', fontSize: 20 }}>{allProduct.name}</Text>
 
                                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{allProduct.quantity} Kg.</Text>
+                                        {null != allMeasurement ? allMeasurement.map((measurement, mIndex) => {
+                                            if (allProduct.measurement == measurement.lookUpId) {
+                                                return (
+                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{allProduct.quantity} {measurement.lookUpName}</Text>
+                                                );
+                                            }
+                                        }) : null}
                                         <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {allProduct.price}</Text>
                                         {allProduct.offerActiveInd ?
                                             <>

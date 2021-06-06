@@ -997,7 +997,7 @@ export const Styles = StyleSheet.create({
 
   /*---------------------------------------------This Style is for Item Category List--------------------------------------------------------- */
   itemCategoryName: {
-    width: '70%',
+    width: '60%',
     padding: 5,
     justifyContent: 'center'
   },

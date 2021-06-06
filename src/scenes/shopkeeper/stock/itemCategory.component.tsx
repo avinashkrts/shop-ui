@@ -86,18 +86,28 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
     }
 
     async componentDidMount() {
-        axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
-        }).then((response) => {
-            if (null != response.data) {
-                this.setState({
-                    categoryData: response.data
-                })
-            }
-        }, (error) => {
-            Alert.alert("Server error!.")
-        });
+
+        const value = await AsyncStorage.getItem('userDetail');
+        if (value) {
+            const user = JSON.parse(value);
+            // Alert.alert(user.shopId)
+
+            this.setState({
+                shopId: user.shopId,
+            })
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/category/getcategoryforuserbyshopid/' + user.shopId,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        categoryData: response.data
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+        }
     }
 
     handleJobSubmit() {
@@ -121,12 +131,25 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
         });
     }
 
+    handleDeleteCategory(id) {
+        axios({
+            method: 'DELETE',
+            url: AppConstants.API_BASE_URL + '/api/category/delete/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this._onRefresh();
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+    }
+
     renderMyJob = ({ item }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
                 <View>
-                    <TouchableOpacity onPress={() => { this.handleBrandList(item.id) }}>
-                        <View style={Styles.customer_list}>
+                    <View style={Styles.customer_list}>
+                        <TouchableOpacity onPress={() => { this.handleBrandList(item.id) }}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.image} />
                                 {/* <View>
@@ -134,19 +157,26 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
                             </View> */}
                             </View>
 
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>{item.name}</Text>
-                                </View>
-                            </View>
+                        </TouchableOpacity>
 
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon /></Text>
-                                </View>
+                        <View style={Styles.itemCategoryName}>
+                            <View>
+                                <Text style={Styles.itemCategoryText}>{item.name}</Text>
                             </View>
                         </View>
-                    </TouchableOpacity>
+
+                        <View style={[Styles.itemCategoryEdit, Styles.center]}>
+                            <View>
+                                <Text style={Styles.itemCategoryEditIcon}><EditIcon /></Text>
+                            </View>
+                        </View>
+
+                        <View style={[Styles.itemCategoryEdit, Styles.center]}>
+                            <View>
+                                <Text style={Styles.itemCategoryEditIcon} onPress={() => { this.handleDeleteCategory(item.id) }}><CancelIcon fontSize={25} /></Text>
+                            </View>
+                        </View>
+                    </View>
                 </View> :
                 <ActivityIndicator size='large' color='green' />}
 
@@ -194,7 +224,7 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
                 >
                     {/* <Header style={styles.header}> */}
                     <View style={Styles.searchBox}>
-                        <View style={[{width: '10%'}, Styles.center]}>
+                        <View style={[{ width: '10%' }, Styles.center]}>
                             <Text style={Styles.searchIcon}><SearchIcon /></Text>
                         </View>
                         <TextInput

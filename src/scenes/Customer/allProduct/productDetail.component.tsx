@@ -44,6 +44,8 @@ import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import { Color, LableText } from '../../../constants/LabelConstants';
 import ImageSlider from 'react-native-image-slider';
+import Axios from 'axios';
+import { OffersDetailScreenProps } from '../../../navigation/customer-navigator/offers.navigator';
 
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
@@ -76,7 +78,7 @@ const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
 
-export class CustProductDetailScreen extends React.Component<CustProductDetailScreenProps & ThemedComponentProps, MyState & any> {
+export class CustProductDetailScreen extends React.Component<CustProductDetailScreenProps & OffersDetailScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
@@ -91,6 +93,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
             userData: [],
             wishList: '',
             allImages: [],
+            productQuantity: '1',
             allData: [
                 {
                     url: '/api/product/getproductbyproductidandshopid/' + this.props.route.params.productId + '/' + this.props.route.params.shopId,
@@ -321,17 +324,12 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
         // Alert.alert(""+userData.userId);
         // console.log("User Data",userData.userId)
 
+        const productId = this.props.route.params.productId
         const shop = this.props.route.params.shopId
         this.setState({
             userData: userData,
+            productId: productId,
             shopId: shop
-        })
-
-        const productId = this.props.route.params.productId
-
-        // Alert.alert(productId)
-        this.setState({
-            productId: productId
         })
 
         const logedIn = await AsyncStorage.getItem('logedIn');
@@ -363,7 +361,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                     })
                     console.log('allImages Url', image1)
                     this.setState({
-                        allProduct: response.data,
+                        allProduct: response.data[0],
                         allImages: image1
                     })
                 } else if (data.variable === 'allCategory') {
@@ -404,6 +402,36 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
 
     addItem() { }
 
+    async handleAddToCart() {
+        const { userData, shopId, productId, productQuantity } = this.state;
+        const logedIn = await AsyncStorage.getItem('logedIn');
+        if (null != logedIn && logedIn === 'true') {
+            // Alert.alert(''+ userData.userId + productId + logedIn)
+            Axios({
+                method: 'POST',
+                url: AppConstants.API_BASE_URL + '/api/cart/create',
+                data: {
+                    shopId: shopId,
+                    userId: userData.userId,
+                    productId: productId,
+                    productQuantity: productQuantity
+                }
+            }).then((response) => {
+                if (null != response.data) {
+                    if (response.data.status === 'true') {
+                        Alert.alert("Product added to cart.")
+                    } else {
+                        Alert.alert("Product allready exists in your cart.")
+                    }
+                }
+            }, (error) => {
+                Alert.alert("Server error.")
+            });
+        } else {
+            this.props.navigation.navigate(AppRoute.AUTH);
+        }
+    }
+
     handleCart() {
         this.navigationCart();
     }
@@ -429,7 +457,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
     }
 
     render() {
-        const { isSelectedWish, userData, allImages, wishList, allProduct, productId } = this.state
+        const { isSelectedWish, userData,productQuantity, allMeasurement, allImages, wishList, allProduct, productId } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -476,15 +504,23 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                                             note
                                             mode="dropdown"
                                             style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: 80 }]}
-                                            selectedValue={this.state.selected}
-                                            onValueChange={() => { }}
+                                            selectedValue={productQuantity}
+                                            onValueChange={(value) => { this.setState({productQuantity: value}) }}
                                         >
-                                            <Picker.Item label="1" value="key0" />
-                                            <Picker.Item label="2" value="key1" />
+                                            <Picker.Item label="1" value="1" />
+                                            <Picker.Item label="2" value="2" />
+                                            <Picker.Item label="3" value="3" />
+                                            <Picker.Item label="4" value="4" />
+                                            <Picker.Item label="5" value="5" />
+                                            <Picker.Item label="6" value="6" />
+                                            <Picker.Item label="7" value="7" />
+                                            <Picker.Item label="8" value="8" />
+                                            <Picker.Item label="9" value="9" />
+                                            <Picker.Item label="10" value="10" />
                                         </Picker>
                                     </View>
 
-                                    <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
+                                    <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]} onPress={() => { this.handleAddToCart() }}>
                                         <View>
                                             <Text style={Styles.product_2nd_buy_text}>{LableText.CART}</Text>
                                         </View>
@@ -492,7 +528,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
 
                                     <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]}>
                                         <View>
-                                            <Text style={Styles.product_2nd_buy_text} onPress={() => { this.handleCart() }}>{LableText.BUY}</Text>
+                                            <Text style={Styles.product_2nd_buy_text} onPress={() => { this.handleAddToCart() }}>{LableText.BUY}</Text>
                                         </View>
                                     </TouchableOpacity>
                                 </View>
@@ -516,7 +552,13 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                                     <Text style={{ color: '#000', paddingVertical: 20, fontWeight: 'bold', fontSize: 20 }}>{allProduct.name}</Text>
 
                                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{allProduct.quantity} Kg.</Text>
+                                        {null != allMeasurement ? allMeasurement.map((measurement, mIndex) => {
+                                            if (allProduct.measurement == measurement.lookUpId) {
+                                            return(
+                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{allProduct.quantity} {measurement.lookUpName}</Text>
+                                            );
+                                            }
+                                        }): null}
                                         <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {allProduct.price}</Text>
                                         {allProduct.offerActiveInd ?
                                             <>

@@ -31,26 +31,13 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             allMeasurement: [],
             wishList: '',
             search: '',
-            allData: [{
-                url: '/api/product/get/offerproduct/byshopid/AVI123',
-                method: 'GET',
-                variable: 'allProduct',
-            },
+            allData: [
             {
                 url: '/api/lookup/getallmeasurementtype',
                 method: 'GET',
                 variable: 'allMeasurement',
             },
-            {
-                url: '/api/category/getallcategory',
-                method: 'GET',
-                variable: 'allCategory',
-            },
-            {
-                url: '/api/brand/getallbrand',
-                method: 'GET',
-                variable: 'allBrand',
-            }],
+           ],
             scrollY: new Animated.Value(0),
         }
 
@@ -63,6 +50,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
 
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
+        let shopId = await AsyncStorage.getItem('shopId');
         // Alert.alert(""+userData.userId);
         // console.log("User Data",userData.userId)
 
@@ -82,6 +70,47 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             }, (error) => {
                 Alert.alert("Server error.")
             });
+
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/category/getcategoryforuserbyshopid/' + shopId,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allCategory: response.data,
+                        selectedCategory: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/brand/getbrandforuserbyshopid/' + shopId,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allBrand: response.data,
+                        selectedBrand: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/product/get/offerproduct/byshopid/' + shopId,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allProduct: response.data,
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
         }
         allData.map((data, index) => {
             // console.log(allData)
@@ -89,31 +118,10 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                 method: data.method,
                 url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
-                if (data.variable === 'allProduct') {
-                    // console.log(data.variable, response.data)
-                    this.setState({ allProduct: response.data })
-                } else if (data.variable === 'allCategory') {
-                    // console.log(data.variable, response.data)
-                    this.setState({
-                        allCategory: response.data,
-                        selectedCategory: response.data[0].id
-                    })
-                } else if (data.variable === 'allBrand') {
-                    // console.log(data.variable, response.data)
-                    this.setState({
-                        allBrand: response.data,
-                        selectedBrand: response.data[0].id
-                    })
-                } else if (data.variable === 'allMeasurement') {
+                if (data.variable === 'allMeasurement') {
                     console.log(data.variable, response.data)
                     this.setState({
                         allMeasurement: response.data,
-                    })
-                } else if (data.variable === 'user') {
-                    console.log(data.variable, response.data)
-                    this.setState({
-                        userData: response.data,
-                        wishList: response.data.wishList
                     })
                 }
             }, (error) => {
@@ -146,8 +154,8 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
         this.setState({ selectedBrand: id })
     }
 
-    navigateProductDetail(id) {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_PRODUCT_DETAIL, { productId: String(id) })
+    navigateProductDetail(id, shopId) {
+        this.props.navigation.navigate(AppRoute.OFFERS_DETAIL_TAB, { productId: String(id), shopId: String(shopId) })
     }
 
     async handleAddToCart(productId) {
@@ -355,9 +363,9 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                     return (
                                         <View style={Styles.all_Item_List}>
                                             <View style={{ height: 200 }}>
-                                                <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId) }}>
+                                                <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId, data.shopId) }}>
                                                     <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + data.productId + '_avatar.png' }} style={Styles.product_avatar} />
+                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + data.shopId + '_product.png' }} style={Styles.product_avatar} />
                                                     </View>
                                                 </TouchableOpacity>
                                             </View>

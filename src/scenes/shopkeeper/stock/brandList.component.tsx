@@ -19,7 +19,7 @@ import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading,
 import { BrandListScreenProps } from '../../../navigation/stock.navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, EditIcon, BackIcon, PlusCircle } from '../../../assets/icons';
+import { SearchIcon, EditIcon, BackIcon, PlusCircle, CancelIcon } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -77,7 +77,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
     constructor(props) {
         super(props)
         this.state = {
-           brandData: []
+            brandData: []
         }
         this.navigationItemList = this.navigationItemList.bind(this);
         this._onRefresh = this._onRefresh.bind(this);
@@ -128,32 +128,53 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
         });
     }
 
+    handleDeleteCategory(id) {
+        // Alert.alert(String(id));
+        axios({
+            method: 'DELETE',
+            url: AppConstants.API_BASE_URL + '/api/brand/delete/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this._onRefresh();
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+    }
+
     renderMyJob = ({ item }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
                 <View>
-                     <TouchableOpacity onPress={() => { this.navigationItemList(item.id) }}>
-                        <View style={Styles.customer_list}>
+                    <View style={Styles.customer_list}>
+                        <TouchableOpacity onPress={() => { this.navigationItemList(item.id) }}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/samsung_logo.png")} style={Styles.image} />
                                 {/* <View>
                                 <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
                             </View> */}
                             </View>
+                        </TouchableOpacity>
 
-                            <View style={Styles.itemCategoryName}>
-                                <View>
-                                    <Text style={Styles.itemCategoryText}>{item.name}</Text>
-                                </View>
-                            </View>
-
-                            <View style={[Styles.itemCategoryEdit, Styles.center]}>
-                                <View>
-                                    <Text style={Styles.itemCategoryEditIcon}><EditIcon/></Text>
-                                </View>
+                        <View style={Styles.itemCategoryName}>
+                            <View>
+                                <Text style={Styles.itemCategoryText}>{item.name}</Text>
                             </View>
                         </View>
-                    </TouchableOpacity>
+
+                        <View style={[Styles.itemCategoryEdit, Styles.center]}>
+                            <View>
+                                <Text style={Styles.itemCategoryEditIcon}><EditIcon /></Text>
+                            </View>
+                        </View>
+                        <View style={[Styles.itemCategoryEdit, Styles.center]}>
+                            <TouchableOpacity onPress={() => { this.handleDeleteCategory(item.id) }}>
+                                <View>
+                                    <Text style={Styles.itemCategoryEditIcon} ><CancelIcon fontSize={25} /></Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View> :
                 <ActivityIndicator size='large' color='green' />}
 
@@ -164,7 +185,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
         this.props.navigation.navigate(AppRoute.ADD_BRAND)
     }
 
-    
+
 
 
     render() {
@@ -178,7 +199,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     menuIcon={PlusCircle}
-                    onRightPress={() => {this.navigateAddBrand()}}
+                    onRightPress={() => { this.navigateAddBrand() }}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Content style={Styles.customer_content}
@@ -191,7 +212,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                 >
                     {/* <Header style={styles.header}> */}
                     <View style={Styles.searchBox}>
-                    <View style={[{width: '10%'}, Styles.center]}>
+                        <View style={[{ width: '10%' }, Styles.center]}>
                             <Text style={Styles.searchIcon}><SearchIcon /></Text>
                         </View>
                         <TextInput
@@ -199,7 +220,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                             style={Styles.searchInput}
                         />
                     </View>
-                    {/* </Header> */}                    
+                    {/* </Header> */}
 
                     <List data={brandData}
                         renderItem={this.renderMyJob}

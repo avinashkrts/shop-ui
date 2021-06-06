@@ -44,6 +44,7 @@ import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import { Color } from '../../../constants/LabelConstants';
 import Axios from 'axios';
+import { CustomerCartScreenProps } from '../../../navigation/customer-navigator/customerHome.navigator';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -73,13 +74,15 @@ var SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 
-export class CartScreen extends React.Component<CartScreenProps & ThemedComponentProps, MyState & any> {
+export class CartScreen extends React.Component<CartScreenProps & CustomerCartScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
             cartData: [],
             productList: [],
-            cartId: ''
+            shopId: '',
+            cartId: '',
+            addressData: [],
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -87,38 +90,46 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
 
 
 
-   async componentDidMount() {
+    async componentDidMount() {
         SCREEN_WIDTH = Dimensions.get('window').width;
         let userDetail = await AsyncStorage.getItem('userDetail');
         let logedIn = await AsyncStorage.getItem('logedIn');
+        let shopId = await AsyncStorage.getItem('shopId');
         let userData = JSON.parse(userDetail);
-        if(null != logedIn && logedIn === 'true') {
+        this.setState({
+            shopId: shopId
+        })
+        if (null != logedIn && logedIn === 'true') {
             // Alert.alert("" + userData.userId)
-        axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/cart/getcartbyuserid/' + userData.userId
-        }).then((response) => {
-            this.setState({
-                cartData: response.data[0],
-                cartId: response.data[0].cartId
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/cart/get/cartby/shopid/userid/' + shopId + '/' + userData.userId
+            }).then((response) => {
+                this.setState({
+                    cartData: response.data[0],
+                    cartId: response.data[0].cartId,
+                    productList: response.data[0].productList
+                })
+            }, (error) => {
+                Alert.alert("Server problem")
             })
-        }, (error) => {
-            Alert.alert("Server problem")
-        })
 
-        axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/productlist/getproductlistbyuserid/' + userData.userId
-        }).then((response) => {
-            this.setState({
-                productList: response.data
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/address/getdefaultaddress/' + userData.userId
+            }).then((response) => {
+                if (response.data) {
+                    this.setState({
+                        addressData: response.data
+                    })
+                }
+
+            }, (error) => {
+                Alert.alert("Server problem")
             })
-        }, (error) => {
-            Alert.alert("Server problem")
-        })
-    } else {
-        this.props.navigation.navigate(AppRoute.AUTH)
-    }
+        } else {
+            this.props.navigation.navigate(AppRoute.AUTH)
+        }
     }
 
     _onRefresh() {
@@ -129,25 +140,40 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
     }
 
     handleIncrease(productId) {
-        const {cartId} = this.state;
+        const { cartId } = this.state;
         // Alert.alert(productId + cartId)
         axios({
             method: 'GET',
             url: AppConstants.API_BASE_URL + '/api/cart/cartincrease/' + cartId + '/' + productId
         }).then((response) => {
-           this._onRefresh();
+            this._onRefresh();
         }, (error) => {
             Alert.alert("Server problem")
         })
     }
 
-    handleDecrease(productId) {
-        const {cartId} = this.state;
+    handleDecrease(productId, quantity) {
+        const { cartId } = this.state;
+        if (quantity <= 1) {
+            Alert.alert("You have already selected minimum quantity.")
+        } else {
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/cart/cartdecrease/' + cartId + '/' + productId
+            }).then((response) => {
+                this._onRefresh();
+            }, (error) => {
+                Alert.alert("Server problem")
+            })
+        }
+    }
+
+    handleDelete(id) {
         axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/cart/cartdecrease/' + cartId + '/' + productId
+            method: 'DELETE',
+            url: AppConstants.API_BASE_URL + '/api/productlist/delete/' + id
         }).then((response) => {
-           this._onRefresh();
+            this._onRefresh();
         }, (error) => {
             Alert.alert("Server problem")
         })
@@ -162,12 +188,17 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                     <View style={Styles.cart_view_1}>
                         <View style={Styles.cart_view_1_1}>
                             <View style={[Styles.cart_avatar_view, Styles.center]}>
-                            <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.productId + '_avatar.png' }} style={Styles.product_avatar} />
+                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_' + 1 + "_" + item.shopId + '_product.png' }} style={Styles.product_avatar} />
                             </View>
                         </View>
 
                         <View style={Styles.cart_view_1_2}>
-                            <Text style={Styles.cart_name_text}>{item.productName}</Text>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={Styles.cart_name_text}>{item.productName}</Text>
+                                <TouchableOpacity  onPress={() => { this.handleDelete(item.id) }}>
+                                    <Text style={Styles.cart_name_text}><CancelIcon fontSize={25} /></Text>
+                                </TouchableOpacity>
+                            </View>
                             <View style={Styles.cart_price_view}>
                                 <View style={{ flexDirection: 'row', width: '55%', flexWrap: 'wrap', justifyContent: 'space-between' }}>
                                     <Text style={Styles.price_text}><RupeeIcon /> {item.price}</Text>
@@ -175,7 +206,7 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                                 </View>
 
                                 <View style={Styles.cart_quantity_view}>
-                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleDecrease(item.productId) }}>
+                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleDecrease(item.productId, item.productQuantity) }}>
                                         <Text style={Styles.cart_button_text}><MinusIcon /></Text>
                                     </TouchableOpacity>
 
@@ -183,7 +214,7 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
                                         <Text style={Styles.cart_quantity_text}>{item.productQuantity}</Text>
                                     </View>
 
-                                    <TouchableOpacity style={Styles.cart_button} onPress={() => {this.handleIncrease(item.productId) }}>
+                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleIncrease(item.productId) }}>
                                         <Text style={Styles.cart_button_text}><AddIcon /></Text>
                                     </TouchableOpacity>
                                 </View>
@@ -214,13 +245,13 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
     }
 
     continiueShopping() {
-        this.props.navigation.navigate(AppRoute.ALLITEM)
+        this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_PRODUCT)
     }
 
     addItem() { }
 
     render() {
-        const { cartData, productList } = this.state
+        const { cartData, addressData, productList } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -254,11 +285,11 @@ export class CartScreen extends React.Component<CartScreenProps & ThemedComponen
 
                     <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Address</Text>
-
-                        <Text style={{ marginVertical: 5 }}>101, InOrbit Complex, Near B.M.P. 16, Phulwari Khagaul Road, Patna, 801505</Text>
-
+                        {null != addressData ?
+                            <Text style={{ marginVertical: 5 }}>{addressData.city}, {addressData.landmark}, {addressData.district}, {addressData.state}, {addressData.pinCode}</Text>
+                            : null}
                         <View style={{ width: '100%', alignItems: 'flex-end' }}>
-                            <TouchableOpacity style={[Styles.center, { paddingVertical: 10, width: 100, borderRadius: 5, backgroundColor: Color.COLOR }]}>
+                            <TouchableOpacity onPress={() => { this.props.navigation.navigate(AppRoute.CUSTOMER_ADDRESS) }} style={[Styles.center, { paddingVertical: 10, width: 100, borderRadius: 5, backgroundColor: Color.COLOR }]}>
                                 <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Change</Text>
                             </TouchableOpacity>
                         </View>

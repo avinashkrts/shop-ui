@@ -80,7 +80,7 @@ export default (): React.ReactFragment => {
           {/* <Text>{userTypea}</Text> */}
           <NavigationContainer>
             {/* {wait !== '' ? */}
-              <AppNavigator initialRouteName={AppRoute.CUSTOMER_HOME} />
+              <AppNavigator initialRouteName={AppRoute.USER_DECIDE}/>
               {/* : <ActivityIndicator style={{flex: 1,justifyContent: 'center', alignItems: 'center'}} size='large'/>
             } */}
           </NavigationContainer>

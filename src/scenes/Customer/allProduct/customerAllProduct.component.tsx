@@ -31,23 +31,19 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             allMeasurement: [],
             wishList: '',
             search: '',
-            allData: [{
-                url: '/api/product/getallproduct',
-                method: 'GET',
-                variable: 'allProduct',
-            },
+            allData: [
             {
                 url: '/api/lookup/getallmeasurementtype',
                 method: 'GET',
                 variable: 'allMeasurement',
             },
             {
-                url: '/api/category/getallcategory',
+                url: '/api/category/getcategoryforuserbyshopid/' + this.props.route.params.shopId,
                 method: 'GET',
                 variable: 'allCategory',
             },
             {
-                url: '/api/brand/getallbrand',
+                url: '/api/brand/getbrandforuserbyshopid/' + this.props.route.params.shopId,
                 method: 'GET',
                 variable: 'allBrand',
             }],
@@ -66,9 +62,11 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
         // Alert.alert(""+userData.userId);
         // console.log("User Data",userData.userId)
 
+        const shopId = this.props.route.params.shopId;
+
         this.setState({
             userData: userData,
-            shopId: this.props.route.params.id
+            shopId: shopId
         })
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
@@ -84,16 +82,27 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                 Alert.alert("Server error.")
             });
         }
+
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/product/getproductbyshopid/' + shopId,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allProduct: response.data,
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+
         allData.map((data, index) => {
             // console.log(allData)
             axios({
                 method: data.method,
                 url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
-                if (data.variable === 'allProduct') {
-                    // console.log(data.variable, response.data)
-                    this.setState({ allProduct: response.data })
-                } else if (data.variable === 'allCategory') {
+                if (data.variable === 'allCategory') {
                     // console.log(data.variable, response.data)
                     this.setState({
                         allCategory: response.data,
@@ -140,11 +149,52 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
     }
 
     selectCategory(id) {
-        this.setState({ selectedCategory: id })
+        const {shopId} = this.state;
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/brand/getallDeactivebrandbyshopid/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allBrand: response.data,
+                    selectedCategory: id
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/product/getproductbyshopidandcategory/' + shopId + '/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allProduct: response.data,
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+        // this.setState({ selectedCategory: id })
     }
 
-    selectBrand(id) {
-        this.setState({ selectedBrand: id })
+    selectBrand(id, brandName) {
+        const {shopId} = this.state
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/product/getproduct/shopid/brand/' + shopId + '/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allProduct: response.data,
+                    selectedBrand: id
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+        // this.setState({ selectedBrand: id })
     }
 
     navigateProductDetail(id, shopId) {
@@ -152,7 +202,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
     }
 
     async handleAddToCart(productId) {
-        const { userData } = this.state;
+        const { userData, shopId } = this.state;
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
             // Alert.alert(''+ userData.userId + productId + logedIn)
@@ -160,7 +210,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                 method: 'POST',
                 url: AppConstants.API_BASE_URL + '/api/cart/create',
                 data: {
-                    shopId: "AVI123",
+                    shopId: shopId,
                     userId: userData.userId,
                     productId: productId,
                     productQuantity: 1
@@ -320,7 +370,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                     data={allBrand}
                                     renderItem={({ item, index }) => {
                                         return (
-                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id) }}>
+                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id, item.name) }}>
                                                 <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
                                                     <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
                                                 </View>
@@ -358,7 +408,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                             <View style={{ height: 200 }}>
                                                 <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId, data.shopId) }}>
                                                     <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + shopId + '_product.png' }} style={Styles.product_avatar} />
+                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + data.shopId + '_product.png' }} style={Styles.product_avatar} />
                                                     </View>
                                                 </TouchableOpacity>
                                             </View>
@@ -376,7 +426,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                                             if (brand.id == data.brand) {
                                                                 return (
                                                                     <View>
-                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {brand.name}</Text>
+                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
                                                                     </View>
                                                                 );
                                                             }

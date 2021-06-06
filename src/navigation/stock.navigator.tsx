@@ -9,7 +9,8 @@ import {
 } from '@react-navigation/stack';
 import { StockTabNavigationProp } from './home.navigator';
 import { AppRoute } from './app-routes';
-import { ItemCategoryScreen, AddProductImageScreen, AddBrandScreen, AddCategoryScreen, BrandListScreen, ItemListScreen, AddProductScreen, ItemDetailScreen } from '../scenes/shopkeeper/stock';
+import { ItemCategoryScreen, AddProductImageScreen, AddBrandScreen, AddCategoryScreen, BrandListScreen, ItemListScreen, AddProductScreen } from '../scenes/shopkeeper/stock';
+import { ProductDetailScreen } from '../scenes/shopkeeper/allItem';
 
 type StockNavigatorParams = {
     [AppRoute.ITEM_CATEGORY]: undefined;
@@ -98,7 +99,7 @@ export const StockNavigator = (): React.ReactElement => (
         <Stack.Screen name={AppRoute.ITEMLIST} component={ItemListScreen} />
         <Stack.Screen name={AppRoute.ADD_PRODUCT} component={AddProductScreen} />
         <Stack.Screen name={AppRoute.ADD_BRAND} component={AddBrandScreen} />
-        <Stack.Screen name={AppRoute.ITEM_DETAILS} component={ItemDetailScreen} />
+        <Stack.Screen name={AppRoute.ITEM_DETAILS} component={ProductDetailScreen} />
         <Stack.Screen name={AppRoute.ADD_PRODUCT_IMAGE} component={AddProductImageScreen} />
     </Stack.Navigator>
 );

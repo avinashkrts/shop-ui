@@ -52,6 +52,7 @@ import { AddEducationScreen } from '../scenes/profile';
 import { AddEmployeeScreen } from '../scenes/shopkeeper/Employee';
 import { CustomerContactScreen } from '../scenes/Customer/home';
 import { AddProductScreen } from '../scenes/shopkeeper/stock';
+import { AddProductNavigator } from './addProductNavigator.navigator';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
@@ -61,6 +62,7 @@ type HomeDrawerNavigatorParams = {
   [AppRoute.IMAGEUPLOAD]: undefined;
   [AppRoute.LOGOUT]: undefined;
   [AppRoute.AUTH]: undefined;
+  [AppRoute.ADD_PRODUCT_NAVIGATOR]: undefined;
   [AppRoute.PROFILE]: undefined;
   [AppRoute.MY_WALLET]: undefined;
   [AppRoute.MY_ORDER]: undefined;
@@ -157,6 +159,11 @@ export interface AuthNavigatorScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.AUTH>;
 }
 
+export interface AddProductNavigatorScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ADD_PRODUCT_NAVIGATOR>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADD_PRODUCT_NAVIGATOR>;
+}
+
 // export interface ProfileNavigatorScreenProps {
 //   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
 //   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
@@ -237,7 +244,7 @@ export interface AccountsScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ACCOUNTS>;
 }
 
-export interface AddProductScreenProps {
+export interface AddDrawerProductScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ADD_DRAWER_PRODUCT>;
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADD_DRAWER_PRODUCT>;
 }
@@ -346,8 +353,8 @@ export const HomeNavigator = (): React.ReactElement => (
     /> */}
 
     <Drawer.Screen
-      name={AppRoute.ADD_PRODUCT}
-      component={AddProductScreen}
+      name={AppRoute.ADD_PRODUCT_NAVIGATOR}
+      component={AddProductNavigator}
       options={{ title: 'Add Product', drawerIcon: AddProductIcon }}
     />
 

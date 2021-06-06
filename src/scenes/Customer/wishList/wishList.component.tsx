@@ -43,6 +43,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 import Animated from 'react-native-reanimated';
 import { styles, Styles } from '../../../assets/styles'
 import { Color } from '../../../constants/LabelConstants';
+import Axios from 'axios';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -84,7 +85,7 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
             selectedBrand: '',
             shopId: '',
             allMeasurement: [],
-
+            userData: [],
             allData: [
                 {
                     url: '/api/lookup/getallmeasurementtype',
@@ -115,16 +116,19 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
 
     async componentDidMount() {
         SCREEN_WIDTH = Dimensions.get('window').width;
-        const { allData, shopId } = this.state;
+        const { allData } = this.state;
 
         let userDetail = await AsyncStorage.getItem('userDetail');
+        let shopId = await AsyncStorage.getItem('shopId');
         let userData = JSON.parse(userDetail);
-        // Alert.alert(""+userData.userId);
+        // Alert.alert(""+shopId);
         // console.log("User Data",userData.userId)
 
         this.setState({
-            userData: userData
+            userData: userData,
+            shopId: shopId
         })
+
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
             axios({
@@ -181,7 +185,45 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
         })
     }
 
-  
+    async handleAddTocart(productId) {
+        const { userData, shopId } = this.state;
+        const logedIn = await AsyncStorage.getItem('logedIn');
+        if (null != logedIn && logedIn === 'true') {
+            // Alert.alert(''+ userData.userId + productId + logedIn)
+            Axios({
+                method: 'POST',
+                url: AppConstants.API_BASE_URL + '/api/cart/create',
+                data: {
+                    shopId: userData.shopId,
+                    userId: userData.userId,
+                    productId: productId,
+                    productQuantity: 1
+                }
+            }).then((response) => {
+                if (null != response.data) {
+                    if (response.data.status === 'true') {
+                        axios({
+                            method: "GET",
+                            url: AppConstants.API_BASE_URL + '/api/user/wishlist/add/' + userData.userId + "/" + productId,
+                        }).then((response) => {
+                            this._onRefresh();
+                            Alert.alert("Product added to cart.")
+                        }, (error) => {
+                            Alert.alert("Server error.")
+                        });
+                    } else {
+                        Alert.alert("Product allready exists in your cart.")
+                    }
+                }
+            }, (error) => {
+                Alert.alert("Server error.")
+            });
+
+
+        } else {
+            this.props.navigation.navigate(AppRoute.AUTH);
+        }
+    }
 
     navigationItemList() {
         // this.props.navigation.navigate(AppRoute.ITEMLIST)
@@ -197,38 +239,59 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
 
     addItem() { }
 
+    async handleDelete(id) {
+        const { isSelectedWish, userData } = this.state
+        const logedIn = await AsyncStorage.getItem('logedIn');
+        if (null != logedIn && logedIn === 'true') {
+            axios({
+                method: "GET",
+                url: AppConstants.API_BASE_URL + '/api/user/wishlist/add/' + userData.userId + "/" + id,
+            }).then((response) => {               
+                this._onRefresh();
+            }, (error) => {
+                Alert.alert("Server error.")
+            });
+        } else {
+            this.props.navigation.navigate(AppRoute.AUTH);
+        }
+    }
+
     renderProduct = ({ item }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
                 <View>
                     <View style={Styles.cart_main_view}>
-
                         <View style={Styles.cart_view_1}>
                             <View style={Styles.cart_view_1_1}>
                                 <View style={[Styles.cart_avatar_view, Styles.center]}>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.productId + '_avatar.png' }} style={Styles.product_avatar} />
+                                    <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_' + 1 + "_" + item.shopId + '_product.png' }} style={Styles.product_avatar} />
                                 </View>
                             </View>
 
                             <View style={Styles.cart_view_1_2}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Text style={Styles.cart_name_text}>{item.name}</Text>
+                                <TouchableOpacity  onPress={() => { this.handleDelete(item.productId) }}>
+                                    <Text style={Styles.cart_name_text}><CancelIcon fontSize={25} /></Text>
+                                </TouchableOpacity>
+                            </View>
                                 <View style={Styles.cart_price_view}>
                                     <View style={{ flexDirection: 'row' }}>
                                         <Text style={Styles.price_text}><RupeeIcon /> {item.price}</Text>
                                         <Text style={Styles.offer_price_text}>{item.oldPrice}</Text>
                                     </View>
 
-                                    <View style={Styles.cart_quantity_view}>
-                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
+                                    <View style={[Styles.cart_quantity_view, Styles.center]}>
+                                        {/* <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
                                             <Text style={Styles.cart_button_text}><MinusIcon /></Text>
                                         </TouchableOpacity>
 
                                         <View style={Styles.cart_quantity_text_view}>
                                             <Text style={Styles.cart_quantity_text}>3</Text>
-                                        </View>
+                                        </View> */}
 
-                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { }}>
-                                            <Text style={Styles.cart_button_text}><AddIcon /></Text>
+                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleAddTocart(item.productId) }}>
+                                            <Text style={Styles.cart_button_text}>Add to cart</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -293,11 +356,11 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                                 <Text style={{color: Color.BUTTON_NAME_COLOR}}>Change</Text>
                             </TouchableOpacity>
                         </View>
-                    </View> */} 
-                {null != allProduct ?
-                    <List data={allProduct}
-                        renderItem={this.renderProduct}
-                    /> : null}
+                    </View> */}
+                    {null != allProduct ?
+                        <List data={allProduct}
+                            renderItem={this.renderProduct}
+                        /> : null}
                     <View style={{ height: 10, width: '100%' }} />
                 </Content>
 

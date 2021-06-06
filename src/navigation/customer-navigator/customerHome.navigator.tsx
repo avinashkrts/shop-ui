@@ -39,6 +39,7 @@ import { BillBookNavigator } from './billBook.navigator';
 import { OffersNavigator } from './offers.navigator';
 import { CustomerAddressScreen, CustomerCartScreen, CustomerContactScreen, CustomerNotificationScreen, CustomerOrderScreen, CustomerProfileScreen } from '../../scenes/Customer/home';
 import { LogoutScreen } from '../../scenes/auth';
+import { CartScreen } from '../../scenes/Customer/allProduct/cart.component';
 
 type CustomerHomeDrawerNavigatorParams = {
   [AppRoute.CUSTOMER_HOME]: undefined;
@@ -262,7 +263,7 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_CART}
-      component={CustomerCartScreen}
+      component={CartScreen}
       options={{ title: 'My cart', drawerIcon: CartNavIcon }}
     />
 

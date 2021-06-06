@@ -32,7 +32,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
             wishList: '',
             search: '',
             allData: [{
-                url: '/api/admin/getalladmin',
+                url: '/api/admin/getalladmin/with/address',
                 method: 'GET',
                 variable: 'allAdmin',
             },
@@ -42,7 +42,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                 variable: 'allMeasurement',
             },
             {
-                url: '/api/category/getallcategory',
+                url: '/api/lookup/getallshoptype',
                 method: 'GET',
                 variable: 'allCategory',
             },
@@ -90,8 +90,10 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                 url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
                 if (data.variable === 'allAdmin') {
-                    // console.log(data.variable, response.data)
-                    this.setState({ allShop: response.data })
+                    console.log(data.variable, response.data[0].adminAddress)
+                    this.setState({ 
+                        allShop: response.data,                        
+                     })
                 } else if (data.variable === 'allCategory') {
                     // console.log(data.variable, response.data)
                     this.setState({
@@ -108,12 +110,6 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                     console.log(data.variable, response.data)
                     this.setState({
                         allMeasurement: response.data,
-                    })
-                } else if (data.variable === 'user') {
-                    console.log(data.variable, response.data)
-                    this.setState({
-                        userData: response.data,
-                        wishList: response.data.wishList
                     })
                 }
             }, (error) => {
@@ -139,7 +135,19 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
     }
 
     selectCategory(id) {
-        this.setState({ selectedCategory: id })
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/admin/get/shopby/shoptype/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allShop: response.data,
+                    selectedCategory: id
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
     }
 
     selectBrand(id) {
@@ -147,7 +155,8 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
     }
 
     navigateProductDetail(id) {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_PRODUCT, { shoptId: String(id) })
+        AsyncStorage.setItem('shopId', String(id))
+        this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_PRODUCT, { shopId: String(id) })
     }
 
     async handleAddToCart(productId) {
@@ -271,7 +280,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                     {/* <Header style={styles.header}> */}
                     <View style={[Styles.searchBox, { marginBottom: 0 }]}>
                         <View style={[{ width: '10%', }, Styles.center]}>
-                            <TouchableOpacity onPress={() => {  }}>
+                            <TouchableOpacity onPress={() => { }}>
                                 <Text style={Styles.searchIcon}><SearchIcon /></Text>
                             </TouchableOpacity>
                         </View>
@@ -295,9 +304,9 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                     data={allCategory}
                                     renderItem={({ item, index }) => {
                                         return (
-                                            <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
-                                                <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                    <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                            <TouchableOpacity onPress={() => { this.selectCategory(item.lookUpId) }}>
+                                                <View style={selectedCategory == item.lookUpId ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                    <Text style={selectedCategory == item.lookUpId ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.lookUpName}</Text>
                                                 </View>
                                             </TouchableOpacity>
                                         )
@@ -356,7 +365,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                         <View style={Styles.all_Item_List}>
                                             <TouchableOpacity onPress={() => { this.navigateProductDetail(data.shopId) }}>
                                                 <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                    <Avatar source={require("../../../assets/milaan.jpg")} style={Styles.all_Item_Image} />
+                                                    <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/shop/' + data.adminId + '_' + 1 + "_" + data.shopId + '_shop.png' }} style={Styles.all_Item_Image} />
                                                 </View>
 
                                             </TouchableOpacity>
@@ -401,15 +410,20 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                                             );
                                                         }
                                                     }) : null} */}
-                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.adminAddress[0] != null ? data.adminAddress[0].city : null}, {null != data.adminAddress[0] ? data.adminAddress[0].state : null}</Text>
+                                                    {null != data.adminAddress ?
+                                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.adminAddress[0] != null ? data.adminAddress[0].city : null}, {null != data.adminAddress[0] ? data.adminAddress[0].state : null}</Text>
+                                                 : 
+                                                    null}
+                                                    {null != allCategory ? allCategory.map((shopType, shopIndex) => {
+                                                        if (shopType.lookUpId == data.shopType) {
+                                                            return (
+                                                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                                                    <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>{shopType.lookUpName}</Text>
+                                                                </View>
+                                                            )
+                                                        }
+                                                    }) : null}
 
-                                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>{data.shopType == 1 ? "Software" : "Test"}</Text>
-                                                        {/* {data.offerActiveInd ?
-                                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
-                                                            : null
-                                                        } */}
-                                                    </View>
                                                     {/* {null != data.offerActiveInd ? data.offerActiveInd ?
                                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
                                                             <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>

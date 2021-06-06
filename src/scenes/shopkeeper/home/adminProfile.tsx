@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl } from "react-native";
+import { View, Text, RefreshControl, AsyncStorage } from "react-native";
 import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
 import { AdminProfileScreenProps } from "../../../navigation/home.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
@@ -17,7 +17,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
         super(props);
         this.state = {
             isEditable: false,
-            userId: '',     
+            userId: '',
             emailId: '',
             firstName: '',
             lastName: '',
@@ -53,7 +53,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
         this.onRefresh = this.onRefresh.bind(this);
     }
 
-   async componentDidMount() {
+    async componentDidMount() {
         // Axios({
         //     method: 'GET',
         //     url: 'http://192.168.0.106:8082/api/user/get/1'
@@ -69,43 +69,49 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
         // }, (error) => {
 
         // });
+        let userDetail = await AsyncStorage.getItem('userDetail');
+        let logedIn = await AsyncStorage.getItem('logedIn');
+        let userData = JSON.parse(userDetail);
+        // Alert.alert(userData.userId)
 
-        Axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/admin/get/1'
-        }).then((response) => {
-            this.setState({
-                mobileNo: response.data.mobileNo,
-                city: response.data.adminAddress[0].city,
-                firstName: response.data.firstName,
-                lastName: response.data.lastName,
-                pinCode: String(response.data.adminAddress[0].pinCode),
-                state: response.data.adminAddress[0].state,
-                country: response.data.adminAddress[0].country,
-                longitude: response.data.adminAddress[0].longitude,
-                latitude: response.data.adminAddress[0].latitude,
-                userType: response.data.userType,
-                shopId: response.data.shopId,
-                district: response.data.adminAddress[0].district,
-                postOffice: response.data.adminAddress[0].postOffice,
-                policeStation: response.data.adminAddress[0].policeStation,
-                landmark: response.data.adminAddress[0].landmark,
-                userId: response.data.userId,
-                adminId: response.data.adminId,
-                adharNumber: String(response.data.adharNumber),
-                panNumber: response.data.panNumber,
-                paymentStatus: String(response.data.paymentStatus),
-                shopName: response.data.shopName,
-                shopType: String(response.data.shopType),
-                validity: String(response.data.validity),
-                wallet: String(response.data.wallet),
-                gstNumber: response.data.gstNumber,
-                emailId: response.data.emailId,
-                street: response.data.street,
-            })
-        }, (error) => {
+        if (userData) {
+            Axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/admin/get/' + userData.adminId
+            }).then((response) => {
+                this.setState({
+                    mobileNo: response.data.mobileNo,
+                    city: response.data.adminAddress[0].city,
+                    firstName: response.data.firstName,
+                    lastName: response.data.lastName,
+                    pinCode: String(response.data.adminAddress[0].pinCode),
+                    state: response.data.adminAddress[0].state,
+                    country: response.data.adminAddress[0].country,
+                    longitude: response.data.adminAddress[0].longitude,
+                    latitude: response.data.adminAddress[0].latitude,
+                    userType: response.data.userType,
+                    shopId: response.data.shopId,
+                    district: response.data.adminAddress[0].district,
+                    postOffice: response.data.adminAddress[0].postOffice,
+                    policeStation: response.data.adminAddress[0].policeStation,
+                    landmark: response.data.adminAddress[0].landmark,
+                    userId: response.data.userId,
+                    adminId: response.data.adminId,
+                    adharNumber: String(response.data.adharNumber),
+                    panNumber: response.data.panNumber,
+                    paymentStatus: String(response.data.paymentStatus),
+                    shopName: response.data.shopName,
+                    shopType: String(response.data.shopType),
+                    validity: String(response.data.validity),
+                    wallet: String(response.data.wallet),
+                    gstNumber: response.data.gstNumber,
+                    emailId: response.data.emailId,
+                    street: response.data.street,
+                })
+            }, (error) => {
 
-        });
+            });
+        }
     }
 
     onRefresh() {
@@ -153,7 +159,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                                 <TextInput
                                     editable={isEditable}
                                     value={firstName}
-                                    onChangeText={(value) => { this.setState({firstName: value }) }}
+                                    onChangeText={(value) => { this.setState({ firstName: value }) }}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.FIRST_NAME}
                                 />
@@ -169,7 +175,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                                     value={lastName}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.LAST_NAME}
-                                    onChangeText={(value) => { this.setState({lastName: value }) }}
+                                    onChangeText={(value) => { this.setState({ lastName: value }) }}
                                 />
                             </View>
                         </View>
@@ -185,7 +191,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                                     value={mobileNo}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.PHONE}
-                                    onChangeText={(value) => { this.setState({mobileNo: value }) }}
+                                    onChangeText={(value) => { this.setState({ mobileNo: value }) }}
                                 />
                             </View>
                         </View>
@@ -200,7 +206,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                                     value={emailId}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.EMAIL_ID}
-                                    onChangeText={(value) => {this.setState({emailId: value }) }}
+                                    onChangeText={(value) => { this.setState({ emailId: value }) }}
 
                                 />
                             </View>
@@ -231,7 +237,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.LAND_MARK}
                                     value={landmark}
-                                    onChangeText={(value) => {this.setState({landmark: value }) }}
+                                    onChangeText={(value) => { this.setState({ landmark: value }) }}
                                 />
                             </View>
                         </View>
@@ -246,7 +252,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.VILLAGE}
                                     value={city}
-                                    onChangeText={(value) => { this.setState({city: value }) }}
+                                    onChangeText={(value) => { this.setState({ city: value }) }}
 
                                 />
                             </View>
@@ -261,7 +267,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.POST_OFFICE}
                                     value={postOffice}
-                                    onChangeText={(value) => {this.setState({postOffice: value }) }}
+                                    onChangeText={(value) => { this.setState({ postOffice: value }) }}
                                 />
                             </View>
                         </View>
@@ -276,7 +282,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.POLICE_STATION}
                                     value={policeStation}
-                                    onChangeText={(value) => {this.setState({policeStation: value }) }}
+                                    onChangeText={(value) => { this.setState({ policeStation: value }) }}
                                 />
                             </View>
                         </View>
@@ -291,7 +297,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.DISTRICT}
                                     value={district}
-                                    onChangeText={(value) => { this.setState({ district: value })}}
+                                    onChangeText={(value) => { this.setState({ district: value }) }}
                                 />
                             </View>
                         </View>
@@ -314,15 +320,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.STATE}</Text>
                             </View>
-                            <View                               
-                             style={Styles.user_detail_data}>
+                            <View
+                                style={Styles.user_detail_data}>
                                 <TextInput
-                                 editable={isEditable}
+                                    editable={isEditable}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.STATE}
                                     value={state}
                                     onChangeText={(value) => { this.setState({ state: value }) }}
-                                 />
+                                />
                             </View>
                         </View>
 
@@ -330,15 +336,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.SHOP_ID}</Text>
                             </View>
-                            <View                               
-                             style={Styles.user_detail_data}>
+                            <View
+                                style={Styles.user_detail_data}>
                                 <TextInput
-                                 editable={isEditable}
+                                    editable={isEditable}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.SHOP_ID}
                                     value={shopId}
                                     onChangeText={(value) => { this.setState({ shopId: value }) }}
-                                 />
+                                />
                             </View>
                         </View>
 
@@ -346,15 +352,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.ADHAR_NUMBER}</Text>
                             </View>
-                            <View                               
-                             style={Styles.user_detail_data}>
+                            <View
+                                style={Styles.user_detail_data}>
                                 <TextInput
-                                 editable={isEditable}
+                                    editable={isEditable}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.ADHAR_NUMBER}
                                     value={adharNumber}
                                     onChangeText={(value) => { this.setState({ adharNumber: value }) }}
-                                 />
+                                />
                             </View>
                         </View>
 
@@ -362,15 +368,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.PAN_NUMBER}</Text>
                             </View>
-                            <View                               
-                             style={Styles.user_detail_data}>
+                            <View
+                                style={Styles.user_detail_data}>
                                 <TextInput
-                                 editable={isEditable}
+                                    editable={isEditable}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.PAN_NUMBER}
                                     value={panNumber}
                                     onChangeText={(value) => { this.setState({ panNumber: value }) }}
-                                 />
+                                />
                             </View>
                         </View>
 
@@ -378,15 +384,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.PAYMENT_STATUS}</Text>
                             </View>
-                            <View                               
-                             style={Styles.user_detail_data}>
+                            <View
+                                style={Styles.user_detail_data}>
                                 <TextInput
-                                 editable={isEditable}
+                                    editable={isEditable}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.PAYMENT_STATUS}
                                     value={paymentStatus}
                                     onChangeText={(value) => { this.setState({ paymentStatus: value }) }}
-                                 />
+                                />
                             </View>
                         </View>
 
@@ -394,15 +400,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.SHOPNAME}</Text>
                             </View>
-                            <View                               
-                             style={Styles.user_detail_data}>
+                            <View
+                                style={Styles.user_detail_data}>
                                 <TextInput
-                                 editable={isEditable}
+                                    editable={isEditable}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.SHOPNAME}
                                     value={shopName}
                                     onChangeText={(value) => { this.setState({ shopName: value }) }}
-                                 />
+                                />
                             </View>
                         </View>
 
@@ -410,15 +416,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.SHOP_TYPE}</Text>
                             </View>
-                            <View                               
-                             style={Styles.user_detail_data}>
+                            <View
+                                style={Styles.user_detail_data}>
                                 <TextInput
-                                 editable={isEditable}
+                                    editable={isEditable}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.SHOP_TYPE}
                                     value={shopType}
                                     onChangeText={(value) => { this.setState({ shopType: value }) }}
-                                 />
+                                />
                             </View>
                         </View>
 
@@ -442,15 +448,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.VALIDITY}</Text>
                             </View>
-                            <View                               
-                             style={Styles.user_detail_data}>
+                            <View
+                                style={Styles.user_detail_data}>
                                 <TextInput
-                                 editable={isEditable}
+                                    editable={isEditable}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.VALIDITY}
                                     value={validity}
                                     onChangeText={(value) => { this.setState({ validity: value }) }}
-                                 />
+                                />
                             </View>
                         </View>
 
@@ -458,15 +464,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.WALLET}</Text>
                             </View>
-                            <View                               
-                             style={Styles.user_detail_data}>
+                            <View
+                                style={Styles.user_detail_data}>
                                 <TextInput
-                                 editable={isEditable}
+                                    editable={isEditable}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.WALLET}
                                     value={wallet}
                                     onChangeText={(value) => { this.setState({ wallet: value }) }}
-                                 />
+                                />
                             </View>
                         </View>
 
@@ -474,15 +480,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.GST_NUMBER}</Text>
                             </View>
-                            <View                               
-                             style={Styles.user_detail_data}>
+                            <View
+                                style={Styles.user_detail_data}>
                                 <TextInput
-                                 editable={isEditable}
+                                    editable={isEditable}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.GST_NUMBER}
                                     value={gstNumber}
                                     onChangeText={(value) => { this.setState({ gstNumber: value }) }}
-                                 />
+                                />
                             </View>
                         </View>
 
