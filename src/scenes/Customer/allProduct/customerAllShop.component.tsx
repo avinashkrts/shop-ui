@@ -5,7 +5,7 @@ import { CustomerAllShopScreenProps } from "../../../navigation/customer-navigat
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { CartIcon, MenuIcon, SearchIcon, WishIcon } from "../../../assets/icons";
-import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, ScrollView, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AppConstants, Color } from "../../../constants";
 import { Styles } from "../../../assets/styles";
 import { Content, Header, Item, ListItem } from "native-base";
@@ -157,6 +157,11 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
     navigateProductDetail(id) {
         AsyncStorage.setItem('shopId', String(id))
         this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_PRODUCT, { shopId: String(id) })
+    }
+
+    navigateShopDetailDetail(id, shopId) {
+        AsyncStorage.setItem('shopId', String(id))
+        this.props.navigation.navigate(AppRoute.SHOP_DETAIL, { adminId: String(id), shopId: String(shopId) })
     }
 
     async handleAddToCart(productId) {
@@ -350,7 +355,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                         width: '100%',
                         marginTop: profileImageMarginTop
                     }}>
-                        <Content style={[Styles.customer_content, { marginTop: 100 }]} showsVerticalScrollIndicator={false}
+                        <ScrollView style={[Styles.customer_content, { marginTop: 100 }]} showsVerticalScrollIndicator={false}
                             refreshControl={
                                 <RefreshControl
                                     refreshing={this.state.refreshing}
@@ -363,7 +368,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                 {null != allShop ? allShop.map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
-                                            <TouchableOpacity onPress={() => { this.navigateProductDetail(data.shopId) }}>
+                                            <TouchableOpacity onPress={() => { this.navigateShopDetailDetail(data.adminId, data.shopId) }}>
                                                 <View style={[Styles.all_Item_Image_1, Styles.center]}>
                                                     <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/shop/' + data.adminId + '_' + 1 + "_" + data.shopId + '_shop.png' }} style={Styles.all_Item_Image} />
                                                 </View>
@@ -436,18 +441,18 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                                     } */}
 
                                                 </View>
-                                                {/* <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId) }}>
+                                                <TouchableOpacity onPress={() => { this.navigateProductDetail(data.shopId) }}>
                                                     <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Continue shopping</Text>
                                                     </View>
-                                                </TouchableOpacity> */}
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
                                     )
                                 }) : null}
                             </View>
                             <View style={{ height: 10, width: '100%' }} />
-                        </Content>
+                        </ScrollView>
                     </Animated.View>
                 </Animated.ScrollView>
 

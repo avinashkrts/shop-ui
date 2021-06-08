@@ -5,7 +5,7 @@ import { CustomerAllProductScreenProps } from "../../../navigation/customer-navi
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { BackIcon, CartIcon, MenuIcon, SearchIcon, WishIcon } from "../../../assets/icons";
-import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, ScrollView, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AppConstants, Color } from "../../../constants";
 import { Styles } from "../../../assets/styles";
 import { Content, Header, Item, ListItem } from "native-base";
@@ -31,6 +31,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             allMeasurement: [],
             wishList: '',
             search: '',
+            refreshing: false,
             allData: [
             {
                 url: '/api/lookup/getallmeasurementtype',
@@ -50,7 +51,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             scrollY: new Animated.Value(0),
         }
 
-        this.onRefresh = this.onRefresh.bind(this);
+        this._onRefresh = this._onRefresh.bind(this);
         this.handleAddToCart = this.handleAddToCart.bind(this);
     }
 
@@ -138,15 +139,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
 
     navigateToCart() {
         this.props.navigation.navigate(AppRoute.CUSTOMER_CART)
-    }
-
-    onRefresh() {
-        this.setState({ refreshing: true });
-        this.componentDidMount().then(() => {
-            this.setState({ refreshing: false });
-        });
-
-    }
+    }   
 
     selectCategory(id) {
         const {shopId} = this.state;
@@ -242,7 +235,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                 this.setState({
                     isSelectedWish: !isSelectedWish
                 })
-                this.onRefresh();
+                this._onRefresh();
             }, (error) => {
                 Alert.alert("Server error.")
             });
@@ -265,8 +258,16 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
         }
     }
 
+    _onRefresh() {
+        this.setState({ refreshing: true });
+        this.componentDidMount().then(() => {
+            this.setState({ refreshing: false });
+        });
+
+    }
+
     render() {
-        const { allProduct, shopId, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allProduct, refreshing, shopId, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -392,11 +393,11 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                         width: '100%',
                         marginTop: profileImageMarginTop
                     }}>
-                        <Content style={[Styles.customer_content, { marginTop: 135 }]} showsVerticalScrollIndicator={false}
+                        <ScrollView style={[Styles.customer_content, { marginTop: 135 }]} showsVerticalScrollIndicator={false}
                             refreshControl={
                                 <RefreshControl
-                                    refreshing={this.state.refreshing}
-                                    onRefresh={this.onRefresh.bind(this)}
+                                    refreshing={refreshing}
+                                    onRefresh={this._onRefresh.bind(this)}
                                 />
                             }
                         >
@@ -486,7 +487,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                                 }) : null}
                             </View>
                             <View style={{ height: 10, width: '100%' }} />
-                        </Content>
+                        </ScrollView>
                     </Animated.View>
                 </Animated.ScrollView>
 

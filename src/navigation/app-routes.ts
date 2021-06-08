@@ -8,6 +8,7 @@ export enum AppRoute {
   CUSTOMER_ORDER = 'Customer Order',
   CUSTOMER_NOTIFICATION = 'Customer Notification',
   CUSTOMER_CART = 'Customer Cart',
+  SHOP_DETAIL = 'SHOP Detail',
   CUSTOMER_CONTACT = 'Customer Contact',
   SIGN_IN = 'Sign In',
   USER_LOG_IN = 'User Log In',

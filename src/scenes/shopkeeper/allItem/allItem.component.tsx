@@ -5,7 +5,7 @@ import { AllItemScreenProps } from "../../../navigation/shopKeeperNavigator/allI
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { BackIcon, CartIcon, MenuIcon, PlusCircle, SearchIcon, WishIcon } from "../../../assets/icons";
-import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, ScrollView, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AppConstants, Color } from "../../../constants";
 import { Styles } from "../../../assets/styles";
 import { Content, Header, Item, ListItem } from "native-base";
@@ -38,6 +38,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
             allCategory: [],
             allBrand: [],
             shopId: '',
+            refreshing: false,
             selectedCategory: '',
             selectedBrand: '',
             allMeasurement: [],
@@ -355,7 +356,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         width: '100%',
                         marginTop: profileImageMarginTop
                     }}>
-                        <Content style={[Styles.customer_content, { marginTop: 135 }]} showsVerticalScrollIndicator={false}
+                        <ScrollView style={[Styles.customer_content, { marginTop: 135 }]} showsVerticalScrollIndicator={false}
                             refreshControl={
                                 <RefreshControl
                                     refreshing={this.state.refreshing}
@@ -426,7 +427,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                 }) : null}
                             </View>
                             <View style={{ height: 10, width: '100%' }} />
-                        </Content>
+                        </ScrollView>
                     </Animated.View>
                 </Animated.ScrollView>
 

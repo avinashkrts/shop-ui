@@ -44,7 +44,7 @@ export interface CartScreenProps {
 const Stack = createStackNavigator<AllItemNavigatorParams>();
 
 export const AllItemNavigator = (): React.ReactElement => (
-    <Stack.Navigator headerMode='none'>
+    <Stack.Navigator initialRouteName={AppRoute.ALLITEM} headerMode='none'>
         <Stack.Screen name={AppRoute.ALLITEM} component={AllItemScreen} />
         <Stack.Screen name={AppRoute.PRODUCT_DETAIL} component={ProductDetailScreen} />
         <Stack.Screen name={AppRoute.CART} component={CartScreen} />

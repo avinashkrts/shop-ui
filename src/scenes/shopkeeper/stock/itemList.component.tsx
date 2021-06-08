@@ -87,6 +87,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
             allMeasurement: [],
             search: '',
             shopId: '',
+            refreshing: false,
             allData: [{
                 url: '/api/category/getallcategory',
                 method: 'GET',
@@ -177,7 +178,6 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
         this.componentDidMount().then(() => {
             this.setState({ refreshing: false });
         });
-
     }
 
     selectCategory(id) {
@@ -202,7 +202,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
     }
 
     render() {
-        const { allProduct, search, shopId, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allProduct, refreshing, search, shopId, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -325,10 +325,10 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                         width: '100%',
                         marginTop: profileImageMarginTop
                     }}> */}
-                <Content style={[Styles.customer_content, { marginTop: 5 }]} showsVerticalScrollIndicator={false}
+                <ScrollView style={[Styles.customer_content, { marginTop: 5 }]} showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
-                            refreshing={this.state.refreshing}
+                            refreshing={refreshing}
                             onRefresh={this.onRefresh.bind(this)}
                         />
                     }
@@ -394,7 +394,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
                         }) : null}
                     </View>
                     <View style={{ height: 10, width: '100%' }} />
-                </Content>
+                </ScrollView>
                 {/* </Animated.View>
                 </Animated.ScrollView> */}
 
