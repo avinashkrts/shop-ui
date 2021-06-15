@@ -9,6 +9,7 @@ export class Color {
     public static readonly CART_LIST_ODD = '#4dd2ff';
     public static readonly CART_BACKGROUND = '#f2f2f2';
     public static readonly SILVER = '#8f8f8f';
+    public static readonly STATUS_BAR = '#dfdfdf';
 }
 
 /*------------------------------------------------------------PADDING CODE------------------------------------------------------------*/
@@ -19,6 +20,8 @@ export class Padding {
 /*------------------------------------------------------------TEXT------------------------------------------------------------*/
 export class LableText {
     public static readonly USER = 'user';
+    public static readonly ACCEPT = 'Accept';
+    public static readonly REJECT = 'Reject';
     public static readonly CHOOSE_IMAGE = 'Choose Image';
     public static readonly UPLOAD = 'Upload';
     public static readonly NEXT = 'Next';

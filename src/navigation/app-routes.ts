@@ -26,6 +26,7 @@ export enum AppRoute {
   ALLITEM = 'All Item',
   PRODUCT_DETAIL = 'Product Detail',
   CART = 'Cart',
+  PAYMENT = 'Payment',
   CUSTOMER = 'Customer',
   STOCK = 'Stock',
   BRANDLIST = 'Brand List',

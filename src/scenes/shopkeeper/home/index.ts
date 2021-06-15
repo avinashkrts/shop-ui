@@ -1,4 +1,4 @@
-export { MyOrderScreen } from './myOrderDetail.component';
+export { MyOrderScreen } from './myOrder.component';
 export { ContactUsScreen } from './contactUs.component';
 export { DailyMessageScreen } from './dailyMessage.component';
 export { NotificationScreen } from './notification.component';

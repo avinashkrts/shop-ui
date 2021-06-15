@@ -9,6 +9,8 @@ import { Content } from 'native-base';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { Styles } from '../../assets/styles';
 import { AsyncStorage } from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
+import RazorpayCheckout from 'react-native-razorpay';
 
 interface State {
     email: string | undefined;
@@ -36,7 +38,7 @@ export class UserDecide extends Component<UserDecideProps, any & State & any> {
             const admin = Number(JSON.parse(value1));
             const customer = Number(JSON.parse(value2));
             // console.log('UserType' + 'admin: ', admin + "customer", customer)
-            console.log('UserType' + 'admin: ', admin + "customer", customer,  logedIn)
+            console.log('UserType' + 'admin: ', admin + "customer", customer, logedIn)
             if (logedIn === 'true') {
                 // console.log('User Type in' + ' admin: ', admin + "customer", customer)    
                 const userType = Number(user.userType);
@@ -65,6 +67,25 @@ export class UserDecide extends Component<UserDecideProps, any & State & any> {
         } else {
             this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
         }
+
+        SplashScreen.hide();
+        // const options = {
+        //     description: "AppConstants.RAZOR_DESCRIPTION",
+        //     image: 'http://ec2-65-0-32-190.ap-south-1.compute.amazonaws.com/shop/61_4_MILAAN661_shop.png',
+        //     currency: "INR",
+        //     key: 'rzp_test_WHYgLdAAnKqBLN',
+        //     amount: 500,
+        //     name: 'MILAAN IT',
+        //     prefill: {
+        //         email: 'admin@milaan.com',
+        //         contact: '7903032346',
+        //         name: 'Avinash'
+        //     },
+        //     theme: { color: '#53a20e' }
+        // }
+        // RazorpayCheckout.open(options).then((data) => {
+        //     console.log(data.razorpay_payment_id);
+        // })
     }
 
 
@@ -75,7 +96,7 @@ export class UserDecide extends Component<UserDecideProps, any & State & any> {
             //     style={Styles.safeArea}
             //     insets={SaveAreaInset.TOP} >
             < View style={[Styles.center, { flex: 1 }]} >
-                <ActivityIndicator size='large' />
+                {/* <ActivityIndicator size='large' /> */}
             </ View>
             // </SafeAreaLayout >
         );

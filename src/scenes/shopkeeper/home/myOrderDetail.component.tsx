@@ -10,7 +10,7 @@ import { Color } from '../../../constants/LabelConstants';
 import { SearchIcon, MinusIcon, RupeeIcon, PlusCircle, BackIcon, CancelIcon, PlusIcon, AddIcon, RightArrowIcon } from '../../../assets/icons';
 
 
-export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponentProps & any> {
+export class MyOrderDetailScreen extends Component<MyOrderScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
         this.state = {}

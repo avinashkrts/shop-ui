@@ -3,13 +3,14 @@ import { CompositeNavigationProp, RouteProp,} from '@react-navigation/core';
 import { createStackNavigator, StackNavigationProp, } from '@react-navigation/stack';
 import { CustomerAllProductTabNavigationProps } from './customerHome.navigator';
 import { AppRoute } from '../app-routes';
-import { CartScreen, CustomerAllProductScreen, CustomerAllShopScreen, CustProductDetailScreen, ShopDetailScreen } from '../../scenes/Customer/allProduct';
+import { CartScreen, CustomerAllProductScreen, CustomerAllShopScreen, CustProductDetailScreen, PaymentScreen, ShopDetailScreen } from '../../scenes/Customer/allProduct';
 type CustomerAllProductNavigatorParams = {
     [AppRoute.CUSTOMER_ALL_PRODUCT]: undefined;   
     [AppRoute.CUSTOMER_ALL_SHOP]: undefined;   
     [AppRoute.CUSTOMER_PRODUCT_DETAIL]: undefined;   
     [AppRoute.CUSTOMER_CART]: undefined;   
     [AppRoute.SHOP_DETAIL]: undefined;   
+    [AppRoute.PAYMENT]: undefined;   
 }
 
 export interface CustomerAllProductScreenProps {
@@ -52,6 +53,14 @@ export interface ShopDetailScreenProps {
     route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.SHOP_DETAIL>;
 }
 
+export interface PaymentScreenProps {
+    navigation: CompositeNavigationProp<
+    CustomerAllProductTabNavigationProps,
+        StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.PAYMENT>
+    >;
+    route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.PAYMENT>;
+}
+
 
 const Stack = createStackNavigator<CustomerAllProductNavigatorParams>();
 
@@ -62,5 +71,6 @@ export const CustomerAllProductNavigator = (): React.ReactElement => (
         <Stack.Screen name={AppRoute.CUSTOMER_CART} component={CartScreen} />        
         <Stack.Screen name={AppRoute.SHOP_DETAIL} component={ShopDetailScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_PRODUCT_DETAIL} component={CustProductDetailScreen} />        
+        <Stack.Screen name={AppRoute.PAYMENT} component={PaymentScreen} />        
     </Stack.Navigator>
 );

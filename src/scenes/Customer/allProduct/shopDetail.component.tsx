@@ -96,7 +96,7 @@ export class ShopDetailScreen extends React.Component<ShopDetailScreenProps & Of
             productQuantity: '1',
             allData: [
                 {
-                    url: '/api/admin/getadminbyadminidandshopid/' + this.props.route.params.adminId + '/' + this.props.route.params.shopId,
+                    url: '/api/admin/getadmin/byadminid/shopid/' + this.props.route.params.adminId + '/' + this.props.route.params.shopId,
                     method: 'GET',
                     variable: 'allProduct',
                 },

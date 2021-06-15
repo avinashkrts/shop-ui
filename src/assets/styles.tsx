@@ -518,6 +518,111 @@ export const Styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 5,
     borderColor: Color.SILVER,
+    marginVertical: 5,
+    paddingBottom: 10
+  }, 
+
+  order_bar_main_1: {
+    // backgroundColor: 'red',
+    width: '10%'
+  },
+
+  order_bar_ordered1: {
+    backgroundColor: 'green',
+    width: 15,
+    height: 15,
+    borderRadius: 8
+  },
+
+  order_bar_ordered2: {
+    backgroundColor: 'green',
+    width: 3,
+    height: 30,
+  },
+
+  order_bar_ordered3: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 3,
+    height: 30,
+  },
+
+  order_bar_accepted1: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 15,
+    height: 15,
+    borderRadius: 8
+  },
+
+  order_bar_accepted2: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 3,
+    height: 30,
+  },
+
+  order_bar_accepted3: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 3,
+    height: 30,
+  },
+
+  order_bar_packed1: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 15,
+    height: 15,
+    borderRadius: 8
+  },
+
+  order_bar_packed2: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 3,
+    height: 30,
+  },
+
+  order_bar_packed3: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 3,
+    height: 30,
+  },
+
+  order_bar_shipped1: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 15,
+    height: 15,
+    borderRadius: 8
+  },
+
+  order_bar_shipped2: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 3,
+    height: 30,
+  },
+
+  order_bar_shipped3: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 3,
+    height: 30,
+  },
+
+  order_bar_delevered1: {
+    backgroundColor: Color.STATUS_BAR,
+    width: 15,
+    height: 15,
+    borderRadius: 8
+  },
+
+  order_bar_ordered_text_box: {
+    height: 74
+  },
+
+  order_bar_ordered_text: {
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+
+  order_bar_main_2: {
+    // backgroundColor: 'green',
+    height: 100,
+    width: '90%'    
   },
 
   order_cart: {
@@ -1060,7 +1165,7 @@ export const Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
-    paddingBottom: 5,
+    paddingBottom: 10,
   },
 
   customer_list_name_text: {
@@ -1081,7 +1186,7 @@ export const Styles = StyleSheet.create({
     backgroundColor: Color.BUTTON_NAME_COLOR,
     paddingVertical: 10
   },
-  
+
   /*---------------------------------------------This Style is for Customer Detail--------------------------------------------------------- */
   profile: {
     width: '100%',
@@ -1265,6 +1370,35 @@ export const Styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
   },
+
+  /*---------------------------------------------This Style is for Payment-------------------------------------------------------------- */
+  payment_box_view: {
+    width: '90%',
+    borderColor: Color.SILVER,
+    borderRadius: 3,
+    borderWidth: .5,
+    padding: 20,
+    paddingLeft: 20,
+    marginVertical: 15
+  },
+
+  payment_selection_view: {
+    flexDirection: 'row',
+    width: '100%'
+  },
+
+  payment_selection_header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10
+  },
+
+  payment_selection_text: {
+    marginLeft: 10,
+    fontSize: 18,
+    // fontWeight: '700'
+  },
+
   /*---------------------------------------------This Style is for Search Box-------------------------------------------------------------- */
   searchBox: {
     flexDirection: 'row',

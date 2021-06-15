@@ -179,6 +179,11 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         })
     }
 
+    handlePlaceOrder(cartId, totalAmt) {
+        // Alert.alert(''+cartId + " " + totalAmt)
+        this.props.navigation.navigate(AppRoute.PAYMENT, {cartId: String(cartId), totalAmt: String(totalAmt)})
+    }
+
     renderCart = ({ item }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
@@ -348,7 +353,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                     </View>
 
                     <View>
-                        <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]}>
+                        <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => {this.handlePlaceOrder(cartData.cartId, cartData.totalAmount)}}>
                             <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
                         </TouchableOpacity>
                     </View>
