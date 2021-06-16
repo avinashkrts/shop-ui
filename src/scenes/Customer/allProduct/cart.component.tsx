@@ -111,22 +111,8 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                     productList: response.data[0].productList
                 })
             }, (error) => {
-                Alert.alert("Server problem")
-            })
-
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/address/getdefaultaddress/' + userData.userId
-            }).then((response) => {
-                if (response.data) {
-                    this.setState({
-                        addressData: response.data
-                    })
-                }
-
-            }, (error) => {
-                Alert.alert("Server problem")
-            })
+                // Alert.alert("Server problem")
+            })           
         } else {
             this.props.navigation.navigate(AppRoute.AUTH)
         }
@@ -288,7 +274,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                         />
                     </View> */}
 
-                    <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
+                    {/* <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Address</Text>
                         {null != addressData ?
                             <Text style={{ marginVertical: 5 }}>{addressData.city}, {addressData.landmark}, {addressData.district}, {addressData.state}, {addressData.pinCode}</Text>
@@ -298,7 +284,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                 <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Change</Text>
                             </TouchableOpacity>
                         </View>
-                    </View>
+                    </View> */}
 
                     <List data={productList}
                         renderItem={this.renderCart}

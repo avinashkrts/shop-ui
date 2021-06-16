@@ -90,7 +90,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             cashDelivery: true,
             payOnline: false,
             homeDelivery: true,
-            slotFrom: String(new Date().getFullYear() + '-' + Number(new Date().getMonth() + 1) + '-' + new Date().getDate()),
+            slotDate: String(new Date().getFullYear() + '-' + Number(new Date().getMonth() + 1) + '-' + new Date().getDate()),
             selfPickup: false,
             allLookUp: [],
             order_type: [],
@@ -103,7 +103,8 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             cashId: '',
             userName: '',
             userMobileNo: '',
-            userEmailId: ''
+            userEmailId: '',
+            addressId: ''
         }
 
     }
@@ -135,7 +136,8 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             }).then((response) => {
                 if (response.data) {
                     this.setState({
-                        addressData: response.data
+                        addressData: response.data,
+                        addressId: response.data.id
                     })
                 }
 
@@ -230,7 +232,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
 
 
     handlePlaceOrder() {
-        const { orderType, homeDelivery, selfPick, cashDelivery, payOnline, homeId, cashId, onlineId, selfId, paymentType, cartId, } = this.state;
+        const { orderType, addressId, slotDate, homeDelivery, selfPick, cashDelivery, payOnline, homeId, cashId, onlineId, selfId, paymentType, cartId, } = this.state;
         // console.log('data', orderType, paymentType, homeDelivery, selfPick, cashDelivery, payOnline, cashId, onlineId, homeId, selfId, cartId);
         if (payOnline) {
             axios({
@@ -239,7 +241,9 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 data: {
                     transactionType: paymentType,
                     cartId: cartId,
-                    orderType: orderType
+                    orderType: orderType,
+                    addressId: addressId,
+                    slotDate: slotDate
                 }
             }).then((response) => {
                 if (response.data) {
@@ -260,12 +264,15 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 data: {
                     transactionType: paymentType,
                     cartId: cartId,
-                    orderType: orderType
+                    orderType: orderType,
+                    addressId: addressId,
+                    slotDate: slotDate
                 }
             }).then((response) => {
                 if (response.data) {
                     if (response.data.status) {
                         Alert.alert("Order placed.")
+                        this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER)
                     } else {
                         Alert.alert("Got error while placing Order.")
                     }
@@ -309,6 +316,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 if (response.data) {
                     if (response.data.status) {
                         Alert.alert("Order placed.")
+                        this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER)
                     } else {
                         Alert.alert("Got error while placing Order.")
                     }
@@ -378,7 +386,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
     )
 
     render() {
-        const { cartData, addressData, homeDelivery, payOnline, cashDelivery, selfPick, totalAmt, productList, slotFrom } = this.state
+        const { cartData, addressData, homeDelivery, payOnline, cashDelivery, selfPick, totalAmt, productList, slotDate } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -492,11 +500,11 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                             <View style={Styles.payment_selection_view}>
                                 <DatePicker
                                     style={{ width: '100%' }}
-                                    date={slotFrom}
+                                    date={slotDate}
                                     mode="date"
                                     placeholder="select date"
                                     format="YYYY-MM-DD"
-                                    minDate={slotFrom}
+                                    minDate={slotDate}
                                     // maxDate="2016-06-01"
                                     confirmBtnText="Confirm"
                                     cancelBtnText="Cancel"
@@ -511,7 +519,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                                             borderColor: '#fff'
                                         }
                                     }}
-                                    onDateChange={(date) => { this.setState({ offerFrom: date }) }}
+                                    onDateChange={(date) => { this.setState({ slotDate: date }) }}
                                 />
                             </View>
                         </View>

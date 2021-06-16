@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { View, Text, RefreshControl, Alert, AsyncStorage } from "react-native";
-import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
+import { Avatar, Divider, ThemedComponentProps, ListItem, ListItemElement, List } from "react-native-ui-kitten";
 import { CustomerOrderScreenProps } from "../../../navigation/customer-navigator/customerHome.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { BackIcon, MenuIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { AppConstants, LableText } from "../../../constants";
+import { AppConstants, Color, LableText } from "../../../constants";
 import { Content, Image } from "native-base";
 import Axios from "axios";
 import { AppRoute } from "../../../navigation/app-routes";
@@ -15,29 +15,46 @@ import { AppRoute } from "../../../navigation/app-routes";
 export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            cartData: [],
+            orderStatusData: []
+        }
 
         this.onRefresh = this.onRefresh.bind(this);
     }
 
     async componentDidMount() {
         let userDetail = await AsyncStorage.getItem('userDetail');
-        let logedIn = await AsyncStorage.getItem('logedIn');
         let userData = JSON.parse(userDetail);
-        if (null != logedIn && logedIn === 'true') {
-            // Alert.alert("" + userData.userId)
+        this.setState({ userData: userData })
+
+        if (null != userData) {
             Axios({
                 method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/cart/get/placed/order/MILAAN721/' + userData.userId
+                url: AppConstants.API_BASE_URL + '/api/cart/get/user/order/' + userData.userId,
             }).then((response) => {
-                this.setState({
-                    cartData: response.data[0],
-                })
+                if (null != response.data) {
+                    this.setState({
+                        cartData: response.data
+                    })
+                }
             }, (error) => {
-                // Alert.alert("Server problem")
-            })            
-        } else {
-            this.props.navigation.navigate(AppRoute.AUTH)
+                Alert.alert("Server error!.")
+            });
+
+            Axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/lookup/getallorderstatus',
+            }).then((response) => {
+                if (null != response.data) {
+                    console.log(response.data);
+                    this.setState({
+                        orderstatusData: response.data
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
         }
     }
 
@@ -48,8 +65,166 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
         });
     }
 
+    handleBack() {
+        this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
+    }
+
+    renderCart = ({ item }: any): ListItemElement => (
+        <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
+            {item != null ?
+                <View>
+                    <View style={Styles.order_row}>
+                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.userId + '_avatar.png' }} style={Styles.order_cart} />
+                        <View style={Styles.order_column}>
+                            <Text style={Styles.order_text}>{item.userName}</Text>
+                            <Text style={Styles.order_text}>{item.mobileNo}</Text>
+                            <Text style={[Styles.order_column]}>Total Amount: {item.totalAmount}</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
+
+                        {null != this.state.orderstatusData ? this.state.orderstatusData.map((orderStatus, oIndex) => {
+                            if (orderStatus.lookUpName === "PLACED") {
+                                if (orderStatus.lookUpId == item.orderStatus) {
+                                    return (
+                                        <>
+                                            <View style={[Styles.center, Styles.order_bar_main_1]}>
+                                                <View style={Styles.order_bar_ordered1} />
+                                                <View style={Styles.order_bar_ordered2} />
+                                                <View style={[Styles.order_bar_ordered3]} />
+
+                                                <View style={[Styles.order_bar_accepted1]} />
+                                                <View style={[Styles.order_bar_accepted2]} />
+                                                <View style={Styles.order_bar_accepted3} />
+
+                                                <View style={Styles.order_bar_packed1} />
+                                                <View style={Styles.order_bar_packed2} />
+                                                <View style={Styles.order_bar_packed3} />
+
+                                                <View style={Styles.order_bar_shipped1} />
+                                                <View style={Styles.order_bar_shipped2} />
+                                                <View style={Styles.order_bar_shipped3} />
+
+                                                <View style={Styles.order_bar_delevered1} />
+                                            </View>
+                                            <View style={Styles.order_bar_main_2}>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Ordered</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Accepted</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Packed</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Shipped</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Delivered</Text>
+                                                </View>
+                                            </View>
+                                        </>
+                                    )
+                                }
+                            } else if (orderStatus.lookUpName === "REJECTED") {
+                                if (orderStatus.lookUpId == item.orderStatus) {
+                                    return (
+                                        <>
+                                            <View style={[Styles.center, Styles.order_bar_main_1]}>
+                                                <View style={Styles.order_bar_ordered1} />
+                                                <View style={Styles.order_bar_ordered2} />
+                                                <View style={[Styles.order_bar_ordered3, { backgroundColor: 'green' }]} />
+
+                                                <View style={[Styles.order_bar_accepted1, { backgroundColor: 'green' }]} />
+                                                {/* <View style={[Styles.order_bar_accepted2]} />
+                                                <View style={Styles.order_bar_accepted3} />
+
+                                                <View style={Styles.order_bar_packed1} />
+                                                <View style={Styles.order_bar_packed2} />
+                                                <View style={Styles.order_bar_packed3} />
+
+                                                <View style={Styles.order_bar_shipped1} />
+                                                <View style={Styles.order_bar_shipped2} />
+                                                <View style={Styles.order_bar_shipped3} />
+
+                                                <View style={Styles.order_bar_delevered1} /> */}
+                                            </View>
+                                            <View style={Styles.order_bar_main_2}>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Ordered</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Rejected</Text>
+                                                </View>
+                                                {/* <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Packed</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Shipped</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Delivered</Text>
+                                                </View> */}
+                                            </View>
+                                        </>
+                                    )
+                                }
+                            } else if (orderStatus.lookUpName === "ACCEPTED") {
+                                if (orderStatus.lookUpId == item.orderStatus) {
+                                    return (
+                                        <>
+                                            <View style={[Styles.center, Styles.order_bar_main_1]}>
+                                                <View style={Styles.order_bar_ordered1} />
+                                                <View style={Styles.order_bar_ordered2} />
+                                                <View style={[Styles.order_bar_ordered3, { backgroundColor: 'green' }]} />
+
+                                                <View style={[Styles.order_bar_accepted1, { backgroundColor: 'green' }]} />
+                                                <View style={[Styles.order_bar_accepted2, { backgroundColor: 'green' }]} />
+                                                <View style={Styles.order_bar_accepted3} />
+
+                                                <View style={Styles.order_bar_packed1} />
+                                                <View style={Styles.order_bar_packed2} />
+                                                <View style={Styles.order_bar_packed3} />
+
+                                                <View style={Styles.order_bar_shipped1} />
+                                                <View style={Styles.order_bar_shipped2} />
+                                                <View style={Styles.order_bar_shipped3} />
+
+                                                <View style={Styles.order_bar_delevered1} />
+                                            </View>
+                                            <View style={Styles.order_bar_main_2}>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Ordered</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Accepted</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Packed</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Shipped</Text>
+                                                </View>
+                                                <View style={[Styles.order_bar_ordered_text_box]}>
+                                                    <Text style={[Styles.order_bar_ordered_text]}>Delivered</Text>
+                                                </View>
+                                            </View>
+                                        </>
+                                    )
+                                }
+                            }
+                        }) : null}
+                    </View>
+                </View> : null}
+        </ListItem>
+    )
+
+
+
     render() {
-        const { isEditable } = this.state
+        const { cartData } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -57,7 +232,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                 <Toolbar
                     title='My Order'
                     backIcon={BackIcon}
-                    onBackPress={this.props.navigation.goBack}
+                    onBackPress={() => {this.handleBack()}}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
@@ -69,189 +244,14 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                         />
                     }
                 >
-                    {/* <View style={[Styles.profile, Styles.center]}>
-                        <View style={Styles.profile_image}>
-                            <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
-                        </View>
-                    </View> */}
 
                     <Divider />
-
-
-
-
-
-
                     <View style={Styles.order_main}>
                         <Text style={Styles.order_text}>Orders</Text>
-                        <View style={Styles.order_row}>
-
-                            <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.order_cart} />
-                            <View style={Styles.order_column}>
-                                <Text style={Styles.order_text}>H P Laptop</Text>
-                                <Text style={Styles.order_column}> Price :- 45000</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={[Styles.center, Styles.order_bar_main_1]}>
-                                <View style={Styles.order_bar_ordered1} />
-                                <View style={Styles.order_bar_ordered2} />
-                                <View style={Styles.order_bar_ordered3} />
-
-                                <View style={Styles.order_bar_accepted1} />
-                                <View style={Styles.order_bar_accepted2} />
-                                <View style={Styles.order_bar_accepted3} />
-
-                                <View style={Styles.order_bar_packed1} />
-                                <View style={Styles.order_bar_packed2} />
-                                <View style={Styles.order_bar_packed3} />
-
-                                <View style={Styles.order_bar_shipped1} />
-                                <View style={Styles.order_bar_shipped2} />
-                                <View style={Styles.order_bar_shipped3} />
-
-                                <View style={Styles.order_bar_delevered1} />
-                                {/* <View style={Styles.order_bar_delevered2}/>
-                                <View style={Styles.order_bar_delevered3}/> */}
-                            </View>
-
-                            <View style={Styles.order_bar_main_2}>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Ordered</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Accepted</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Packed</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Shipped</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Delivered</Text>
-                                </View>
-                            </View>
-                        </View>
+                        <List data={cartData}
+                            renderItem={this.renderCart}
+                        />
                     </View>
-
-                    <View style={Styles.order_main}>
-                        <Text style={Styles.order_text}>Orders</Text>
-                        <View style={Styles.order_row}>
-
-                            <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.order_cart} />
-                            <View style={Styles.order_column}>
-                                <Text style={Styles.order_text}>H P Laptop</Text>
-                                <Text style={Styles.order_column}> Price :- 45000</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={[Styles.center, Styles.order_bar_main_1]}>
-                                <View style={Styles.order_bar_ordered1} />
-                                <View style={Styles.order_bar_ordered2} />
-                                <View style={Styles.order_bar_ordered3} />
-
-                                <View style={Styles.order_bar_accepted1} />
-                                <View style={Styles.order_bar_accepted2} />
-                                <View style={Styles.order_bar_accepted3} />
-
-                                <View style={Styles.order_bar_packed1} />
-                                <View style={Styles.order_bar_packed2} />
-                                <View style={Styles.order_bar_packed3} />
-
-                                <View style={Styles.order_bar_shipped1} />
-                                <View style={Styles.order_bar_shipped2} />
-                                <View style={Styles.order_bar_shipped3} />
-
-                                <View style={Styles.order_bar_delevered1} />
-                                {/* <View style={Styles.order_bar_delevered2}/>
-                                <View style={Styles.order_bar_delevered3}/> */}
-                            </View>
-
-                            <View style={Styles.order_bar_main_2}>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Ordered</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Accepted</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Packed</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Shipped</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Delivered</Text>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={Styles.order_main}>
-                        <Text style={Styles.order_text}>Orders</Text>
-                        <View style={Styles.order_row}>
-
-                            <Avatar source={require("../../../assets/hp-laptop.jpg")} style={Styles.order_cart} />
-                            <View style={Styles.order_column}>
-                                <Text style={Styles.order_text}>H P Laptop</Text>
-                                <Text style={Styles.order_column}> Price :- 45000</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={[Styles.center, Styles.order_bar_main_1]}>
-                                <View style={Styles.order_bar_ordered1} />
-                                <View style={Styles.order_bar_ordered2} />
-                                <View style={Styles.order_bar_ordered3} />
-
-                                <View style={Styles.order_bar_accepted1} />
-                                <View style={Styles.order_bar_accepted2} />
-                                <View style={Styles.order_bar_accepted3} />
-
-                                <View style={Styles.order_bar_packed1} />
-                                <View style={Styles.order_bar_packed2} />
-                                <View style={Styles.order_bar_packed3} />
-
-                                <View style={Styles.order_bar_shipped1} />
-                                <View style={Styles.order_bar_shipped2} />
-                                <View style={Styles.order_bar_shipped3} />
-
-                                <View style={Styles.order_bar_delevered1} />
-                                {/* <View style={Styles.order_bar_delevered2}/>
-                                <View style={Styles.order_bar_delevered3}/> */}
-                            </View>
-
-                            <View style={Styles.order_bar_main_2}>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Ordered</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Accepted</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Packed</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Shipped</Text>
-                                </View>
-                                <View style={[Styles.order_bar_ordered_text_box]}>
-                                    <Text style={[Styles.order_bar_ordered_text]}>Delivered</Text>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-
-                    {/* <View style={[Styles.order_status_box]}>
-
-                    </View> */}
-
-
-
-
-
-
 
                     {/* <View>
                         <View style={Styles.user_detail}>

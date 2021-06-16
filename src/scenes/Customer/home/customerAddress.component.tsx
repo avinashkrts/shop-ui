@@ -34,7 +34,10 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
             isEditable: true,
             modalVisible: false,
             allAddress: [],
-            edit: false
+            edit: false,
+            name: '',
+            mobileNo: '',
+            street: ''
         }
 
         this.onRefresh = this.onRefresh.bind(this);
@@ -73,7 +76,7 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
     }
 
     handleSubmit() {
-        const { isEditable, city, shopId, userId, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType } = this.state
+        const { isEditable, name, mobileNo, street, city, shopId, userId, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType } = this.state
         // Alert.alert("Clicked"+ userId)
         console.log(userId, isEditable, shopId, city, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType);
         if (city == null || city === '') {
@@ -92,6 +95,12 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
             Alert.alert("Please enter state.");
         } else if (country == null || country === '') {
             Alert.alert("Please enter country.");
+        } else if (name == null || name === '') {
+            Alert.alert("Please enter name.");
+        } else if (mobileNo == null || mobileNo === '') {
+            Alert.alert("Please enter mobile number.");
+        } else if (street == null || street === '') {
+            Alert.alert("Please enter street.");
         } else {
 
             Axios({
@@ -108,7 +117,10 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                     country: country,
                     shopId: shopId,
                     userId: String(userId),
-                    userType: String(userType)
+                    userType: String(userType),
+                    name: name,
+                    mobileNo: mobileNo,
+                    street: street
                 }
             }).then((response) => {
                 this.toggleModal();
@@ -133,6 +145,9 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
             pinCode: String(allAddress[index].pinCode),
             state: allAddress[index].state,
             country: allAddress[index].country,
+            name: allAddress[index].name,
+            mobileNo: allAddress[index].mobileNo,
+            street: allAddress[index].street,
             edit: true
         })
         this.toggleModal();
@@ -146,7 +161,7 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
     }
 
     handleEditSubmit() {
-        const { isEditable, id, city, shopId, userId, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType } = this.state
+        const { isEditable, name, mobileNo, street, id, city, shopId, userId, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType } = this.state
         // Alert.alert("Clicked"+ userId)
         console.log(isEditable, city, postOffice, policeStation, district, landMark, pinCode, state, country, latitude, longitude, userType);
         if (city == null || city === '') {
@@ -165,6 +180,12 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
             Alert.alert("Please enter state.");
         } else if (country == null || country === '') {
             Alert.alert("Please enter country.");
+        } else if (name == null || name === '') {
+            Alert.alert("Please enter name.");
+        } else if (mobileNo == null || mobileNo === '') {
+            Alert.alert("Please enter mobile number.");
+        } else if (street == null || street === '') {
+            Alert.alert("Please enter street.");
         } else {
 
             Axios({
@@ -182,7 +203,10 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                     country: country,
                     shopId: shopId,
                     userId: String(userId),
-                    userType: userType
+                    userType: userType,
+                    name: name,
+                    mobileNo: mobileNo,
+                    street: street
                 }
             }).then((response) => {
                 this.setState({
@@ -249,7 +273,7 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
     )
 
     render() {
-        const { allAddress, edit, modalVisible, isEditable, city, postOffice, policeStation, district, landMark, pinCode, state, latitude, longitude, country } = this.state
+        const { allAddress, name, mobileNo, street, edit, modalVisible, isEditable, city, postOffice, policeStation, district, landMark, pinCode, state, latitude, longitude, country } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -450,6 +474,51 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                                         placeholder={LableText.COUNTRY}
                                         value={country}
                                         onChangeText={(value) => { this.setState({ country: value }) }}
+                                    />
+                                </View>
+                            </View>
+
+                            <View style={Styles.user_detail}>
+                                <View style={Styles.user_detail_header}>
+                                    <Text style={Styles.user_detail_header_text}>{LableText.NAME}</Text>
+                                </View>
+                                <View style={Styles.user_detail_data}>
+                                    <TextInput
+                                        editable={isEditable}
+                                        style={Styles.cash_pay_input}
+                                        placeholder={LableText.NAME}
+                                        value={name}
+                                        onChangeText={(value) => { this.setState({ name: value }) }}
+                                    />
+                                </View>
+                            </View>
+
+                            <View style={Styles.user_detail}>
+                                <View style={Styles.user_detail_header}>
+                                    <Text style={Styles.user_detail_header_text}>{LableText.MOBILE}</Text>
+                                </View>
+                                <View style={Styles.user_detail_data}>
+                                    <TextInput
+                                        editable={isEditable}
+                                        style={Styles.cash_pay_input}
+                                        placeholder={LableText.MOBILE}
+                                        value={mobileNo}
+                                        onChangeText={(value) => { this.setState({ mobileNo: value }) }}
+                                    />
+                                </View>
+                            </View>
+
+                            <View style={Styles.user_detail}>
+                                <View style={Styles.user_detail_header}>
+                                    <Text style={Styles.user_detail_header_text}>{LableText.STREET}</Text>
+                                </View>
+                                <View style={Styles.user_detail_data}>
+                                    <TextInput
+                                        editable={isEditable}
+                                        style={Styles.cash_pay_input}
+                                        placeholder={LableText.STREET}
+                                        value={street}
+                                        onChangeText={(value) => { this.setState({ street: value }) }}
                                     />
                                 </View>
                             </View>
