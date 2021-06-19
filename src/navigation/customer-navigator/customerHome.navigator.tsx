@@ -40,9 +40,11 @@ import { OffersNavigator } from './offers.navigator';
 import { CustomerAddressScreen, CustomerCartScreen, CustomerContactScreen, CustomerNotificationScreen, CustomerOrderScreen, CustomerProfileScreen } from '../../scenes/Customer/home';
 import { LogoutScreen } from '../../scenes/auth';
 import { CartScreen } from '../../scenes/Customer/allProduct/cart.component';
+import { CustomerOrderNavigator } from './customerOrder.navigator';
 
 type CustomerHomeDrawerNavigatorParams = {
   [AppRoute.CUSTOMER_HOME]: undefined;
+  [AppRoute.CUSTOMER_ORDER]: undefined;
   [AppRoute.CUSTOMER_ADDRESS]: undefined;
   [AppRoute.CUSTOMER_CART]: undefined;
   [AppRoute.CUSTOMER_CONTACT]: undefined;
@@ -57,8 +59,6 @@ type CustomerHomeDrawerNavigatorParams = {
   [AppRoute.MORE]: undefined;
   [AppRoute.SETTING]: undefined;
   [AppRoute.INFORMATION]: undefined;
-
-
 }
 
 type HomeBottomTabsNavigatorParams = {
@@ -72,6 +72,11 @@ export type CustomerAllProductTabNavigationProps = CompositeNavigationProp<
   BottomTabNavigationProp<HomeBottomTabsNavigatorParams, AppRoute.CUSTOMER_ALL_PRODUCT>,
   DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_HOME>
 >;
+
+export interface CustomerOrderNavigatorScreenProps {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
+}
 
 export type BillBookTabNavigationProps = CompositeNavigationProp<
   BottomTabNavigationProp<HomeBottomTabsNavigatorParams, AppRoute.BILL_BOOK>,
@@ -103,10 +108,10 @@ export interface CustomerWalletScreenProps {
   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_WALLET>;
 }
 
-export interface CustomerOrderScreenProps {
-  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
-  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
-}
+// export interface CustomerOrderScreenProps {
+//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
+//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
+// }
 
 export interface CustomerCartScreenProps {
   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_CART>;
@@ -257,7 +262,7 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
     />
     <Drawer.Screen
       name={AppRoute.CUSTOMER_ORDER}
-      component={CustomerOrderScreen}
+      component={CustomerOrderNavigator}
       options={{ title: 'My Order', drawerIcon: MyOrderIcon }}
     />
 

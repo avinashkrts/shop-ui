@@ -53,6 +53,7 @@ import { AddEmployeeScreen } from '../scenes/shopkeeper/Employee';
 import { CustomerContactScreen } from '../scenes/Customer/home';
 import { AddProductScreen } from '../scenes/shopkeeper/stock';
 import { AddProductNavigator } from './addProductNavigator.navigator';
+import { OrderNavigator } from './shopKeeperNavigator/order.navigator';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
@@ -62,6 +63,7 @@ type HomeDrawerNavigatorParams = {
   [AppRoute.IMAGEUPLOAD]: undefined;
   [AppRoute.LOGOUT]: undefined;
   [AppRoute.AUTH]: undefined;
+  [AppRoute.ORDER]: undefined;
   [AppRoute.ADD_PRODUCT_NAVIGATOR]: undefined;
   [AppRoute.PROFILE]: undefined;
   [AppRoute.MY_WALLET]: undefined;
@@ -159,6 +161,11 @@ export interface AuthNavigatorScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.AUTH>;
 }
 
+export interface OrderNavigatorScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ORDER>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ORDER>;
+}
+
 export interface AddProductNavigatorScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ADD_PRODUCT_NAVIGATOR>;
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADD_PRODUCT_NAVIGATOR>;
@@ -184,10 +191,10 @@ export interface ProfileScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
 }
 
-export interface MyOrderScreenProps {
-  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.MY_ORDER>;
-  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.MY_ORDER>;
-}
+// export interface MyOrderScreenProps {
+//   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.MY_ORDER>;
+//   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.MY_ORDER>;
+// }
 
 export interface ValidityScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.VALIDITY>;
@@ -329,8 +336,8 @@ export const HomeNavigator = (): React.ReactElement => (
     />
 
     <Drawer.Screen
-      name={AppRoute.MY_ORDER}
-      component={MyOrderScreen}
+      name={AppRoute.ORDER}
+      component={OrderNavigator}
       options={{ title: 'My Order', drawerIcon: MyOrderIcon }}
     />
 

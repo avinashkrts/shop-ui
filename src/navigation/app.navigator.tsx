@@ -7,11 +7,15 @@ import { HomeNavigator } from './home.navigator';
 import { InformaionNavigator } from './information.navigator';
 import { AppRoute } from './app-routes';
 import { CustomerHomeNavigator } from './customer-navigator/customerHome.navigator';
+import { OrderNavigator } from './shopKeeperNavigator/order.navigator';
+import { CustomerOrderNavigator } from './customer-navigator/customerOrder.navigator';
 
 type StackNavigatorProps = React.ComponentProps<typeof Stack.Navigator>;
 
 export type AppNavigatorParams = {
   [AppRoute.AUTH]: undefined;
+  [AppRoute.ORDER]: undefined;
+  [AppRoute.CUSTOMER_ORDER]: undefined;
   [AppRoute.USER_DECIDE]: undefined;
   [AppRoute.ADD_PRODUCT_NAVIGATOR]: undefined;
   [AppRoute.CUSTOMER_HOME]: undefined;
@@ -25,6 +29,8 @@ const Stack = createStackNavigator<AppNavigatorParams>();
 export const AppNavigator = (props: Partial<StackNavigatorProps>): React.ReactElement => (
   <Stack.Navigator {...props} headerMode='none'>
     <Stack.Screen name={AppRoute.AUTH} component={AuthNavigator}/>
+    <Stack.Screen name={AppRoute.ORDER} component={OrderNavigator}/>
+    <Stack.Screen name={AppRoute.CUSTOMER_ORDER} component={CustomerOrderNavigator}/>
     <Stack.Screen name={AppRoute.USER_DECIDE} component={UserDecideNavigator}/>
     <Stack.Screen name={AppRoute.ADD_PRODUCT_NAVIGATOR} component={AddProductNavigator}/>
     <Stack.Screen name={AppRoute.CUSTOMER_HOME} component={CustomerHomeNavigator}/>

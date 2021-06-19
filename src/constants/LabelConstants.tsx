@@ -69,6 +69,14 @@ export class LableText {
     public static readonly LAND_MARK = 'Land Mark';
     public static readonly COUNTRY = 'Country';
     public static readonly REJECTION_CAUSE = 'Why are you going to reject?';
+    public static readonly WRIET_REVIEW = 'Write your review';
+    public static readonly DENIE_REVIEW = 'Please write coreect reason?';
+    public static readonly EXPECTED_D_DATE = 'Expected delivery date and time.';
+    public static readonly D_BOY_NAME = 'Name of delivery boy.';
+    public static readonly COURIER_NAME = 'Name of courier company.';
+    public static readonly COURIER_ID = 'Courier/Tracking ID.';
+    public static readonly D_BOY_NUMBER = 'Mobile number of delivery boy';
+    public static readonly DELIVERY_CHARGE = 'Delivery charge.';
     public static readonly PHONE = 'Phone';
     public static readonly TOTAL_AMT = 'Total Amount';
     public static readonly DUES = 'Dues';

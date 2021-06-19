@@ -403,7 +403,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                         >
 
                             <View style={Styles.all_Item_Main_View}>
-                                {null != allProduct ? allProduct.map((data, index) => {
+                                {null != allProduct ? allProduct.slice(0).reverse().map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
                                             <View style={{ height: 200 }}>

@@ -2,7 +2,7 @@ import { Content } from "native-base";
 import React, { Component } from "react";
 import { RefreshControl, View, Text, TouchableOpacity, TextInput, AsyncStorage, Alert } from "react-native";
 import { Divider, ThemedComponentProps, Avatar, ListItem, ListItemElement, List } from "react-native-ui-kitten";
-import { MyOrderScreenProps } from "../../../navigation/home.navigator";
+import { MyOrderScreenProps } from "../../../navigation/shopKeeperNavigator/order.navigator";
 import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { Styles } from "../../../assets/styles";
@@ -11,6 +11,7 @@ import { SearchIcon, MinusIcon, RupeeIcon, PlusCircle, BackIcon, CancelIcon, Plu
 import { AppConstants } from "../../../constants";
 import Axios from "axios";
 import Modal from "react-native-modal";
+import { AppRoute } from "../../../navigation/app-routes";
 
 export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -102,7 +103,8 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
     }
 
     handleCartSubmit(cartId) {
-
+        // Alert.alert(''+cartId)
+        this.props.navigation.navigate(AppRoute.MY_ORDER_DETAIL, { cartId: String(cartId) })
     }
 
     toggleModal() {
@@ -126,9 +128,6 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                         <View style={[Styles.customer_list_image, Styles.center]}>
                             <TouchableOpacity onPress={() => { this.handleCartSubmit(item.cartId) }}>
                                 <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.userId + '_avatar.png' }} style={Styles.image} />
-                                {/* <View>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/mobile.jpeg' }} style={styles.image} />
-                            </View> */}
                             </TouchableOpacity>
                         </View>
 
@@ -167,6 +166,24 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
                                                 <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Accepted</Text>
+                                            )
+                                        }
+                                    } else if (orderStatus.lookUpName === "PACKED") {
+                                        if (orderStatus.lookUpId == item.orderStatus) {
+                                            return (
+                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Packed</Text>
+                                            )
+                                        }
+                                    } else if (orderStatus.lookUpName === "SHIPPED") {
+                                        if (orderStatus.lookUpId == item.orderStatus) {
+                                            return (
+                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Shipped</Text>
+                                            )
+                                        }
+                                    } else if (orderStatus.lookUpName === "DELIVERED") {
+                                        if (orderStatus.lookUpId == item.orderStatus) {
+                                            return (
+                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Delivered</Text>
                                             )
                                         }
                                     }
@@ -224,7 +241,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                     }
                 >
 
-                    <List data={cartData}
+                    <List data={cartData.slice(0).reverse()}
                         renderItem={this.renderCart}
                     />
                     <View style={{ height: 10, width: '100%' }}></View>

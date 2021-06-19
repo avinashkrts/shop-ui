@@ -131,7 +131,6 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
         this.componentDidMount().then(() => {
             this.setState({ refreshing: false });
         });
-
     }
 
     selectCategory(id) {
@@ -365,7 +364,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                         >
 
                             <View style={Styles.all_Item_Main_View}>
-                                {null != allShop ? allShop.map((data, index) => {
+                                {null != allShop ? allShop.slice(0).reverse().map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
                                             <TouchableOpacity onPress={() => { this.navigateShopDetailDetail(data.adminId, data.shopId) }}>

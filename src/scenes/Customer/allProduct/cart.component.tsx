@@ -286,7 +286,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                         </View>
                     </View> */}
 
-                    <List data={productList}
+                    <List data={productList.slice(0).reverse()}
                         renderItem={this.renderCart}
                     />
 

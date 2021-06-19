@@ -1,4 +1,5 @@
 export { MyOrderScreen } from './myOrder.component';
+export { MyOrderDetailScreen } from './myOrderDetail.component';
 export { ContactUsScreen } from './contactUs.component';
 export { DailyMessageScreen } from './dailyMessage.component';
 export { NotificationScreen } from './notification.component';
