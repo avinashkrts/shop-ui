@@ -24,7 +24,8 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
             reviewModal: false,
             received: false,
             denied: false,
-            review: ''
+            review: '',
+            receivedCartId: ''
         }
 
         this.onRefresh = this.onRefresh.bind(this);
@@ -96,25 +97,28 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
         this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER_DETAIL, { cartId: String(cartId) })
     }
 
-    toggleModal(orderStatus) {
+    toggleModal(orderStatus, receivedCartId) {
         switch (orderStatus) {
             case 'CLOSE':
                 this.setState({
-                    reviewModal: false
+                    reviewModal: false,
+                    receivedCartId: ''
                 })
                 break;
             case 'RECEIVED':
                 this.setState({
                     reviewModal: true,
                     received: true,
-                    denied: false
+                    denied: false,
+                    receivedCartId: receivedCartId
                 })
                 break;
             case 'DENIED':
                 this.setState({
                     reviewModal: true,
                     received: false,
-                    denied: true
+                    denied: true,
+                    receivedCartId: receivedCartId
                 })
                 break;
             default:
@@ -124,7 +128,8 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
     }
 
     handleOrderStatus(cartId) {
-        const { review, received, denied } = this.state;
+        const { review, received, denied, receivedCartId } = this.state;
+        // Alert.alert(cartId + receivedCartId +'')
         if (denied && review.length < 100) {
             Alert.alert('Please write correct reason.')
         } else {
@@ -133,13 +138,13 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                 method: 'POST',
                 url: AppConstants.API_BASE_URL + '/api/cart/order/denied',
                 data: {
-                    cartId: cartId,
-                    comment: review,
+                    cartId: receivedCartId,
+                    comment: review.length < 1 ? ' ' : review,
                     denied: denied
                 }
             }).then((response) => {
                 if (null != response.data) {
-                    this.toggleModal('CLOSE');
+                    this.toggleModal('CLOSE', '');
                     this.onRefresh();
                 }
             }, (error) => {
@@ -149,10 +154,35 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
 
     }
 
-    renderCart = ({ item }: any): ListItemElement => (
+    renderCart = ({ item, index }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
                 <View>
+                     <Modal style={Styles.modal} isVisible={this.state.reviewModal}>
+                        <View style={Styles.modalHeader}>
+                            <TouchableOpacity>
+                                <Text onPress={() => { this.toggleModal('CLOSE', '') }}><CancelIcon fontSize={25} /></Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={Styles.user_detail}>
+                            <View style={Styles.user_detail_header}>
+                                <Text style={Styles.user_detail_header_text}>{this.state.received ? LableText.WRIET_REVIEW : this.state.denied ? LableText.DENIE_REVIEW + ' ' + this.state.review.length + '/100' : null}</Text>
+                            </View>
+                            <View style={Styles.user_detail_data}>
+                                <TextInput
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.WRIET_REVIEW}
+                                    multiline={true}
+                                    value={this.state.review}
+                                    onChangeText={(value) => { this.setState({ review: value }) }}
+                                />
+                            </View>
+                            <View style={[Styles.center, { marginTop: 30 }]}>
+                                <Text onPress={() => { this.handleOrderStatus(item.cartId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.SUBMIT}</Text>
+                            </View>
+                        </View>
+                    </Modal>
+
                     <View style={Styles.order_row}>
                         <TouchableOpacity onPress={() => { this.handleCartSubmit(item.cartId) }}>
                             <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.userId + '_avatar.png' }} style={Styles.order_cart} />
@@ -538,13 +568,13 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Did you receive your order!</Text>
                                             <View style={Styles.cart_bottom_box_view}>
                                                 <View>
-                                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.toggleModal('RECEIVED') }}>
+                                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.toggleModal('RECEIVED', item.cartId) }}>
                                                         <Text style={{ paddingVertical: 10, paddingHorizontal: 20, color: Color.BUTTON_NAME_COLOR }}>Yes</Text>
                                                     </TouchableOpacity>
                                                 </View>
 
                                                 <View>
-                                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.toggleModal('DENIED') }}>
+                                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.toggleModal('DENIED', item.cartId) }}>
                                                         <Text style={{ paddingVertical: 10, paddingHorizontal: 20, color: Color.BUTTON_NAME_COLOR }}>No</Text>
                                                     </TouchableOpacity>
                                                 </View>
@@ -575,31 +605,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                         }
                     }
                     )
-                        : null}
-                    <Modal style={Styles.modal} isVisible={this.state.reviewModal}>
-                        <View style={Styles.modalHeader}>
-                            <TouchableOpacity>
-                                <Text onPress={() => { this.toggleModal('CLOSE') }}><CancelIcon fontSize={25} /></Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{this.state.received ? LableText.WRIET_REVIEW : this.state.denied ? LableText.DENIE_REVIEW + ' ' + this.state.review.length + '/100' : null}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.WRIET_REVIEW}
-                                    multiline={true}
-                                    value={this.state.review}
-                                    onChangeText={(value) => { this.setState({ review: value }) }}
-                                />
-                            </View>
-                            <View style={[Styles.center, { marginTop: 30 }]}>
-                                <Text onPress={() => { this.handleOrderStatus(item.cartId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.SUBMIT}</Text>
-                            </View>
-                        </View>
-                    </Modal>
+                        : null}                   
                 </View> : null}
         </ListItem>
     )

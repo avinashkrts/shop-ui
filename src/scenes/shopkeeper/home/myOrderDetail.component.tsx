@@ -688,6 +688,15 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                             <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
                         </View>
                     </View>
+                    {null != cartData.review ?
+                        <View style={Styles.price_detail_1}>
+                            <Text style={Styles.cart_price_detail_1_text}>Review</Text>
+                            <View style={Styles.price_detail_2}>
+                                <View style={Styles.price_detail_2_1}>
+                                    <Text style={Styles.cart_price_text_head}>{cartData.review}</Text>
+                                </View>
+                            </View>
+                        </View> : null}
 
                     <View style={{ height: 10, width: '100%' }} />
                 </Content>
@@ -785,6 +794,42 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                                     <View style={[Styles.cart_bottom_box_button, Styles.center]}>
                                         {/* <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handleOrderStatus('DELIVERED', cartData.cartId) }}> */}
                                         <Text style={Styles.cart_bottom_box_button_text}>Delivered</Text>
+                                        {/* </TouchableOpacity> */}
+                                    </View>
+                                </View>
+                            )
+                        }
+                    } else if (orderStatus.lookUpName === "RECEIVED") {
+                        if (orderStatus.lookUpId == cartData.orderStatus) {
+                            return (
+                                <View style={[Styles.cart_bottom_box_view, Styles.center]}>
+                                    {/* <View style={[Styles.cart_bottom_box_button, Styles.center]}>
+                                        <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(cartData.cartId, cartData.totalAmount) }}>
+                                        <Text style={Styles.cart_bottom_box_button_text}>Shipped</Text>
+                                        </TouchableOpacity>
+                                    </View> */}
+
+                                    <View style={[Styles.cart_bottom_box_button, Styles.center]}>
+                                        {/* <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handleOrderStatus('DELIVERED', cartData.cartId) }}> */}
+                                        <Text style={Styles.cart_bottom_box_button_text}>Received</Text>
+                                        {/* </TouchableOpacity> */}
+                                    </View>
+                                </View>
+                            )
+                        }
+                    } else if (orderStatus.lookUpName === "DENIED") {
+                        if (orderStatus.lookUpId == cartData.orderStatus) {
+                            return (
+                                <View style={[Styles.cart_bottom_box_view, Styles.center]}>
+                                    {/* <View style={[Styles.cart_bottom_box_button, Styles.center]}>
+                                        <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(cartData.cartId, cartData.totalAmount) }}>
+                                        <Text style={Styles.cart_bottom_box_button_text}>Shipped</Text>
+                                        </TouchableOpacity>
+                                    </View> */}
+
+                                    <View style={[Styles.cart_bottom_box_button, Styles.center]}>
+                                        {/* <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handleOrderStatus('DELIVERED', cartData.cartId) }}> */}
+                                        <Text style={Styles.cart_bottom_box_button_text}>Denied</Text>
                                         {/* </TouchableOpacity> */}
                                     </View>
                                 </View>

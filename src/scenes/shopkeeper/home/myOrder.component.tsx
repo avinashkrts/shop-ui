@@ -186,6 +186,18 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                                                 <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Delivered</Text>
                                             )
                                         }
+                                    } else if (orderStatus.lookUpName === "RECEIVED") {
+                                        if (orderStatus.lookUpId == item.orderStatus) {
+                                            return (
+                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Received</Text>
+                                            )
+                                        }
+                                    } else if (orderStatus.lookUpName === "DENIED") {
+                                        if (orderStatus.lookUpId == item.orderStatus) {
+                                            return (
+                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Denied</Text>
+                                            )
+                                        }
                                     }
                                 }) : null}
                             </View>
