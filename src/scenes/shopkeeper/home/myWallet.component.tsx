@@ -1,24 +1,45 @@
 import { Content } from "native-base";
 import React, { Component } from "react";
-import { RefreshControl, View, Text, SafeAreaView} from "react-native";
-import { Divider, ThemedComponentProps } from "react-native-ui-kitten";
-import { MywalletScreenProps } from "../../../navigation/home.navigator";
+import { RefreshControl, View, Text, SafeAreaView, ActivityIndicator, AsyncStorage } from "react-native";
+import {
+    Divider, ThemedComponentProps,
+    List, ListItem, ListItemElement
+} from "react-native-ui-kitten";
+import { MyWalletScreenProps } from "../../../navigation/home.navigator";
 import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
-import { AddIcon, BackIcon, CancelIcon, MinusIcon } from "../../../assets/icons";
+import { AddIcon, BackIcon, CancelIcon, MenuIcon, MinusIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { LabelConstants } from "../../../constants/LabelConstants";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import axios from "axios";
+import moment from "moment";
+import { AppConstants } from "../../../constants";
 
-export class MyWalletScreen extends Component<MywalletScreenProps, ThemedComponentProps & any> {
+export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            transactionData: [],
+            transactionType: [],
+            userData:[]
+        }
 
         this.onRefresh = this.onRefresh.bind(this);
     }
 
-    componentDidMount(){
+    async componentDidMount() {
+        let userDetail = await AsyncStorage.getItem('userDetail');
+        let userData = JSON.parse(userDetail);
+        this.setState({ userData: userData })
+
+        if (null != userData) {
+        axios(AppConstants.API_BASE_URL + "/api/transaction/gettransactionbyshopid/MILAAN721") //change it
+            .then(res => this.setState({ transactionData: res.data }))
+        axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
+            .then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
+            .catch(error => console.log(error))
+        }
 
     }
 
@@ -29,16 +50,89 @@ export class MyWalletScreen extends Component<MywalletScreenProps, ThemedCompone
         });
     }
 
+
+    renderCustomer = ({ item, index }: any): ListItemElement => (
+        <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
+            {item != null ?
+
+                <View>
+                    {null != this.state.transactionType ? this.state.transactionType.map((tdata, index) => {
+                        if (tdata.lookUpId == item.paymentMode) {
+                            if (tdata.lookUpName === 'ONLINE_PAYMENT' || tdata.lookUpName === "REFUND") {
+                                return (
+                                    <View style={Styles.wallet_row_1}>
+                                        <View style={Styles.wallet_column_1}>
+
+                                            <Text style={Styles.text_design}> {index + 1}</Text>
+
+                                        </View>
+                                        <View style={Styles.wallet_column_2}>
+
+                                            <Text style={Styles.text_design}> {moment(item.createdOn).format('DD-MM-YYYY')}</Text>
+
+                                        </View>
+                                        <View style={Styles.wallet_column_3}>
+
+                                            <Text style={Styles.text_design}>{item.transactionId}</Text>
+
+                                        </View>
+
+
+                                        <View style={Styles.wallet_column_4}>
+                                            {null != this.state.transactionType ? this.state.transactionType.map((tdata, index) => {
+                                                if (tdata.lookUpId == item.paymentMode) {
+                                                    if (tdata.lookUpName === 'REFUND') {
+                                                        return <Text style={Styles.text_design_red}>{item.amount}</Text>
+                                                    } else {
+                                                        return <Text style={Styles.text_design}>--</Text>
+                                                    }
+                                                }
+
+                                            }) :
+                                                <Text style={Styles.text_design}>--</Text>
+                                            }
+
+                                        </View>
+                                        <View style={Styles.wallet_column_4}>
+                                            {null != this.state.transactionType ? this.state.transactionType.map((tdata, index) => {
+                                                if (tdata.lookUpId == item.paymentMode) {
+                                                    if (tdata.lookUpName === 'ONLINE_PAYMENT') {
+                                                        return <Text style={Styles.text_design_green}>{item.amount}</Text>
+                                                    } else {
+                                                        return <Text style={Styles.text_design}>--</Text>
+                                                    }
+                                                }
+
+                                            }) :
+                                                <Text style={Styles.text_design}>--</Text>
+                                            }
+
+                                        </View>
+                                    </View>
+                                )
+                            }
+                        }
+                    }) : null}
+                </View> :
+                <ActivityIndicator size='large' color='green' />}
+
+        </ListItem>
+    )
+    
+
     render() {
+        const { transactionData, userData } = this.state;
         return (
             <SafeAreaLayout>
                 <Toolbar
-                    title='Wallet'
+                    title='Wallet  '
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
+                    menuIcon={MenuIcon}
+                    onRightPress={() => {}} //define a function
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
-                <Divider/>
+                <Divider />
                 {/* <Content style={styles.content}
                     refreshControl={
                         <RefreshControl
@@ -47,7 +141,7 @@ export class MyWalletScreen extends Component<MywalletScreenProps, ThemedCompone
                         />
                     }
                 > */}
-         
+
                 {/* <Content style={Styles.cart_content} showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
@@ -56,130 +150,69 @@ export class MyWalletScreen extends Component<MywalletScreenProps, ThemedCompone
                         />
                     }
                 > */}
-                    {/* <Header style={styles.header}> */}
-                    {/* <View style={Styles.searchBox}>
+                {/* <Header style={styles.header}> */}
+                {/* <View style={Styles.searchBox}>
                         <Text style={Styles.searchIcon}><SearchIcon /></Text>
                         <TextInput
                             placeholder="Search"
                             style={Styles.searchInput}
                         />
                     </View> */}
-                    
-                    {/* <List data={my_Jobs}
+
+                {/* <List data={my_Jobs}
                         renderItem={this.renderMyJob}
                     /> */}
-                    <View style={{ height: 10, width: '100%' }} />
+                <View style={{ height: 10, width: '100%' }} />
                 {/* </Content> */}
-              <View style={Styles.wallet_main}>
+                <View style={Styles.wallet_main}>
                     <View style={Styles.wallet_row}>
                         <View style={Styles.wallet_column_1}>
-                           
-                                <Text style={Styles.wallet_design1}>{LabelConstants.wallet_serial_number}</Text>
-                           
+
+                            <Text style={Styles.wallet_design1}>{LabelConstants.wallet_serial_number}</Text>
+
                         </View>
                         <View style={Styles.wallet_column_2}>
-                           
-                                <Text style={Styles.wallet_design1}>{LabelConstants.wallet_date}</Text>
-                           
+
+                            <Text style={Styles.wallet_design1}>{LabelConstants.wallet_date}</Text>
+
                         </View>
                         <View style={Styles.wallet_column_3}>
-                           
-                                <Text style={Styles.wallet_design1}>{LabelConstants.wallet_transactionid}</Text>
-                           
+
+                            <Text style={Styles.wallet_design1}>{LabelConstants.wallet_transactionid}</Text>
+
                         </View>
-    
+
                         <View style={Styles.wallet_column_4}>
-                           
-                                <Text style={Styles.head_design}>{LabelConstants.wallet_debit}</Text>
-                           
+
+                            <Text style={Styles.head_design}>{LabelConstants.wallet_debit}</Text>
+
                         </View>
                         <View style={Styles.wallet_column_5}>
-                           
-                                <Text style={Styles.head_design}>{LabelConstants.wallet_credit}</Text>
-                           
-                        </View>
-                    </View>
-                
 
+                            <Text style={Styles.head_design}>{LabelConstants.wallet_credit}</Text>
 
-
-                    <View style={Styles.wallet_row_1}>
-                        <View style={Styles.wallet_column_1}>
-                          
-                                <Text style={Styles.text_design}> 1</Text>
-                          
-                        </View>
-                        <View style={Styles.wallet_column_2}>
-                           
-                                <Text style={Styles.text_design}> 01-03-2021</Text>
-                          
-                        </View>
-                        <View style={Styles.wallet_column_3}>
-                            
-                                <Text style={Styles.text_design}> 5</Text>
-                           
-                        </View>
-                 
-                        <View style={Styles.wallet_column_4}>
-                           
-                                <Text style={Styles.text_design}>--</Text>
-                           
-                        </View>
-                        <View style={Styles.wallet_column_5}>
-                            
-                                <Text style={Styles.text_design}> 40000</Text>
-                            
-                        </View>
-                    </View>
-
-
-                    <View style={Styles.wallet_row_2}>
-                        <View style={Styles.wallet_column_1}>
-                           
-                                <Text style={Styles.text_design}> 2</Text>
-                            
-                        </View>
-                        <View style={Styles.wallet_column_2}>
-                            
-                                <Text style={Styles.text_design}> 01-04-2021</Text>
-                            
-                        </View>
-                        <View style={Styles.wallet_column_3}>
-                           
-                                <Text style={Styles.text_design}> 8</Text>
-                          
-                        </View>
-                 
-                        <View style={Styles.wallet_column_4}>
-                           
-                                <Text style={Styles.text_design}> 50000</Text>
-                         
-                        </View>
-                        <View style={Styles.wallet_column_5}>
-                            
-                                <Text style={Styles.text_design}> 60000</Text>
-                           
                         </View>
                     </View>
 
 
 
+                    <List data={transactionData}
+                        renderItem={this.renderCustomer}
+                    />
 
 
+                    <View style={Styles.wallet_row}>
+                        <Text style={Styles.wallet_bottom_text}>Total :- </Text>
 
-                    
-                        <View style={Styles.wallet_row}>
-                            <Text style={Styles.wallet_bottom_text}>Total :- </Text>
-                           
-                            <Text style={Styles.wallet_paid}>--</Text>
-                            <Text style={Styles.wallet_due}>50000</Text>
-                        </View>
+                        <Text style={Styles.wallet_paid}>--</Text>
+                        <Text style={Styles.wallet_due}>{userData.wallet}</Text>
                     </View>
+                </View>
 
-                
 
 
-           
+
+
 
                 {/* </Content> */}
             </SafeAreaLayout>

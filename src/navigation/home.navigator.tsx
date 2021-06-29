@@ -22,7 +22,7 @@ import {
   HomeDrawer,
   HomeTabBar,
 } from '../scenes/home';
-import {LogoutScreen} from '../scenes/auth';
+import { LogoutScreen } from '../scenes/auth';
 import {
   StockIcon, AddEmployeeIcon,
   ProfileIcon,
@@ -43,9 +43,10 @@ import {
   OutOfStockIcon,
   OfferIcon,
   DailyMessageIcon,
+
 } from '../assets/icons';
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
-import { AdminProfileScreen, DailyMessageScreen, MyOrderScreen,MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
+import { AdminBillBookScreen, AdminProfileScreen, DailyMessageScreen, MyOrderScreen, MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
 // import { AddProductScreen } from '../scenes/home/addproduct.component';
 import { AddCustomerScreen, CustomerDetailScreen, CustomerScreen } from '../scenes/shopkeeper/customer';
 import { AddEducationScreen } from '../scenes/profile';
@@ -57,6 +58,7 @@ import { OrderNavigator } from './shopKeeperNavigator/order.navigator';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
+  [AppRoute.ADMIN_BILL_BOOK]: undefined;
   [AppRoute.CONTACT]: undefined;
   [AppRoute.ACCOUNTS]: undefined;
   [AppRoute.CHANGEPASSWORD]: undefined;
@@ -81,6 +83,7 @@ type HomeDrawerNavigatorParams = {
   [AppRoute.DAILY_MESSAGE]: undefined;
   [AppRoute.CONTACTUS]: undefined;
   [AppRoute.ADMIN_PROFILE]: undefined;
+  [AppRoute.BILL_BOOK]: undefined; //
 }
 
 type HomeBottomTabsNavigatorParams = {
@@ -199,6 +202,11 @@ export interface ProfileScreenProps {
 export interface ValidityScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.VALIDITY>;
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.VALIDITY>;
+}
+
+export interface AdminBillBookScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ADMIN_BILL_BOOK>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADMIN_BILL_BOOK>;
 }
 
 export interface NotificationScreenProps {
@@ -336,6 +344,12 @@ export const HomeNavigator = (): React.ReactElement => (
     />
 
     <Drawer.Screen
+      name={AppRoute.ADMIN_BILL_BOOK}
+      component={AdminBillBookScreen}
+      options={{ title: 'BillBook', drawerIcon: WalletIcon }}
+    />
+
+    <Drawer.Screen
       name={AppRoute.ORDER}
       component={OrderNavigator}
       options={{ title: 'My Order', drawerIcon: MyOrderIcon }}
@@ -412,6 +426,8 @@ export const HomeNavigator = (): React.ReactElement => (
       component={ContactUsScreen}
       options={{ title: 'Contact Us', drawerIcon: HelpIcon }}
     />
+
+
 
     <Drawer.Screen
       name={AppRoute.LOGOUT}

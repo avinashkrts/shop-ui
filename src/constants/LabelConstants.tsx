@@ -207,10 +207,10 @@ export class LabelConstants {
    
     public static readonly customer_bill_serial_number = 'Sl. No.';
     public static readonly customer_bill_date = 'Date';
-    public static readonly customer_bill_item = 'Items';
-    public static readonly customer_bill_amount = 'Amount';
-    public static readonly customer_bill_paid = 'Paid';
-    public static readonly customer_bill_dues = 'Dues';
+    public static readonly customer_bill_transactinId = 'Transaction Id';
+    public static readonly customer_bill_debit = 'Debit';
+    public static readonly customer_bill_credit = 'Credit';
+    //public static readonly customer_bill_dues = 'Dues';
 
 
 

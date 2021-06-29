@@ -12,4 +12,5 @@ export { MyWalletScreen } from './myWallet.component';
 export { AdminProfileScreen } from './adminProfile';
 export { AddDrawerProductScreen } from './addDrawerProduct.component';
 export { AddDrawerProductImageScreen } from './addDrawerProductImage.component';
+export { AdminBillBookScreen } from './adminBillBook.component';
 

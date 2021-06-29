@@ -59,6 +59,7 @@ export enum AppRoute {
   CUSTOMER_ALL_SHOP = 'Customer All Shop',
   CUSTOMER_PRODUCT_DETAIL = 'Customer Product Detail',
   BILL_BOOK = 'Bill Book',
+  ADMIN_BILL_BOOK = 'Bill Book',
   OFFERS_TAB = 'Offers Tab',
   OFFERS_DETAIL_TAB = 'Offers Detail Tab',
   WISH_LIST = 'Wish List',
@@ -108,6 +109,7 @@ export enum AppRoute {
   TODO_DONE = 'ToDo Done',
   TODO_DETAILS = 'ToDo Details',
   CONTACTUS = 'ContactUs',
+  BILLBOOK = 'BillBook', //
   ADMIN_PROFILE = 'Admin Profile',
   CHANGEPASSWORD = 'Changepassword',
   ASK = 'Ask',

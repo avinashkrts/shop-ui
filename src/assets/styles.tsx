@@ -1,4 +1,4 @@
-import { Col } from "native-base";
+import { Col, Left } from "native-base";
 import { StyleSheet, Dimensions } from "react-native";
 import { color } from "react-native-reanimated";
 import { Color, Padding } from "../constants/LabelConstants";
@@ -696,19 +696,19 @@ export const Styles = StyleSheet.create({
   bill_row_1: {
     flexDirection: 'row',
     width: '100%',
-    backgroundColor: 'red'
+    backgroundColor: '#0ac'
   },
 
   bill_row_2: {
     flexDirection: 'row',
     width: '100%',
-    backgroundColor: 'green'
+    backgroundColor: '#0ac'
   },
 
 
 
   bill_column_1: {
-    width: '16%',
+    width: '10%',
 
   },
 
@@ -718,12 +718,12 @@ export const Styles = StyleSheet.create({
   },
 
   bill_column_3: {
-    width: '14%',
+    width: '40%',
 
   },
 
   bill_column_4: {
-    width: '20%',
+    width: '15%',
 
   },
 
@@ -732,18 +732,32 @@ export const Styles = StyleSheet.create({
 
   },
 
-  bill_column_6: {
-    width: '15%',
+  // bill_column_6: {
+  //   width: '15%',
 
-  },
+  // },
 
 
   text_design: {
     fontSize: 14,
-    padding: 2,
+    padding: 0,
     alignSelf: 'center',
     color: 'white'
   },
+  text_design_red: {
+    fontSize: 14,
+    padding: 2,
+    alignSelf: 'center',
+    color: '#ff3333'
+  },
+  text_design_green: {
+    fontSize: 14,
+    padding: 2,
+    alignSelf: 'center',
+    color: '#00ff99'
+  },
+
+
 
   bill_box: {
     width: '100%',
@@ -824,7 +838,7 @@ export const Styles = StyleSheet.create({
   wallet_row_1: {
     flexDirection: 'row',
     width: '100%',
-    backgroundColor: 'red'
+    backgroundColor: '#00aacc'
   },
 
   wallet_row_2: {
@@ -842,7 +856,9 @@ export const Styles = StyleSheet.create({
 
   wallet_column_2: {
     width: '22%',
-    padding: 4,
+    paddingLeft: 2,
+    paddingRight: 2,
+    paddingTop: 4,
 
   },
 
