@@ -16,27 +16,27 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
         this.state = {
             transactionData: [],
             transactionType: [],
-            onlinePay:"",
-            refund:"",
-            cashPay:"",
-            userData:[]
+            onlinePay: "",
+            refund: "",
+            cashPay: "",
+            userData: []
         }
 
         this.onRefresh = this.onRefresh.bind(this);
     }
-   
-     componentDidMount (){
+
+    async componentDidMount() {
         axios(AppConstants.API_BASE_URL + "/api/transaction/gettransactionbyshopid/" + "MILAAN721")
-        .then(res => this.setState({ transactionData: res.data }))
+            .then(res => this.setState({ transactionData: res.data }))
         axios(AppConstants.API_BASE_URL + "/api/admin/get/" + "1")
-        .then(res => this.setState({ userData: res.data }))
-    axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
-        //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
-        .then((res) => 
-        res.data.PAYMENT_MODE.map((data)=>data.lookUpName=="ONLINE_PAYMENT" ? 
-        this.setState({onlinePay:data.lookUpId}) : data.lookUpName=="REFUND"?this.setState({refund:data.lookUpId}) : data.lookUpName=="CASH"?this.setState({cashPay:data.lookUpId}):null) 
-        )
-        .catch(error => console.log(error))
+            .then(res => this.setState({ userData: res.data }))
+        axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
+            //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
+            .then((res) =>
+                res.data.PAYMENT_MODE.map((data) => data.lookUpName == "ONLINE_PAYMENT" ?
+                    this.setState({ onlinePay: data.lookUpId }) : data.lookUpName == "REFUND" ? this.setState({ refund: data.lookUpId }) : data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) : null)
+            )
+            .catch(error => console.log(error))
     }
 
     onRefresh() {
@@ -101,54 +101,54 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                     </View>
 
 
-                    {this.state.transactionData.map((data,index)=>
-                     //data.paymentMode== this.state.onlinePay || data.paymentMode== this.state.refund? 
-                     <View>
-                         <Divider/>
-                     <View style={Styles.wallet_row}>
-                     {/* <View style={{ height: 10, width: '100%' }} /> */}
-                    <View style={Styles.bill_row_1}>
-                        <View style={Styles.bill_column_1}>
-                            <View style={Styles.bill_box}>
-                                <Text style={Styles.text_design}>{index+1}</Text>
+                    {this.state.transactionData.map((data, index) =>
+                        //data.paymentMode== this.state.onlinePay || data.paymentMode== this.state.refund? 
+                        <View>
+                            <Divider />
+                            <View style={Styles.wallet_row}>
+                                {/* <View style={{ height: 10, width: '100%' }} /> */}
+                                <View style={Styles.bill_row_1}>
+                                    <View style={Styles.bill_column_1}>
+                                        <View style={Styles.bill_box}>
+                                            <Text style={Styles.text_design}>{index + 1}</Text>
+                                        </View>
+                                    </View>
+                                    <View style={Styles.bill_column_2}>
+                                        <View style={Styles.bill_box}>
+                                            <Text style={Styles.text_design}> {moment(data.createdOn).format('DD-MM-YYYY')}  </Text>
+                                        </View>
+                                    </View>
+                                    <View style={Styles.bill_column_3}>
+                                        <View style={Styles.bill_box}>
+                                            <Text style={Styles.text_design}>{data.transactionId}</Text>
+                                        </View>
+                                    </View>
+                                    <View style={Styles.bill_column_4}>
+                                        <View style={Styles.bill_box}>
+                                            {/* <Text style={Styles.text_design_red}> */}
+                                            {data.paymentMode == this.state.refund ? <Text style={Styles.text_design_red}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
+                                            {/* </Text> */}
+                                        </View>
+                                    </View>
+                                    <View style={Styles.bill_column_5}>
+                                        <View style={Styles.bill_box}>
+                                            <Text style={Styles.text_design_green}>
+                                                {data.paymentMode == this.state.onlinePay || data.paymentMode == this.state.cashPay ?
+                                                    <Text style={Styles.text_design_green}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
                             </View>
                         </View>
-                        <View style={Styles.bill_column_2}>
-                            <View style={Styles.bill_box}>
-                                <Text style={Styles.text_design}> {moment(data.createdOn).format('DD-MM-YYYY')}  </Text>
-                            </View>
-                        </View>
-                        <View style={Styles.bill_column_3}>
-                            <View style={Styles.bill_box}>
-                                <Text style={Styles.text_design}>{data.transactionId}</Text>
-                            </View>
-                        </View>
-                        <View style={Styles.bill_column_4}>
-                            <View style={Styles.bill_box}>
-                                {/* <Text style={Styles.text_design_red}> */}
-                                {data.paymentMode == this.state.refund ? <Text style={Styles.text_design_red}>{data.amount}</Text> :<Text style={Styles.text_design}> -- </Text>}
-                                {/* </Text> */}
-                            </View>
-                        </View>
-                        <View style={Styles.bill_column_5}>
-                            <View style={Styles.bill_box}>
-                                <Text style={Styles.text_design_green}> 
-                                {data.paymentMode==this.state.onlinePay  || data.paymentMode == this.state.cashPay? 
-                                <Text style={Styles.text_design_green}>{data.amount}</Text> :<Text style={Styles.text_design}> -- </Text>}
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
-                    </View>
-                    </View>
-                     //:null
+                        //:null
                     )}
 
 
                     <View style={Styles.bill_box}>
                         <View style={Styles.bill_row}>
                             <Text style={Styles.bill_bottom_text}>Total :- </Text>
-                            <Text style={Styles.bill_amount}>{null != this.state.userData ? Math.round(this.state.userData.wallet) : null }</Text>
+                            <Text style={Styles.bill_amount}>{null != this.state.userData ? Math.round(this.state.userData.wallet) : null}</Text>
                             {/* <Text style={Styles.bill_paid}>85000</Text> */}
                             {/* <Text style={Styles.bill_due}>15000</Text> */}
                         </View>

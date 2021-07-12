@@ -26,7 +26,7 @@ export interface CustomerOrderDetailScreenProps {
 const Stack = createStackNavigator<CustomerOrderNavigatorParams>();
 
 export const CustomerOrderNavigator = (): React.ReactElement => (
-    <Stack.Navigator headerMode='none'>
+    <Stack.Navigator headerMode='none' initialRouteName={AppRoute.CUSTOMER_ORDER}>
         <Stack.Screen name={AppRoute.CUSTOMER_ORDER} component={CustomerOrderScreen} />
         <Stack.Screen name={AppRoute.CUSTOMER_ORDER_DETAIL} component={CustomerOrderDetailScreen} />
     </Stack.Navigator>

@@ -11,12 +11,18 @@ import {
   SafeAreaLayoutElement,
   SaveAreaInset,
 } from '../../components/safe-area-layout.component';
+import { StackActions } from '@react-navigation/native';
 
 export const HomeTabBar = (props: BottomHomeScreenProps): SafeAreaLayoutElement => {
-
   const onSelect = (index: number): void => {
+    console.log('Tab Data',index, props.state)
     const selectedTabRoute: string = props.state.routeNames[index];
+    const pushAction = StackActions.push(selectedTabRoute);
     props.navigation.navigate(selectedTabRoute);
+    switch(index) {
+      case 0: props.navigation.dispatch(pushAction);
+      break;
+    }
   };
 
   const createNavigationTabForRoute = (route): BottomNavigationTabElement => {

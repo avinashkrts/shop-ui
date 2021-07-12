@@ -23,8 +23,8 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     super(props);
 
     this.state = {
-      emailId: 'admin@milaan.com',
-      pwd: 'Milaan@12345',
+      emailId: '7677256089',
+      pwd: 'qwerty@12345',
       passwordVisible: true,
       allUserType: [],
       deviceId: '',

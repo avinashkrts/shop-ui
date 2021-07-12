@@ -102,6 +102,8 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                     method: 'GET',
                     variable: 'allBrand',
                 }],
+                single: false,
+                shopName: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -119,18 +121,19 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
         const { allData } = this.state;
 
         let userDetail = await AsyncStorage.getItem('userDetail');
-        let shopId = await AsyncStorage.getItem('shopId');
+         const shopIdAsync = await AsyncStorage.getItem('shopId')
+        const shopName = await AsyncStorage.getItem('shopName')
         let userData = JSON.parse(userDetail);
         // Alert.alert(""+shopId);
         // console.log("User Data",userData.userId)
 
         this.setState({
-            userData: userData,
-            shopId: shopId
+            userData: userData
         })
 
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
+            // Alert.alert('')
             axios({
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/user/get/' + userData.userId,
@@ -142,18 +145,35 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
             }, (error) => {
                 Alert.alert("Server error.")
             });
-        }
 
-        axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/product/getproduct/wishlist/' + shopId + '/' + userData.userId,
-        }).then((response) => {
-            // console.log(data.variable, response.data)
-            this.setState({ allProduct: response.data })
-        }, (error) => {
-            this.setState({ allProduct: null })
-            // Alert.alert("Server error.")
-        });
+            if (null != shopIdAsync && shopIdAsync !== '') {
+                this.setState({ single: true, shopName: shopName, shopId: shopIdAsync })
+                axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/product/getproduct/wishlist/' + shopIdAsync + '/' + userData.userId,
+                }).then((response) => {
+                    // console.log(data.variable, response.data)
+                    this.setState({ allProduct: response.data })
+                }, (error) => {
+                    this.setState({ allProduct: null })
+                    // Alert.alert("Server error.")
+                });
+            } else {
+                // Alert.alert('')
+                axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/product/getwishlist/' + userData.userId,
+                }).then((response) => {
+                    // console.log(data.variable, response.data)
+                    this.setState({ allProduct: response.data })
+                }, (error) => {
+                    this.setState({ allProduct: null })
+                    // Alert.alert("Server error.")
+                });
+            }
+        }
+       
+       
 
         allData.map((data, index) => {
             // console.log(allData)
@@ -314,15 +334,15 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
     )
 
     render() {
-        const { allProduct, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allProduct, single, shopName, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Cart'
-                    backIcon={BackIcon}
-                    onBackPress={this.props.navigation.goBack}
+                    title={single ? shopName : 'All Wish List'}
+                    backIcon={MenuIcon}
+                    onBackPress={this.props.navigation.openDrawer}
                     onRightPress={() => { this.continiueShopping() }}
                     menuIcon={PlusCircle}
                     style={{ marginTop: -5, marginLeft: -5 }}

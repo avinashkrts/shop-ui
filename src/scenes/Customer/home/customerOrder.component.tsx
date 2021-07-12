@@ -13,8 +13,9 @@ import Axios from "axios";
 import { AppRoute } from "../../../navigation/app-routes";
 import moment from "moment";
 import Modal from "react-native-modal";
+import { CustomerOrderProductScreenProps } from "../../../navigation/customer-navigator/customerAllProduct.navigator";
 
-export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, ThemedComponentProps & any> {
+export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & CustomerOrderProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
         this.state = {
@@ -35,6 +36,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
         this.setState({ userData: userData })
+        console.log("asasass" + this.props)
 
         if (null != userData) {
             Axios({
@@ -89,8 +91,16 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
         });
     }
 
-    handleBack() {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
+    componentWillUnmount() {
+        const { params } = this.props.route;
+        // console.log(this.props.route)
+        if (params) {
+            this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
+            params.id()
+        } else {
+        // Alert.alert('fg')
+        this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
+        }
     }
 
     handleCartSubmit(cartId) {
@@ -158,7 +168,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
                 <View>
-                     <Modal style={Styles.modal} isVisible={this.state.reviewModal}>
+                    <Modal style={Styles.modal} isVisible={this.state.reviewModal}>
                         <View style={Styles.modalHeader}>
                             <TouchableOpacity>
                                 <Text onPress={() => { this.toggleModal('CLOSE', '') }}><CancelIcon fontSize={25} /></Text>
@@ -587,13 +597,13 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                                     </>
                                 )
                             }
-                        } else  if (orderStatus.lookUpName === "DENIED" || orderStatus.lookUpName === "RECEIVED") {
+                        } else if (orderStatus.lookUpName === "DENIED" || orderStatus.lookUpName === "RECEIVED") {
                             if (orderStatus.lookUpId == item.orderStatus) {
                                 return (
                                     <>
                                         <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
                                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Reveiw</Text>
-                                           
+
                                             {/* <Text style={{ marginVertical: 5, fontWeight: 'bold', fontSize: 16 }}>Rs. {item.deliveryCharge}</Text>
                                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Delivery boy detail</Text> */}
                                             <Text style={{ marginVertical: 5 }}>{item.review}</Text>
@@ -605,7 +615,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                         }
                     }
                     )
-                        : null}                   
+                        : null}
                 </View> : null}
         </ListItem>
     )
@@ -619,7 +629,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps, The
                 <Toolbar
                     title='My Order'
                     backIcon={BackIcon}
-                    onBackPress={() => { this.handleBack() }}
+                    onBackPress={this.componentWillUnmount.bind(this)}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />

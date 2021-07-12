@@ -9,6 +9,7 @@ import {
   DrawerNavigationProp,
 } from '@react-navigation/drawer';
 import {
+  BottomTabBarProps,
   BottomTabNavigationProp,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
@@ -269,9 +270,9 @@ export interface AddCustomerScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADD_CUSTOMER>;
 }
 
-// export type BottomHomeScreenProps = BottomTabBarProps & {
-//   navigation: TodoTabNavigationProp;
-// };
+export type BottomHomeScreenProps = BottomTabBarProps & {
+  navigation: AllItemTabNavigationProp;
+};
 
 export type DrawerHomeScreenProps = DrawerContentComponentProps & {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.HOME>;

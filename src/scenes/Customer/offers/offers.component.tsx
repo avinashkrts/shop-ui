@@ -1,10 +1,10 @@
 import { OffersScreenProps } from "../../../navigation/customer-navigator/offers.navigator";
 import React, { Component } from "react";
-import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet } from "react-native";
+import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet, PermissionsAndroid } from "react-native";
 import { Avatar, List, Divider, ListItemElement, ThemedComponentProps } from "react-native-ui-kitten";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
-import { CartIcon, MenuIcon, SearchIcon, WishIcon } from "../../../assets/icons";
+import { CartIcon, MenuIcon, SearchIcon, WishIcon, CancelIcon } from "../../../assets/icons";
 import { FlatList, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AppConstants, Color } from "../../../constants";
 import { Styles } from "../../../assets/styles";
@@ -13,9 +13,14 @@ import axios from 'axios';
 import Animated from "react-native-reanimated";
 import { AppRoute } from "../../../navigation/app-routes";
 import Axios from "axios";
+import Geolocation from 'react-native-geolocation-service';
+import Modal from "react-native-modal";
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
 
 const HEADER_MAX_HEIGHT = 205;
-const HEADER_MIN_HEIGHT = 70;
+const HEADER_MIN_HEIGHT = 0;
 
 export class OffersScreen extends Component<OffersScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -31,13 +36,19 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             allMeasurement: [],
             wishList: '',
             search: '',
+            lat: '',
+            long: '',
+            location: 'Current Location',
+            searchVisible: false,
+            single: false,
+            shopName: '',
             allData: [
-            {
-                url: '/api/lookup/getallmeasurementtype',
-                method: 'GET',
-                variable: 'allMeasurement',
-            },
-           ],
+                {
+                    url: '/api/lookup/getallmeasurementtype',
+                    method: 'GET',
+                    variable: 'allMeasurement',
+                },
+            ],
             scrollY: new Animated.Value(0),
         }
 
@@ -47,6 +58,69 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
 
     async componentDidMount() {
         const { allData } = this.state;
+        const shopIdAsync = await AsyncStorage.getItem('shopId')
+        const shopName = await AsyncStorage.getItem('shopName')
+
+        if (null != shopIdAsync && shopIdAsync !== '') {
+            // Alert.alert('')
+            this.setState({ single: true, shopName: shopName, shopId: shopIdAsync })
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/product/get/offerproduct/byshopid/' + shopIdAsync,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allProduct: response.data,
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+        } else {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                    {
+                        title: "Cool Photo App Camera Permission",
+                        message:
+                            "Cool Photo App needs access to your camera " +
+                            "so you can take awesome pictures.",
+                        buttonNeutral: "Ask Me Later",
+                        buttonNegative: "Cancel",
+                        buttonPositive: "OK"
+                    }
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    Geolocation.getCurrentPosition((position) => {
+                        var lat = position.coords.latitude
+                        var long = position.coords.longitude
+                        console.log('location', lat, position.coords.accuracy)
+                        axios({
+                            method: 'GET',
+                            url: AppConstants.API_BASE_URL + '/api/product/getbyofferproduct/' + lat + '/' + long
+                        }).then((response) => {
+                            console.log('Product', response.data)
+                            if (null != response.data) {
+                                this.setState({
+                                    allProduct: response.data,
+                                    lat: position.coords.latitude,
+                                    long: position.coords.longitude,
+                                    location: 'Curent Location'
+                                })
+                            }
+                        }, (error) => {
+                            Alert.alert("Server error!.")
+                        });
+                    }, (erroe) => {
+
+                    }, { enableHighAccuracy: true })
+                } else {
+                    console.log("Camera permission denied");
+                }
+            } catch (err) {
+                console.warn(err);
+            }
+        }
 
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
@@ -70,48 +144,37 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             }, (error) => {
                 Alert.alert("Server error.")
             });
-
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/category/getcategoryforuserbyshopid/' + shopId,
-            }).then((response) => {
-                if (null != response.data) {
-                    this.setState({
-                        allCategory: response.data,
-                        selectedCategory: response.data[0].id
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
-
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/brand/getbrandforuserbyshopid/' + shopId,
-            }).then((response) => {
-                if (null != response.data) {
-                    this.setState({
-                        allBrand: response.data,
-                        selectedBrand: response.data[0].id
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
-
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/product/get/offerproduct/byshopid/' + shopId,
-            }).then((response) => {
-                if (null != response.data) {
-                    this.setState({
-                        allProduct: response.data,
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
         }
+
+        // console.log('location', long, lat, 'fgfgf')
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/category/getallcategory'
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allCategory: response.data,
+                    selectedCategory: response.data[0].id
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/brand/getallbrand',
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allBrand: response.data,
+                    selectedBrand: response.data[0].id
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+
         allData.map((data, index) => {
             // console.log(allData)
             axios({
@@ -222,8 +285,89 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
         }
     }
 
+    handleSearchLatLong(data, details) {
+        this.toggleModal();
+
+        Axios({
+            url: 'https://maps.googleapis.com/maps/api/place/details/json?key=' + AppConstants.GOOGLE_MAP_KEY + '&place_id=' + data.place_id
+        }).then((response) => {
+            const { data: { result: { geometry: { location } } } } = response
+            const { lat, lng } = location
+            console.log('Location', data.structured_formatting.main_text)
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/product/getbyofferproduct/' + lat + '/' + lng,
+            }).then((response) => {
+                this.setState({
+                    allProduct: response.data,
+                    lat: lat,
+                    long: lng,
+                    searchVisible: false,
+                    location: data.structured_formatting.main_text
+                })
+            }, (error) => {
+                Alert.alert("Server error.")
+            });
+
+        }, (error) => {
+            console.log(error);
+        })
+    }
+
+    toggleModal() {
+        this.setState({
+            searchVisible: false
+        })
+    }
+
+    onCurrentLocation() {
+        console.log('Map Clicked')
+        this.toggleModal();
+        // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition((position) => {
+            var lat = position.coords.latitude
+            var long = position.coords.longitude
+            console.log('location', lat, position.coords.accuracy)
+
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/product/getbyofferproduct/' + lat + '/' + long,
+            }).then((response) => {
+                this.setState({
+                    allProduct: response.data,
+                    lat: position.coords.latitude,
+                    long: position.coords.longitude,
+                    searchVisible: false,
+                    location: 'Current Location'
+                })
+            }, (error) => {
+                Alert.alert("Server error.")
+            });
+        }, (erroe) => {
+
+        }, { enableHighAccuracy: true })
+        // } else {
+        //     console.log("Camera permission denied");
+        // }
+    }
+
+    shopSearch() {
+        const { search, shopId } = this.state;
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/product/search/offer/' + search,
+        }).then((response) => {
+            this.setState({
+                allProduct: response.data,
+                search: ''
+            })
+        }, (error) => {
+            // Alert.alert("Server error.")
+        });
+    }
+
     render() {
-        const { allProduct, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allProduct, single, shopName, search, lat, long, searchVisible, location, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -257,7 +401,152 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
+                <Modal style={Styles.modal} isVisible={searchVisible}>
+                    <View style={Styles.modalHeader}>
+                        <TouchableOpacity>
+                            <Text onPress={() => { this.toggleModal() }}><CancelIcon fontSize={25} /></Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <View>
+                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>Current Location</Text>
+                        </View>
+                        <GooglePlacesAutocomplete
+                            placeholder='Search'
+                            styles={{}}
+                            onPress={(data, details = null) => {
+                                // 'details' is provided when fetchDetails = true
+                                this.handleSearchLatLong(data, details)
+                                console.log('New Location', data);
+                            }}
+                            query={{
+                                key: AppConstants.GOOGLE_MAP_KEY,
+                                language: 'en',
+                            }}
+                        // currentLocation={true}
+                        // currentLocationLabel='Current location'
+                        />
+                        {lat !== '' && long !== '' ?
+                            <>
+                                <MapView
+                                    style={{ flex: 1 }}
+                                    provider={PROVIDER_GOOGLE}
+                                    showsUserLocation={true}
+                                    initialRegion={{
+                                        latitude: lat,
+                                        longitude: long,
+                                        latitudeDelta: 0.0922,
+                                        longitudeDelta: 0.0421,
+                                    }}
 
+                                    region={{
+                                        latitude: lat,
+                                        longitude: long,
+                                        latitudeDelta: 0.0922,
+                                        longitudeDelta: 0.0421,
+                                    }}
+                                >
+
+                                    <Marker
+                                        coordinate={{
+                                            latitude: lat,
+                                            longitude: long
+                                        }
+                                        }
+                                    >
+                                    </Marker>
+
+                                </MapView>
+                            </> : null}
+                    </View>
+                </Modal>
+
+                <Toolbar
+                    title={single ? shopName : 'All Offers'}
+                    backIcon={MenuIcon}
+                    onBackPress={this.props.navigation.openDrawer}
+                    onRightPress={() => { this.navigateToCart() }}
+                    menuIcon={CartIcon}
+                    style={{ marginTop: -5, marginLeft: -5, marginBottom: -10 }}
+                />
+                <Divider />
+                <Divider />
+                <Divider />
+                {!single ?
+                    <View style={{ padding: 5 }}>
+                        <Text onPress={() => { this.setState({ searchVisible: true }) }} style={{ fontWeight: 'bold', fontSize: 18, color: Color.COLOR }}>Location: <Text style={{ fontSize: 16, fontWeight: '100' }}>{location}</Text></Text>
+                    </View> : null
+                }
+                {/* <Header style={styles.header}> */}
+                <View style={[Styles.searchBox, { marginBottom: 0 }]}>
+
+                    <TextInput
+                        placeholder="Search"
+                        style={[Styles.searchInput]}
+                        value={search}
+                        onChangeText={(value) => { this.setState({ search: value }) }}
+                    />
+                    <View style={[{ width: '10%', }, Styles.center]}>
+                        <TouchableOpacity onPress={() => { this.shopSearch() }}>
+                            <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+                <Divider />
+                {/* </Header> */}
+                {single ?
+                    <>
+                        <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
+
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <View style={{ marginTop: 10 }}>
+                                    <FlatList
+                                        style={{}}
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
+                                        data={allCategory}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
+                                                    <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                        <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            )
+                                        }}
+                                    >
+                                    </FlatList>
+                                </View>
+                            </View>
+                        </Header>
+                        <Divider />
+                        <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
+
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <View style={{ marginTop: 10 }}>
+                                    <FlatList
+                                        style={{}}
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
+                                        data={allBrand}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <TouchableOpacity onPress={() => { this.selectBrand(item.id) }}>
+                                                    <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                        <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            )
+                                        }}
+                                    >
+                                    </FlatList>
+                                </View>
+                            </View>
+                        </Header>
+                    </> : null
+                }
                 <Animated.View style={{
                     position: 'absolute',
                     top: 0,
@@ -268,77 +557,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                     zIndex: headerZIndex,
                     transform: [{ translateY: headerY }]
                 }}>
-                    <Toolbar
-                        title='Product'
-                        backIcon={MenuIcon}
-                        onBackPress={this.props.navigation.openDrawer}
-                        onRightPress={() => { this.navigateToCart() }}
-                        menuIcon={CartIcon}
-                        style={{ marginTop: -5, marginLeft: -5 }}
-                    />
-                    {/* <Header style={styles.header}> */}
-                    <View style={[Styles.searchBox, { marginBottom: 0 }]}>
-                        <View style={[{ width: '10%', }, Styles.center]}>
-                            <TouchableOpacity onPress={() => { this.handleSearch() }}>
-                                <Text style={Styles.searchIcon}><SearchIcon /></Text>
-                            </TouchableOpacity>
-                        </View>
-                        <TextInput
-                            placeholder="Search"
-                            style={[Styles.searchInput]}
-                            value={search}
-                            onChangeText={(value) => { this.setState({ search: value }) }}
-                        />
-                    </View>
-                    <Divider />
-                    {/* </Header> */}
-                    <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
 
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            <View style={{ marginTop: 10 }}>
-                                <FlatList
-                                    style={{}}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    data={allCategory}
-                                    renderItem={({ item, index }) => {
-                                        return (
-                                            <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
-                                                <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                    <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        )
-                                    }}
-                                >
-                                </FlatList>
-                            </View>
-                        </View>
-                    </Header>
-                    <Divider />
-                    <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
-
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            <View style={{ marginTop: 10 }}>
-                                <FlatList
-                                    style={{}}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    data={allBrand}
-                                    renderItem={({ item, index }) => {
-                                        return (
-                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id) }}>
-                                                <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                    <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        )
-                                    }}
-                                >
-                                </FlatList>
-                            </View>
-                        </View>
-                    </Header>
                 </Animated.View>
                 <Animated.ScrollView style={{ flex: 1 }}
                     bounces={false}
@@ -349,7 +568,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                         width: '100%',
                         marginTop: profileImageMarginTop
                     }}>
-                        <Content style={[Styles.customer_content, { marginTop: 135 }]} showsVerticalScrollIndicator={false}
+                        <Content style={[Styles.customer_content, { marginTop: 10 }]} showsVerticalScrollIndicator={false}
                             refreshControl={
                                 <RefreshControl
                                     refreshing={this.state.refreshing}

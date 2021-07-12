@@ -1,29 +1,40 @@
 import React from 'react';
 import { CompositeNavigationProp, RouteProp,} from '@react-navigation/core';
 import { createStackNavigator, StackNavigationProp, } from '@react-navigation/stack';
-import { CustomerAllProductTabNavigationProps } from './customerHome.navigator';
+import { CustomerAllShopTabNavigationProps } from './customerHome.navigator';
 import { AppRoute } from '../app-routes';
-import { CartScreen, CustomerAllProductScreen, CustomerAllShopScreen, CustProductDetailScreen, PaymentScreen, ShopDetailScreen } from '../../scenes/Customer/allProduct';
+import { CartScreen, CustomerAllProductScreen, CustomerAllShopScreen, CustProductDetailScreen, MapScreen, PaymentScreen, ShopDetailScreen } from '../../scenes/Customer/allProduct';
+import { CustomerOrderScreen } from '../../scenes/Customer/home';
 type CustomerAllProductNavigatorParams = {
     [AppRoute.CUSTOMER_ALL_PRODUCT]: undefined;   
     [AppRoute.CUSTOMER_ALL_SHOP]: undefined;   
     [AppRoute.CUSTOMER_PRODUCT_DETAIL]: undefined;   
     [AppRoute.CUSTOMER_CART]: undefined;   
+    [AppRoute.CUSTOMER_ORDER_PRODUCT]: undefined;   
     [AppRoute.SHOP_DETAIL]: undefined;   
     [AppRoute.PAYMENT]: undefined;   
+    [AppRoute.MAP]: undefined;   
 }
 
 export interface CustomerAllProductScreenProps {
     navigation: CompositeNavigationProp<
-    CustomerAllProductTabNavigationProps,
+    CustomerAllShopTabNavigationProps,
         StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_ALL_PRODUCT>
     >;
     route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_ALL_PRODUCT>;
 }
 
+export interface MapScreenProps {
+    navigation: CompositeNavigationProp<
+    CustomerAllShopTabNavigationProps,
+        StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.MAP>
+    >;
+    route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.MAP>;
+}
+
 export interface CustomerAllShopScreenProps {
     navigation: CompositeNavigationProp<
-    CustomerAllProductTabNavigationProps,
+    CustomerAllShopTabNavigationProps,
         StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_ALL_SHOP>
     >;
     route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_ALL_SHOP>;
@@ -31,7 +42,7 @@ export interface CustomerAllShopScreenProps {
 
 export interface CartScreenProps {
     navigation: CompositeNavigationProp<
-    CustomerAllProductTabNavigationProps,
+    CustomerAllShopTabNavigationProps,
         StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_CART>
     >;
     route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_CART>;
@@ -39,7 +50,7 @@ export interface CartScreenProps {
 
 export interface CustProductDetailScreenProps {
     navigation: CompositeNavigationProp<
-    CustomerAllProductTabNavigationProps,
+    CustomerAllShopTabNavigationProps,
         StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_PRODUCT_DETAIL>
     >;
     route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_PRODUCT_DETAIL>;
@@ -47,7 +58,7 @@ export interface CustProductDetailScreenProps {
 
 export interface ShopDetailScreenProps {
     navigation: CompositeNavigationProp<
-    CustomerAllProductTabNavigationProps,
+    CustomerAllShopTabNavigationProps,
         StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.SHOP_DETAIL>
     >;
     route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.SHOP_DETAIL>;
@@ -55,16 +66,24 @@ export interface ShopDetailScreenProps {
 
 export interface PaymentScreenProps {
     navigation: CompositeNavigationProp<
-    CustomerAllProductTabNavigationProps,
+    CustomerAllShopTabNavigationProps,
         StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.PAYMENT>
     >;
     route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.PAYMENT>;
 }
 
+export interface CustomerOrderProductScreenProps {
+    navigation: CompositeNavigationProp<
+    CustomerAllShopTabNavigationProps,
+        StackNavigationProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_ORDER_PRODUCT>
+    >;
+    route: RouteProp<CustomerAllProductNavigatorParams, AppRoute.CUSTOMER_ORDER_PRODUCT>;
+}
+
 
 const Stack = createStackNavigator<CustomerAllProductNavigatorParams>();
 
-export const CustomerAllProductNavigator = (): React.ReactElement => (
+export const CustomerAllShopNavigator = (): React.ReactElement => (
     <Stack.Navigator initialRouteName={AppRoute.CUSTOMER_ALL_SHOP} headerMode='none'>
         <Stack.Screen name={AppRoute.CUSTOMER_ALL_SHOP} component={CustomerAllShopScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_ALL_PRODUCT} component={CustomerAllProductScreen} />        
@@ -72,5 +91,7 @@ export const CustomerAllProductNavigator = (): React.ReactElement => (
         <Stack.Screen name={AppRoute.SHOP_DETAIL} component={ShopDetailScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_PRODUCT_DETAIL} component={CustProductDetailScreen} />        
         <Stack.Screen name={AppRoute.PAYMENT} component={PaymentScreen} />        
+        <Stack.Screen name={AppRoute.MAP} component={MapScreen} />        
+        <Stack.Screen name={AppRoute.CUSTOMER_ORDER_PRODUCT} component={CustomerOrderScreen} />        
     </Stack.Navigator>
 );

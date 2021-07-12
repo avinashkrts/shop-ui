@@ -106,7 +106,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             userEmailId: '',
             addressId: ''
         }
-
+        this.backFunction = this.backFunction.bind(this)
     }
 
 
@@ -233,7 +233,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
 
     handlePlaceOrder() {
         const { orderType, addressId, slotDate, homeDelivery, selfPick, cashDelivery, payOnline, homeId, cashId, onlineId, selfId, paymentType, cartId, } = this.state;
-        // console.log('data', orderType, paymentType, homeDelivery, selfPick, cashDelivery, payOnline, cashId, onlineId, homeId, selfId, cartId);
+        console.log('data', orderType, paymentType, homeDelivery, selfPick, cashDelivery, payOnline, cashId, onlineId, homeId, selfId, cartId);
         if (payOnline) {
             axios({
                 method: 'POST',
@@ -272,7 +272,8 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 if (response.data) {
                     if (response.data.status) {
                         Alert.alert("Order placed.")
-                        this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER)
+        this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER_PRODUCT, { id: this.backFunction.bind(this) })
+        // this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER)
                     } else {
                         Alert.alert("Got error while placing Order.")
                     }
@@ -281,6 +282,11 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 Alert.alert("Server problem")
             })
         }
+    }
+
+    backFunction() {
+        // Alert.alert('')
+        this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
     }
 
     startPayment(transactionId) {
@@ -301,7 +307,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
         }
         RazorpayCheckout.open(options).then((data) => {
             console.log('razor pay response', data.razorpay_payment_id);
-        console.log(cartId, totalAmt, transactionId, data.razorpay_payment_id)
+            console.log(cartId, totalAmt, transactionId, data.razorpay_payment_id)
 
             axios({
                 method: 'POST',
@@ -442,7 +448,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                     <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Address</Text>
                         {null != addressData ?
-                            <Text style={{ marginVertical: 5 }}>{addressData.city}, {addressData.landmark}, {addressData.district}, {addressData.state}, {addressData.pinCode}</Text>
+                            <Text style={{ marginVertical: 5 }}>{addressData.name}, {addressData.mobileNo}, {addressData.city}, {addressData.street}, {addressData.landmark}, {addressData.postOffice}, {addressData.policeStation}, {addressData.district}, {addressData.state}, {addressData.pinCode}, {addressData.country}</Text>
                             : null}
                         <View style={{ width: '100%', alignItems: 'flex-end' }}>
                             <TouchableOpacity onPress={() => { this.props.navigation.navigate(AppRoute.CUSTOMER_ADDRESS) }} style={[Styles.center, { paddingVertical: 10, width: 100, borderRadius: 5, backgroundColor: Color.COLOR }]}>

@@ -9,6 +9,7 @@ import { AppRoute } from './app-routes';
 import { CustomerHomeNavigator } from './customer-navigator/customerHome.navigator';
 import { OrderNavigator } from './shopKeeperNavigator/order.navigator';
 import { CustomerOrderNavigator } from './customer-navigator/customerOrder.navigator';
+import { CombinedHomeNavigator } from './combined-navigator/combinedHome';
 
 type StackNavigatorProps = React.ComponentProps<typeof Stack.Navigator>;
 
@@ -19,6 +20,7 @@ export type AppNavigatorParams = {
   [AppRoute.USER_DECIDE]: undefined;
   [AppRoute.ADD_PRODUCT_NAVIGATOR]: undefined;
   [AppRoute.CUSTOMER_HOME]: undefined;
+  [AppRoute.COMBINED_HOME]: undefined;
   [AppRoute.INFORMATION]: undefined;
   [AppRoute.HOME]: undefined;
   [AppRoute.HRHOME]: undefined;
@@ -36,5 +38,6 @@ export const AppNavigator = (props: Partial<StackNavigatorProps>): React.ReactEl
     <Stack.Screen name={AppRoute.CUSTOMER_HOME} component={CustomerHomeNavigator}/>
     <Stack.Screen name={AppRoute.INFORMATION} component={InformaionNavigator}/>
     <Stack.Screen name={AppRoute.HOME} component={HomeNavigator}/>
+    <Stack.Screen name={AppRoute.COMBINED_HOME} component={CombinedHomeNavigator}/>
   </Stack.Navigator>
 );

@@ -4,3 +4,4 @@ export { CustProductDetailScreen } from './productDetail.component';
 export { CartScreen } from './cart.component';
 export { PaymentScreen } from './payment.component';
 export { ShopDetailScreen } from './shopDetail.component';
+export { MapScreen } from './map';

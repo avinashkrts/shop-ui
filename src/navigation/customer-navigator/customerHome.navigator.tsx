@@ -33,7 +33,7 @@ import {
   MyOrderIcon,
 } from '../../assets/icons';
 import { AuthNavigator } from '../auth.navigator';
-import { CustomerAllProductNavigator } from './customerAllProduct.navigator';
+import { CustomerAllShopNavigator } from './customerAllProduct.navigator';
 import { WishListNavigator } from './wishList.navigator';
 import { BillBookNavigator } from './billBook.navigator';
 import { OffersNavigator } from './offers.navigator';
@@ -41,10 +41,13 @@ import { CustomerAddressScreen, CustomerCartScreen, CustomerContactScreen, Custo
 import { LogoutScreen } from '../../scenes/auth';
 import { CartScreen } from '../../scenes/Customer/allProduct/cart.component';
 import { CustomerOrderNavigator } from './customerOrder.navigator';
+import { CustomerHomeTabBar } from '../../scenes/Customer/home/customer-home-tab-bar.component';
+import { CustomerHomeDrawer } from '../../scenes/Customer/home/customer-home-drawer.component';
+import { CombinedProductNavigator } from '../combined-navigator/combinedAllProduct.navigator';
 
 type CustomerHomeDrawerNavigatorParams = {
   [AppRoute.CUSTOMER_HOME]: undefined;
-  [AppRoute.CUSTOMER_ORDER]: undefined;
+  [AppRoute.CUSTOMER_ORDER_NAV]: undefined;
   [AppRoute.CUSTOMER_ADDRESS]: undefined;
   [AppRoute.CUSTOMER_CART]: undefined;
   [AppRoute.CUSTOMER_CONTACT]: undefined;
@@ -61,35 +64,41 @@ type CustomerHomeDrawerNavigatorParams = {
   [AppRoute.INFORMATION]: undefined;
 }
 
-type HomeBottomTabsNavigatorParams = {
-  [AppRoute.CUSTOMER_ALL_PRODUCT]: undefined;
+type CustomerHomeBottomTabsNavigatorParams = {
+  [AppRoute.CUSTOMER_ALL_SHOP]: undefined;
+  [AppRoute.COMBINED_PRODUCT]: undefined;
   [AppRoute.BILL_BOOK]: undefined;
   [AppRoute.OFFERS_TAB]: undefined;
   [AppRoute.WISH_LIST]: undefined;
 }
 
-export type CustomerAllProductTabNavigationProps = CompositeNavigationProp<
-  BottomTabNavigationProp<HomeBottomTabsNavigatorParams, AppRoute.CUSTOMER_ALL_PRODUCT>,
+export type CustomerAllShopTabNavigationProps = CompositeNavigationProp<
+  BottomTabNavigationProp<CustomerHomeBottomTabsNavigatorParams, AppRoute.CUSTOMER_ALL_SHOP>,
+  DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_HOME>
+>;
+
+export type CombinedProductTabNavigationProps = CompositeNavigationProp<
+  BottomTabNavigationProp<CustomerHomeBottomTabsNavigatorParams, AppRoute.COMBINED_PRODUCT>,
   DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_HOME>
 >;
 
 export interface CustomerOrderNavigatorScreenProps {
-  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
-  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER_NAV>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER_NAV>;
 }
 
 export type BillBookTabNavigationProps = CompositeNavigationProp<
-  BottomTabNavigationProp<HomeBottomTabsNavigatorParams, AppRoute.BILL_BOOK>,
+  BottomTabNavigationProp<CustomerHomeBottomTabsNavigatorParams, AppRoute.BILL_BOOK>,
   DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_HOME>
 >;
 
 export type OffersTabNavigationProps = CompositeNavigationProp<
-  BottomTabNavigationProp<HomeBottomTabsNavigatorParams, AppRoute.OFFERS_TAB>,
+  BottomTabNavigationProp<CustomerHomeBottomTabsNavigatorParams, AppRoute.OFFERS_TAB>,
   DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_HOME>
 >;
 
 export type WishListTabNavigationProps = CompositeNavigationProp<
-  BottomTabNavigationProp<HomeBottomTabsNavigatorParams, AppRoute.WISH_LIST>,
+  BottomTabNavigationProp<CustomerHomeBottomTabsNavigatorParams, AppRoute.WISH_LIST>,
   DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_HOME>
 >;
 
@@ -108,11 +117,6 @@ export interface CustomerWalletScreenProps {
   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_WALLET>;
 }
 
-// export interface CustomerOrderScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER>;
-// }
-
 export interface CustomerCartScreenProps {
   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_CART>;
   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_CART>;
@@ -128,75 +132,20 @@ export interface CustomerContactScreenProps {
   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_CONTACT>;
 }
 
-// export interface ProfileEditScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.PROFILEEDIT>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.PROFILEEDIT>;
-// }
-
-// export interface ImageUploadScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.IMAGEUPLOAD>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.IMAGEUPLOAD>;
-// }
 
 
-// export interface WalletScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.WALLET>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.WALLET>;
-// }
+export type CustomerBottomHomeScreenProps = BottomTabBarProps & {
+  navigation: CustomerAllShopTabNavigationProps;
+};
 
-// export interface SettingScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.SETTING>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.SETTING>;
-// }
-
-// export interface TransactionHistoryScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.TRANSACTIONHISTORY>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.TRANSACTIONHISTORY>;
-// }
-
-// export interface ChangepasswordScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CHANGEPASSWORD>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CHANGEPASSWORD>;
-// }
-
-// export interface AuthNavigatorScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.AUTH>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.AUTH>;
-// }
-
-// export interface InformaionNavigatorScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.INFORMATION>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.INFORMATION>;
-// }
-
-// export interface AskFreeQuestionScreenprops {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.ASKFREEQUESTION>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.ASKFREEQUESTION>;
-// }
-
-// export interface MoreScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.MORE>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.MORE>;
-// }
-
-
-// export interface AccountsScreenProps {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.ACCOUNTS>;
-//   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.ACCOUNTS>;
-// }
-
-// export type BottomHomeScreenProps = BottomTabBarProps & {
-//   navigation: TodoTabNavigationProp;
-// };
-
-// export type DrawerHomeScreenProps = DrawerContentComponentProps & {
-//   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_HOME>;
-// };
+export type CustomerDrawerHomeScreenProps = DrawerContentComponentProps & {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_HOME>;
+};
 
 
 
 const Drawer = createDrawerNavigator<CustomerHomeDrawerNavigatorParams>();
-const BottomTab = createBottomTabNavigator<HomeBottomTabsNavigatorParams>();
+const BottomTab = createBottomTabNavigator<CustomerHomeBottomTabsNavigatorParams>();
 
 // FIXME(REACT-NAVIGATION-5): Not able to disable a pan gesture.
 //
@@ -210,12 +159,18 @@ const BottomTab = createBottomTabNavigator<HomeBottomTabsNavigatorParams>();
 
 const CustomerHomeBottomNavigator = (): React.ReactElement => (
   // @ts-ignore: `tabBar` also contains a DrawerNavigationProp
-  <BottomTab.Navigator tabBar={props => <HomeTabBar{...props} />}>
+  <BottomTab.Navigator tabBar={CustomerHomeTabBar}>
 
     <BottomTab.Screen
-      name={AppRoute.CUSTOMER_ALL_PRODUCT}
-      component={CustomerAllProductNavigator}
+      name={AppRoute.CUSTOMER_ALL_SHOP}
+      component={CustomerAllShopNavigator}
       options={{ title: 'Home', tabBarIcon: HomeIcon }}
+    />
+
+<BottomTab.Screen
+      name={AppRoute.COMBINED_PRODUCT}
+      component={CombinedProductNavigator}
+      options={{ title: 'Product', tabBarIcon: HomeIcon }}
     />
 
     <BottomTab.Screen
@@ -241,7 +196,7 @@ const CustomerHomeBottomNavigator = (): React.ReactElement => (
 
 export const CustomerHomeNavigator = (): React.ReactElement => (
   // @ts-ignore: `drawerContent` also contains a DrawerNavigationProp
-  <Drawer.Navigator drawerContent={props => <HomeDrawer{...props} />}>
+  <Drawer.Navigator drawerContent={props => <CustomerHomeDrawer{...props} />}>
     <Drawer.Screen
       name={AppRoute.CUSTOMER_HOME}
       component={CustomerHomeBottomNavigator}
@@ -261,7 +216,7 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
 
     />
     <Drawer.Screen
-      name={AppRoute.CUSTOMER_ORDER}
+      name={AppRoute.CUSTOMER_ORDER_NAV}
       component={CustomerOrderNavigator}
       options={{ title: 'My Order', drawerIcon: MyOrderIcon }}
     />

@@ -15,7 +15,7 @@ export const Styles = StyleSheet.create({
 
   content: {
     backgroundColor: 'transparent',
-    padding: 10
+    padding: 0
   },
 
   customer_content: {
@@ -685,51 +685,64 @@ export const Styles = StyleSheet.create({
 
   bill_main: {
     borderWidth: 1,
-    backgroundColor: '#0099cc',
+    flex: 1,
+    justifyContent: 'space-between'
   },
 
   bill_row: {
     flexDirection: 'row',
-    width: '100%'
+    width: '100%',
+    backgroundColor: '#0099cc',
   },
 
   bill_row_1: {
     flexDirection: 'row',
     width: '100%',
-    backgroundColor: '#0ac'
+    backgroundColor: '#ccf2ff'
   },
 
   bill_row_2: {
     flexDirection: 'row',
     width: '100%',
-    backgroundColor: '#0ac'
+    backgroundColor: '#99ccff',
   },
 
 
 
   bill_column_1: {
     width: '10%',
-
+    borderWidth: 0.2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10
   },
 
   bill_column_2: {
     width: '20%',
-
+    borderWidth: 0.2,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   bill_column_3: {
     width: '40%',
-
+    borderWidth: 0.2,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   bill_column_4: {
     width: '15%',
-
+    borderWidth: 0.2,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   bill_column_5: {
     width: '15%',
-
+    borderWidth: 0.2,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   // bill_column_6: {
@@ -742,7 +755,7 @@ export const Styles = StyleSheet.create({
     fontSize: 14,
     padding: 0,
     alignSelf: 'center',
-    color: 'white'
+    color: '#000000'
   },
   text_design_red: {
     fontSize: 14,
@@ -763,6 +776,7 @@ export const Styles = StyleSheet.create({
     width: '100%',
     borderColor: 'black',
     borderWidth: 0.2,
+    alignItems: "center",
   },
 
   head_design: {
@@ -1421,8 +1435,7 @@ export const Styles = StyleSheet.create({
     borderColor: 'rgba(2,15,20,0.05)',
     borderWidth: 5,
     borderRadius: 5,
-    // marginBottom: 5,
-    // padding: -20,
+    // paddingVertical: 10,
     backgroundColor: '#fff',
     height: 50
   },
@@ -1437,6 +1450,7 @@ export const Styles = StyleSheet.create({
   searchInput: {
     width: '90%',
     backgroundColor: '#fff',
+    // height: '100%',
     borderRadius: 5,
   },
 
@@ -1474,8 +1488,5 @@ export const Styles = StyleSheet.create({
     borderColor: 'silver',
     backgroundColor: '#0099cc',
     borderRadius: 5,
-
   },
-
-
 })

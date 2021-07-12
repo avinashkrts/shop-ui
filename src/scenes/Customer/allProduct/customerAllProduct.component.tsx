@@ -15,7 +15,7 @@ import { AppRoute } from "../../../navigation/app-routes";
 import Axios from "axios";
 
 const HEADER_MAX_HEIGHT = 205;
-const HEADER_MIN_HEIGHT = 70;
+const HEADER_MIN_HEIGHT = 0;
 
 export class CustomerAllProductScreen extends Component<CustomerAllProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -33,21 +33,21 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             search: '',
             refreshing: false,
             allData: [
-            {
-                url: '/api/lookup/getallmeasurementtype',
-                method: 'GET',
-                variable: 'allMeasurement',
-            },
-            {
-                url: '/api/category/getcategoryforuserbyshopid/' + this.props.route.params.shopId,
-                method: 'GET',
-                variable: 'allCategory',
-            },
-            {
-                url: '/api/brand/getbrandforuserbyshopid/' + this.props.route.params.shopId,
-                method: 'GET',
-                variable: 'allBrand',
-            }],
+                {
+                    url: '/api/lookup/getallmeasurementtype',
+                    method: 'GET',
+                    variable: 'allMeasurement',
+                },
+                {
+                    url: '/api/category/getcategoryforuserbyshopid/' + this.props.route.params.shopId,
+                    method: 'GET',
+                    variable: 'allCategory',
+                },
+                {
+                    url: '/api/brand/getbrandforuserbyshopid/' + this.props.route.params.shopId,
+                    method: 'GET',
+                    variable: 'allBrand',
+                }],
             scrollY: new Animated.Value(0),
         }
 
@@ -61,7 +61,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
         // Alert.alert(""+userData.userId);
-        // console.log("User Data",userData.userId)
+        // console.log("User Data",this.props.navigation)
 
         const shopId = this.props.route.params.shopId;
 
@@ -139,10 +139,10 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
 
     navigateToCart() {
         this.props.navigation.navigate(AppRoute.CUSTOMER_CART)
-    }   
+    }
 
     selectCategory(id) {
-        const {shopId} = this.state;
+        const { shopId } = this.state;
         axios({
             method: 'GET',
             url: AppConstants.API_BASE_URL + '/api/brand/getallDeactivebrandbyshopid/' + id,
@@ -173,7 +173,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
     }
 
     selectBrand(id, brandName) {
-        const {shopId} = this.state
+        const { shopId } = this.state
         axios({
             method: 'GET',
             url: AppConstants.API_BASE_URL + '/api/product/getproduct/shopid/brand/' + shopId + '/' + id,
@@ -242,21 +242,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
         } else {
             this.props.navigation.navigate(AppRoute.AUTH);
         }
-    }
-
-    handleSearch() {
-        const { search } = this.state;
-        if (search != '' && search != null) {
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/product/search/' + search,
-            }).then((response) => {
-                this.setState({ allProduct: response.data })
-            }, (error) => {
-                Alert.alert("Server error.")
-            });
-        }
-    }
+    }   
 
     _onRefresh() {
         this.setState({ refreshing: true });
@@ -264,6 +250,22 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             this.setState({ refreshing: false });
         });
 
+    }
+
+    shopSearch() {
+        // Alert.alert('')
+        const { search, shopId } = this.state;
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/product/search/shopid/' + shopId + '/' + search,
+        }).then((response) => {
+            this.setState({
+                allProduct: response.data,
+                search: ''
+            })
+        }, (error) => {
+            // Alert.alert("Server error.")
+        });
     }
 
     render() {
@@ -301,7 +303,79 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
+                <Toolbar
+                    title='Product'
+                    backIcon={BackIcon}
+                    onBackPress={this.props.navigation.goBack}
+                    onRightPress={() => { this.navigateToCart() }}
+                    menuIcon={CartIcon}
+                    style={{ marginTop: -5, marginLeft: -5 }}
+                />
+                {/* <Header style={styles.header}> */}
+                <View style={[Styles.searchBox, { marginBottom: 0 }]}>
 
+                    <TextInput
+                        placeholder="Search"
+                        style={[Styles.searchInput]}
+                        value={search}
+                        onChangeText={(value) => { this.setState({ search: value }) }}
+                    />
+                    <View style={[{ width: '10%', }, Styles.center]}>
+                        <TouchableOpacity onPress={() => { this.shopSearch() }}>
+                            <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+                <Divider />
+                {/* </Header> */}
+                <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
+
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
+                        <View style={{ marginTop: 10 }}>
+                            <FlatList
+                                style={{}}
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                data={allCategory}
+                                renderItem={({ item, index }) => {
+                                    return (
+                                        <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
+                                            <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                }}
+                            >
+                            </FlatList>
+                        </View>
+                    </View>
+                </Header>
+                <Divider />
+                <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
+
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
+                        <View style={{ marginTop: 10 }}>
+                            <FlatList
+                                style={{}}
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                data={allBrand}
+                                renderItem={({ item, index }) => {
+                                    return (
+                                        <TouchableOpacity onPress={() => { this.selectBrand(item.id, item.name) }}>
+                                            <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                }}
+                            >
+                            </FlatList>
+                        </View>
+                    </View>
+                </Header>
                 <Animated.View style={{
                     position: 'absolute',
                     top: 0,
@@ -312,77 +386,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                     zIndex: headerZIndex,
                     transform: [{ translateY: headerY }]
                 }}>
-                    <Toolbar
-                        title='Product'
-                        backIcon={BackIcon}
-                        onBackPress={this.props.navigation.goBack}
-                        onRightPress={() => { this.navigateToCart() }}
-                        menuIcon={CartIcon}
-                        style={{ marginTop: -5, marginLeft: -5 }}
-                    />
-                    {/* <Header style={styles.header}> */}
-                    <View style={[Styles.searchBox, { marginBottom: 0 }]}>
-                        <View style={[{ width: '10%', }, Styles.center]}>
-                            <TouchableOpacity onPress={() => { this.handleSearch() }}>
-                                <Text style={Styles.searchIcon}><SearchIcon /></Text>
-                            </TouchableOpacity>
-                        </View>
-                        <TextInput
-                            placeholder="Search"
-                            style={[Styles.searchInput]}
-                            value={search}
-                            onChangeText={(value) => { this.setState({ search: value }) }}
-                        />
-                    </View>
-                    <Divider />
-                    {/* </Header> */}
-                    <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
 
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            <View style={{ marginTop: 10 }}>
-                                <FlatList
-                                    style={{}}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    data={allCategory}
-                                    renderItem={({ item, index }) => {
-                                        return (
-                                            <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
-                                                <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                    <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        )
-                                    }}
-                                >
-                                </FlatList>
-                            </View>
-                        </View>
-                    </Header>
-                    <Divider />
-                    <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
-
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            <View style={{ marginTop: 10 }}>
-                                <FlatList
-                                    style={{}}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    data={allBrand}
-                                    renderItem={({ item, index }) => {
-                                        return (
-                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id, item.name) }}>
-                                                <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                    <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        )
-                                    }}
-                                >
-                                </FlatList>
-                            </View>
-                        </View>
-                    </Header>
                 </Animated.View>
                 <Animated.ScrollView style={{ flex: 1 }}
                     bounces={false}
@@ -393,7 +397,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                         width: '100%',
                         marginTop: profileImageMarginTop
                     }}>
-                        <ScrollView style={[Styles.customer_content, { marginTop: 135 }]} showsVerticalScrollIndicator={false}
+                        <ScrollView style={[Styles.customer_content, { marginTop: 10 }]} showsVerticalScrollIndicator={false}
                             refreshControl={
                                 <RefreshControl
                                     refreshing={refreshing}
