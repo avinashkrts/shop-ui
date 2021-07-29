@@ -10,6 +10,7 @@ import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AppConstants, LableText } from "../../../constants";
 import { Content } from "native-base";
 import Axios from "axios";
+import { getFirstInstallTime } from "react-native-device-info";
 
 export class CustomerProfileScreen extends Component<CustomerProfileScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -23,7 +24,7 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
             lastLoginDate: '',
             dob: '',
             mobileNo: '',
-            city: 'qw',
+            city: '',
             pinCode: '',
             state: '',
             country: '',
@@ -93,52 +94,56 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
     }
 
     handleEditSubmit() {
-        const { isEditable, id, city, shopId, userId, postOffice, policeStation, district, landmark, pinCode, state, country, latitude, longitude, userType } = this.state
+        const { isEditable, firstName,mobileNo, lastName, id, city, emailId, shopId, userId, postOffice, policeStation, district, landmark, pinCode, state, country, latitude, longitude, userType } = this.state
         // Alert.alert("Clicked"+ userId)
         console.log(isEditable, city, postOffice, policeStation, district, landmark, pinCode, state, country, latitude, longitude, userType);
-        if (city == null || city === '') {
-            Alert.alert("Please enter city.");
-        } else if (postOffice == null || postOffice === '') {
-            Alert.alert("Please enter postOffice.");
-        } else if (policeStation == null || policeStation === '') {
-            Alert.alert("Please enter policeStation.");
-        } else if (district == null || district === '') {
-            Alert.alert("Please enter district.");
-        } else if (landmark == null || landmark === '') {
-            Alert.alert("Please enter landmark.");
-        } else if (pinCode == null || pinCode === '') {
-            Alert.alert("Please enter pincode.");
-        } else if (state == null || state === '') {
-            Alert.alert("Please enter state.");
-        } else if (country == null || country === '') {
-            Alert.alert("Please enter country.");
-        } else {
-            Axios({
-                method: 'PUT',
-                url: AppConstants.API_BASE_URL + '/api/address/update',
-                data: {
-                    id: id,
-                    city: city,
-                    postOffice: postOffice,
-                    landMark: landmark,
-                    policeStation: policeStation,
-                    district: district,
-                    pinCode: pinCode,
-                    state: state,
-                    country: country,
-                    shopId: shopId,
-                    userId: String(userId),
-                    userType: userType
-                }
-            }).then((response) => {
-                this.setState({
-                    isEditable: false
-                })
-                this.onRefresh()
-            }, (error) => {
-                Alert.alert("Server error!");
+        Axios({
+            method: 'PUT',
+            url: AppConstants.API_BASE_URL + '/api/address/update',
+            data: {
+                id: id,
+                city: city,
+                postOffice: postOffice,
+                landMark: landmark,
+                policeStation: policeStation,
+                district: district,
+                pinCode: pinCode,
+                state: state,
+                country: country,
+                shopId: shopId,
+                userId: String(userId),
+                userType: userType,
+                emailId: emailId
+            }
+        }).then((response) => {
+
+            this.setState({
+                isEditable: false
             })
-        }
+            this.onRefresh()
+        }, (error) => {
+            Alert.alert("Server error!");
+        })
+
+        Axios({
+            method: 'PUT',
+            url: AppConstants.API_BASE_URL + '/api/user/update',
+            data: {
+                id: String(userId),               
+                emailId: emailId,
+                firstName: firstName,
+                lastName: lastName,
+            }
+        }).then((response) => {
+            
+            this.setState({
+                isEditable: false
+            })
+            this.onRefresh()
+        }, (error) => {
+            Alert.alert("Server error!");
+        })
+
     }
 
     onRefresh() {
@@ -214,7 +219,7 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                             </View>
                             <View
                                 style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable}
+                                <TextInput editable={false}
                                     value={mobileNo}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.PHONE}
@@ -355,6 +360,21 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                                     placeholder={LableText.STATE}
                                     value={state}
                                     onChangeText={(value) => { this.setState({ state: value }) }}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={Styles.user_detail}>
+                            <View style={Styles.user_detail_header}>
+                                <Text style={Styles.user_detail_header_text}>{LableText.COUNTRY}</Text>
+                            </View>
+                            <View style={Styles.user_detail_data}>
+                                <TextInput
+                                    editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.COUNTRY}
+                                    value={country}
+                                    onChangeText={(value) => { this.setState({ country: value }) }}
                                 />
                             </View>
                         </View>

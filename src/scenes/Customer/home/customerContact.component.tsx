@@ -46,184 +46,29 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                         />
                     }
                 >
-                    {/* <View style={[Styles.profile, Styles.center]}>
-                        <View style={Styles.profile_image}>
-                            <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
-                        </View>
-                    </View> */}
 
                     <Divider />
-
-
-                <View style={Styles.contact_main}>
-                    <Text style={{fontSize:30, padding:2}}>Groccery Shop</Text>
-                    <Text style={Styles.contact_text}>101 Inorbit Complex, Near Highway Restaurant</Text>
-                    <Text style={Styles.contact_text}>Khagaul, Patna</Text>
-                    <Text style={Styles.contact_text}>Mobile No.:- 9155316625</Text>
-                </View>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    {/* <View>
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.FIRST_NAME}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.FIRST_NAME} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.LAST_NAME}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.LAST_NAME} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.FATHER_NAME}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.FATHER_NAME} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.PHONE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.PHONE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.EMAIL_ID}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.EMAIL_ID} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.STREET}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.STREET} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.LAND_MARK}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.LAND_MARK} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.VILLAGE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.VILLAGE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.POST_OFFICE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.POST_OFFICE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.POLICE_STATION}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.POLICE_STATION} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.DISTRICT}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.DISTRICT} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.PIN_CODE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.PIN_CODE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.STATE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.STATE} />
-                            </View>
-                        </View>
-
-  
- 
-
-
-                                             
+                    <View style={Styles.about_main}>
+                        <Text style={Styles.about_text}>About Us</Text>
                     </View>
-
-
-                    <View style={{ marginHorizontal: '10%' }}>
-                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
-                            <Text style={Styles.buttonName}>{LableText.EDIT}</Text>
-                        </TouchableOpacity>
-                        </View>
-
-
-                    <View style={{ marginHorizontal: '10%' }}>
-                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
-                            <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
-                        </TouchableOpacity>
+                    <View style={Styles.about_proprety}>
+                        <Text style={Styles.about_us}>address</Text>
+                        <Text style={Styles.about_content}>
+                            The fact that you are seeing this page indicates that the website you just visited is either experiencing problems, or is undergoing routine maintenance.
+                            If you would like to let the administrators of this website know that you've seen this page instead of the page you expected, you should send them e-mail. In general, mail sent to the name "webmaster" and directed to the website's domain should reach the appropriate person.
+                            For example, if you experienced problems while visiting www.example.com, you should send e-mail to "webmaster@example.com".</Text>
                     </View>
-                     */}
-
+                    
+                    <View style={Styles.about_proprety}>
+                        <Text style={Styles.about_contact}>about</Text>
+                        <Text style={Styles.about_content}>
+                            The fact that you are seeing this page indicates that the website you just visited is either experiencing problems, or is undergoing routine maintenance.
+                            If you would like to let the administrators of this website know that you've seen this page instead of the page you expected, you should send them e-mail. In general, mail sent to the name "webmaster" and directed to the website's domain should reach the appropriate person.
+                            For example, if you experienced problems while visiting www.example.com, you should send e-mail to "webmaster@example.com".</Text>
+                    </View>
+                    <View style={Styles.about_conta}>
+                        <Text>fdsf</Text>
+                    </View>
                     <View style={Styles.bottomSpace}></View>
                 </Content>
 

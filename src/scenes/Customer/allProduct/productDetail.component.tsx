@@ -354,7 +354,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                 url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
                 if (data.variable === 'allProduct') {
-                    // console.log(data.variable, response.data)
+                    console.log(data.variable, response.data)
                     const image1 = []
                     response.data[0].image.map((image) => {
                         image1.push(AppConstants.IMAGE_BASE_URL + '/product/' + image.avatarName)
@@ -549,7 +549,8 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
 
                             <View style={Styles.product_3rd_view}>
                                 <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                    <Text style={{ color: '#000', paddingVertical: 20, fontWeight: 'bold', fontSize: 20 }}>{allProduct.name}</Text>
+                                    <Text style={{ color: '#000', paddingTop: 20, fontWeight: 'bold', fontSize: 20 }}>{allProduct.name}</Text>
+                                    <Text style={{ color: '#000', paddingVertical: 5, fontWeight: 'bold', fontSize: 20 }}>{allProduct.shopName}</Text>
 
                                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
                                         {null != allMeasurement ? allMeasurement.map((measurement, mIndex) => {

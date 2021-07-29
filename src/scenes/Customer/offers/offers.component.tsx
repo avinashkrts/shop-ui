@@ -17,6 +17,7 @@ import Geolocation from 'react-native-geolocation-service';
 import Modal from "react-native-modal";
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { StackActions } from "@react-navigation/native";
 
 
 const HEADER_MAX_HEIGHT = 205;
@@ -76,6 +77,32 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             }, (error) => {
                 Alert.alert("Server error!.")
             });
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/category/getcategorybyshopid/' + shopIdAsync,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allCategory: response.data,
+                        selectedCategory: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/brand/getbrandbyshopid/' + shopIdAsync,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allBrand: response.data,
+                        selectedBrand: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
         } else {
             try {
                 const granted = await PermissionsAndroid.request(
@@ -120,6 +147,33 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             } catch (err) {
                 console.warn(err);
             }
+
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allCategory: response.data,
+                        selectedCategory: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/brand/getallbrand/',
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allBrand: response.data,
+                        selectedBrand: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
         }
 
         let userDetail = await AsyncStorage.getItem('userDetail');
@@ -145,35 +199,6 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                 Alert.alert("Server error.")
             });
         }
-
-        // console.log('location', long, lat, 'fgfgf')
-        axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/category/getallcategory'
-        }).then((response) => {
-            if (null != response.data) {
-                this.setState({
-                    allCategory: response.data,
-                    selectedCategory: response.data[0].id
-                })
-            }
-        }, (error) => {
-            Alert.alert("Server error!.")
-        });
-
-        axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/brand/getallbrand',
-        }).then((response) => {
-            if (null != response.data) {
-                this.setState({
-                    allBrand: response.data,
-                    selectedBrand: response.data[0].id
-                })
-            }
-        }, (error) => {
-            Alert.alert("Server error!.")
-        });
 
         allData.map((data, index) => {
             // console.log(allData)
@@ -218,10 +243,11 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
     }
 
     navigateProductDetail(id, shopId) {
-        this.props.navigation.navigate(AppRoute.OFFERS_DETAIL_TAB, { productId: String(id), shopId: String(shopId) })
+        const pushAction = StackActions.push(AppRoute.OFFERS_DETAIL_TAB, { productId: String(id), shopId: String(shopId) });
+        this.props.navigation.dispatch(pushAction)
     }
 
-    async handleAddToCart(productId) {
+    async handleAddToCart(productId, shopId) {
         const { userData } = this.state;
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
@@ -230,7 +256,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                 method: 'POST',
                 url: AppConstants.API_BASE_URL + '/api/cart/create',
                 data: {
-                    shopId: "AVI123",
+                    shopId: shopId,
                     userId: userData.userId,
                     productId: productId,
                     productQuantity: 1
@@ -597,12 +623,12 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
 
                                             <View style={Styles.all_Item_Detail}>
                                                 <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                                    <View style={{ flexDirection: 'row' }}>
                                                         {null != allBrand ? allBrand.map((brand, index) => {
                                                             if (brand.id == data.brand) {
                                                                 return (
-                                                                    <View>
-                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {brand.name}</Text>
+                                                                    <View style={{width: '80%', flexWrap: 'wrap'}}>
+                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
                                                                     </View>
                                                                 );
                                                             }
@@ -651,7 +677,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                                     }
 
                                                 </View>
-                                                <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId) }}>
+                                                <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId, data.shopId) }}>
                                                     <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
                                                         <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
                                                     </View>

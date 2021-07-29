@@ -17,6 +17,7 @@ import Geolocation from 'react-native-geolocation-service';
 import Modal from "react-native-modal";
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Header } from 'native-base';
+import { StackActions } from "@react-navigation/native";
 
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
@@ -45,17 +46,8 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                     url: '/api/lookup/getallmeasurementtype',
                     method: 'GET',
                     variable: 'allMeasurement',
-                },
-                {
-                    url: '/api/category/getallcategory',
-                    method: 'GET',
-                    variable: 'allCategory',
-                },
-                {
-                    url: '/api/brand/getallbrand',
-                    method: 'GET',
-                    variable: 'allBrand',
-                }],
+                }
+               ],
             scrollY: new Animated.Value(0),
             single: false,
             shopName: '',
@@ -110,6 +102,32 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
             }, (error) => {
                 Alert.alert("Server error!.")
             });
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/category/getcategorybyshopid/' + shopIdAsync,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allCategory: response.data,
+                        selectedCategory: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/brand/getbrandbyshopid/' + shopIdAsync,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allBrand: response.data,
+                        selectedBrand: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
         } else {
             try {
                 const granted = await PermissionsAndroid.request(
@@ -138,7 +156,8 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                 allProduct: response.data,
                                 lat: position.coords.latitude,
                                 long: position.coords.longitude,
-                                location: 'Current Location'
+                                location: 'Current Location',
+                                single: false
                             })
                         }, (error) => {
                             Alert.alert("Server error.")
@@ -152,6 +171,32 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
             } catch (err) {
                 console.warn(err);
             }
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allCategory: response.data,
+                        selectedCategory: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/brand/getallbrand/',
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        allBrand: response.data,
+                        selectedBrand: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
         }
 
         allData.map((data, index) => {
@@ -160,19 +205,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                 method: data.method,
                 url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
-                if (data.variable === 'allCategory') {
-                    // console.log(data.variable, response.data)
-                    this.setState({
-                        allCategory: response.data,
-                        selectedCategory: response.data[0].id
-                    })
-                } else if (data.variable === 'allBrand') {
-                    // console.log(data.variable, response.data)
-                    this.setState({
-                        allBrand: response.data,
-                        selectedBrand: response.data[0].id
-                    })
-                } else if (data.variable === 'allMeasurement') {
+               if (data.variable === 'allMeasurement') {
                     console.log(data.variable, response.data)
                     this.setState({
                         allMeasurement: response.data,
@@ -248,11 +281,12 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
     }
 
     navigateProductDetail(id, shopId) {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_PRODUCT_DETAIL, { productId: String(id), shopId: String(shopId) })
+        const pushAction = StackActions.push(AppRoute.CUSTOMER_PRODUCT_DETAIL, { productId: String(id), shopId: String(shopId) });
+        this.props.navigation.dispatch(pushAction)
     }
 
-    async handleAddToCart(productId) {
-        const { userData, shopId } = this.state;
+    async handleAddToCart(productId, shopId) {
+        const { userData } = this.state;
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
             // Alert.alert(''+ userData.userId + productId + logedIn)
@@ -631,18 +665,18 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
 
                                             <View style={Styles.all_Item_Detail}>
                                                 <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                                    <View style={{ flexDirection: 'row'}}>
                                                         {null != allBrand ? allBrand.map((brand, index) => {
                                                             if (brand.id == data.brand) {
                                                                 return (
-                                                                    <View>
+                                                                    <View style={{width: '80%', flexWrap: 'wrap'}}>
                                                                         <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
                                                                     </View>
                                                                 );
                                                             }
                                                         }) : null}
                                                         {null !== wishList ?
-                                                            <View style={Styles.product_2nd_wish_view}>
+                                                            <View style={[Styles.product_2nd_wish_view]}>
                                                                 <TouchableOpacity onPress={() => { this.handleWishList(data.productId) }}>
                                                                     <Text
                                                                         style={wishList.includes(data.productId) ?
@@ -685,7 +719,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                                     }
 
                                                 </View>
-                                                <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId) }}>
+                                                <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId, data.shopId) }}>
                                                     <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
                                                         <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
                                                     </View>

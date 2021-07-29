@@ -83,6 +83,8 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
             shopId: '',
             cartId: '',
             addressData: [],
+            single: false,
+            shopName: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -94,25 +96,45 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         SCREEN_WIDTH = Dimensions.get('window').width;
         let userDetail = await AsyncStorage.getItem('userDetail');
         let logedIn = await AsyncStorage.getItem('logedIn');
-        let shopId = await AsyncStorage.getItem('shopId');
+        const shopId = await AsyncStorage.getItem('shopId');
+        const shopName = await AsyncStorage.getItem('shopName')
+
         let userData = JSON.parse(userDetail);
-        this.setState({
-            shopId: shopId
-        })
+
         if (null != logedIn && logedIn === 'true') {
-            // Alert.alert("" + userData.userId)
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/cart/get/cartby/shopid/userid/' + shopId + '/' + userData.userId
-            }).then((response) => {
-                this.setState({
-                    cartData: response.data[0],
-                    cartId: response.data[0].cartId,
-                    productList: response.data[0].productList
+            // Alert.alert("" + userData.userId)           
+            if (null != shopId && shopId !== '') {
+                // Alert.alert("" + shopId)
+                this.setState({ single: true, shopName: shopName, shopId: shopId })
+                axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/cart/get/cartby/shopid/userid/' + shopId + '/' + userData.userId
+                }).then((response) => {
+                    if (null != response.data) {
+                        this.setState({
+                            cartData: response.data[0],
+                            cartId: response.data[0].cartId,
+                            productList: response.data[0].productList
+                        })
+                    }
+                }, (error) => {
+                    // Alert.alert("Server error!.")
+                });
+            } else {
+                axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/cart/get/all/cartby/userid/' + userData.userId
+                }).then((response) => {
+                    this.setState({
+                        single: false,
+                        cartData: response.data,
+                        cartId: response.data[0].cartId,
+                        productList: response.data[0].productList
+                    })
+                }, (error) => {
+                    // Alert.alert("Server problem")
                 })
-            }, (error) => {
-                // Alert.alert("Server problem")
-            })           
+            }
         } else {
             this.props.navigation.navigate(AppRoute.AUTH)
         }
@@ -125,8 +147,8 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         });
     }
 
-    handleIncrease(productId) {
-        const { cartId } = this.state;
+    handleIncrease(productId, cartId) {
+        // const { cartId } = this.state;
         // Alert.alert(productId + cartId)
         axios({
             method: 'GET',
@@ -138,8 +160,8 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         })
     }
 
-    handleDecrease(productId, quantity) {
-        const { cartId } = this.state;
+    handleDecrease(productId, cartId, quantity) {
+        // const { cartId } = this.state;
         if (quantity <= 1) {
             Alert.alert("You have already selected minimum quantity.")
         } else {
@@ -167,7 +189,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
 
     handlePlaceOrder(cartId, totalAmt) {
         // Alert.alert(''+cartId + " " + totalAmt)
-        this.props.navigation.navigate(AppRoute.PAYMENT, {cartId: String(cartId), totalAmt: String(totalAmt)})
+        this.props.navigation.navigate(AppRoute.PAYMENT, { cartId: String(cartId), totalAmt: String(totalAmt) })
     }
 
     renderCart = ({ item }: any): ListItemElement => (
@@ -186,7 +208,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                         <View style={Styles.cart_view_1_2}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Text style={Styles.cart_name_text}>{item.productName}</Text>
-                                <TouchableOpacity  onPress={() => { this.handleDelete(item.id) }}>
+                                <TouchableOpacity onPress={() => { this.handleDelete(item.id) }}>
                                     <Text style={Styles.cart_name_text}><CancelIcon fontSize={25} /></Text>
                                 </TouchableOpacity>
                             </View>
@@ -197,7 +219,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                 </View>
 
                                 <View style={Styles.cart_quantity_view}>
-                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleDecrease(item.productId, item.productQuantity) }}>
+                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleDecrease(item.productId, item.cartId, item.productQuantity) }}>
                                         <Text style={Styles.cart_button_text}><MinusIcon /></Text>
                                     </TouchableOpacity>
 
@@ -205,7 +227,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                         <Text style={Styles.cart_quantity_text}>{item.productQuantity}</Text>
                                     </View>
 
-                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleIncrease(item.productId) }}>
+                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleIncrease(item.productId, item.cartId) }}>
                                         <Text style={Styles.cart_button_text}><AddIcon /></Text>
                                     </TouchableOpacity>
                                 </View>
@@ -227,6 +249,71 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         </ListItem>
     )
 
+    renderCombinedCart = ({ item }: any): ListItemElement => (
+        <>
+            {item != null && item.productList ?
+                <ListItem style={{ margin: 10, borderColor: '#0099cc', borderWidth: 1, flexDirection: 'column' }}>
+                    {item != null && item.productList ?
+                        <>
+                        <View>
+                            <Text style={{fontWeight: 'bold', fontSize: 20, color: '#0099cc'}}>{item.shopName}</Text>
+                        </View>
+                            <List data={item.productList.slice(0).reverse()}
+                                renderItem={this.renderCart}
+                            />
+
+                            <View style={[Styles.price_detail_1, {width: '100%'}]}>
+                                <Text style={Styles.cart_price_detail_1_text}>PRICE DETAILS</Text>
+
+                                <View style={Styles.price_detail_2}>
+                                    <View style={Styles.price_detail_2_1}>
+                                        <Text style={Styles.cart_price_text_head}>Price ({null != item.productList ? item.productList.length : null} items)</Text>
+                                        <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{item.totalAmount}</Text>
+                                    </View>
+
+                                    <View style={Styles.price_detail_2_1}>
+                                        <Text style={Styles.cart_price_text_head}>Discount</Text>
+                                        <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != item ? item.discount : null}</Text>
+                                    </View>
+
+                                    <View style={Styles.price_detail_2_1}>
+                                        <Text style={Styles.cart_price_text_head}>Delevery Charges</Text>
+                                        <Text style={Styles.cart_price_text_data}>FREE</Text>
+                                    </View>
+                                </View>
+
+                                <View style={Styles.cart_total_view}>
+                                    <Text style={Styles.cart_total_text_head}>Total Amount</Text>
+                                    <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != item ? item.totalAmount : null}</Text>
+                                </View>
+                                <View style={Styles.price_detail_2}>
+                                    <Text style={Styles.cart_price_text_data}>You will save <RupeeIcon fontSize={18} />{null != item ? item.discount : null} on this order.</Text>
+                                </View>
+                            </View>
+
+                            <View style={Styles.cart_bottom_box_view}>
+                                <View style={{ justifyContent: 'center', margin: 10 }}>
+                                    <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />{null != item ? item.totalAmount : null}</Text>
+                                    <TouchableOpacity onPress={() => { }}>
+                                        {/* <Text style={Styles.cart_price_text_data}>View price details</Text> */}
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={{ justifyContent: 'center', margin: 10 }}>
+                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(item.cartId, item.totalAmount) }}>
+                                        <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </>
+                        :
+                        null}
+
+                </ListItem> : null}
+        </>
+    )
+
+
     navigationItemList() {
         // this.props.navigation.navigate(AppRoute.ITEMLIST)
     }
@@ -242,13 +329,13 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
     addItem() { }
 
     render() {
-        const { cartData, addressData, productList } = this.state
+        const { cartData, shopName, single, addressData, productList } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title='Cart'
+                    title= {single ? shopName : 'All Shop Cart'}
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     onRightPress={() => { this.continiueShopping() }}
@@ -285,65 +372,81 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                             </TouchableOpacity>
                         </View>
                     </View> */}
+                    {single ?
+                        <>
+                            <List data={productList.slice(0).reverse()}
+                                renderItem={this.renderCart}
+                            />
 
-                    <List data={productList.slice(0).reverse()}
-                        renderItem={this.renderCart}
-                    />
+                            <TouchableOpacity style={Styles.cart_shopping_view} onPress={() => { this.continiueShopping() }}>
+                                <Text style={Styles.cart_shopping_text}>Continue Shopping</Text>
+                                <Text style={Styles.cart_shopping_text}><RightArrowIcon fontSize={20} /></Text>
+                            </TouchableOpacity>
 
-                    <TouchableOpacity style={Styles.cart_shopping_view} onPress={() => { this.continiueShopping() }}>
-                        <Text style={Styles.cart_shopping_text}>Continue Shopping</Text>
-                        <Text style={Styles.cart_shopping_text}><RightArrowIcon fontSize={20} /></Text>
-                    </TouchableOpacity>
+                            <View style={Styles.price_detail_1}>
+                                <Text style={Styles.cart_price_detail_1_text}>PRICE DETAILS</Text>
 
-                    <View style={Styles.price_detail_1}>
-                        <Text style={Styles.cart_price_detail_1_text}>PRICE DETAILS</Text>
+                                <View style={Styles.price_detail_2}>
+                                    <View style={Styles.price_detail_2_1}>
+                                        <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} items)</Text>
+                                        <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
+                                    </View>
 
-                        <View style={Styles.price_detail_2}>
-                            <View style={Styles.price_detail_2_1}>
-                                <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} items)</Text>
-                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
+                                    <View style={Styles.price_detail_2_1}>
+                                        <Text style={Styles.cart_price_text_head}>Discount</Text>
+                                        <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData ? cartData.discount : null}</Text>
+                                    </View>
+
+                                    <View style={Styles.price_detail_2_1}>
+                                        <Text style={Styles.cart_price_text_head}>Delevery Charges</Text>
+                                        <Text style={Styles.cart_price_text_data}>FREE</Text>
+                                    </View>
+                                </View>
+
+                                <View style={Styles.cart_total_view}>
+                                    <Text style={Styles.cart_total_text_head}>Total Amount</Text>
+                                    <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
+                                </View>
+                                <View style={Styles.price_detail_2}>
+                                    <Text style={Styles.cart_price_text_data}>You will save <RupeeIcon fontSize={18} />{null != cartData ? cartData.discount : null} on this order.</Text>
+                                </View>
                             </View>
 
-                            <View style={Styles.price_detail_2_1}>
-                                <Text style={Styles.cart_price_text_head}>Discount</Text>
-                                <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData ? cartData.discount : null}</Text>
-                            </View>
+                        </> :
+                        <>
+                            <List data={cartData.slice(0).reverse()}
+                                renderItem={this.renderCombinedCart}
+                            />
 
-                            <View style={Styles.price_detail_2_1}>
-                                <Text style={Styles.cart_price_text_head}>Delevery Charges</Text>
-                                <Text style={Styles.cart_price_text_data}>FREE</Text>
-                            </View>
-                        </View>
-
-                        <View style={Styles.cart_total_view}>
-                            <Text style={Styles.cart_total_text_head}>Total Amount</Text>
-                            <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
-                        </View>
-                        <View style={Styles.price_detail_2}>
-                            <Text style={Styles.cart_price_text_data}>You will save <RupeeIcon fontSize={18} />{null != cartData ? cartData.discount : null} on this order.</Text>
-                        </View>
-                    </View>
-
-
+                            <TouchableOpacity style={Styles.cart_shopping_view} onPress={() => { this.continiueShopping() }}>
+                                <Text style={Styles.cart_shopping_text}>Continue Shopping</Text>
+                                <Text style={Styles.cart_shopping_text}><RightArrowIcon fontSize={20} /></Text>
+                            </TouchableOpacity>
+                        </>
+                    }
 
 
                     <View style={{ height: 10, width: '100%' }} />
                 </Content>
+                {single ?
+                    <>
+                        <View style={Styles.cart_bottom_box_view}>
+                            <View>
+                                <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />{null != cartData ? cartData.totalAmount : null}</Text>
+                                <TouchableOpacity onPress={() => { }}>
+                                    {/* <Text style={Styles.cart_price_text_data}>View price details</Text> */}
+                                </TouchableOpacity>
+                            </View>
 
-                <View style={Styles.cart_bottom_box_view}>
-                    <View>
-                        <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />{null != cartData ? cartData.totalAmount : null}</Text>
-                        <TouchableOpacity onPress={() => { }}>
-                            {/* <Text style={Styles.cart_price_text_data}>View price details</Text> */}
-                        </TouchableOpacity>
-                    </View>
+                            <View>
+                                <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(cartData.cartId, cartData.totalAmount) }}>
+                                    <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </> : null
+                }
 
-                    <View>
-                        <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => {this.handlePlaceOrder(cartData.cartId, cartData.totalAmount)}}>
-                            <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
                 <Divider />
                 <Divider />
             </SafeAreaLayout>

@@ -520,7 +520,7 @@ export const Styles = StyleSheet.create({
     borderColor: Color.SILVER,
     marginVertical: 5,
     paddingBottom: 10
-  }, 
+  },
 
   order_bar_main_1: {
     // backgroundColor: 'red',
@@ -622,7 +622,7 @@ export const Styles = StyleSheet.create({
   order_bar_main_2: {
     // backgroundColor: 'green',
     height: 100,
-    width: '90%'    
+    width: '90%'
   },
 
   order_cart: {
@@ -670,7 +670,7 @@ export const Styles = StyleSheet.create({
 
   contact_main: {
     borderWidth: 1,
-    borderColor: 'silver',
+    borderColor: '#fff',
     backgroundColor: '#0099cc',
     borderRadius: 5,
   },
@@ -678,6 +678,44 @@ export const Styles = StyleSheet.create({
   contact_text: {
     fontSize: 15,
     padding: 3,
+  },
+
+  about_main: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  about_text: {
+    fontSize: 22,
+    fontFamily: 'Orbitron-ExtraBold'
+  },
+
+  about_us: {
+    fontSize: 20,
+    fontFamily: 'Orbitron-ExtraBold'
+  },
+
+  about_proprety: {
+   margin: 10,
+  },
+
+  about_contact: {
+    fontSize: 20,
+    fontFamily: 'Orbitron-ExtraBold'
+  },
+
+  about_conta: {
+    backgroundColor:'#efefef',
+    height:200,
+    margin: 10,
+    padding: 10,
+    borderRadius: 5
+  },
+
+  about_content: {
+    textAlign: 'justify',
+    fontSize: 18,
+    fontFamily: 'Entypo'
   },
 
 

@@ -37,7 +37,7 @@ import { CustomerAllShopNavigator } from './customerAllProduct.navigator';
 import { WishListNavigator } from './wishList.navigator';
 import { BillBookNavigator } from './billBook.navigator';
 import { OffersNavigator } from './offers.navigator';
-import { CustomerAddressScreen, CustomerCartScreen, CustomerContactScreen, CustomerNotificationScreen, CustomerOrderScreen, CustomerProfileScreen } from '../../scenes/Customer/home';
+import { CustomerAddressScreen, CustomerCartScreen, CustomerContactScreen, CustomerNotificationScreen, CustomerOrderScreen, CustomerProfileScreen, CustomerWalletScreen } from '../../scenes/Customer/home';
 import { LogoutScreen } from '../../scenes/auth';
 import { CartScreen } from '../../scenes/Customer/allProduct/cart.component';
 import { CustomerOrderNavigator } from './customerOrder.navigator';
@@ -228,15 +228,15 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
     />
 
     <Drawer.Screen
-      name={AppRoute.CUSTOMER_NOTIFICATION}
-      component={CustomerNotificationScreen}
-      options={{ title: 'Notification', drawerIcon: NotificationIcon }}
+      name={AppRoute.CUSTOMER_WALLET}
+      component={CustomerWalletScreen}
+      options={{ title: 'Wallet', drawerIcon: WalletIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_CONTACT}
       component={CustomerContactScreen}
-      options={{ title: 'Contact Us', drawerIcon: HelpIcon }}
+      options={{ title: 'About Us', drawerIcon: HelpIcon }}
     />
 
     <Drawer.Screen

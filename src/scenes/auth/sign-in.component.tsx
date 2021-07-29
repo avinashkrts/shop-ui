@@ -11,6 +11,7 @@ import { Content } from 'native-base';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { Styles } from '../../assets/styles'
 import DeviceInfo from 'react-native-device-info';
+import base64 from 'react-native-base64'
 
 interface State {
   email: string | undefined;
@@ -24,7 +25,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
 
     this.state = {
       emailId: '7677256089',
-      pwd: 'qwerty@12345',
+      pwd: 'Milaan@123',
       passwordVisible: true,
       allUserType: [],
       deviceId: '',
@@ -67,7 +68,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
         url: AppConstants.API_BASE_URL + '/api/user/login',
         data: {
           "emailId": emailId,
-          "pwd": pwd,
+          "pwd": base64.encode(pwd),
           "deviceId": deviceId,
         },
       }).then((response) => {

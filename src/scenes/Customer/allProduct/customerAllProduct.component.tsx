@@ -13,6 +13,7 @@ import axios from 'axios';
 import Animated from "react-native-reanimated";
 import { AppRoute } from "../../../navigation/app-routes";
 import Axios from "axios";
+import { StackActions } from "@react-navigation/native";
 
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
@@ -191,7 +192,9 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
     }
 
     navigateProductDetail(id, shopId) {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_PRODUCT_DETAIL, { productId: String(id), shopId: String(shopId) })
+        const pushAction = StackActions.push(AppRoute.CUSTOMER_PRODUCT_DETAIL, { productId: String(id), shopId: String(shopId) });
+        this.props.navigation.dispatch(pushAction)
+        // this.props.navigation.navigate(AppRoute.CUSTOMER_PRODUCT_DETAIL, { productId: String(id), shopId: String(shopId) })
     }
 
     async handleAddToCart(productId) {
