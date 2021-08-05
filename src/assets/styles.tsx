@@ -13,6 +13,16 @@ export const Styles = StyleSheet.create({
     backgroundColor: Color.BUTTON_NAME_COLOR
   },
 
+  unavailable_text: {
+    fontSize: 33,
+    paddingVertical: 35,
+    fontFamily: 'Entypo',
+    color: Color.COLOR,
+    lineHeight: 35,
+    marginHorizontal: 20,
+    textAlign: 'justify'
+  },
+
   content: {
     backgroundColor: 'transparent',
     padding: 0
@@ -776,6 +786,13 @@ export const Styles = StyleSheet.create({
     justifyContent: 'center'
   },
 
+  Cu_wallet_column_4: {
+    width: '30%',
+    borderWidth: 0.2,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
   bill_column_5: {
     width: '15%',
     borderWidth: 0.2,
@@ -1527,4 +1544,12 @@ export const Styles = StyleSheet.create({
     backgroundColor: '#0099cc',
     borderRadius: 5,
   },
+
+  /*---------------------------------------------This Style is for Wallet Screen-------------------------------------------------------------- */
+
+  about_him: {
+    backgroundColor:'#D8D8D899',
+    height:80
+  },
+
 })

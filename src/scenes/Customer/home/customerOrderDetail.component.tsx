@@ -210,12 +210,12 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                         </View>
 
                         <View style={Styles.cart_view_1_2}>
-                            {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <Text style={Styles.cart_name_text}>{item.productName}</Text>
-                                <TouchableOpacity  onPress={() => { this.handleDelete(item.id) }}>
+                                {/* <TouchableOpacity  onPress={() => { this.handleDelete(item.id) }}>
                                     <Text style={Styles.cart_name_text}><CancelIcon fontSize={25} /></Text>
-                                </TouchableOpacity>
-                            </View> */}
+                                </TouchableOpacity> */}
+                            </View>
                             <View style={Styles.cart_price_view}>
                                 <View style={{ flexDirection: 'row', width: '55%', flexWrap: 'wrap', justifyContent: 'space-between' }}>
                                     <Text style={Styles.price_text}><RupeeIcon /> {item.price}</Text>

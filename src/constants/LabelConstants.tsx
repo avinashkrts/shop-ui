@@ -210,7 +210,7 @@ export class LabelConstants {
     public static readonly customer_bill_transactinId = 'Transaction Id';
     public static readonly customer_bill_debit = 'Debit';
     public static readonly customer_bill_credit = 'Credit';
-    //public static readonly customer_bill_dues = 'Dues';
+    public static readonly REFUND = 'REFUND';
 
 
 

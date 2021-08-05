@@ -78,7 +78,7 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
     constructor(props) {
         super(props)
         this.state = {
-           customerData: []
+            customerData: []
         }
         this.navigationAddCustomer = this.navigationAddCustomer.bind(this);
         this.handleAddCustomer = this.handleAddCustomer.bind(this);
@@ -91,24 +91,24 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
     }
 
     navigationEditCustomer(userId) {
-        this.props.navigation.navigate(AppRoute.EDIT_CUSTOMER, {userId: userId});
+        this.props.navigation.navigate(AppRoute.EDIT_CUSTOMER, { userId: userId });
     }
 
 
-    async componentDidMount() {
-        Axios({
-            method: 'GET',
-            url:  AppConstants.API_BASE_URL + '/api/user/getalluser/200',
-        }).then((response) => {
-            if (null != response.data) {
-                this.setState({
-                    customerData: response.data
-                })
-            }
-        }, (error) => {
-            Alert.alert("Server error!.")
-        });
-    }
+    // async componentDidMount() {
+    //     Axios({
+    //         method: 'GET',
+    //         url: AppConstants.API_BASE_URL + '/api/user/getalluser/200',
+    //     }).then((response) => {
+    //         if (null != response.data) {
+    //             this.setState({
+    //                 customerData: response.data
+    //             })
+    //         }
+    //     }, (error) => {
+    //         Alert.alert("Server error!.")
+    //     });
+    // }
 
     handleJobSubmit() {
         this.props.navigation.navigate(AppRoute.SHOP_CUSTOMER_DETAIL);
@@ -135,7 +135,7 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
                 <View>
-                   <TouchableOpacity onPress={() => { this.navigationEditCustomer(item.userId) }}>
+                    <TouchableOpacity onPress={() => { this.navigationEditCustomer(item.userId) }}>
                         <View style={Styles.customer_list}>
                             <View style={[Styles.customer_list_image, Styles.center]}>
                                 <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.image} />
@@ -181,39 +181,40 @@ export class CustomerScreen extends React.Component<CustomerScreenProps & Themed
                 <Toolbar
                     title='All Customers'
                     backIcon={MenuIcon}
-                    menuIcon={PlusCircle}
-                    onRightPress={() => { this.handleAddCustomer() }}
+                    // menuIcon={PlusCircle}
+                    // onRightPress={() => { this.handleAddCustomer() }}
                     onBackPress={this.props.navigation.openDrawer}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
-                <Content style={Styles.customer_content}
+                {/* <Content style={Styles.customer_content}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
                             onRefresh={this._onRefresh.bind(this)}
                         />
                     }
-                >
+                > */}
                     {/* <Header style={styles.header}> */}
-                    <View style={Styles.searchBox}>
-                    <View style={[{width: '10%'}, Styles.center]}>
+                    {/* <View style={Styles.searchBox}>
+                        <View style={[{ width: '10%' }, Styles.center]}>
                             <Text style={Styles.searchIcon}><SearchIcon /></Text>
                         </View>
                         <TextInput
                             placeholder="Search"
                             style={Styles.searchInput}
                         />
-                    </View>
+                    </View> */}
                     {/* </Header> */}
 
-                    <List data={customerData}
+                    {/* <List data={customerData}
                         renderItem={this.renderCustomer}
-                    />
-                   
+                    /> */}
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={Styles.unavailable_text}>This facility is only for individual/paid plan.</Text>
+                    </View>
 
-                    
                     <View style={{ height: 10, width: '100%' }}></View>
-                </Content>
+                {/* </Content> */}
 
             </SafeAreaLayout>
         )

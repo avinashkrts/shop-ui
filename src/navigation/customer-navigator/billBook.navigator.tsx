@@ -15,7 +15,7 @@ type BillBookNavigatorParams = {
     [AppRoute.BILL_BOOK]: undefined;
 }
 
-export interface CandidateScreenProps {
+export interface BillBookScreenProps {
     navigation: CompositeNavigationProp<BillBookTabNavigationProps,
     StackNavigationProp<BillBookNavigatorParams, AppRoute.BILL_BOOK>>;
     route: RouteProp<BillBookNavigatorParams, AppRoute.BILL_BOOK>;

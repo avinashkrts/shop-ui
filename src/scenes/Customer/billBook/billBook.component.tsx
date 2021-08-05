@@ -11,6 +11,7 @@ import axios from "axios";
 import moment from "moment";
 import { Content } from "native-base";
 import { ScrollView } from "react-native-gesture-handler";
+
 export class BillBookScreen extends Component<BillBookScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
