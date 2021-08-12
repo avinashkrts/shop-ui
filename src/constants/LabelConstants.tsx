@@ -21,6 +21,7 @@ export class Padding {
 export class LableText {
     public static readonly USER = 'user';
     public static readonly ACCEPT = 'Accept';
+    public static readonly YOUR_PLAN_CODE = 'Plan Code';
     public static readonly REJECT = 'Reject';
     public static readonly CHOOSE_IMAGE = 'Choose Image';
     public static readonly UPLOAD = 'Upload';
@@ -88,14 +89,14 @@ export class LableText {
     public static readonly CART = 'Cart';
     public static readonly BUY = 'Buy';
     public static readonly ADDRESS = 'Adress';
-    public static readonly MOBILE = 'Mobile No.';
+    public static readonly MOBILE = 'Mobile Number.';
     public static readonly SAVE = 'Save';
     public static readonly EDIT = 'Edit';
     public static readonly ADDNEWADDRESS = 'Add New Address';
     public static readonly SHOPNAME = 'Shop Name';
     public static readonly GST = 'GST No.';
     public static readonly BANK_ACCOUNT = 'Bank Account Details';
-    public static readonly BANK_NAME = 'State Bank Of India';
+    public static readonly BANK_NAME = 'Bank Name';
     public static readonly BANK_ACCOUNT_NUMBER = '34514786284';
     public static readonly BANK_ACCOUNT_NAME= 'Vishal General Store';
     public static readonly BANK_IFSC_CODE = 'SBIN0001342';
@@ -126,6 +127,13 @@ export class LableText {
     public static readonly VALIDITY= 'Validity';
     public static readonly WALLET= 'Wallet';
     public static readonly GST_NUMBER= 'GST Number';
+    public static readonly AMOUNT= 'Amount';
+    public static readonly ACCOUNT_NO= 'Account Number';
+    public static readonly CONF_ACCOUNT_NO= 'Confirm Account Number';
+    public static readonly ACCOUNT_HOLDER_NAME= 'Account Holder Name';
+    public static readonly IFSC_CODE= 'IFSC Code';
+    public static readonly BRANCH_NAME= 'Branch Name';
+    
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/

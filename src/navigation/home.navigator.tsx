@@ -47,7 +47,7 @@ import {
 
 } from '../assets/icons';
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
-import { AdminBillBookScreen, AdminProfileScreen, DailyMessageScreen, MyOrderScreen, MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, StockListScreen, ValidityScreen } from '../scenes/shopkeeper/home';
+import { AdminBillBookScreen, AdminProfileScreen, DailyMessageScreen, MyOrderScreen, MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, RechargeScreen, StockListScreen, ValidityScreen, WithdrawScreen } from '../scenes/shopkeeper/home';
 // import { AddProductScreen } from '../scenes/home/addproduct.component';
 import { AddCustomerScreen, CustomerDetailScreen, CustomerScreen } from '../scenes/shopkeeper/customer';
 import { AddEducationScreen } from '../scenes/profile';
@@ -60,6 +60,8 @@ import { OrderNavigator } from './shopKeeperNavigator/order.navigator';
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
   [AppRoute.ADMIN_BILL_BOOK]: undefined;
+  [AppRoute.RECHARGE]: undefined;
+  [AppRoute.WITHDRAW]: undefined;
   [AppRoute.CONTACT]: undefined;
   [AppRoute.ACCOUNTS]: undefined;
   [AppRoute.CHANGEPASSWORD]: undefined;
@@ -205,6 +207,11 @@ export interface ValidityScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.VALIDITY>;
 }
 
+export interface WithdrawScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.WITHDRAW>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.WITHDRAW>;
+}
+
 export interface AdminBillBookScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ADMIN_BILL_BOOK>;
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ADMIN_BILL_BOOK>;
@@ -238,6 +245,11 @@ export interface OffersScreenProps {
 export interface MyWalletScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.MY_WALLET>;
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.MY_WALLET>;
+}
+
+export interface RechargeScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.RECHARGE>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.RECHARGE>;
 }
 
 export interface AdminProfileScreenProps {
@@ -344,6 +356,12 @@ export const HomeNavigator = (): React.ReactElement => (
       options={{ title: 'My Wallet', drawerIcon: WalletIcon }}
     />
 
+      <Drawer.Screen
+      name={AppRoute.WITHDRAW}
+      component={WithdrawScreen}
+      options={{ title: 'Withdraw', drawerIcon: WalletIcon }}
+    />
+
     <Drawer.Screen
       name={AppRoute.ADMIN_BILL_BOOK}
       component={AdminBillBookScreen}
@@ -360,6 +378,12 @@ export const HomeNavigator = (): React.ReactElement => (
       name={AppRoute.VALIDITY}
       component={ValidityScreen}
       options={{ title: 'Validity', drawerIcon: ValidityIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.RECHARGE}
+      component={RechargeScreen}
+      options={{ title: 'Recharge', drawerIcon: ValidityIcon }}
     />
 
     <Drawer.Screen

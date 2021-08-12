@@ -11,6 +11,7 @@ import { Styles } from '../../assets/styles';
 import { AsyncStorage } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import RazorpayCheckout from 'react-native-razorpay';
+import OneSignal from 'react-native-onesignal';
 
 interface State {
     email: string | undefined;
@@ -25,15 +26,27 @@ export class UserDecide extends Component<UserDecideProps, any & State & any> {
         this.state = {
             mobileNo: '',
             otp: '',
+            data: [],
+            playerId: '8a6d8667-7422-4bad-b9e6-5d5625f73a96'
         }
     }
 
     async componentDidMount() {
+        const { data, playerId } = this.state;
+        OneSignal.setLogLevel(6, 0);
+        OneSignal.setAppId("43e3395b-0019-492b-b999-4321444f25ad");
+
+        const contents = 'You are first in line';
+        // const playerId = '8a6d8667-7422-4bad-b9e6-5d5625f73a96';
+        // OneSignal.postNotification(contents, data, playerId);
+        const deviceState = await OneSignal.getDeviceState();    
+        console.log('one signal', deviceState)
+        
         AsyncStorage.setItem('productCount', '0');
         AsyncStorage.setItem('wishCount', '0');
         AsyncStorage.setItem('billCount', '0');
         AsyncStorage.setItem('offerCount', '0');
-       const value = await AsyncStorage.getItem('userDetail');
+        const value = await AsyncStorage.getItem('userDetail');
         const value1 = await AsyncStorage.getItem('adminType');
         const logedIn = await AsyncStorage.getItem('logedIn');
         const value2 = await AsyncStorage.getItem('customerType');

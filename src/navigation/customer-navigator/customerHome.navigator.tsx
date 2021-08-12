@@ -44,6 +44,7 @@ import { CustomerOrderNavigator } from './customerOrder.navigator';
 import { CustomerHomeTabBar } from '../../scenes/Customer/home/customer-home-tab-bar.component';
 import { CustomerHomeDrawer } from '../../scenes/Customer/home/customer-home-drawer.component';
 import { CombinedProductNavigator } from '../combined-navigator/combinedAllProduct.navigator';
+import { scale } from 'react-native-size-matters';
 
 type CustomerHomeDrawerNavigatorParams = {
   [AppRoute.CUSTOMER_HOME]: undefined;

@@ -13,6 +13,7 @@ import {
 import { StackActions } from '@react-navigation/native';
 import { CustomerBottomHomeScreenProps } from '../../../navigation/customer-navigator/customerHome.navigator';
 import { AsyncStorage } from 'react-native';
+import { scale } from 'react-native-size-matters';
 
 export const CustomerHomeTabBar = (props: CustomerBottomHomeScreenProps): SafeAreaLayoutElement => {
   const onSelect = async (index: number): void => {
@@ -64,6 +65,7 @@ export const CustomerHomeTabBar = (props: CustomerBottomHomeScreenProps): SafeAr
     const { options } = props.descriptors[route.key];
     return (
       <BottomNavigationTab
+      titleStyle={{fontSize: scale(10), paddingTop: scale(5)}}
         key={route.key}
         title={options.title}
         icon={options.tabBarIcon}

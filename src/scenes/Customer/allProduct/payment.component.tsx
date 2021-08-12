@@ -104,7 +104,10 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             userName: '',
             userMobileNo: '',
             userEmailId: '',
-            addressId: ''
+            addressId: '',
+            shopId: '',
+            cartData: [],
+            adminData: []
         }
         this.backFunction = this.backFunction.bind(this)
     }
@@ -138,6 +141,36 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                     this.setState({
                         addressData: response.data,
                         addressId: response.data.id
+                    })
+                }
+
+            }, (error) => {
+                Alert.alert("Server problem")
+            })
+
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/cart/get/' + cartId
+            }).then((response) => {
+                if (response.data) {
+                    console.log('cartData in payment', response.data)
+                    this.setState({
+                        cartData: response.data,
+                    })
+
+                    axios({
+                        method: 'GET',
+                        url: AppConstants.API_BASE_URL + '/api/admin/get/activeadminbyshopid/' + response.data.shopId
+                    }).then((response) => {
+                        if (response.data) {
+                            console.log('Admin Data in payment', response.data)
+                            this.setState({
+                                adminData: response.data[0],
+                            })
+                        }
+
+                    }, (error) => {
+                        Alert.alert("Server problem")
                     })
                 }
 
@@ -271,9 +304,9 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             }).then((response) => {
                 if (response.data) {
                     if (response.data.status) {
-                        Alert.alert("Order placed.")
-        this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER_PRODUCT, { id: this.backFunction.bind(this) })
-        // this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER)
+                        this.notification()
+                       
+                        // this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER)
                     } else {
                         Alert.alert("Got error while placing Order.")
                     }
@@ -322,6 +355,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 if (response.data) {
                     if (response.data.status) {
                         Alert.alert("Order placed.")
+                        this.notification();
                         this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER)
                     } else {
                         Alert.alert("Got error while placing Order.")
@@ -330,6 +364,25 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             }, (error) => {
                 Alert.alert("Server problem")
             })
+        })
+    }
+
+    notification() {
+        const { adminData, cartData } = this.state;
+        console.log('notification Data', adminData.adminId, adminData.userType, cartData.totalAmount)
+        axios({
+            method: 'POST',
+            url: AppConstants.API_BASE_URL + '/api/sms/send/notification',
+            data: {
+                userId: adminData.adminId,
+                userType: adminData.userType,
+                content: "Order received of Rs. " + cartData.totalAmount
+            }
+        }).then((response) => {
+            Alert.alert("Order placed.")
+            this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER_PRODUCT, { id: this.backFunction.bind(this) })
+        }, (error) => {
+            Alert.alert("Server problem")
         })
     }
 

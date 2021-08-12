@@ -16,6 +16,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { AppNavigator } from './navigation/app.navigator';
 import { AppRoute } from './navigation/app-routes';
 import SplashScreen from 'react-native-splash-screen';
+import OneSignal from 'react-native-onesignal';
 
 // This value is used to determine the initial screen
 // const isAuthorized: boolean = false;
@@ -39,44 +40,44 @@ export default class App extends Component<any, any>{
   }
 
   async componentDidMount() {
-    const value = await AsyncStorage.getItem('userDetail');
-    const value1 = await AsyncStorage.getItem('adminType');
-    const logedIn = await AsyncStorage.getItem('logedIn');
-    const value2 = await AsyncStorage.getItem('customerType');
-    if (value && (value1 || value2)) {
-      const user = JSON.parse(value);
-      const admin = Number(JSON.parse(value1));
-      const customer = Number(JSON.parse(value2));
-      // console.log('UserType' + 'admin: ', admin + "customer", customer)
-      console.log('UserType' + 'admin: ', admin + "customer", customer, logedIn)
-      if (logedIn === 'true') {
-        // console.log('User Type in' + ' admin: ', admin + "customer", customer)    
-        const userType = Number(user.userType);
-        const token = user.token;
-        if (token !== '' && token.length !== null) {
-          if (token.length > 30) {
-            // console.log('User Type in admin:', admin, isAuthorized, isUser, isAdmin, userType )    
-            if (userType == customer) {
-              this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
-              //   console.log('User Type in customer:' + customer, userType)
-            } else if (userType == admin) {
-              this.props.navigation.navigate(AppRoute.HOME)
-              //   console.log('User Type in admin' + admin, userType)
-            } else {
-              this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
-            }
-          } else {
-            this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
-          }
-        } else {
-          this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
-        }
-      } else {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
-      }
-    } else {
-      this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
-    }
+    // const value = await AsyncStorage.getItem('userDetail');
+    // const value1 = await AsyncStorage.getItem('adminType');
+    // const logedIn = await AsyncStorage.getItem('logedIn');
+    // const value2 = await AsyncStorage.getItem('customerType');
+    // if (value && (value1 || value2)) {
+    //   const user = JSON.parse(value);
+    //   const admin = Number(JSON.parse(value1));
+    //   const customer = Number(JSON.parse(value2));
+    //   // console.log('UserType' + 'admin: ', admin + "customer", customer)
+    //   console.log('UserType' + 'admin: ', admin + "customer", customer, logedIn)
+    //   if (logedIn === 'true') {
+    //     // console.log('User Type in' + ' admin: ', admin + "customer", customer)    
+    //     const userType = Number(user.userType);
+    //     const token = user.token;
+    //     if (token !== '' && token.length !== null) {
+    //       if (token.length > 30) {
+    //         // console.log('User Type in admin:', admin, isAuthorized, isUser, isAdmin, userType )    
+    //         if (userType == customer) {
+    //           this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
+    //           //   console.log('User Type in customer:' + customer, userType)
+    //         } else if (userType == admin) {
+    //           this.props.navigation.navigate(AppRoute.HOME)
+    //           //   console.log('User Type in admin' + admin, userType)
+    //         } else {
+    //           this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
+    //         }
+    //       } else {
+    //         this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
+    //       }
+    //     } else {
+    //       this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
+    //     }
+    //   } else {
+    //     this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
+    //   }
+    // } else {
+    //   this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
+    // }
     SplashScreen.hide();
   }
 

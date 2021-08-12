@@ -18,6 +18,7 @@ import Modal from "react-native-modal";
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Header } from 'native-base';
 import { StackActions } from "@react-navigation/native";
+import { scale } from "react-native-size-matters";
 
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
@@ -670,7 +671,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                                             if (brand.id == data.brand) {
                                                                 return (
                                                                     <View style={{width: '80%', flexWrap: 'wrap'}}>
-                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
+                                                                        <Text style={{ color: '#000', marginTop: scale(5), fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
                                                                     </View>
                                                                 );
                                                             }

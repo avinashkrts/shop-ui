@@ -1,12 +1,13 @@
 import { Col, Left } from "native-base";
 import { StyleSheet, Dimensions } from "react-native";
 import { color } from "react-native-reanimated";
+import { ScaledSheet } from "react-native-size-matters";
 import { Color, Padding } from "../constants/LabelConstants";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-export const Styles = StyleSheet.create({
+export const Styles = ScaledSheet.create({
 
   safeArea: {
     flex: 1,
@@ -39,24 +40,26 @@ export const Styles = StyleSheet.create({
   },
 
   inputTextView: {
-    marginVertical: 10,
-    marginHorizontal: "10%",
-    paddingHorizontal: 10,
-    paddingVertical: 2,
-    borderWidth: 1,
+    marginVertical: '5@s',
+    marginHorizontal: "5%",
+    paddingHorizontal: '10@s',
+    paddingVertical: '2@s',
+    borderWidth: '1@s',
     borderColor: Color.COLOR,
-    borderRadius: 50,
+    borderRadius: '50@s',
     flexDirection: 'row'
   },
 
   inputText: {
     width: '100%',
-    marginVertical: -8
+    marginVertical: '0@s',
+    fontSize: '15@s'
   },
 
   inputTextWithIcon: {
-    marginVertical: -8,
-    width: '85%'
+    marginVertical: '0@s',
+    width: '85%',
+    fontSize: '15@s'
   },
 
   inputTextIcon: {
@@ -87,48 +90,48 @@ export const Styles = StyleSheet.create({
   /*------------------------------------------------------------STYLE FOR BUTTON------------------------------------------------------------*/
 
   buttonBox: {
-    paddingVertical: 10,
-    marginVertical: 20,
+    paddingVertical: '10@s',
+    marginVertical: '20@s',
     backgroundColor: Color.COLOR,
-    borderRadius: 50
+    borderRadius: '50@s'
   },
 
   buttonName: {
-    fontSize: 20,
+    fontSize: '15@s',
     color: Color.BUTTON_NAME_COLOR,
   },
 
   forgotPassword: {
     color: Color.COLOR,
-    fontSize: 15,
+    fontSize: '15@s',
     fontFamily: "roboto-regular",
-    marginTop: 10,
+    marginTop: '5@s',
     alignSelf: 'center'
   },
 
   dontHaveAccount: {
     color: Color.COLOR,
-    fontSize: 15,
+    fontSize: '15@s',
     fontFamily: "roboto-regular",
-    marginTop: 30,
+    marginTop: '15@s',
     alignSelf: 'center'
   },
 
 
   /*---------------------------------------------This Style is for Log In Image--------------------------------------------------------- */
   loginImage: {
-    width: 200,
-    height: 200,
-    marginTop: 20,
+    width: '150@s',
+    height: '150@s',
+    marginTop: '10@s',
     alignSelf: 'center'
   },
 
   loginWelcome: {
-    marginTop: 10,
-    fontSize: 30,
+    marginTop: '5@s',
+    fontSize: '25@s',
     color: Color.COLOR,
     fontWeight: "bold",
-    marginBottom: 35
+    marginBottom: '25@s'
   },
 
   /*---------------------------------------------This Style is for All Item Page--------------------------------------------------------- */
@@ -164,36 +167,192 @@ export const Styles = StyleSheet.create({
 
   product_nav_button_selected: {
     backgroundColor: Color.COLOR,
-    padding: 1,
-    borderRadius: 20
+    padding: '1@s',
+    borderRadius: '20@s'
   },
 
   product_nav_button: {
     backgroundColor: Color.BUTTON_NAME_COLOR,
-    padding: 1,
-    borderRadius: 20
+    padding: '1@s',
+    borderRadius: '20@s'
   },
 
   product_nav_button_selected_text: {
     color: Color.BUTTON_NAME_COLOR,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingVertical: '5@s',
+    paddingHorizontal: '10@s',
     fontWeight: 'bold',
-    fontSize: 12
+    fontSize: '12@s'
   },
 
   product_nav_button_text: {
     color: Color.COLOR,
-    fontSize: 12,
-    paddingVertical: 5,
+    fontSize: '12@s',
+    paddingVertical: '5@s',
     fontWeight: 'bold',
-    paddingHorizontal: 10
+    paddingHorizontal: '10@s'
   },
 
   /*---------------------------------------------This Style is for Blank Space at bottom of Page--------------------------------------------------------- */
   bottomSpace: {
     width: '100%',
     height: 50
+  },
+
+  /*---------------------------------------------This Style is for Recharge Page--------------------------------------------------------- */
+  reacharge_main: {
+    flexWrap: 'wrap',
+    padding: '10@s',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+
+  reacharge_box: {
+    width: '48%',
+    height: '305@s',
+    borderColor: Color.SILVER,
+    borderWidth: '2@s',
+    borderTopStartRadius: '12@s',
+    borderTopEndRadius: '12@s',
+    borderBottomStartRadius: '5@s',
+    borderBottomEndRadius: '5@s',
+    marginVertical: '10@s',
+  },
+
+  reacharge_head: {
+    backgroundColor: 'green',
+    borderTopStartRadius: '10@s',
+    borderTopEndRadius: '10@s',
+    borderBottomStartRadius: '0@s',
+    borderBottomEndRadius: '35@s',
+    width: '100%',
+    height: '150@s',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  recharge_price_icon: {
+    color: Color.BUTTON_NAME_COLOR,
+  },
+
+  recharge_price_text: {
+    color: Color.BUTTON_NAME_COLOR,
+    fontSize: '35@s'
+  },
+
+  reacharge_text_main: {
+    backgroundColor: 'white',
+    width: '100%',
+
+  },
+
+  reacharge_text: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '10@s'
+  },
+
+  recharge_button_box: {
+    backgroundColor: '#0099cc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: '6@s',
+    borderRadius: '20@s',
+    marginVertical: '10@s',
+  },
+
+  recharge_button_view: {
+    marginHorizontal: '15@s',
+  },
+
+  recharge_button_text: {
+    color: Color.BUTTON_NAME_COLOR,
+    fontSize: '14@s',
+  },
+
+  recharge_text_head: {
+    color: Color.SILVER,
+    fontSize: '16@s',
+    fontWeight: 'bold'
+  },
+
+  recharge_text_data: {
+    color: '#000',
+    fontSize: '14@s',
+  },
+
+  recharge_offer_input: {
+    borderColor: Color.SILVER,
+    borderWidth: '1@s',
+    width: '90@s',
+    paddingVertical: '3@s',
+    borderRadius: '4@s'
+  },
+
+  recharge_no_offer_input: {
+    width: '90@s',
+    height: '50@s'
+   
+  },
+
+  invoice_main_view: {
+    padding: '10@s',
+    borderRadius: '5@s',
+    borderColor: Color.SILVER,
+    borderWidth: '1@s',
+    marginTop: '10@s'
+  },
+
+  invoice_data_main: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+
+  invoice_data_head: {
+    fontSize: '18@s',
+    color: Color.SILVER,
+    fontWeight: 'bold'
+  },
+
+  invoice_data_text: {
+    fontSize: '16@s',
+  },
+
+  divider: {
+    width: '100%',
+    height: '1@s',
+    backgroundColor: 'black',
+    marginVertical: '10@s'
+  },
+
+  withdraw_main: {
+
+  },
+
+  withdraw_balance_box: {
+    // flexDirection: 'row',    
+    width: '100%',
+    // justifyContent: 'space-between',
+    paddingHorizontal: '10@s'
+  },
+
+  withdraw_text_head: {
+    color: Color.SILVER,
+    fontSize: '16@s',
+    fontWeight: 'bold'
+  },
+
+  withdraw_balance_input: {
+    borderColor: Color.SILVER,
+    borderWidth: '1@s',
+    width: '100%',
+    fontSize: '18@s',
+    marginVertical: '10@s',
+    paddingVertical: '4@s',
+    borderRadius: '4@s'
   },
 
   /*---------------------------------------------This Style is for Product Detail--------------------------------------------------------- */
@@ -267,7 +426,6 @@ export const Styles = StyleSheet.create({
   },
 
   product_3rd_view: {
-    // backgroundColor: 'red',
     padding: 10,
     width: '100%',
     height: 200
@@ -706,7 +864,7 @@ export const Styles = StyleSheet.create({
   },
 
   about_proprety: {
-   margin: 10,
+    margin: 10,
   },
 
   about_contact: {
@@ -715,8 +873,8 @@ export const Styles = StyleSheet.create({
   },
 
   about_conta: {
-    backgroundColor:'#efefef',
-    height:200,
+    backgroundColor: '#efefef',
+    height: 200,
     margin: 10,
     padding: 10,
     borderRadius: 5
@@ -830,14 +988,14 @@ export const Styles = StyleSheet.create({
   bill_box: {
     width: '100%',
     borderColor: 'black',
-    borderWidth: 0.2,
+    borderWidth: '0.2@s',
     alignItems: "center",
   },
 
   head_design: {
-    fontSize: 18,
+    fontSize: '16@s',
     fontWeight: 'bold',
-    padding: 2,
+    padding: '2@s',
     alignSelf: 'center',
     color: 'white'
   },
@@ -845,18 +1003,18 @@ export const Styles = StyleSheet.create({
 
   bill_bottom_text: {
     textAlign: 'right',
-    padding: 2,
+    padding: '2@s',
     width: '50%',
     color: 'white',
-    fontSize: 16,
+    fontSize: '16@s',
   },
 
   bill_amount: {
     textAlign: 'center',
-    padding: 2,
+    padding: '2@s',
     width: '20%',
     color: 'white',
-    fontSize: 16,
+    fontSize: '16@s',
   },
 
   bill_paid: {
@@ -1548,8 +1706,8 @@ export const Styles = StyleSheet.create({
   /*---------------------------------------------This Style is for Wallet Screen-------------------------------------------------------------- */
 
   about_him: {
-    backgroundColor:'#D8D8D899',
-    height:80
+    backgroundColor: '#D8D8D899',
+    height: 80
   },
 
 })

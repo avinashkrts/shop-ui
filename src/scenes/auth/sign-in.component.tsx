@@ -12,6 +12,7 @@ import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { Styles } from '../../assets/styles'
 import DeviceInfo from 'react-native-device-info';
 import base64 from 'react-native-base64'
+import OneSignal from 'react-native-onesignal';
 
 interface State {
   email: string | undefined;
@@ -56,8 +57,10 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
         Alert.alert("Didn't got data from server")
       });
   }
-  onFormSubmit() {
+  async onFormSubmit() {
     const { emailId, pwd, allUserType, deviceId } = this.state
+    const deviceState = await OneSignal.getDeviceState();    
+    console.log('one signal', deviceState.userId)
     if (emailId == null || emailId === '') {
       Alert.alert("Please enter Email Id.");
     } else if (pwd == null || pwd === '') {
@@ -70,6 +73,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
           "emailId": emailId,
           "pwd": base64.encode(pwd),
           "deviceId": deviceId,
+          "playerId": deviceState.userId
         },
       }).then((response) => {
         if (response.data) {
@@ -104,11 +108,11 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
   };
 
   navigateHome() {
-    this.props.navigation.navigate(AppRoute.HOME);
+    this.props.navigation.navigate(AppRoute.USER_DECIDE);
   };
 
   navigateCustomerHome() {
-    this.props.navigation.navigate(AppRoute.CUSTOMER_HOME);
+    this.props.navigation.navigate(AppRoute.USER_DECIDE);
   };
 
   navigateINFORMATION() {

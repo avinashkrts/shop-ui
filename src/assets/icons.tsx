@@ -17,6 +17,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Color } from '../constants/LabelConstants';
+import { scale } from 'react-native-size-matters';
 
 
 export const PeopleIcon = (style): AntDesign => (
@@ -135,7 +136,7 @@ export const CartIcon = (style): AntDesign => (
 
 
 export const ProfileIcon = (style): IconElement => (
-  <Icon {...style} name='person-outline' />
+  <Icon {...style} height={scale(25)} width={scale(25)} name='person-outline' />
 );
 
 export const AddressIcon = (style): AntDesign => (
@@ -221,15 +222,15 @@ export const CompanyIcon = (style): AntDesign => (
 
 
 export const HomeIcon = (style): IconElement => (
-  <Icon {...style} name='home-outline' />
+  <Icon {...style} height={scale(25)} width={scale(25)} name='home-outline' />
 );
 
 export const CandidateIcon = (style): IconElement => (
-  <Icon {...style} name='message-circle-outline' />
+  <Icon {...style} height={scale(25)} width={scale(25)} name='message-circle-outline' />
 );
 
 export const PostJobIcon = (style): IconElement => (
-  <Icon {...style} name='plus-circle-outline' />
+  <Icon {...style} height={scale(25)} width={scale(25)} name='plus-circle-outline' />
 );
 
 
@@ -259,11 +260,11 @@ export const BackIcon = (style): IconElement => (
 );
 
 export const LayoutIcon = (style): IconElement => (
-  <Icon {...style} name='person' />
+  <Icon {...style} height={scale(25)} width={scale(25)} name='person' />
 );
 
 export const PersonIcon = (style): Foundation => (
-  <Foundation size={20} color={'silver'} name='torso' />
+  <Foundation size={20} height={scale(25)} width={scale(25)} color={'silver'} name='torso' />
 );
 
 export const MoreVerticalIcon = (style): IconElement => (

@@ -20,6 +20,8 @@ import Modal from "react-native-modal";
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import {SearchableFlatList} from 'react-native-searchable-list';
 import { StackActions } from "@react-navigation/native";
+import { scale } from "react-native-size-matters";
+import OneSignal from "react-native-onesignal";
 
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
@@ -76,6 +78,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
     }
 
     async componentDidMount() {
+        OneSignal.init("43e3395b-0019-492b-b999-4321444f25ad", {kOSSettingsKeyAutoPrompt : false, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption:2});
         const { allData } = this.state;
         // Alert.alert('')
         const clean = ''
@@ -505,7 +508,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
 
                 <Divider />
                 {/* </Header> */}
-                <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
+                <Header style={{ backgroundColor: '#ffffff', height: scale(35), marginTop: 0 }}>
 
                     <View style={{ flexDirection: 'column' }}>
                         <View style={{ marginTop: 10 }}>
