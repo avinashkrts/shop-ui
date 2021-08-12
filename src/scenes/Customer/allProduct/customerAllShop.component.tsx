@@ -78,7 +78,6 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
     }
 
     async componentDidMount() {
-        OneSignal.init("43e3395b-0019-492b-b999-4321444f25ad", {kOSSettingsKeyAutoPrompt : false, kOSSettingsKeyInAppLaunchURL: false, kOSSettingsKeyInFocusDisplayOption:2});
         const { allData } = this.state;
         // Alert.alert('')
         const clean = ''

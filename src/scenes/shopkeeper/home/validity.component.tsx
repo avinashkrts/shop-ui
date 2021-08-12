@@ -67,9 +67,9 @@ export class ValidityScreen extends Component<ValidityScreenProps, ThemedCompone
                     <Text style={Styles.validity_text}>Validity of Your Subscription Will Expire in {userData.validity != null ? userData.validity : null} days</Text>
                 </View>
 
-                <TouchableOpacity style={Styles.validity_button}>
+                {/* <TouchableOpacity style={Styles.validity_button}>
                     <Text style={Styles.validity_text}>Recharge</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 {/* </Content> */}
             </SafeAreaLayout>

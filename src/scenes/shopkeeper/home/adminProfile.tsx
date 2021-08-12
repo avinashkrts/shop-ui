@@ -77,7 +77,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
         if (userData) {
             Axios({
                 method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/admin/get/' + userData.adminId
+                url: AppConstants.API_BASE_URL + '/api/admin/getadminbyshopid/' + userData.shopId
             }).then((response) => {
                 this.setState({
                     mobileNo: response.data.mobileNo,

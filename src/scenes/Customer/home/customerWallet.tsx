@@ -85,6 +85,7 @@ export class CustomerWalletScreen extends Component<CustomerWalletScreenProps, T
     render() {
         const { transactionData, onlinePay, cashPay, refund } = this.state;
         let total = 0
+        let slNo = 0
         return (
             <SafeAreaLayout style={Styles.safeArea}>
                 <Toolbar
@@ -127,7 +128,9 @@ export class CustomerWalletScreen extends Component<CustomerWalletScreenProps, T
                         }
                     >
                         {null != transactionData ? transactionData.map((data, index) => {
-                            data.paymentMode == onlinePay || data.paymentMode == cashPay ? total = total + data.amount : data.paymentMode == refund ? total = total - data.amount : null
+                           data.paymentMode == refund ? total = total + data.amount : null
+                           data.paymentMode == refund ? slNo = slNo + 1 : null
+                           if(data.paymentMode == refund ) {
                             return (
                                 <View>
                                     <Divider />
@@ -135,7 +138,7 @@ export class CustomerWalletScreen extends Component<CustomerWalletScreenProps, T
                                         <View style={index % 2 == 1 ? Styles.bill_row_1 : Styles.bill_row_2}>
                                             <View style={Styles.bill_column_1}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design}>{index + 1}</Text>
+                                                <Text style={Styles.text_design}>{slNo}</Text>
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_2}>
@@ -150,13 +153,14 @@ export class CustomerWalletScreen extends Component<CustomerWalletScreenProps, T
                                             </View>
                                             <View style={Styles.Cu_wallet_column_4}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                {data.paymentMode == onlinePay || data.paymentMode == cashPay ? <Text style={Styles.text_design_red}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
+                                                {data.paymentMode == refund ? <Text style={Styles.text_design_green}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
                                                 {/* </View> */}
                                             </View>
                                         </View>
                                     </View>
                                 </View>
                             )
+                           }
                         }
                         ) : null}
                     </ScrollView>

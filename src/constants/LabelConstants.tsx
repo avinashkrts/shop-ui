@@ -156,8 +156,19 @@ export class Placeholder {
     public static readonly STOCK = 'Stock';
 }
 
-export class AlertConstants {
-    public static readonly ALERT_USER_ID = 'Please Enter User Id';
+export class Contents {
+    public static readonly ACCEPT_ORDER = 'Your order has been accepted.';
+    public static readonly REJECT_ORDER = 'Your order has been rejected.';
+    public static readonly PACK_ORDER = 'Your order has been packed.';
+    public static readonly SHIPPED_ORDER_COURIER = 'Your order has been shipped by courier.';
+    public static readonly SHIP_SELF_PICKUP = 'Your couier has been ready to self pickup.';
+    public static readonly SHIP_DELIVERY_BOY = 'Your order has been shipped by delivery boy.';
+    public static readonly DELIVERY_PARTNER = 'Your order has been delivered by delivery partner.';
+    public static readonly DELIVERY = 'Your couier has been delivered by delivery person.';
+    public static readonly ORDER_DELIVERED = 'Order has been delivered successfully.';
+    public static readonly ORDER_NOT_DELIVERED = 'Order has not been received by customer.';
+    
+
 
  }
 

@@ -980,7 +980,7 @@ export const Styles = ScaledSheet.create({
     fontSize: 14,
     padding: 2,
     alignSelf: 'center',
-    color: '#00ff99'
+    color: 'black'
   },
 
 
@@ -1557,7 +1557,7 @@ export const Styles = ScaledSheet.create({
 
   validity_text: {
     alignSelf: 'center',
-    fontSize: 15,
+    fontSize: '18@s',
     color: 'white',
   },
 

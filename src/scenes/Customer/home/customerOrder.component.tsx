@@ -14,6 +14,8 @@ import { AppRoute } from "../../../navigation/app-routes";
 import moment from "moment";
 import Modal from "react-native-modal";
 import { CustomerOrderProductScreenProps } from "../../../navigation/customer-navigator/customerAllProduct.navigator";
+import { Notification } from "../../../components/notification";
+import { Contents } from "../../../constants/LabelConstants";
 
 export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & CustomerOrderProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -26,7 +28,8 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
             received: false,
             denied: false,
             review: '',
-            receivedCartId: ''
+            receivedCartId: '',
+            adminData: []
         }
 
         this.onRefresh = this.onRefresh.bind(this);
@@ -98,8 +101,8 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
             this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
             params.id()
         } else {
-        // Alert.alert('fg')
-        this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
+            // Alert.alert('fg')
+            this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
         }
     }
 
@@ -137,8 +140,8 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
         }
     }
 
-    handleOrderStatus(cartId) {
-        const { review, received, denied, receivedCartId } = this.state;
+    handleOrderStatus(cartId, shopId) {
+        const { review, adminData, received, denied, receivedCartId } = this.state;
         // Alert.alert(cartId + receivedCartId +'')
         if (denied && review.length < 100) {
             Alert.alert('Please write correct reason.')
@@ -154,8 +157,21 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                 }
             }).then((response) => {
                 if (null != response.data) {
-                    this.toggleModal('CLOSE', '');
-                    this.onRefresh();
+
+                    Axios({
+                        method: 'GET',
+                        url: AppConstants.API_BASE_URL + '/api/admin/get/activeadminbyshopid/' + shopId
+                    }).then((response) => {
+                        if (response.data) {
+                            Notification(response.data[0].adminId, response.data[0].userType, denied ? Contents.ORDER_NOT_DELIVERED : Contents.ORDER_DELIVERED, 'null');
+                            this.toggleModal('CLOSE', '');
+                            this.onRefresh();
+                        }
+
+                    }, (error) => {
+                        Alert.alert("Server problem")
+                    })
+
                 }
             }, (error) => {
                 Alert.alert("Server error!.")
@@ -188,7 +204,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                                 />
                             </View>
                             <View style={[Styles.center, { marginTop: 30 }]}>
-                                <Text onPress={() => { this.handleOrderStatus(item.cartId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.SUBMIT}</Text>
+                                <Text onPress={() => { this.handleOrderStatus(item.cartId, item.shopId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.SUBMIT}</Text>
                             </View>
                         </View>
                     </Modal>

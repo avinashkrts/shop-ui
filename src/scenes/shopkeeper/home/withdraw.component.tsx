@@ -18,7 +18,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
     constructor(props) {
         super(props);
         this.state = {
-            invoiceVisible: true,
+            invoiceVisible: false,
             walletPay: true,
             payOnline: false,
             planData: [],
@@ -40,7 +40,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
             branchName: '',
             panNo: '',
             adharNo: '',
-            mobileNo:'',
+            mobileNo: '',
             accountId: ''
         }
         this.onRefresh = this.onRefresh.bind(this);
@@ -81,7 +81,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
             method: 'GET',
             url: AppConstants.API_BASE_URL + '/api/account/getaccountbyuserid/' + userData.adminId
         }).then((response) => {
-            if (null != response.data) {
+            if (null != response.data && response.data.length > 0) {
                 console.log('account Data', response.data[0].accountNum)
                 this.setState({
                     accountData: response.data,
@@ -184,7 +184,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
     }
 
     handleRequest() {
-        const { accountNo, userData, confAccountNo,mobileNo, acHolderName,ifscCode,bankName,branchName,panNo,adharNo, walletPay, planId, payOnline, planCode, totalAmount } = this.state;
+        const { accountNo, isAccount, userData, confAccountNo, mobileNo, acHolderName, ifscCode, bankName, branchName, panNo, adharNo, walletPay, planId, payOnline, planCode, totalAmount } = this.state;
         // console.log('Acc Post data', accountNo, userData.adminId, userData.adminId, confAccountNo,mobileNo, acHolderName,ifscCode,bankName,branchName,panNo,adharNo);
         if (accountNo === '' || accountNo.length == 0) {
             Alert.alert('Please enter account number.')
@@ -209,7 +209,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
         } else {
             Axios({
                 method: 'POST',
-                url: AppConstants.API_BASE_URL + '/api/account/create',                
+                url: AppConstants.API_BASE_URL + '/api/account/create',
                 data: {
                     adminId: userData.adminId,
                     accountHolderName: acHolderName,
@@ -225,13 +225,13 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
                 }
             }).then((response) => {
                 if (null != response.data) {
-                    this.setState({
-                        isAccount: true
-                    })
-                    this.sendRequest();
-                   this.toggleModal();
-                   this.componentDidMount();
-                   Alert.alert('Account details added successfully.')
+                    if (isAccount) {
+                        this.sendRequest();
+                    } else {
+                        this.toggleModal();
+                        this.componentDidMount();
+                        Alert.alert('Account details added successfully please request again to withdraw.')
+                    }
                 }
             }, (error) => {
                 Alert.alert("Server error!.")
@@ -240,10 +240,10 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
     }
 
     sendRequest() {
-        const {userData, accountId, withdrawAmount} = this.state;
+        const { userData, accountId, withdrawAmount } = this.state;
         Axios({
             method: 'POST',
-            url: AppConstants.API_BASE_URL + '/api/withdraw/create',                
+            url: AppConstants.API_BASE_URL + '/api/withdraw/create',
             data: {
                 adminId: userData.adminId,
                 accountId: accountId,
@@ -255,7 +255,9 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
                 this.setState({
                     withdrawAmount: ''
                 })
-               Alert.alert('Withdraw request sent successfully.')
+                this.toggleModal();
+                this.componentDidMount();
+                Alert.alert('Withdraw request sent successfully.')
             }
         }, (error) => {
             Alert.alert("Server error!.")
@@ -394,7 +396,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
                             />
                         </View>
 
-                       
+
 
                         <View style={[Styles.withdraw_balance_box]}>
                             <Text style={[Styles.withdraw_text_head]}>{LableText.BANK_NAME}</Text>

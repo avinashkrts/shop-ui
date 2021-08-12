@@ -6,12 +6,13 @@ import { MyOrderScreenProps } from "../../../navigation/shopKeeperNavigator/orde
 import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { Styles } from "../../../assets/styles";
-import { Color, LableText } from '../../../constants/LabelConstants';
+import { Color, Contents, LableText } from '../../../constants/LabelConstants';
 import { SearchIcon, MinusIcon, RupeeIcon, PlusCircle, BackIcon, CancelIcon, PlusIcon, AddIcon, RightArrowIcon } from '../../../assets/icons';
 import { AppConstants } from "../../../constants";
 import Axios from "axios";
 import Modal from "react-native-modal";
 import { AppRoute } from "../../../navigation/app-routes";
+import { Notification } from "../../../components/notification";
 
 export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -59,7 +60,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
         }
     }
 
-    handleOrderStatus(orderStatus, cartId) {
+    handleOrderStatus(orderStatus, cartId, userId) {
         const { userData, description } = this.state;
         // Alert.alert(userData.shopId + cartId + orderStatus)
         switch (orderStatus) {
@@ -71,6 +72,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                     url: AppConstants.API_BASE_URL + '/api/cart/order/accept/' + cartId + '/' + userData.shopId,
                 }).then((response) => {
                     if (null != response.data) {
+                        Notification(userId, 2, Contents.ACCEPT_ORDER, 'You accpted this order.');
                         this._onRefresh();
                     }
                 }, (error) => {
@@ -89,6 +91,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                     }
                 }).then((response) => {
                     if (null != response.data) {
+                        Notification(userId, 2, Contents.REJECT_ORDER, 'You rejected this order');
                         this._onRefresh();
                         this.toggleModal();
                     }
@@ -119,7 +122,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
         });
     }
 
-    renderCart = ({ item }: any): ListItemElement => (
+    renderCart = ({ item, index }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
                 <View>
@@ -139,7 +142,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                                         // Alert.alert(''+ item.orderStatus)
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text onPress={() => { this.handleOrderStatus('ACCEPT', item.cartId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginBottom: 3 }]}>{LableText.ACCEPT}</Text>
+                                                <Text onPress={() => { this.handleOrderStatus('ACCEPT', item.cartId, item.userId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginBottom: 3 }]}>{LableText.ACCEPT}</Text>
                                             )
                                         }
                                     }
@@ -223,7 +226,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                                 />
                             </View>
                             <View style={[Styles.center, { marginTop: 30 }]}>
-                                <Text onPress={() => { this.handleOrderStatus('REJECT', item.cartId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.SUBMIT}</Text>
+                                <Text onPress={() => { this.handleOrderStatus('REJECT', item.cartId, item.userId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.SUBMIT}</Text>
                             </View>
                         </View>
                     </Modal>

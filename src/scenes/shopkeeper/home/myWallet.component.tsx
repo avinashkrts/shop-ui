@@ -8,13 +8,14 @@ import {
 import { MyWalletScreenProps } from "../../../navigation/home.navigator";
 import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
-import { AddIcon, BackIcon, CancelIcon, MenuIcon, MinusIcon } from "../../../assets/icons";
+import { AddIcon, BackIcon, CancelIcon, MenuIcon, MinusIcon, RupeeIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { LabelConstants } from "../../../constants/LabelConstants";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import axios from "axios";
 import moment from "moment";
 import { AppConstants } from "../../../constants";
+import { scale } from "react-native-size-matters";
 
 export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -22,7 +23,7 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
         this.state = {
             transactionData: [],
             transactionType: [],
-            userData:[]
+            userData: []
         }
 
         this.onRefresh = this.onRefresh.bind(this);
@@ -31,14 +32,16 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
     async componentDidMount() {
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
-        this.setState({ userData: userData })
 
         if (null != userData) {
-        axios(AppConstants.API_BASE_URL + "/api/transaction/gettransactionbyshopid/MILAAN721") //change it
-            .then(res => this.setState({ transactionData: res.data }))
-        axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
-            .then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
-            .catch(error => console.log(error))
+            axios(AppConstants.API_BASE_URL + "/api/transaction/gettransactionbyshopid/" + userData.shopId) //change it
+                .then(res => this.setState({ transactionData: res.data }))
+            axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
+                .then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
+                .catch(error => console.log(error))
+            axios(AppConstants.API_BASE_URL + "/api/admin/get/" + userData.adminId)
+                .then(res => this.setState({ userData: res.data}))
+                .catch(error => console.log(error))
         }
 
     }
@@ -118,7 +121,7 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
 
         </ListItem>
     )
-    
+
 
     render() {
         const { transactionData, userData } = this.state;
@@ -129,7 +132,7 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     menuIcon={MenuIcon}
-                    onRightPress={() => {}} //define a function
+                    onRightPress={() => { }} //define a function
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
@@ -165,7 +168,10 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
                 <View style={{ height: 10, width: '100%' }} />
                 {/* </Content> */}
                 <View style={Styles.wallet_main}>
-                    <View style={Styles.wallet_row}>
+                    <View style={Styles.validity}>
+                        <Text style={Styles.validity_text}>Your available wallet balance is <RupeeIcon fontSize={scale(14)} /> {userData.wallet != null ? userData.wallet : null} </Text>
+                    </View>
+                    {/* <View style={Styles.wallet_row}>
                         <View style={Styles.wallet_column_1}>
 
                             <Text style={Styles.wallet_design1}>{LabelConstants.wallet_serial_number}</Text>
@@ -206,7 +212,7 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
 
                         <Text style={Styles.wallet_paid}>--</Text>
                         <Text style={Styles.wallet_due}>{userData.wallet}</Text>
-                    </View>
+                    </View> */}
                 </View>
 
 

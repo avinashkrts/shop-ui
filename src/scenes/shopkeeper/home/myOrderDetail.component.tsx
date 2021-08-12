@@ -42,12 +42,13 @@ import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
-import { Color, LableText } from '../../../constants/LabelConstants';
+import { Color, Contents, LableText } from '../../../constants/LabelConstants';
 import Axios from 'axios';
 import Modal from "react-native-modal";
 import DatePicker from 'react-native-datepicker'
 import { MyOrderDetailScreenProps } from '../../../navigation/shopKeeperNavigator/order.navigator';
 import moment from 'moment';
+import { Notification } from '../../../components/notification';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -78,7 +79,8 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
             byDBoyDType: '',
             bySelfDType: '',
             byCourierDType: '',
-            deliveryCharge: ''
+            deliveryCharge: '',
+            userId: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -107,11 +109,9 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                 url: AppConstants.API_BASE_URL + '/api/cart/get/' + cartId
             }).then((response) => {
                 console.log('delivery date ' + cartId + ' ', moment(response.data.deliveryDate).format('DD-MM-YYYY hh:mm a'))
-                // response.data.map((item, index) => {
-                //     return(
-                //     console.log("Map data", item)
-                //     )
-                // })
+               this.setState({
+                   userId: response.data.userId
+               })
                 axios({
                     method: 'GET',
                     url: AppConstants.API_BASE_URL + '/api/address/get/' + response.data.addressId
@@ -189,7 +189,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
     }
 
     handleOrderStatus(orderStatus, cartId) {
-        const { userData, description, byDBoyDType, deliveryCharge, bySelfDType, byCourierDType, deliveryDate, deliveryType, byDeliveryBoy, byCourier, selfPickUp, dBoyName, dBoyNumber, courierName, courierId } = this.state;
+        const { userData, description, userId, byDBoyDType, deliveryCharge, bySelfDType, byCourierDType, deliveryDate, deliveryType, byDeliveryBoy, byCourier, selfPickUp, dBoyName, dBoyNumber, courierName, courierId } = this.state;
         // Alert.alert(userData.shopId + cartId + orderStatus)
         switch (orderStatus) {
             case 'ACCEPT':
@@ -199,6 +199,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                     url: AppConstants.API_BASE_URL + '/api/cart/order/accept/' + cartId + '/' + userData.shopId,
                 }).then((response) => {
                     if (null != response.data) {
+                        Notification(userId, 2, Contents.ACCEPT_ORDER, 'You accpted this order.');
                         this._onRefresh();
                     }
                 }, (error) => {
@@ -217,6 +218,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                     }
                 }).then((response) => {
                     if (null != response.data) {
+                        Notification(userId, 2, Contents.REJECT_ORDER, 'You rejected this order.');
                         this.toggleModal('CLOSE');
                         this._onRefresh();
                     }
@@ -231,6 +233,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                     url: AppConstants.API_BASE_URL + '/api/cart/packedorder/' + cartId,
                 }).then((response) => {
                     if (null != response.data) {
+                        Notification(userId, 2, Contents.PACK_ORDER, 'You packed this order.');
                         this._onRefresh();
                     }
                 }, (error) => {
@@ -259,6 +262,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                             }
                         }).then((response) => {
                             if (null != response.data) {
+                                Notification(userId, 2, Contents.SHIP_DELIVERY_BOY, 'null');
                                 this.toggleModal('CLOSE');
                                 this._onRefresh();
                             }
@@ -285,7 +289,8 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                             }
                         }).then((response) => {
                             if (null != response.data) {
-                                this.toggleModal('CLOSE');
+                        Notification(userId, 2, Contents.SHIPPED_ORDER_COURIER, 'null');
+                        this.toggleModal('CLOSE');
                                 this._onRefresh();
                             }
                         }, (error) => {
@@ -303,7 +308,8 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                         }
                     }).then((response) => {
                         if (null != response.data) {
-                            this.toggleModal('CLOSE');
+                        Notification(userId, 2, Contents.SHIP_SELF_PICKUP, 'null');
+                        this.toggleModal('CLOSE');
                             this._onRefresh();
                         }
                     }, (error) => {
@@ -318,6 +324,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                     url: AppConstants.API_BASE_URL + '/api/cart/order/delivered/' + cartId,
                 }).then((response) => {
                     if (null != response.data) {
+                        Notification(userId, 2, Contents.DELIVERY, 'null');
                         this._onRefresh();
                     }
                 }, (error) => {

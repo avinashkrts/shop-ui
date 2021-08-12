@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text } from "react-native";
+import { View, Text, RefreshControl, Alert, AsyncStorage } from "react-native";
 import { Divider, styled, ThemedComponentProps } from "react-native-ui-kitten";
 import { AdminBillBookScreenProps } from "../../../navigation/home.navigator";
 import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
@@ -9,6 +9,7 @@ import { Styles } from "../../../assets/styles";
 import { AppConstants, LabelConstants, LableText } from "../../../constants";
 import axios from "axios";
 import moment from "moment";
+import { ScrollView } from "react-native-gesture-handler";
 
 export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -26,17 +27,36 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
     }
 
     async componentDidMount() {
-        axios(AppConstants.API_BASE_URL + "/api/transaction/gettransactionbyshopid/" + "MILAAN721")
-            .then(res => this.setState({ transactionData: res.data }))
-        axios(AppConstants.API_BASE_URL + "/api/admin/get/" + "1")
-            .then(res => this.setState({ userData: res.data }))
-        axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
-            //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
-            .then((res) =>
-                res.data.PAYMENT_MODE.map((data) => data.lookUpName == "ONLINE_PAYMENT" ?
-                    this.setState({ onlinePay: data.lookUpId }) : data.lookUpName == "REFUND" ? this.setState({ refund: data.lookUpId }) : data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) : null)
-            )
-            .catch(error => console.log(error))
+        let userDetail = await AsyncStorage.getItem('userDetail');
+        let userData = JSON.parse(userDetail);
+        // Alert.alert(""+userData.userId);
+        // console.log("User Data",userData.userId)
+
+
+        const logedIn = await AsyncStorage.getItem('logedIn');
+        if (null != logedIn && logedIn === 'true') {
+
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/transaction/gettransactionbyshopid/' + userData.shopId,
+            }).then((response) => {
+                if (null != response.data) {
+                    this.setState({
+                        transactionData: response.data,
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+
+            axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
+                //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
+                .then((res) =>
+                    res.data.PAYMENT_MODE.map((data) => data.lookUpName == "ONLINE_PAYMENT" ?
+                        this.setState({ onlinePay: data.lookUpId }) : data.lookUpName == "REFUND" ? this.setState({ refund: data.lookUpId }) : data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) : null)
+                )
+                .catch(error => console.log(error))
+        }
     }
 
     onRefresh() {
@@ -47,8 +67,10 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
     }
 
     render() {
+        const { userData, single, shopName, transactionData, onlinePay, cashPay, refund } = this.state;
+        let total = 0
         return (
-            <SafeAreaLayout>
+            <SafeAreaLayout style={Styles.safeArea}>
                 <Toolbar
                     title='Bill Book'
                     backIcon={MenuIcon}
@@ -66,89 +88,88 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                 > */}
 
 
-                <View style={Styles.bill_main}>
+                <View style={[Styles.bill_main]}>
                     <View style={Styles.bill_row}>
                         <View style={Styles.bill_column_1}>
-                            <View style={Styles.bill_box}>
-                                <Text style={Styles.head_design}>{LabelConstants.customer_bill_serial_number}</Text>
-                            </View>
+                            {/* <View style={Styles.bill_box}> */}
+                            <Text style={Styles.head_design}>{LabelConstants.customer_bill_serial_number}</Text>
+                            {/* </View> */}
                         </View>
                         <View style={Styles.bill_column_2}>
-                            <View style={Styles.bill_box}>
-                                <Text style={Styles.head_design}>{LabelConstants.customer_bill_date}</Text>
-                            </View>
+                            {/* <View style={Styles.bill_box}> */}
+                            <Text style={Styles.head_design}>{LabelConstants.customer_bill_date}</Text>
+                            {/* </View> */}
                         </View>
                         <View style={Styles.bill_column_3}>
-                            <View style={Styles.bill_box}>
-                                <Text style={Styles.head_design}>{LabelConstants.customer_bill_transactinId}</Text>
-                            </View>
+                            {/* <View style={Styles.bill_box}> */}
+                            <Text style={Styles.head_design}>{LabelConstants.customer_bill_transactinId}</Text>
+                            {/* </View> */}
                         </View>
                         <View style={Styles.bill_column_4}>
-                            <View style={Styles.bill_box}>
-                                <Text style={Styles.head_design}>{LabelConstants.customer_bill_debit}</Text>
-                            </View>
+                            {/* <View style={Styles.bill_box}> */}
+                            <Text style={Styles.head_design}>{LabelConstants.customer_bill_debit}</Text>
+                            {/* </View> */}
                         </View>
                         <View style={Styles.bill_column_5}>
-                            <View style={Styles.bill_box}>
-                                <Text style={Styles.head_design}>{LabelConstants.customer_bill_credit}</Text>
-                            </View>
+                            {/* <View style={Styles.bill_box}> */}
+                            <Text style={Styles.head_design}>{LabelConstants.customer_bill_credit}</Text>
+                            {/* </View> */}
                         </View>
-                        {/* <View style={Styles.bill_column_6}>
-                            <View style={Styles.bill_box}>
-                                <Text style={Styles.head_design}>{LabelConstants.customer_bill_dues}</Text>
-                            </View>
-                        </View> */}
+
                     </View>
-
-
-                    {this.state.transactionData.map((data, index) =>
-                        //data.paymentMode== this.state.onlinePay || data.paymentMode== this.state.refund? 
-                        <View>
-                            <Divider />
-                            <View style={Styles.wallet_row}>
-                                {/* <View style={{ height: 10, width: '100%' }} /> */}
-                                <View style={Styles.bill_row_1}>
-                                    <View style={Styles.bill_column_1}>
-                                        <View style={Styles.bill_box}>
-                                            <Text style={Styles.text_design}>{index + 1}</Text>
-                                        </View>
-                                    </View>
-                                    <View style={Styles.bill_column_2}>
-                                        <View style={Styles.bill_box}>
-                                            <Text style={Styles.text_design}> {moment(data.createdOn).format('DD-MM-YYYY')}  </Text>
-                                        </View>
-                                    </View>
-                                    <View style={Styles.bill_column_3}>
-                                        <View style={Styles.bill_box}>
-                                            <Text style={Styles.text_design}>{data.transactionId}</Text>
-                                        </View>
-                                    </View>
-                                    <View style={Styles.bill_column_4}>
-                                        <View style={Styles.bill_box}>
-                                            {/* <Text style={Styles.text_design_red}> */}
-                                            {data.paymentMode == this.state.refund ? <Text style={Styles.text_design_red}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
-                                            {/* </Text> */}
-                                        </View>
-                                    </View>
-                                    <View style={Styles.bill_column_5}>
-                                        <View style={Styles.bill_box}>
-                                            <Text style={Styles.text_design_green}>
-                                                {data.paymentMode == this.state.onlinePay || data.paymentMode == this.state.cashPay ?
-                                                    <Text style={Styles.text_design_green}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
-                                            </Text>
+                    {/* <View style={Styles.bill_main}> */}
+                    <ScrollView style={Styles.content}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.refreshing}
+                                onRefresh={this.onRefresh.bind(this)}
+                            />
+                        }
+                    >
+                        {null != transactionData ? transactionData.map((data, index) => {
+                            data.paymentMode == onlinePay || data.paymentMode == cashPay ? total = total + data.amount : data.paymentMode == refund ? total = total - data.amount : null
+                            return (
+                                <View>
+                                    <Divider />
+                                    <View style={Styles.wallet_row}>
+                                        <View style={index % 2 == 1 ? Styles.bill_row_1 : Styles.bill_row_2}>
+                                            <View style={Styles.bill_column_1}>
+                                                {/* <View style={Styles.bill_box}> */}
+                                                <Text style={Styles.text_design}>{index + 1}</Text>
+                                                {/* </View> */}
+                                            </View>
+                                            <View style={Styles.bill_column_2}>
+                                                {/* <View style={Styles.bill_box}> */}
+                                                <Text style={Styles.text_design}> {moment(data.createdOn).format('DD-MM-YYYY')}  </Text>
+                                                {/* </View> */}
+                                            </View>
+                                            <View style={Styles.bill_column_3}>
+                                                {/* <View style={Styles.bill_box}> */}
+                                                <Text style={Styles.text_design}>{data.transactionId}</Text>
+                                                {/* </View> */}
+                                            </View>
+                                            <View style={Styles.bill_column_4}>
+                                                {/* <View style={Styles.bill_box}> */}
+                                                {data.paymentMode == refund ?
+                                                    <Text style={Styles.text_design_red}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
+                                                {/* </View> */}
+                                            </View>
+                                            <View style={Styles.bill_column_5}>
+                                                {/* <View style={Styles.bill_box}> */}
+                                                {data.paymentMode == onlinePay || data.paymentMode == cashPay ? <Text style={Styles.text_design_green}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
+                                                {/* </View> */}
+                                            </View>
                                         </View>
                                     </View>
                                 </View>
-                            </View>
-                        </View>
-                        //:null
-                    )}
-
-
-                    <View style={Styles.bill_box}>
-                        <View style={Styles.bill_row}>
-                            <Text style={Styles.bill_bottom_text}>Total :- </Text>
-                            <Text style={Styles.bill_amount}>{null != this.state.userData ? Math.round(this.state.userData.wallet) : null}</Text>
+                            )
+                        }
+                        ) : null}
+                    </ScrollView>
+                    <View style={[Styles.bill_box]}>
+                        <View style={[Styles.bill_row, { justifyContent: 'space-between' }]}>
+                            <Text style={[Styles.bill_bottom_text]}>Total :- </Text>
+                            <Text style={Styles.bill_amount}>{total}</Text>
                             {/* <Text style={Styles.bill_paid}>85000</Text> */}
                             {/* <Text style={Styles.bill_due}>15000</Text> */}
                         </View>
