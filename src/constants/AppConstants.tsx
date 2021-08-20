@@ -6,5 +6,5 @@ export class AppConstants {
     public static readonly USER =  'USER';
     public static readonly CONSULTANT =  'CONSULTANT';
     public static readonly NOT_LOGIN = 'NOT_LOGIN'
-    public static readonly GOOGLE_MAP_KEY = 'AIzaSyDUuDTLtPSWU5vvxbOg1Fkf2q5hrM_sl8M'
+    public static readonly GOOGLE_MAP_KEY = 'AIzaSyBCvt5t1JVFjv3HAT7Bx0CV2Hql0CDEL6o'
 }; 

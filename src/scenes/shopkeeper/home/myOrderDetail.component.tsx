@@ -396,8 +396,8 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                             </View>
                             <View style={Styles.cart_price_view}>
                                 <View style={{ flexDirection: 'row', width: '55%', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                                    <Text style={Styles.price_text}><RupeeIcon /> {item.price}</Text>
-                                    <Text style={Styles.offer_price_text}>{item.oldPrice}</Text>
+                                    <Text style={Styles.price_text}><RupeeIcon /> {item.price.toFixed(2)}</Text>
+                                    <Text style={Styles.offer_price_text}>{item.oldPrice.toFixed(2)}</Text>
                                 </View>
 
                                 <View style={[Styles.cart_quantity_view, Styles.center]}>
@@ -676,12 +676,17 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                         <View style={Styles.price_detail_2}>
                             <View style={Styles.price_detail_2_1}>
                                 <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} items)</Text>
-                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
+                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.totalAmount ? (cartData.totalAmount - cartData.gstAmount).toFixed(2) : null}</Text>
                             </View>
 
                             <View style={Styles.price_detail_2_1}>
                                 <Text style={Styles.cart_price_text_head}>Discount</Text>
-                                <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData ? cartData.discount : null}</Text>
+                                <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData.discount ? cartData.discount.toFixed(2) : null}</Text>
+                            </View>
+
+                            <View style={Styles.price_detail_2_1}>
+                                <Text style={Styles.cart_price_text_head}>GST Amount</Text>
+                                <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData.gstAmount ? cartData.gstAmount.toFixed(2) : null}</Text>
                             </View>
 
                             <View style={Styles.price_detail_2_1}>
@@ -692,7 +697,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
 
                         <View style={Styles.cart_total_view}>
                             <Text style={Styles.cart_total_text_head}>Total Amount</Text>
-                            <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
+                            <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != cartData.payableAmount ? cartData.payableAmount : null}</Text>
                         </View>
                     </View>
                     {null != cartData.review ?

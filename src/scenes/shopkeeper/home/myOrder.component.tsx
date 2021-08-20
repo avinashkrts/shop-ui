@@ -157,7 +157,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
 
                             <View style={[Styles.list_price, { width: '96%' }]}>
                                 <Text style={Styles.customer_list_price_text}>{item.mobileNo}</Text>
-                                <Text style={Styles.customer_list_price_text}>Rs: {item.totalAmount}</Text>
+                                <Text style={Styles.customer_list_price_text}>Rs: {item.payableAmount}</Text>
                                 {null != this.state.orderstatusData ? this.state.orderstatusData.map((orderStatus, oIndex) => {
                                     if (orderStatus.lookUpName === "PLACED") {
                                         if (orderStatus.lookUpId == item.orderStatus) {

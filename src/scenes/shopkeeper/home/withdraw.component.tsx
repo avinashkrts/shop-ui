@@ -185,7 +185,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
 
     handleRequest() {
         const { accountNo, isAccount, userData, confAccountNo, mobileNo, acHolderName, ifscCode, bankName, branchName, panNo, adharNo, walletPay, planId, payOnline, planCode, totalAmount } = this.state;
-        // console.log('Acc Post data', accountNo, userData.adminId, userData.adminId, confAccountNo,mobileNo, acHolderName,ifscCode,bankName,branchName,panNo,adharNo);
+        console.log('Acc Post data', userData.shopId, accountNo, userData.adminId, userData.adminId, confAccountNo,mobileNo, acHolderName,ifscCode,bankName,branchName,panNo,adharNo);
         if (accountNo === '' || accountNo.length == 0) {
             Alert.alert('Please enter account number.')
         } else if (confAccountNo === '' || confAccountNo.length == 0) {
@@ -457,7 +457,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
 
                         <View style={[Styles.recharge_button_view]}>
                             <TouchableOpacity style={[Styles.recharge_button_box]}>
-                                <Text onPress={() => { this.handleRequest() }} style={[Styles.recharge_button_text]}>Pay Now</Text>
+                                <Text onPress={() => { this.handleRequest() }} style={[Styles.recharge_button_text]}>Send Request</Text>
                             </TouchableOpacity>
                         </View>
 

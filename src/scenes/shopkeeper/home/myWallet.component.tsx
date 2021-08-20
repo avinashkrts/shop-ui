@@ -11,7 +11,7 @@ import { Toolbar } from "../../../components/toolbar.component";
 import { AddIcon, BackIcon, CancelIcon, MenuIcon, MinusIcon, RupeeIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { LabelConstants } from "../../../constants/LabelConstants";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import axios from "axios";
 import moment from "moment";
 import { AppConstants } from "../../../constants";
@@ -40,7 +40,7 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
                 .then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
                 .catch(error => console.log(error))
             axios(AppConstants.API_BASE_URL + "/api/admin/get/" + userData.adminId)
-                .then(res => this.setState({ userData: res.data}))
+                .then(res => this.setState({ userData: res.data }))
                 .catch(error => console.log(error))
         }
 
@@ -145,16 +145,16 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
                     }
                 > */}
 
-                {/* <Content style={Styles.cart_content} showsVerticalScrollIndicator={false}
+                <ScrollView style={Styles.content}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
                             onRefresh={this.onRefresh.bind(this)}
                         />
                     }
-                > */}
-                {/* <Header style={styles.header}> */}
-                {/* <View style={Styles.searchBox}>
+                >
+                    {/* <Header style={styles.header}> */}
+                    {/* <View style={Styles.searchBox}>
                         <Text style={Styles.searchIcon}><SearchIcon /></Text>
                         <TextInput
                             placeholder="Search"
@@ -162,16 +162,16 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
                         />
                     </View> */}
 
-                {/* <List data={my_Jobs}
+                    {/* <List data={my_Jobs}
                         renderItem={this.renderMyJob}
                     /> */}
-                <View style={{ height: 10, width: '100%' }} />
-                {/* </Content> */}
-                <View style={Styles.wallet_main}>
-                    <View style={Styles.validity}>
-                        <Text style={Styles.validity_text}>Your available wallet balance is <RupeeIcon fontSize={scale(14)} /> {userData.wallet != null ? userData.wallet : null} </Text>
-                    </View>
-                    {/* <View style={Styles.wallet_row}>
+                    <View style={{ height: 10, width: '100%' }} />
+                    {/* </Content> */}
+                    <View style={Styles.wallet_main}>
+                        <View style={Styles.validity}>
+                            <Text style={Styles.validity_text}>Your available wallet balance is <RupeeIcon fontSize={scale(14)} /> {userData.wallet != null ? userData.wallet : null} </Text>
+                        </View>
+                        {/* <View style={Styles.wallet_row}>
                         <View style={Styles.wallet_column_1}>
 
                             <Text style={Styles.wallet_design1}>{LabelConstants.wallet_serial_number}</Text>
@@ -213,14 +213,14 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
                         <Text style={Styles.wallet_paid}>--</Text>
                         <Text style={Styles.wallet_due}>{userData.wallet}</Text>
                     </View> */}
-                </View>
+                    </View>
 
 
 
 
 
 
-                {/* </Content> */}
+                </ScrollView>
             </SafeAreaLayout>
         );
     }

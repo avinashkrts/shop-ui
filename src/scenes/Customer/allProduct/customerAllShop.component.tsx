@@ -226,8 +226,10 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
             AsyncStorage.setItem('productCount', '1')
             this.props.navigation.navigate(AppRoute.COMBINED_PRODUCT)
         } else {
-            this.props.navigation.navigate(AppRoute.COMBINED_PRODUCT)
             this.props.navigation.dispatch(pushAction)
+            this.props.navigation.navigate(AppRoute.COMBINED_PRODUCT)
+        // Alert.alert(pCount + '')
+
         }
     }
 
@@ -431,8 +433,6 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                 key: AppConstants.GOOGLE_MAP_KEY,
                                 language: 'en',
                             }}
-                        // currentLocation={true}
-                        // currentLocationLabel='Current location'
                         />
                         {lat !== '' && long !== '' ?
                             <>
