@@ -1393,6 +1393,17 @@ export const Styles = ScaledSheet.create({
     height: 50
   },
 
+ order_list_image: {
+    margin: 10,
+    width: '15%',
+  },
+
+  order_image: {
+    width: '55@s',
+    borderRadius: 100,
+    height: '55@s',
+  },
+
   customer_list_image: {
     margin: 10,
     width: '15%',

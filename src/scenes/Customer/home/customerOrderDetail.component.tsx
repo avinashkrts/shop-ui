@@ -205,7 +205,7 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                     <View style={Styles.cart_view_1}>
                         <View style={Styles.cart_view_1_1}>
                             <View style={[Styles.cart_avatar_view, Styles.center]}>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_' + 1 + "_" + item.shopId + '_product.png' }} style={Styles.product_avatar} />
+                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_1_' + item.shopId + '_product.png' }} style={Styles.product_avatar} />
                             </View>
                         </View>
 
@@ -218,8 +218,8 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                             </View>
                             <View style={Styles.cart_price_view}>
                                 <View style={{ flexDirection: 'row', width: '55%', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                                    <Text style={Styles.price_text}><RupeeIcon /> {item.price}</Text>
-                                    <Text style={Styles.offer_price_text}>{item.oldPrice}</Text>
+                                    <Text style={Styles.price_text}><RupeeIcon /> {item.price.toFixed(2)}</Text>
+                                    <Text style={Styles.offer_price_text}>{item.offersAvailable && item.oldPrice ? item.oldPrice.toFixed(2) : null}</Text>
                                 </View>
 
                                 <View style={[Styles.cart_quantity_view, Styles.center]}>
@@ -238,13 +238,13 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                             </View>
 
                             <View>
-                                <Text style={Styles.cart_offer_text}>{item.offer}% off</Text>
+                                <Text style={Styles.cart_offer_text}>{item.offersAvailable && item.offer ? item.offer : null} {item.offersAvailable && item.offer ? '% off' : null}</Text>
                             </View>
                         </View>
                     </View>
 
                     <View>
-                        <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>{item.offersAvailable} offers available</Text>
+                        <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>{item.offersAvailable ? item.offersAvailable  : null } {item.offersAvailable ? 'offers available' : null }</Text>
                     </View>
                 </View>
                 :
@@ -291,6 +291,7 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                 >
 
                     <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
+                        <Text style={{alignSelf: 'center',  fontSize: 20, color: '#0099cc', fontWeight: 'bold' }}>{null != cartData ? cartData.shopName : null}</Text>
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Address</Text>
                         {null != addressData ?
                             <Text style={{ marginVertical: 5 }}>{addressData.city}, {addressData.landmark}, {addressData.district}, {addressData.state}, {addressData.pinCode}</Text>
@@ -337,12 +338,17 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                         <View style={Styles.price_detail_2}>
                             <View style={Styles.price_detail_2_1}>
                                 <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} items)</Text>
-                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
+                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.totalAmount && cartData.gstAmount ? (cartData.totalAmount - cartData.gstAmount).toFixed(2) : null}</Text>
                             </View>
 
                             <View style={Styles.price_detail_2_1}>
                                 <Text style={Styles.cart_price_text_head}>Discount</Text>
-                                <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData ? cartData.discount : null}</Text>
+                                <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData.discount ? cartData.discount.toFixed(2) : null}</Text>
+                            </View>
+
+                            <View style={Styles.price_detail_2_1}>
+                                <Text style={Styles.cart_price_text_head}>GST Amount</Text>
+                                <Text style={Styles.cart_price_text_data}><RupeeIcon fontSize={18} />{null != cartData.gstAmount ? cartData.gstAmount.toFixed(2) : null}</Text>
                             </View>
 
                             <View style={Styles.price_detail_2_1}>

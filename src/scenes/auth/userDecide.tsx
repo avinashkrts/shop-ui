@@ -46,6 +46,7 @@ export class UserDecide extends Component<UserDecideProps, any & State & any> {
         AsyncStorage.setItem('wishCount', '0');
         AsyncStorage.setItem('billCount', '0');
         AsyncStorage.setItem('offerCount', '0');
+
         const value = await AsyncStorage.getItem('userDetail');
         const value1 = await AsyncStorage.getItem('adminType');
         const logedIn = await AsyncStorage.getItem('logedIn');

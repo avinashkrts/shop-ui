@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CompositeNavigationProp,
   RouteProp,
@@ -45,6 +45,9 @@ import { CustomerHomeTabBar } from '../../scenes/Customer/home/customer-home-tab
 import { CustomerHomeDrawer } from '../../scenes/Customer/home/customer-home-drawer.component';
 import { CombinedProductNavigator } from '../combined-navigator/combinedAllProduct.navigator';
 import { scale } from 'react-native-size-matters';
+import { AsyncStorage } from 'react-native';
+import { LableText } from '../../constants';
+import { CustomerProfileDrawerNavigator } from './customerProfile.Navigator';
 
 type CustomerHomeDrawerNavigatorParams = {
   [AppRoute.CUSTOMER_HOME]: undefined;
@@ -103,11 +106,6 @@ export type WishListTabNavigationProps = CompositeNavigationProp<
   DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_HOME>
 >;
 
-export interface CustomerProfileScreenProps {
-  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_PROFILE>;
-  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_PROFILE>;
-}
-
 export interface CustomerAddressScreenProps {
   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ADDRESS>;
   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ADDRESS>;
@@ -133,7 +131,10 @@ export interface CustomerContactScreenProps {
   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_CONTACT>;
 }
 
-
+export interface CustomerProfileDrawerNavigationProp {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_PROFILE>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_PROFILE>;
+}
 
 export type CustomerBottomHomeScreenProps = BottomTabBarProps & {
   navigation: CustomerAllShopTabNavigationProps;
@@ -168,7 +169,7 @@ const CustomerHomeBottomNavigator = (): React.ReactElement => (
       options={{ title: 'Home', tabBarIcon: HomeIcon }}
     />
 
-<BottomTab.Screen
+    <BottomTab.Screen
       name={AppRoute.COMBINED_PRODUCT}
       component={CombinedProductNavigator}
       options={{ title: 'Product', tabBarIcon: HomeIcon }}
@@ -195,18 +196,28 @@ const CustomerHomeBottomNavigator = (): React.ReactElement => (
   </BottomTab.Navigator>
 );
 
+
+
+var login
+
+const logedIn = async () => {
+  const log = await AsyncStorage.getItem('logedIn')
+  login = log
+  console.log('data login', login)
+}
+
 export const CustomerHomeNavigator = (): React.ReactElement => (
-  // @ts-ignore: `drawerContent` also contains a DrawerNavigationProp
+  // @ts-ignore: `drawerContent` also contains a DrawerNavigationProp  
   <Drawer.Navigator drawerContent={props => <CustomerHomeDrawer{...props} />}>
     <Drawer.Screen
       name={AppRoute.CUSTOMER_HOME}
       component={CustomerHomeBottomNavigator}
-      options={{ title: 'Home', drawerIcon: HomeIcon }}
+      options={{ title: logedIn() ? 'Home' : 'Home', drawerIcon: HomeIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_PROFILE}
-      component={CustomerProfileScreen}
+      component={CustomerProfileDrawerNavigator}
       options={{ title: 'Profile', drawerIcon: ProfileIcon }}
     />
 
@@ -243,7 +254,7 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
     <Drawer.Screen
       name={AppRoute.LOGOUT}
       component={LogoutScreen}
-      options={{ title: 'Logout', drawerIcon: LogoutIcon }}
+      options={{ title: login === "true" ? 'Logout' : 'Login', drawerIcon: LogoutIcon }}
     />
 
   </Drawer.Navigator>

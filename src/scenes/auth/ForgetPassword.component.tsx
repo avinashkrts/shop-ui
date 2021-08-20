@@ -9,6 +9,7 @@ import { SafeAreaLayout, SaveAreaInset, } from '../../components/safe-area-layou
 import { Content } from 'native-base';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { Styles } from '../../assets/styles'
+import { scale } from 'react-native-size-matters';
 
 interface State {
     email: string | undefined;
@@ -97,7 +98,7 @@ export class ForgetPasswordScreen extends Component<ForgetPasswordScreenProps, a
                         <Image
                             source={require('../../assets/logo.png')}
                             resizeMode="contain"
-                            style={Styles.loginImage}
+                            style={[Styles.loginImage, {marginTop: scale(80)}]}
                         />
                         <View style={Styles.center}>
                             <Text style={Styles.loginWelcome}>{LableText.RESET_PASSWORD}</Text>

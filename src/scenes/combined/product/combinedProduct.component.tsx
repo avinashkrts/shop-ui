@@ -229,7 +229,8 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
     }
 
     navigateToCart() {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_CART)
+        const pushAction = StackActions.push(AppRoute.CUSTOMER_CART)
+        this.props.navigation.dispatch(pushAction);
     }
 
     selectCategory(id) {
@@ -288,9 +289,10 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
 
     async handleAddToCart(productId, shopId) {
         const { userData } = this.state;
+        // console.log('data in add to cart', productId, shopId, userData.userId)
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
-            // Alert.alert(''+ userData.userId + productId + logedIn)
+            // Alert.alert(''+ userData.userId + productId + logedIn + shopId)
             Axios({
                 method: 'POST',
                 url: AppConstants.API_BASE_URL + '/api/cart/create',
@@ -309,7 +311,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                     }
                 }
             }, (error) => {
-                Alert.alert("Server error.")
+                // Alert.alert("Server error.")
             });
         } else {
             this.props.navigation.navigate(AppRoute.AUTH);
@@ -711,7 +713,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                                     {null != data.offerActiveInd ? data.offerActiveInd ?
                                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
                                                             <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
+                                                            <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo ? data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4) : null}</Text>
                                                         </View> :
                                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
                                                             <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>

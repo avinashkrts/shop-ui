@@ -18,6 +18,8 @@ import axios from 'axios';
 import { Item } from 'native-base';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { AppRoute } from '../../navigation/app-routes';
+import Axios from 'axios';
 interface MyState {
   displayName: String,
   dataSource: [],
@@ -44,10 +46,14 @@ export const HomeDrawer = (props: DrawerHomeScreenProps): DrawerElement => {
       const value = await AsyncStorage.getItem('userDetail');
       if (value) {
         const user = JSON.parse(value);
-        setData(user);
-
-        console.log('data from async', user)
-
+        Axios({
+          method: 'GET',
+          url: AppConstants.API_BASE_URL + '/api/admin/getadminbyshopid/' + user.shopId
+      }).then((response) => {
+        setData(response.data);
+      },(error) => {
+        console.log(error)
+      })
       };
     }
     fetchData();
@@ -62,14 +68,14 @@ export const HomeDrawer = (props: DrawerHomeScreenProps): DrawerElement => {
           <View style={styles.ImgBgOne} />
           <View style={styles.ImgBgTwo} />
           <TouchableOpacity onPress={() => {
-            navigate("Profile", { pid: Number(data.userId) });
+            navigate(AppRoute.PROFILE);
           }}>
             <ImageBackground
               style={styles.header} borderRadius={80}
-              source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + data.userId + '_avatar.png' }}
+              source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + data.adminId + '_' + data.userType + '_avatar.png' }}
             />
           </TouchableOpacity>
-          <Text style={styles.displayName}>{data.displayName}</Text>
+          <Text style={styles.displayName}>{data.firstName} {data.lastName}</Text>
         </View>
       </View>
     )

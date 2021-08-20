@@ -18,6 +18,7 @@ import { Item } from 'native-base';
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { CustomerDrawerHomeScreenProps } from '../../../navigation/customer-navigator/customerHome.navigator';
+import { AppRoute } from '../../../navigation/app-routes';
 interface MyState {
   displayName: String,
   dataSource: [],
@@ -37,11 +38,14 @@ interface MyState {
 
 export const CustomerHomeDrawer = (props: CustomerDrawerHomeScreenProps): DrawerElement => {
   const [data, setData] = useState({ hits: [] });
+  const [logedIn, setLogedIn] = useState('');
   const { navigate } = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
       const value = await AsyncStorage.getItem('userDetail');
+      const logIn = await AsyncStorage.getItem('logedIn');
+      setLogedIn(JSON.parse(logIn));
       if (value) {
         const user = JSON.parse(value);
         setData(user);
@@ -62,18 +66,19 @@ export const CustomerHomeDrawer = (props: CustomerDrawerHomeScreenProps): Drawer
           <View style={styles.ImgBgOne} />
           <View style={styles.ImgBgTwo} />
           <TouchableOpacity onPress={() => {
-            navigate("Profile", { pid: Number(data.userId) });
+            navigate(AppRoute.CUSTOMER_PROFILE);
           }}>
             <ImageBackground
               style={styles.header} borderRadius={80}
-              source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + data.userId + '_avatar.png' }}
+              source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + data.userId + '_' + data.userType + '_avatar.png' }}
             />
           </TouchableOpacity>
-          <Text style={styles.displayName}>{data.displayName}</Text>
+          <Text style={styles.displayName}>{data.firstName} {data.lastName}</Text>
         </View>
       </View>
     )
   };
+
   const onMenuItemSelect = (index: number): void => {
     const selectedTabRoute: string = props.state.routeNames[index];
     props.navigation.navigate(selectedTabRoute);
@@ -85,8 +90,7 @@ export const CustomerHomeDrawer = (props: CustomerDrawerHomeScreenProps): Drawer
     return {
       routeName: route.name,
       title: options.title,
-      icon: options.drawerIcon,
-
+      icon: options.drawerIcon
     };
   };
 
@@ -99,6 +103,7 @@ export const CustomerHomeDrawer = (props: CustomerDrawerHomeScreenProps): Drawer
   )
 
 };
+
 
 const styles = StyleSheet.create({
   ImgBgTwo: {

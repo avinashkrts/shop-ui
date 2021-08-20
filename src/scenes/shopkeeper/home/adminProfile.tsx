@@ -11,6 +11,7 @@ import { AppConstants, LableText } from "../../../constants";
 import { Content } from "native-base";
 import Axios from "axios";
 import { Value } from "react-native-reanimated";
+import { AppRoute } from "../../../navigation/app-routes";
 
 export class AdminProfileScreen extends Component<AdminProfileScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -46,33 +47,15 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
             wallet: '',
             gstNumber: '',
             street: ''
-
-
         }
 
         this.onRefresh = this.onRefresh.bind(this);
     }
 
     async componentDidMount() {
-        // Axios({
-        //     method: 'GET',
-        //     url: 'http://192.168.0.106:8082/api/user/get/1'
-        // }).then((response) => {
-        //     this.setState({
-        //         firstName: response.data.firstName,
-        //         emailId: response.data.emailId,
-        //         lastName: response.data.lastName,
-        //         lastLoginDate: response.data.lastLoginDate,
-        //         dob: response.data.dob,
-        //         mobileNo: response.data.mobileNo,
-        //     })
-        // }, (error) => {
-
-        // });
         let userDetail = await AsyncStorage.getItem('userDetail');
         let logedIn = await AsyncStorage.getItem('logedIn');
         let userData = JSON.parse(userDetail);
-        // Alert.alert(userData.userId)
 
         if (userData) {
             Axios({
@@ -95,7 +78,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                     postOffice: response.data.adminAddress[0].postOffice,
                     policeStation: response.data.adminAddress[0].policeStation,
                     landmark: response.data.adminAddress[0].landmark,
-                    userId: response.data.userId,
+                    userId: response.data.adminId,
                     adminId: response.data.adminId,
                     adharNumber: String(response.data.adharNumber),
                     panNumber: response.data.panNumber,
@@ -144,7 +127,9 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
                 >
                     <View style={[Styles.profile, Styles.center]}>
                         <View style={Styles.profile_image}>
-                            <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
+                            <TouchableOpacity onPress={() => { this.props.navigation.navigate(AppRoute.ADD_IMAGE) }}>
+                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + userId + '_' + userType + '_avatar.png'}} style={Styles.profile_avatar} />
+                            </TouchableOpacity>
                         </View>
                     </View>
 

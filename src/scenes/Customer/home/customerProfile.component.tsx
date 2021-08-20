@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, RefreshControl, Alert, AsyncStorage } from "react-native";
 import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
-import { CustomerProfileScreenProps } from "../../../navigation/customer-navigator/customerHome.navigator";
+import { CustomerProfileScreenProps } from "../../../navigation/customer-navigator/customerProfile.Navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { BackIcon, MenuIcon } from "../../../assets/icons";
@@ -11,6 +11,7 @@ import { AppConstants, LableText } from "../../../constants";
 import { Content } from "native-base";
 import Axios from "axios";
 import { getFirstInstallTime } from "react-native-device-info";
+import { AppRoute } from "../../../navigation/app-routes";
 
 export class CustomerProfileScreen extends Component<CustomerProfileScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -61,6 +62,8 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                     lastLoginDate: response.data.lastLoginDate,
                     dob: response.data.dob,
                     mobileNo: String(response.data.mobileNo),
+                    userId: userData.userId,
+                    userType: userData.userType
                 })
             }, (error) => {
 
@@ -94,7 +97,7 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
     }
 
     handleEditSubmit() {
-        const { isEditable, firstName,mobileNo, lastName, id, city, emailId, shopId, userId, postOffice, policeStation, district, landmark, pinCode, state, country, latitude, longitude, userType } = this.state
+        const { isEditable, firstName, mobileNo, lastName, id, city, emailId, shopId, userId, postOffice, policeStation, district, landmark, pinCode, state, country, latitude, longitude, userType } = this.state
         // Alert.alert("Clicked"+ userId)
         console.log(isEditable, city, postOffice, policeStation, district, landmark, pinCode, state, country, latitude, longitude, userType);
         Axios({
@@ -129,13 +132,13 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
             method: 'PUT',
             url: AppConstants.API_BASE_URL + '/api/user/update',
             data: {
-                id: String(userId),               
+                id: String(userId),
                 emailId: emailId,
                 firstName: firstName,
                 lastName: lastName,
             }
         }).then((response) => {
-            
+
             this.setState({
                 isEditable: false
             })
@@ -176,7 +179,9 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
                 >
                     <View style={[Styles.profile, Styles.center]}>
                         <View style={Styles.profile_image}>
-                            <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
+                            <TouchableOpacity onPress={() => { this.props.navigation.navigate(AppRoute.ADD_CUSTOMER_IMAGE) }}>
+                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + userId + '_' + userType + '_avatar.png' }} style={Styles.profile_avatar} />
+                            </TouchableOpacity>
                         </View>
                     </View>
 

@@ -21,9 +21,10 @@ import Axios from 'axios';
 import { LabelConstants } from '../../constants/LabelConstants';
 import { AsyncStorage } from 'react-native';
 import { AppNavigator } from '../../navigation/app.navigator';
-import { AppRoute } from 'src/navigation/app-routes';
+import { AppRoute } from '../../navigation/app-routes';
 import {SignInScreen} from '.'
 import { LogoutScreenProps } from '../../navigation/auth.navigator';
+import { StackActions } from '@react-navigation/core';
 
 type Mystate = {
 
@@ -39,9 +40,11 @@ export class LogoutScreen extends Component<LogoutScreenProps & SafeAreaLayoutEl
 
   componentDidMount() {
     const data = {};
-    AsyncStorage.setItem('logedIn', JSON.stringify(false))
+    const pushAction = StackActions.push(AppRoute.AUTH);
+    AsyncStorage.setItem('logedIn', JSON.stringify(''))
+    AsyncStorage.setItem('userId', JSON.stringify(''))
     AsyncStorage.setItem('userDetail', JSON.stringify(data), () => {      
-      this.props.navigation.navigate('Auth')
+      this.props.navigation.dispatch(pushAction)
     });
 
   }

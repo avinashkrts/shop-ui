@@ -45,6 +45,7 @@ import { Styles } from '../../../assets/styles'
 import { Color } from '../../../constants/LabelConstants';
 import Axios from 'axios';
 import { CustomerCartScreenProps } from '../../../navigation/customer-navigator/customerHome.navigator';
+import { StackActions } from '@react-navigation/core';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -151,7 +152,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         // const { cartId } = this.state;
         // Alert.alert(productId + cartId)
         axios({
-            method: 'GET',
+            method: 'PUT',
             url: AppConstants.API_BASE_URL + '/api/cart/cartincrease/' + cartId + '/' + productId
         }).then((response) => {
             this._onRefresh();
@@ -166,7 +167,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
             Alert.alert("You have already selected minimum quantity.")
         } else {
             axios({
-                method: 'GET',
+                method: 'PUT',
                 url: AppConstants.API_BASE_URL + '/api/cart/cartdecrease/' + cartId + '/' + productId
             }).then((response) => {
                 this._onRefresh();
@@ -189,7 +190,8 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
 
     handlePlaceOrder(cartId, totalAmt) {
         // Alert.alert(''+cartId + " " + totalAmt)
-        this.props.navigation.navigate(AppRoute.PAYMENT, { cartId: String(cartId), totalAmt: String(totalAmt) })
+        const pushAction = StackActions.push(AppRoute.PAYMENT, { cartId: String(cartId), totalAmt: String(totalAmt) })
+        this.props.navigation.dispatch(pushAction);
     }
 
     renderCart = ({ item }: any): ListItemElement => (
@@ -214,8 +216,8 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                             </View>
                             <View style={Styles.cart_price_view}>
                                 <View style={{ flexDirection: 'row', width: '55%', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                                    <Text style={Styles.price_text}><RupeeIcon /> {item.price}</Text>
-                                    <Text style={Styles.offer_price_text}>{item.oldPrice}</Text>
+                                    <Text style={Styles.price_text}><RupeeIcon /> {item.price.toFixed(2)}</Text>
+                                    <Text style={Styles.offer_price_text}>{item.oldPrice.toFixed(2)}</Text>
                                 </View>
 
                                 <View style={Styles.cart_quantity_view}>
@@ -268,12 +270,17 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                 <View style={Styles.price_detail_2}>
                                     <View style={Styles.price_detail_2_1}>
                                         <Text style={Styles.cart_price_text_head}>Price ({null != item.productList ? item.productList.length : null} items)</Text>
-                                        <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{item.totalAmount}</Text>
+                                        <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{item.totalAmount ? (item.totalAmount - item.gstAmount).toFixed(2) : null}</Text>
                                     </View>
 
                                     <View style={Styles.price_detail_2_1}>
                                         <Text style={Styles.cart_price_text_head}>Discount</Text>
-                                        <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != item ? item.discount : null}</Text>
+                                        <Text style={Styles.cart_price_text_data}> - <RupeeIcon fontSize={18} />{null != item ? item.discount.toFixed(2) : null}</Text>
+                                    </View>
+
+                                    <View style={Styles.price_detail_2_1}>
+                                        <Text style={Styles.cart_price_text_head}>GST Amount</Text>
+                                        <Text style={Styles.cart_price_text_data}>{item.gstAmount ? item.gstAmount.toFixed(2) : null}</Text>
                                     </View>
 
                                     <View style={Styles.price_detail_2_1}>
@@ -284,23 +291,23 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
 
                                 <View style={Styles.cart_total_view}>
                                     <Text style={Styles.cart_total_text_head}>Total Amount</Text>
-                                    <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != item ? item.totalAmount : null}</Text>
+                                    <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != item ? item.payableAmount : null}</Text>
                                 </View>
                                 <View style={Styles.price_detail_2}>
-                                    <Text style={Styles.cart_price_text_data}>You will save <RupeeIcon fontSize={18} />{null != item ? item.discount : null} on this order.</Text>
+                                    <Text style={Styles.cart_price_text_data}>You will save <RupeeIcon fontSize={18} />{null != item ? item.discount.toFixed(2) : null} on this order.</Text>
                                 </View>
                             </View>
 
                             <View style={Styles.cart_bottom_box_view}>
                                 <View style={{ justifyContent: 'center', margin: 10 }}>
-                                    <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />{null != item ? item.totalAmount : null}</Text>
+                                    <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />{null != item ? item.payableAmount : null}</Text>
                                     <TouchableOpacity onPress={() => { }}>
                                         {/* <Text style={Styles.cart_price_text_data}>View price details</Text> */}
                                     </TouchableOpacity>
                                 </View>
 
                                 <View style={{ justifyContent: 'center', margin: 10 }}>
-                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(item.cartId, item.totalAmount) }}>
+                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(item.cartId, item.payableAmount) }}>
                                         <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -323,7 +330,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
     }
 
     continiueShopping() {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_PRODUCT)
+        this.props.navigation.navigate(AppRoute.COMBINED_PRODUCT)
     }
 
     addItem() { }
@@ -389,12 +396,17 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                 <View style={Styles.price_detail_2}>
                                     <View style={Styles.price_detail_2_1}>
                                         <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} items)</Text>
-                                        <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
+                                        <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.totalAmount  ? (cartData.totalAmount - cartData.gstAmount).toFixed(2) : null}</Text>
                                     </View>
 
                                     <View style={Styles.price_detail_2_1}>
                                         <Text style={Styles.cart_price_text_head}>Discount</Text>
-                                        <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData ? cartData.discount : null}</Text>
+                                        <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData.discount ? cartData.discount.toFixed(2) : null}</Text>
+                                    </View>
+
+                                    <View style={Styles.price_detail_2_1}>
+                                        <Text style={Styles.cart_price_text_head}>GST Amount</Text>
+                                        <Text style={Styles.cart_price_text_data}><RupeeIcon fontSize={18} />{null != cartData.gstAmount ? (cartData.gstAmount).toFixed(2) : null}</Text>
                                     </View>
 
                                     <View style={Styles.price_detail_2_1}>
@@ -405,10 +417,10 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
 
                                 <View style={Styles.cart_total_view}>
                                     <Text style={Styles.cart_total_text_head}>Total Amount</Text>
-                                    <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != cartData ? cartData.totalAmount : null}</Text>
+                                    <Text style={Styles.cart_total_text_head}><RupeeIcon fontSize={18} />{null != cartData.payableAmount ? cartData.payableAmount : null}</Text>
                                 </View>
                                 <View style={Styles.price_detail_2}>
-                                    <Text style={Styles.cart_price_text_data}>You will save <RupeeIcon fontSize={18} />{null != cartData ? cartData.discount : null} on this order.</Text>
+                                    <Text style={Styles.cart_price_text_data}>You will save <RupeeIcon fontSize={18} />{null != cartData.discount ? cartData.discount.toFixed(2) : null} on this order.</Text>
                                 </View>
                             </View>
 
@@ -432,14 +444,14 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                     <>
                         <View style={Styles.cart_bottom_box_view}>
                             <View>
-                                <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />{null != cartData ? cartData.totalAmount : null}</Text>
+                                <Text style={Styles.cart_bottom_box_price_text}><RupeeIcon fontSize={25} />{null != cartData ? cartData.payableAmount : null}</Text>
                                 <TouchableOpacity onPress={() => { }}>
                                     {/* <Text style={Styles.cart_price_text_data}>View price details</Text> */}
                                 </TouchableOpacity>
                             </View>
 
                             <View>
-                                <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(cartData.cartId, cartData.totalAmount) }}>
+                                <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(cartData.cartId, cartData.payableAmount) }}>
                                     <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
                                 </TouchableOpacity>
                             </View>

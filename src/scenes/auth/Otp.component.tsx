@@ -8,6 +8,7 @@ import { SafeAreaLayout, SaveAreaInset, } from '../../components/safe-area-layou
 import { Content } from 'native-base';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { Styles } from '../../assets/styles'
+import { scale } from 'react-native-size-matters';
 
 interface State {
     email: string | undefined;
@@ -85,11 +86,11 @@ export class OtpScreen extends Component<OtpScreenProps, any & State & any> {
                         <Image
                             source={require('../../assets/logo.png')}
                             resizeMode="contain"
-                            style={Styles.loginImage}
+                            style={[Styles.loginImage, {marginBottom: scale(50), marginTop: scale(80)}]}
                         />
-                        <View style={Styles.center}>
+                        {/* <View style={Styles.center}>
                             <Text style={Styles.loginWelcome}>{LableText.WELCOME_TEXT}</Text>
-                        </View>
+                        </View> */}
 
                         <View style={Styles.inputTextView}>
                             <TextInput

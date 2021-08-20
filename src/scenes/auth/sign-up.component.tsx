@@ -10,6 +10,7 @@ import axios from 'axios';
 import { Styles } from '../../assets/styles'
 import { AppConstants, Color, LableText, Placeholder } from '../../constants';
 import DeviceInfo from 'react-native-device-info';
+import { scale } from 'react-native-size-matters';
 
 const data = [
   { text: 'Candidate' },
@@ -90,7 +91,7 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
   };
 
   render() {
-    const { firstName, lastName, mobileNo, pwd } = this.state;
+    const { firstName,passwordVisible, lastName, mobileNo, pwd } = this.state;
     return (
       <SafeAreaLayout
         style={Styles.safeArea}
@@ -100,11 +101,11 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
             <Image
               source={require('../../assets/logo.png')}
               resizeMode="contain"
-              style={Styles.loginImage}
+              style={[Styles.loginImage, {marginBottom: scale(50), marginTop: scale(70)}]}
             />
-            <View style={Styles.center}>
+            {/* <View style={Styles.center}>
               <Text style={[Styles.loginWelcome, { paddingTop: 10 }]}>{LableText.WELCOME_TEXT}</Text>
-            </View>
+            </View> */}
 
             <View style={Styles.inputTextView}>
               <TextInput
@@ -135,6 +136,7 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
 
             <View style={Styles.inputTextView}>
               <TextInput
+              secureTextEntry={passwordVisible}
                 style={Styles.inputTextWithIcon}
                 placeholder={Placeholder.PASSWORD}
                 value={pwd}

@@ -13,6 +13,8 @@ import { Styles } from '../../assets/styles'
 import DeviceInfo from 'react-native-device-info';
 import base64 from 'react-native-base64'
 import OneSignal from 'react-native-onesignal';
+import { StackActions } from '@react-navigation/core';
+import { scale } from 'react-native-size-matters';
 
 interface State {
   email: string | undefined;
@@ -25,11 +27,13 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     super(props);
 
     this.state = {
-      emailId: 'krishna41@milaan.com',
-      pwd: 'Milaan@123',
+      emailId: '',
+      pwd: '',
       passwordVisible: true,
       allUserType: [],
       deviceId: '',
+      admin: '',
+      customer: ''
     }
 
     this.onFormSubmit = this.onFormSubmit.bind(this);
@@ -47,20 +51,36 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
       method: 'GET',
       url: AppConstants.API_BASE_URL + '/api/lookup/getallusertype',
     }).then((response) => {
-      console.log('LookUp', response.data);
-      this.setState({
-        allUserType: response.data,
-        deviceId: deviceId
+
+      response.data.map((data, index) => {
+        if (data.lookUpName === 'ADMIN') {
+          AsyncStorage.setItem('adminType', JSON.stringify(data.lookUpId));
+          this.setState({
+            allUserType: response.data,
+            deviceId: deviceId,
+            admin: data.lookUpId
+          })
+        } else if (data.lookUpName === 'CUSTOMER') {
+          AsyncStorage.setItem('customerType', JSON.stringify(data.lookUpId));
+          this.setState({
+            allUserType: response.data,
+            deviceId: deviceId,
+            customer: data.lookUpId
+          })
+        }
       })
+
+
     },
       (error) => {
         Alert.alert("Didn't got data from server")
       });
   }
+
   async onFormSubmit() {
-    const { emailId, pwd, allUserType, deviceId } = this.state
-    const deviceState = await OneSignal.getDeviceState();    
-    console.log('one signal', deviceState.userId)
+    const { emailId, pwd, admin, customer, allUserType, deviceId } = this.state
+    const deviceState = await OneSignal.getDeviceState();
+
     if (emailId == null || emailId === '') {
       Alert.alert("Please enter Email Id.");
     } else if (pwd == null || pwd === '') {
@@ -70,33 +90,27 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
         method: 'POST',
         url: AppConstants.API_BASE_URL + '/api/user/login',
         data: {
-          "emailId": emailId,
-          "pwd": base64.encode(pwd),
-          "deviceId": deviceId,
-          "playerId": deviceState.userId
+          emailId: emailId,
+          pwd: base64.encode(pwd),
+          deviceId: deviceId,
+          playerId: deviceState.userId
         },
       }).then((response) => {
         if (response.data) {
-          if (response.data.token.length >= 30) {
-            allUserType.map((data, index) => {
-              if (response.data.userType == data.lookUpId) {
-                console.log('LookUp Name', data.lookUpName)
-                if (data.lookUpName == 'ADMIN') {
-                  AsyncStorage.setItem("logedIn", JSON.stringify(true))
-                  AsyncStorage.setItem('adminType', JSON.stringify(data.lookUpId));
-                  AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-                    this.navigateHome();
-                  })
-                } else if (data.lookUpName == 'CUSTOMER') {
-                  AsyncStorage.setItem("logedIn", JSON.stringify(true))
-                  AsyncStorage.setItem('customerType', JSON.stringify(data.lookUpId));
-                  AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-                    this.navigateCustomerHome();
-                  })
-                }
-              }
-            })
-
+          if (response.data.token.length > 30) {
+            if (response.data.userType == admin) {
+              AsyncStorage.setItem("logedIn", JSON.stringify(true))
+              AsyncStorage.setItem("userId", JSON.stringify(response.data.adminId))
+              AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
+                this.navigateHome();
+              })
+            } else if (response.data.userType == customer) {
+              AsyncStorage.setItem("logedIn", JSON.stringify(true))
+              AsyncStorage.setItem("userId", JSON.stringify(response.data.userId))
+              AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
+                this.navigateCustomerHome();
+              })
+            }
           }
         } else {
           Alert.alert("Please enter a valid email ID and password.")
@@ -108,11 +122,13 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
   };
 
   navigateHome() {
-    this.props.navigation.navigate(AppRoute.USER_DECIDE);
+    const pushAction = StackActions.push(AppRoute.HOME);
+    this.props.navigation.dispatch(pushAction);
   };
 
   navigateCustomerHome() {
-    this.props.navigation.navigate(AppRoute.USER_DECIDE);
+    const pushAction = StackActions.push(AppRoute.CUSTOMER_HOME);
+    this.props.navigation.dispatch(pushAction);
   };
 
   navigateINFORMATION() {
@@ -128,7 +144,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
   };
 
   render() {
-    const { emailId, pwd } = this.state;
+    const { emailId, passwordVisible, pwd } = this.state;
     return (
       <SafeAreaLayout
         style={Styles.safeArea}
@@ -138,12 +154,12 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
             <Image
               source={require('../../assets/logo.png')}
               resizeMode="contain"
-              style={Styles.loginImage}
+              style={[Styles.loginImage, {marginBottom: scale(50), marginTop: scale(80)}]}
             />
 
-            <View style={Styles.center}>
+            {/* <View style={Styles.center}>
               <Text style={Styles.loginWelcome}>{LableText.WELCOME_TEXT}</Text>
-            </View>
+            </View> */}
 
             <View style={Styles.inputTextView}>
               <TextInput
@@ -156,6 +172,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
 
             <View style={Styles.inputTextView}>
               <TextInput
+              secureTextEntry={passwordVisible}
                 style={Styles.inputTextWithIcon}
                 placeholder={Placeholder.PASSWORD}
                 value={pwd}

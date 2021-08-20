@@ -667,8 +667,8 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                                     </View>
                                                     {null != data.offerActiveInd ? data.offerActiveInd ?
                                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
+                                                            <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo? data.offerPercent : null} % off</Text>
+                                                            <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo? data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4) : null}</Text>
                                                         </View> :
                                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
                                                             <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>

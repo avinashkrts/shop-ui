@@ -186,7 +186,8 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
     }
 
     navigateToCart() {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_CART)
+        const pushAction = StackActions.push(AppRoute.CUSTOMER_CART)
+        this.props.navigation.dispatch(pushAction);
     }
 
     onRefresh() {

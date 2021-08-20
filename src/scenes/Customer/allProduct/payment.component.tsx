@@ -121,7 +121,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
         let shopId = await AsyncStorage.getItem('shopId');
         let userData = JSON.parse(userDetail);
         const cartId = this.props.route.params.cartId;
-        const totalAmt = Math.ceil(this.props.route.params.totalAmt)
+        const totalAmt = this.props.route.params.totalAmt
         // Alert.alert(userData.emailId)
         this.setState({
             shopId: shopId,
@@ -269,7 +269,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
         console.log('data', orderType, paymentType, homeDelivery, selfPick, cashDelivery, payOnline, cashId, onlineId, homeId, selfId, cartId);
         if (payOnline) {
             axios({
-                method: 'POST',
+                method: 'PUT',
                 url: AppConstants.API_BASE_URL + '/api/cart/placeorder',
                 data: {
                     transactionType: paymentType,
@@ -292,7 +292,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             })
         } else if (cashDelivery) {
             axios({
-                method: 'POST',
+                method: 'PUT',
                 url: AppConstants.API_BASE_URL + '/api/cart/placeorder',
                 data: {
                     transactionType: paymentType,
@@ -379,7 +379,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 content: "Order received of Rs. " + cartData.totalAmount
             }
         }).then((response) => {
-            Alert.alert("Order placed.")
+            // Alert.alert("Order placed.")
             this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER_PRODUCT, { id: this.backFunction.bind(this) })
         }, (error) => {
             Alert.alert("Server problem")
@@ -590,7 +590,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 </Content>
                 <View>
                     <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder() }}>
-                        <Text style={Styles.cart_bottom_box_button_text}>Place Order "{totalAmt}"</Text>
+                        <Text style={Styles.cart_bottom_box_button_text}>Place Order {totalAmt}</Text>
                     </TouchableOpacity>
                 </View>
                 <Divider />

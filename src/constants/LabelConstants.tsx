@@ -1,3 +1,5 @@
+import { AsyncStorage } from "react-native";
+
 /*------------------------------------------------------------COLOR CODE------------------------------------------------------------*/
 export class Color {
     public static readonly COLOR = '#0099cc';
@@ -18,7 +20,16 @@ export class Padding {
 }
 
 /*------------------------------------------------------------TEXT------------------------------------------------------------*/
+var logIn;
+
+const logedIn = async () => {
+    const value = await AsyncStorage.getItem('logedIn')
+    logIn = value
+    console.log('data login', logIn)
+}
+
 export class LableText {
+    public static readonly LOGOUT = logedIn() && Boolean(logIn) ? 'Logout' : 'Login';
     public static readonly USER = 'user';
     public static readonly ACCEPT = 'Accept';
     public static readonly YOUR_PLAN_CODE = 'Plan Code';

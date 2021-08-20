@@ -47,7 +47,7 @@ import {
 
 } from '../assets/icons';
 import { AllItemNavigator } from './shopKeeperNavigator/allItem.Navigator';
-import { AdminBillBookScreen, AdminProfileScreen, DailyMessageScreen, MyOrderScreen, MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, PayNowScreen, RechargeScreen, StockListScreen, ValidityScreen, WithdrawScreen } from '../scenes/shopkeeper/home';
+import { AdminBillBookScreen, AdminProfileScreen, DailyMessageScreen, MyOrderScreen, MyWalletScreen, NotificationScreen, OffersScreen, OutOfStockScreen, RechargeScreen, StockListScreen, ValidityScreen, WithdrawScreen } from '../scenes/shopkeeper/home';
 // import { AddProductScreen } from '../scenes/home/addproduct.component';
 import { AddCustomerScreen, CustomerDetailScreen, CustomerScreen } from '../scenes/shopkeeper/customer';
 import { AddEducationScreen } from '../scenes/profile';
@@ -56,6 +56,8 @@ import { CustomerContactScreen } from '../scenes/Customer/home';
 import { AddProductScreen } from '../scenes/shopkeeper/stock';
 import { AddProductNavigator } from './addProductNavigator.navigator';
 import { OrderNavigator } from './shopKeeperNavigator/order.navigator';
+import { ProfileDrawerNavigator } from './shopKeeperNavigator/profile.Navigator';
+import { AsyncStorage } from 'react-native';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
@@ -126,10 +128,10 @@ export interface AboutScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.CONTACT>;
 }
 
-// export interface ProfileScreenProps {
-//   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
-//   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
-// }
+export interface ProfileDrawerNavigationProp {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
+}
 
 // export interface ProfileEditScreenProps {
 //   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.PROFILEEDIT>;
@@ -191,11 +193,6 @@ export interface AddProductNavigatorScreenProps {
 //   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ASKFREEQUESTION>;
 //   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ASKFREEQUESTION>;
 // }
-
-export interface ProfileScreenProps {
-  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
-  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.PROFILE>;
-}
 
 // export interface MyOrderScreenProps {
 //   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.MY_ORDER>;
@@ -335,18 +332,27 @@ const HomeBottomNavigator = (): React.ReactElement => (
   </BottomTab.Navigator>
 );
 
+var login
+
+const logedIn = async () => {
+  const log = await AsyncStorage.getItem('logedIn')
+  login = log
+  console.log('data login', login)
+}
+
 export const HomeNavigator = (): React.ReactElement => (
   // @ts-ignore: `drawerContent` also contains a DrawerNavigationProp
+
   <Drawer.Navigator drawerContent={props => <HomeDrawer{...props} />}>
     <Drawer.Screen
       name={AppRoute.HOME}
       component={HomeBottomNavigator}
-      options={{ title: 'Home', drawerIcon: HomeIcon }}
+      options={{ title: logedIn() ? 'Home' : 'Home', drawerIcon: HomeIcon }}
     />
 
     <Drawer.Screen
       name={AppRoute.ADMIN_PROFILE}
-      component={AdminProfileScreen}
+      component={ProfileDrawerNavigator}
       options={{ title: 'Profile', drawerIcon: AccountsIcon }}
     />
 
@@ -457,7 +463,7 @@ export const HomeNavigator = (): React.ReactElement => (
     <Drawer.Screen
       name={AppRoute.LOGOUT}
       component={LogoutScreen}
-      options={{ title: 'Logout', drawerIcon: LogoutIcon }}
+      options={{ title: login === "true" ? 'Logout' : 'Login', drawerIcon: LogoutIcon }}
     />
 
   </Drawer.Navigator>

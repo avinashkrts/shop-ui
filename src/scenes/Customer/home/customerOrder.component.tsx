@@ -16,6 +16,7 @@ import Modal from "react-native-modal";
 import { CustomerOrderProductScreenProps } from "../../../navigation/customer-navigator/customerAllProduct.navigator";
 import { Notification } from "../../../components/notification";
 import { Contents } from "../../../constants/LabelConstants";
+import { StackActions } from "@react-navigation/core";
 
 export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & CustomerOrderProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -98,16 +99,17 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
         const { params } = this.props.route;
         // console.log(this.props.route)
         if (params) {
-            this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
+            this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
             params.id()
         } else {
             // Alert.alert('fg')
-            this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
+            this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
         }
     }
 
     handleCartSubmit(cartId) {
-        this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER_DETAIL, { cartId: String(cartId) })
+        const pushAction = StackActions.push(AppRoute.CUSTOMER_ORDER_DETAIL, { cartId: String(cartId) })
+        this.props.navigation.dispatch(pushAction);
     }
 
     toggleModal(orderStatus, receivedCartId) {
@@ -211,12 +213,12 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
 
                     <View style={Styles.order_row}>
                         <TouchableOpacity onPress={() => { this.handleCartSubmit(item.cartId) }}>
-                            <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.userId + '_avatar.png' }} style={Styles.order_cart} />
+                            <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/shop/' + item.adminId + '_1_' + item.shopId + '_shop.png' }} style={Styles.order_cart} />
                         </TouchableOpacity>
                         <View style={Styles.order_column}>
-                            <Text style={Styles.order_text}>{item.userName}</Text>
-                            <Text style={Styles.order_text}>{item.mobileNo}</Text>
-                            <Text style={[Styles.order_column]}>Total Amount: {item.totalAmount}</Text>
+                            <Text style={Styles.order_text}>{item.shopName}</Text>
+                            {/* <Text style={Styles.order_text}>{item.mobileNo}</Text> */}
+                            <Text style={[Styles.order_column]}>Total Amount: {item.payableAmount}</Text>
                         </View>
                     </View>
 

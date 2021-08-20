@@ -22,13 +22,19 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
             userData: [],
             modalVisible: false,
             description: '',
-            orderstatusData: []
+            orderstatusData: [],
+            customerType: ''
         }
     }
     async componentDidMount() {
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
-        this.setState({ userData: userData })
+        let customerType = await AsyncStorage.getItem('customerType');
+        console.log('userType', customerType)
+        this.setState({
+            userData: userData,
+            customerType: customerType
+        })
 
         if (null != userData) {
             Axios({
@@ -128,9 +134,9 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                 <View>
                     <View style={Styles.customer_list}>
 
-                        <View style={[Styles.customer_list_image, Styles.center]}>
+                        <View style={[Styles.order_list_image, Styles.center]}>
                             <TouchableOpacity onPress={() => { this.handleCartSubmit(item.cartId) }}>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.userId + '_avatar.png' }} style={Styles.image} />
+                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.userId  + '_' + this.state.customerType + '_avatar.png' }} style={Styles.order_image} />
                             </TouchableOpacity>
                         </View>
 

@@ -14,4 +14,5 @@ export { AddDrawerProductScreen } from './addDrawerProduct.component';
 export { AddDrawerProductImageScreen } from './addDrawerProductImage.component';
 export { AdminBillBookScreen } from './adminBillBook.component';
 export { WithdrawScreen } from './withdraw.component';
+export { AddProfileImageScreen } from './addImage';
 

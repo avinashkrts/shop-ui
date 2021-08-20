@@ -4,7 +4,7 @@ import { Divider, styled, ThemedComponentProps } from "react-native-ui-kitten";
 import { AdminBillBookScreenProps } from "../../../navigation/home.navigator";
 import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
-import { MenuIcon } from "../../../assets/icons";
+import { BackIcon, MenuIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { AppConstants, LabelConstants, LableText } from "../../../constants";
 import axios from "axios";
@@ -73,8 +73,8 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
             <SafeAreaLayout style={Styles.safeArea}>
                 <Toolbar
                     title='Bill Book'
-                    backIcon={MenuIcon}
-                    onBackPress={this.props.navigation.openDrawer}
+                    backIcon={BackIcon}
+                    onBackPress={this.props.navigation.goBack}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
