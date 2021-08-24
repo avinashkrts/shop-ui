@@ -330,6 +330,37 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                         <ScrollView>
                             <View style={Styles.user_detail}>
                                 <View style={Styles.user_detail_header}>
+                                    <Text style={Styles.user_detail_header_text}>{LableText.NAME}</Text>
+                                </View>
+                                <View style={Styles.user_detail_data}>
+                                    <TextInput
+                                        editable={isEditable}
+                                        style={Styles.cash_pay_input}
+                                        placeholder={LableText.NAME}
+                                        value={name}
+                                        onChangeText={(value) => { this.setState({ name: value }) }}
+                                    />
+                                </View>
+                            </View>
+
+                            <View style={Styles.user_detail}>
+                                <View style={Styles.user_detail_header}>
+                                    <Text style={Styles.user_detail_header_text}>{LableText.MOBILE}</Text>
+                                </View>
+                                <View style={Styles.user_detail_data}>
+                                    <TextInput
+                                        editable={isEditable}
+                                        style={Styles.cash_pay_input}
+                                        placeholder={LableText.MOBILE}
+                                        value={mobileNo}
+                                        onChangeText={(value) => { this.setState({ mobileNo: value }) }}
+                                    />
+                                </View>
+                            </View>
+
+
+                            <View style={Styles.user_detail}>
+                                <View style={Styles.user_detail_header}>
                                     <Text style={Styles.user_detail_header_text}>{LableText.VILLAGE}</Text>
                                 </View>
                                 <View style={Styles.user_detail_data}>
@@ -345,15 +376,15 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
 
                             <View style={Styles.user_detail}>
                                 <View style={Styles.user_detail_header}>
-                                    <Text style={Styles.user_detail_header_text}>{LableText.POST_OFFICE}</Text>
+                                    <Text style={Styles.user_detail_header_text}>{LableText.STREET}</Text>
                                 </View>
                                 <View style={Styles.user_detail_data}>
                                     <TextInput
                                         editable={isEditable}
                                         style={Styles.cash_pay_input}
-                                        placeholder={LableText.POST_OFFICE}
-                                        value={postOffice}
-                                        onChangeText={(value) => { this.setState({ postOffice: value }) }}
+                                        placeholder={LableText.STREET}
+                                        value={street}
+                                        onChangeText={(value) => { this.setState({ street: value }) }}
                                     />
                                 </View>
                             </View>
@@ -372,6 +403,26 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                                     />
                                 </View>
                             </View>
+
+
+
+
+                            <View style={Styles.user_detail}>
+                                <View style={Styles.user_detail_header}>
+                                    <Text style={Styles.user_detail_header_text}>{LableText.POST_OFFICE}</Text>
+                                </View>
+                                <View style={Styles.user_detail_data}>
+                                    <TextInput
+                                        editable={isEditable}
+                                        style={Styles.cash_pay_input}
+                                        placeholder={LableText.POST_OFFICE}
+                                        value={postOffice}
+                                        onChangeText={(value) => { this.setState({ postOffice: value }) }}
+                                    />
+                                </View>
+                            </View>
+
+
 
                             <View style={Styles.user_detail}>
                                 <View style={Styles.user_detail_header}>
@@ -432,6 +483,8 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                                     />
                                 </View>
                             </View>
+
+
                             {/* 
                             <View style={Styles.user_detail}>
                                 <View style={Styles.user_detail_header}>
@@ -478,50 +531,11 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                                 </View>
                             </View>
 
-                            <View style={Styles.user_detail}>
-                                <View style={Styles.user_detail_header}>
-                                    <Text style={Styles.user_detail_header_text}>{LableText.NAME}</Text>
-                                </View>
-                                <View style={Styles.user_detail_data}>
-                                    <TextInput
-                                        editable={isEditable}
-                                        style={Styles.cash_pay_input}
-                                        placeholder={LableText.NAME}
-                                        value={name}
-                                        onChangeText={(value) => { this.setState({ name: value }) }}
-                                    />
-                                </View>
-                            </View>
 
-                            <View style={Styles.user_detail}>
-                                <View style={Styles.user_detail_header}>
-                                    <Text style={Styles.user_detail_header_text}>{LableText.MOBILE}</Text>
-                                </View>
-                                <View style={Styles.user_detail_data}>
-                                    <TextInput
-                                        editable={isEditable}
-                                        style={Styles.cash_pay_input}
-                                        placeholder={LableText.MOBILE}
-                                        value={mobileNo}
-                                        onChangeText={(value) => { this.setState({ mobileNo: value }) }}
-                                    />
-                                </View>
-                            </View>
 
-                            <View style={Styles.user_detail}>
-                                <View style={Styles.user_detail_header}>
-                                    <Text style={Styles.user_detail_header_text}>{LableText.STREET}</Text>
-                                </View>
-                                <View style={Styles.user_detail_data}>
-                                    <TextInput
-                                        editable={isEditable}
-                                        style={Styles.cash_pay_input}
-                                        placeholder={LableText.STREET}
-                                        value={street}
-                                        onChangeText={(value) => { this.setState({ street: value }) }}
-                                    />
-                                </View>
-                            </View>
+
+
+
 
                             {null != edit ? edit ?
                                 <View style={{ marginHorizontal: '10%' }}>

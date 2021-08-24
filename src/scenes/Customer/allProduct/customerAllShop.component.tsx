@@ -521,7 +521,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                     return (
                                         <TouchableOpacity onPress={() => { this.selectCategory(item.lookUpId) }}>
                                             <View style={selectedCategory == item.lookUpId ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                <Text style={selectedCategory == item.lookUpId ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.lookUpName}</Text>
+                                                <Text style={selectedCategory == item.lookUpId ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.lookUpLabel}</Text>
                                             </View>
                                         </TouchableOpacity>
                                     )

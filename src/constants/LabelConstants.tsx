@@ -115,11 +115,11 @@ export class LableText {
     public static readonly SELLING_PRICE= 'Selling Price';
     public static readonly COST_PRICE = 'Cost Price';
     public static readonly OLD_PRICE = 'Old Price';
-    public static readonly QUANTITY = 'Quantity';
+    public static readonly QUANTITY = 'Selling Product Quantity';
     public static readonly DESCRIPTION = 'Description';
     public static readonly BARCODE = 'Barcode';
     public static readonly PRODUCT_NAME = 'Product Name';
-    public static readonly STOCK = 'Quantity Already In Stock';
+    public static readonly STOCK = 'Stock Quantity';
     public static readonly CATEGORY = 'Category';
     public static readonly BRAND = 'Brand';
     public static readonly OFFER = 'Offer';
@@ -131,7 +131,7 @@ export class LableText {
     public static readonly TO_DATE = 'Till Last Date';
     public static readonly GST_PERCENT = 'GST Percent';
     public static readonly GST_AMOUNT = 'GST Amount';
-    public static readonly MEASUREMENT = 'Measurement';
+    public static readonly MEASUREMENT = 'Selling Product Measurement';
     public static readonly SHOP_ID= 'Shop Id';
     public static readonly PAYMENT_STATUS= 'Payment Status';
     public static readonly SHOP_TYPE= 'Shop Type';
