@@ -428,7 +428,7 @@ export const Styles = ScaledSheet.create({
   product_3rd_view: {
     padding: 10,
     width: '100%',
-    height: 200
+    // height: 200
   },
 
   product_3rd_view_1: {
@@ -924,14 +924,14 @@ export const Styles = ScaledSheet.create({
   },
 
   bill_column_2: {
-    width: '20%',
+    width: '18%',
     borderWidth: 0.2,
     alignItems: 'center',
     justifyContent: 'center'
   },
 
   bill_column_3: {
-    width: '40%',
+    width: '20%',
     borderWidth: 0.2,
     alignItems: 'center',
     justifyContent: 'center'
@@ -958,11 +958,12 @@ export const Styles = ScaledSheet.create({
     justifyContent: 'center'
   },
 
-  // bill_column_6: {
-  //   width: '15%',
-
-  // },
-
+  bill_column_6: {
+    width: '22%',
+    borderWidth: 0.2,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 
   text_design: {
     fontSize: 14,
@@ -993,7 +994,7 @@ export const Styles = ScaledSheet.create({
   },
 
   head_design: {
-    fontSize: '16@s',
+    fontSize: '14@s',
     fontWeight: 'bold',
     padding: '2@s',
     alignSelf: 'center',

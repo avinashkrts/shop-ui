@@ -296,7 +296,7 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                                 </TouchableOpacity>
                             </View>
                                 <View style={Styles.cart_price_view}>
-                                    <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flexDirection: 'column' }}>
                                         <Text style={Styles.price_text}><RupeeIcon /> {item.price}</Text>
                                         <Text style={Styles.offer_price_text}>{item.oldPrice}</Text>
                                     </View>

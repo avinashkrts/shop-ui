@@ -457,10 +457,10 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
     }
 
     render() {
-        const { isSelectedWish, userData,productQuantity, allMeasurement, allImages, wishList, allProduct, productId } = this.state
+        const { isSelectedWish, userData, productQuantity, allMeasurement, allImages, wishList, allProduct, productId } = this.state
         return (
             <SafeAreaLayout
-                style={Styles.safeArea}
+                style={[Styles.safeArea]}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
                     title='Product Details'
@@ -471,7 +471,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
 
                 <Divider />
 
-                <Content style={Styles.customer_content}
+                <Content style={[Styles.customer_content]}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -479,7 +479,6 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                         />
                     }
                 >
-
                     {/* <Header style={styles.header}>
                         <View style={Styles.searchBox}>
                             <Text style={Styles.searchIcon}><SearchIcon /></Text>
@@ -505,7 +504,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                                             mode="dropdown"
                                             style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: 80 }]}
                                             selectedValue={productQuantity}
-                                            onValueChange={(value) => { this.setState({productQuantity: value}) }}
+                                            onValueChange={(value) => { this.setState({ productQuantity: value }) }}
                                         >
                                             <Picker.Item label="1" value="1" />
                                             <Picker.Item label="2" value="2" />
@@ -555,11 +554,11 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
                                         {null != allMeasurement ? allMeasurement.map((measurement, mIndex) => {
                                             if (allProduct.measurement == measurement.lookUpId) {
-                                            return(
-                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{allProduct.quantity} {measurement.lookUpName}</Text>
-                                            );
+                                                return (
+                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{allProduct.quantity} {measurement.lookUpName}</Text>
+                                                );
                                             }
-                                        }): null}
+                                        }) : null}
                                         <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {allProduct.price}</Text>
                                         {allProduct.offerActiveInd ?
                                             <>
@@ -587,8 +586,9 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                                 </View>
                                 {/* </ScrollView> */}
                             </View>
-                            <View style={{ height: 100, width: '100%' }} />
+                            {/* <View style={{ height: 100, width: '100%' }} /> */}
                         </> : null}
+                    {/* <View style={{ height: 100 }} /> */}
                 </Content>
 
             </SafeAreaLayout>

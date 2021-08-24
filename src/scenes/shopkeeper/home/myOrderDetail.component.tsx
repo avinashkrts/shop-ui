@@ -80,7 +80,9 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
             bySelfDType: '',
             byCourierDType: '',
             deliveryCharge: '',
-            userId: ''
+            userId: '',
+            homeDelivery: '',
+            selfPick: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -89,7 +91,6 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
 
 
     async componentDidMount() {
-
         let userDetail = await AsyncStorage.getItem('userDetail');
         let logedIn = await AsyncStorage.getItem('logedIn');
         let shopId = await AsyncStorage.getItem('shopId');
@@ -109,9 +110,9 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                 url: AppConstants.API_BASE_URL + '/api/cart/get/' + cartId
             }).then((response) => {
                 console.log('delivery date ' + cartId + ' ', moment(response.data.deliveryDate).format('DD-MM-YYYY hh:mm a'))
-               this.setState({
-                   userId: response.data.userId
-               })
+                this.setState({
+                    userId: response.data.userId
+                })
                 axios({
                     method: 'GET',
                     url: AppConstants.API_BASE_URL + '/api/address/get/' + response.data.addressId
@@ -176,6 +177,28 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
             }, (error) => {
                 Alert.alert("Server error!.")
             });
+
+            Axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/lookup/getallordertype',
+            }).then((response) => {
+                if (null != response.data) {
+                    console.log(response.data);
+                    response.data.map((delivery, dIndex) => {
+                        if (delivery.lookUpName === 'HOME_DELIVERY') {
+                            this.setState({
+                                homeDelivery: delivery.lookUpId
+                            })
+                        } else if (delivery.lookUpName === 'SELF_PICKUP') {
+                            this.setState({
+                                selfPick: delivery.lookUpId
+                            })
+                        } 
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
         } else {
             this.props.navigation.navigate(AppRoute.AUTH)
         }
@@ -189,7 +212,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
     }
 
     handleOrderStatus(orderStatus, cartId) {
-        const { userData, description, userId, byDBoyDType, deliveryCharge, bySelfDType, byCourierDType, deliveryDate, deliveryType, byDeliveryBoy, byCourier, selfPickUp, dBoyName, dBoyNumber, courierName, courierId } = this.state;
+        const { userData, description,cartData, selfPick, homeDelivery, userId,byDBoyDType, deliveryCharge, bySelfDType, byCourierDType, deliveryDate, deliveryType, byDeliveryBoy, byCourier, selfPickUp, dBoyName, dBoyNumber, courierName, courierId } = this.state;
         // Alert.alert(userData.shopId + cartId + orderStatus)
         switch (orderStatus) {
             case 'ACCEPT':
@@ -289,15 +312,15 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                             }
                         }).then((response) => {
                             if (null != response.data) {
-                        Notification(userId, 2, Contents.SHIPPED_ORDER_COURIER, 'null');
-                        this.toggleModal('CLOSE');
+                                Notification(userId, 2, Contents.SHIPPED_ORDER_COURIER, 'null');
+                                this.toggleModal('CLOSE');
                                 this._onRefresh();
                             }
                         }, (error) => {
                             Alert.alert("Server error!.")
                         });
                     }
-                } else {
+                } else if(cartData.orderType == selfPick){
                     Axios({
                         method: 'POST',
                         url: AppConstants.API_BASE_URL + '/api/cart/order/shipped',
@@ -308,13 +331,15 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                         }
                     }).then((response) => {
                         if (null != response.data) {
-                        Notification(userId, 2, Contents.SHIP_SELF_PICKUP, 'null');
-                        this.toggleModal('CLOSE');
+                            Notification(userId, 2, Contents.SHIP_SELF_PICKUP, 'null');
+                            this.toggleModal('CLOSE');
                             this._onRefresh();
                         }
                     }, (error) => {
                         Alert.alert("Server error!.")
                     });
+                } else {
+                    Alert.alert('Please select mode of delivery.')
                 }
                 break;
             case 'DELIVERED':
@@ -472,9 +497,8 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                 Alert.alert('Delivery type not found.')
         }
     }
-
     render() {
-        const { cartData, cartId, deliveryCharge, shippedDate, deliveryDate, rejectionModal, shippedModal, deliveryModal, addressData, orderstatusData, productList } = this.state
+        const { cartData, cartId, deliveryCharge,  homeDelivery, selfPick, byDBoyDType, bySelfDType, byCourierDType, shippedDate, deliveryDate, rejectionModal, shippedModal, deliveryModal, addressData, orderstatusData, productList } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -538,20 +562,24 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                             </View> : shippedModal ?
                                 <View style={Styles.user_detail}>
                                     <View style={Styles.user_detail_data}>
-                                        <View style={{ flexDirection: 'row', marginRight: 20 }}>
-                                            <Radio selected={this.state.selfPickUp} selectedColor='#0099cc' onPress={() => { this.handleDeliveryType('SELFPICK') }} />
-                                            <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>Self pick up</Text>
-                                        </View>
+                                        {cartData.orderType ? String(cartData.orderType) === String(selfPick) ?
+                                            <View style={{ flexDirection: 'row', marginRight: 20 }}>
+                                                <Radio selected={this.state.selfPickUp} selectedColor='#0099cc' onPress={() => { this.handleDeliveryType('SELFPICK') }} />
+                                                <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>Self pick up</Text>
+                                            </View> :
+                                            cartData.orderType == homeDelivery || cartData.orderType == homeDelivery ? 
+                                                <>
+                                                    <View style={{ flexDirection: 'row', marginRight: 20 }}>
+                                                        <Radio selected={this.state.byDeliveryBoy} selectedColor='#0099cc' onPress={() => {this.handleDeliveryType('DBOY') }} />
+                                                        <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>By delivery boy</Text>
+                                                    </View>
 
-                                        <View style={{ flexDirection: 'row', marginRight: 20 }}>
-                                            <Radio selected={this.state.byDeliveryBoy} selectedColor='#0099cc' onPress={() => { this.handleDeliveryType('DBOY') }} />
-                                            <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>By delivery boy</Text>
-                                        </View>
-
-                                        <View style={{ flexDirection: 'row', marginRight: 20 }}>
-                                            <Radio selected={this.state.byCourier} selectedColor='#0099cc' onPress={() => { this.handleDeliveryType('COURIER') }} />
-                                            <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>By courier</Text>
-                                        </View>
+                                                    <View style={{ flexDirection: 'row', marginRight: 20 }}>
+                                                        <Radio selected={this.state.byCourier} selectedColor='#0099cc' onPress={() => { this.handleDeliveryType('COURIER') }} />
+                                                        <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>By courier</Text>
+                                                    </View>
+                                                </> : null : null
+                                        }
                                     </View>
                                     <View style={[Styles.user_detail_data, { marginTop: 10 }]}>
 

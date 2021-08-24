@@ -330,7 +330,10 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
     }
 
     continiueShopping() {
-        this.props.navigation.navigate(AppRoute.COMBINED_PRODUCT)
+        const {single} = this.state;
+        single ?
+        this.props.navigation.navigate(AppRoute.COMBINED_PRODUCT) :
+        this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
     }
 
     addItem() { }

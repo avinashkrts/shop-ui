@@ -44,31 +44,41 @@ export class LogoutScreen extends Component<LogoutScreenProps & SafeAreaLayoutEl
     const data = {};
     var emailId;
     const pushAction = StackActions.push(AppRoute.AUTH);
-    let userDetail = await AsyncStorage.getItem('userDetail');
-    let userData = JSON.parse(userDetail);
-    var admin = await AsyncStorage.getItem('adminType')
-    var customer = await AsyncStorage.getItem('customerType')
-    if (userData.userType == admin) {
-      emailId = userData.emailId;
-    } else if (userData.userType == customer) {
-      emailId = userData.mobileNo;
-    }
-    Axios({
-      method: 'POST',
-      url: AppConstants.API_BASE_URL + '/api/user/logout',
-      data: {
-        emailId: emailId,
-        deviceId: deviceId,
+    const logedIn = await AsyncStorage.getItem('logedIn');   
+
+    if (logedIn === 'true') {
+      let userDetail = await AsyncStorage.getItem('userDetail');
+      let userData = JSON.parse(userDetail);
+      var admin = await AsyncStorage.getItem('adminType')
+      var customer = await AsyncStorage.getItem('customerType')  
+      if (userData.userType == admin) {
+        emailId = userData.emailId;
+      } else if (userData.userType == customer) {
+        emailId = userData.mobileNo;
       }
-    }).then((response) => {
+      Axios({
+        method: 'POST',
+        url: AppConstants.API_BASE_URL + '/api/user/logout',
+        data: {
+          emailId: emailId,
+          deviceId: deviceId,
+        }
+      }).then((response) => {
+        AsyncStorage.setItem('logedIn', JSON.stringify(''))
+        AsyncStorage.setItem('userId', JSON.stringify(''))
+        AsyncStorage.setItem('userDetail', JSON.stringify(data), () => {
+          this.props.navigation.dispatch(pushAction)
+        });
+      }, (error) => {
+        Alert.alert("Server error!.")
+      });
+    } else {
       AsyncStorage.setItem('logedIn', JSON.stringify(''))
       AsyncStorage.setItem('userId', JSON.stringify(''))
       AsyncStorage.setItem('userDetail', JSON.stringify(data), () => {
         this.props.navigation.dispatch(pushAction)
       });
-    }, (error) => {
-      Alert.alert("Server error!.")
-    });
+    }
 
   }
 

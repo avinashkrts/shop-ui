@@ -222,7 +222,7 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
     }
 
     handleDefault(id) {
-        const { userId} = this.state;
+        const { userId } = this.state;
         Axios({
             method: 'GET',
             url: AppConstants.API_BASE_URL + '/api/address/change/defaultaddress/' + userId + '/' + id,
@@ -249,6 +249,10 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
             {item != null ?
                 // <View>
                 <View style={Styles.address_container}>
+                    <TouchableOpacity style={{ padding: 5, backgroundColor: Color.COLOR, borderRadius: 10 }} onPress={() => { this.handleDefault(item.id) }}>
+                        <Text style={[Styles.address_text, { alignSelf: 'center', padding: 4, color: Color.BUTTON_NAME_COLOR }]}>{item.defaultAddress ? 'Default Address' : 'Set Default'}</Text>
+                    </TouchableOpacity>
+
                     <View style={Styles.address_edit_pen}>
                         <View>
                             <Text style={Styles.address_text}>City :- {item.city}</Text>
@@ -260,10 +264,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                         <TouchableOpacity style={{ padding: 5 }} onPress={() => { this.handleEdit(index) }}>
                             <Text style={Styles.address_text}><AddressEditIcon fontSize={20} />
                             </Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ padding: 5, backgroundColor: Color.COLOR, borderRadius: 10 }} onPress={() => { this.handleDefault(item.id) }}>
-                            <Text style={[Styles.address_text, {padding: 4, color: Color.BUTTON_NAME_COLOR}]}>{item.defaultAddress ? 'Default Address' : 'Set Default'}</Text>
                         </TouchableOpacity>
                     </View>
                     {/* </View> */}

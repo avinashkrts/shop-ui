@@ -172,15 +172,14 @@ export class Contents {
     public static readonly REJECT_ORDER = 'Your order has been rejected.';
     public static readonly PACK_ORDER = 'Your order has been packed.';
     public static readonly SHIPPED_ORDER_COURIER = 'Your order has been shipped by courier.';
-    public static readonly SHIP_SELF_PICKUP = 'Your couier has been ready to self pickup.';
+    public static readonly SHIP_SELF_PICKUP = 'Your courier has been ready to self pickup.';
     public static readonly SHIP_DELIVERY_BOY = 'Your order has been shipped by delivery boy.';
     public static readonly DELIVERY_PARTNER = 'Your order has been delivered by delivery partner.';
-    public static readonly DELIVERY = 'Your couier has been delivered by delivery person.';
+    public static readonly DELIVERY = 'Your courier has been delivered by delivery person.';
     public static readonly ORDER_DELIVERED = 'Order has been delivered successfully.';
     public static readonly ORDER_NOT_DELIVERED = 'Order has not been received by customer.';
-    
 
-
+    public static readonly ORDER_PLACED = 'You have got an order of Rs. ';
  }
 
 export class LabelConstants {
@@ -237,9 +236,10 @@ export class LabelConstants {
    
     public static readonly customer_bill_serial_number = 'Sl. No.';
     public static readonly customer_bill_date = 'Date';
-    public static readonly customer_bill_transactinId = 'Transaction Id';
-    public static readonly customer_bill_debit = 'Debit';
-    public static readonly customer_bill_credit = 'Credit';
+    public static readonly customer_bill_transactinId = 'Order Id';
+    public static readonly customer_bill_debit = 'Dr.';
+    public static readonly customer_bill_credit = 'Cr.';
+    public static readonly REMARKS = 'Remark';
     public static readonly REFUND = 'REFUND';
 
 

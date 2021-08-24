@@ -3,7 +3,7 @@ import { View, Text, AsyncStorage, RefreshControl, Alert } from "react-native";
 import { Divider, ThemedComponentProps } from "react-native-ui-kitten";
 import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
-import { BackIcon, MenuIcon } from "../../../assets/icons";
+import { BackIcon, MenuIcon, RupeeIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { AppConstants, LabelConstants } from "../../../constants";
 import axios from "axios";
@@ -11,6 +11,7 @@ import moment from "moment";
 import { ScrollView } from "react-native-gesture-handler";
 import { CustomerWalletScreenProps } from "../../../navigation/customer-navigator/customerHome.navigator";
 import { AppRoute } from "../../../navigation/app-routes";
+import { scale } from "react-native-size-matters";
 
 export class CustomerWalletScreen extends Component<CustomerWalletScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -24,7 +25,8 @@ export class CustomerWalletScreen extends Component<CustomerWalletScreenProps, T
             userData: [],
             single: false,
             shopName: '',
-            shopId: ''
+            shopId: '',
+            user: []
         }
 
         this.onRefresh = this.onRefresh.bind(this);
@@ -60,6 +62,19 @@ export class CustomerWalletScreen extends Component<CustomerWalletScreenProps, T
                 }, (error) => {
                     Alert.alert("Server error!.")
                 });
+
+                axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/user/get/' + userData.userId,
+                }).then((response) => {
+                    if (null != response.data) {
+                        this.setState({
+                            user: response.data,
+                        })
+                    }
+                }, (error) => {
+                    Alert.alert("Server error!.")
+                });
             }
             axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
                 //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
@@ -83,7 +98,7 @@ export class CustomerWalletScreen extends Component<CustomerWalletScreenProps, T
     }
 
     render() {
-        const { transactionData, onlinePay, cashPay, refund } = this.state;
+        const { transactionData, user, onlinePay, cashPay, refund } = this.state;
         let total = 0
         let slNo = 0
         return (
@@ -95,84 +110,41 @@ export class CustomerWalletScreen extends Component<CustomerWalletScreenProps, T
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
-                <View style={[Styles.bill_main]}>
-                    <View style={Styles.bill_row}>
-                        <View style={Styles.bill_column_1}>
-                            {/* <View style={Styles.bill_box}> */}
-                            <Text style={Styles.head_design}>{LabelConstants.customer_bill_serial_number}</Text>
-                            {/* </View> */}
-                        </View>
-                        <View style={Styles.bill_column_2}>
-                            {/* <View style={Styles.bill_box}> */}
-                            <Text style={Styles.head_design}>{LabelConstants.customer_bill_date}</Text>
-                            {/* </View> */}
-                        </View>
-                        <View style={Styles.bill_column_3}>
-                            {/* <View style={Styles.bill_box}> */}
-                            <Text style={Styles.head_design}>{LabelConstants.customer_bill_transactinId}</Text>
-                            {/* </View> */}
-                        </View>
-                        <View style={Styles.Cu_wallet_column_4}>
-                            {/* <View style={Styles.bill_box}> */}
-                            <Text style={Styles.head_design}>{LabelConstants.REFUND}</Text>
-                            {/* </View> */}
+                <ScrollView style={Styles.content}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
+                    }
+                >
+                    <View style={Styles.wallet_main}>
+                        <View style={Styles.validity}>
+                            <Text style={Styles.validity_text}>Your available wallet balance is <RupeeIcon fontSize={scale(14)} /> {user.walletBalance != null ? user.walletBalance : null} </Text>
                         </View>
                     </View>
-                    {/* <View style={Styles.bill_main}> */}
-                    <ScrollView style={Styles.content}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state.refreshing}
-                                onRefresh={this.onRefresh.bind(this)}
-                            />
-                        }
-                    >
-                        {null != transactionData ? transactionData.map((data, index) => {
-                           data.paymentMode == refund ? total = total + data.amount : null
-                           data.paymentMode == refund ? slNo = slNo + 1 : null
-                           if(data.paymentMode == refund ) {
-                            return (
-                                <View>
-                                    <Divider />
-                                    <View style={Styles.wallet_row}>
-                                        <View style={index % 2 == 1 ? Styles.bill_row_1 : Styles.bill_row_2}>
-                                            <View style={Styles.bill_column_1}>
-                                                {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design}>{slNo}</Text>
-                                                {/* </View> */}
-                                            </View>
-                                            <View style={Styles.bill_column_2}>
-                                                {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design}> {moment(data.createdOn).format('DD-MM-YYYY')}  </Text>
-                                                {/* </View> */}
-                                            </View>
-                                            <View style={Styles.bill_column_3}>
-                                                {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design}>{data.transactionId}</Text>
-                                                {/* </View> */}
-                                            </View>
-                                            <View style={Styles.Cu_wallet_column_4}>
-                                                {/* <View style={Styles.bill_box}> */}
-                                                {data.paymentMode == refund ? <Text style={Styles.text_design_green}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
-                                                {/* </View> */}
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            )
-                           }
-                        }
-                        ) : null}
-                    </ScrollView>
-                    <View style={[Styles.bill_box]}>
-                        <View style={[Styles.bill_row, { justifyContent: 'space-between' }]}>
-                            <Text style={[Styles.bill_bottom_text]}>Total :- </Text>
-                            <Text style={Styles.bill_amount}>{total}</Text>
-                        </View>
-                    </View>
-
-                </View>
+                </ScrollView>
             </SafeAreaLayout>
         );
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

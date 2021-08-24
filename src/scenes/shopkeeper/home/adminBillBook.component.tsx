@@ -20,7 +20,8 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
             onlinePay: "",
             refund: "",
             cashPay: "",
-            userData: []
+            userData: [],
+            walletPay: ''
         }
 
         this.onRefresh = this.onRefresh.bind(this);
@@ -53,7 +54,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                 //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
                 .then((res) =>
                     res.data.PAYMENT_MODE.map((data) => data.lookUpName == "ONLINE_PAYMENT" ?
-                        this.setState({ onlinePay: data.lookUpId }) : data.lookUpName == "REFUND" ? this.setState({ refund: data.lookUpId }) : data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) : null)
+                        this.setState({ onlinePay: data.lookUpId }) : data.lookUpName == "REFUND" ? this.setState({ refund: data.lookUpId }) : data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) : data.lookUpName == "WALLET_PAYMENT" ? this.setState({ walletPay: data.lookUpId }) : null)
                 )
                 .catch(error => console.log(error))
         }
@@ -67,7 +68,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
     }
 
     render() {
-        const { userData, single, shopName, transactionData, onlinePay, cashPay, refund } = this.state;
+        const { userData, single,walletPay, shopName, transactionData, onlinePay, cashPay, refund } = this.state;
         let total = 0
         return (
             <SafeAreaLayout style={Styles.safeArea}>
@@ -115,6 +116,11 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                             <Text style={Styles.head_design}>{LabelConstants.customer_bill_credit}</Text>
                             {/* </View> */}
                         </View>
+                        <View style={Styles.bill_column_6}>
+                            {/* <View style={Styles.bill_box}> */}
+                            <Text style={Styles.head_design}>{LabelConstants.REMARKS}</Text>
+                            {/* </View> */}
+                        </View>
 
                     </View>
                     {/* <View style={Styles.bill_main}> */}
@@ -127,7 +133,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                         }
                     >
                         {null != transactionData ? transactionData.map((data, index) => {
-                            data.paymentMode == onlinePay || data.paymentMode == cashPay ? total = total + data.amount : data.paymentMode == refund ? total = total - data.amount : null
+                            data.paymentMode == onlinePay ? total = total + data.totalAmount : data.paymentMode == refund ? total = total - data.totalAmount : null
                             return (
                                 <View>
                                     <Divider />
@@ -140,23 +146,28 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                                             </View>
                                             <View style={Styles.bill_column_2}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design}> {moment(data.createdOn).format('DD-MM-YYYY')}  </Text>
+                                                <Text style={Styles.text_design}> {moment(data.createdOn).format('DD-MM-YY')}  </Text>
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_3}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design}>{data.transactionId}</Text>
+                                                <Text style={Styles.text_design}>{data.id}</Text>
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_4}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                {data.paymentMode == refund ?
+                                                {data.paymentMode == refund || data.paymentMode == walletPay ?
                                                     <Text style={Styles.text_design_red}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_5}>
                                                 {/* <View style={Styles.bill_box}> */}
                                                 {data.paymentMode == onlinePay || data.paymentMode == cashPay ? <Text style={Styles.text_design_green}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
+                                                {/* </View> */}
+                                            </View>
+                                            <View style={Styles.bill_column_6}>
+                                                {/* <View style={Styles.bill_box}> */}
+                                                <Text style={Styles.text_design_green}>{data.paymentMode ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == refund ? 'Refund' : data.paymentMode == walletPay ? 'Withdraw' : null : null}</Text> 
                                                 {/* </View> */}
                                             </View>
                                         </View>

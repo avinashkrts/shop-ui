@@ -42,7 +42,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
-import { Color } from '../../../constants/LabelConstants';
+import { Color, Contents } from '../../../constants/LabelConstants';
 import Axios from 'axios';
 import DatePicker from 'react-native-datepicker'
 import { CustomerCartScreenProps } from '../../../navigation/customer-navigator/customerHome.navigator';
@@ -376,7 +376,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             data: {
                 userId: adminData.adminId,
                 userType: adminData.userType,
-                content: "Order received of Rs. " + cartData.totalAmount
+                content: Contents.ORDER_PLACED + cartData.totalAmount
             }
         }).then((response) => {
             // Alert.alert("Order placed.")
