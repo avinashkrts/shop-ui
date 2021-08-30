@@ -354,7 +354,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                                         </>
                                     )
                                 }
-                            } else if (orderStatus.lookUpName === "ACCEPTED" || orderStatus.lookUpName === "RECEIVED") {
+                            } else if (orderStatus.lookUpName === "ACCEPTED") {
                                 if (orderStatus.lookUpId == item.orderStatus) {
                                     return (
                                         <>
@@ -483,7 +483,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                                         </>
                                     )
                                 }
-                            } else if (orderStatus.lookUpName === "DELIVERED") {
+                            } else if (orderStatus.lookUpName === "DELIVERED" || orderStatus.lookUpName === "RECEIVED") {
                                 if (orderStatus.lookUpId == item.orderStatus) {
                                     return (
                                         <>
@@ -593,7 +593,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                                 return (
                                     <>
                                         <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
-                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Did you receive your order!</Text>
+                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Have you received your order?</Text>
                                             <View style={Styles.cart_bottom_box_view}>
                                                 <View>
                                                     <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.toggleModal('RECEIVED', item.cartId) }}>

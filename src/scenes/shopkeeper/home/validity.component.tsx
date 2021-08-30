@@ -7,7 +7,7 @@ import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { BackIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { AppConstants } from "../../../constants";
 import Axios from "axios";
 
@@ -34,7 +34,7 @@ export class ValidityScreen extends Component<ValidityScreenProps, ThemedCompone
                 })
             }
         }, (error) => {
-            Alert.alert("Server error!.")
+            // Alert.alert("Server error!.")
         });
     }
     onRefresh() {
@@ -55,14 +55,14 @@ export class ValidityScreen extends Component<ValidityScreenProps, ThemedCompone
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
-                {/* <Content style={styles.content}
+                <ScrollView style={Styles.content}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
                             onRefresh={this.onRefresh.bind(this)}
                         />
                     }
-                > */}
+                >
                 <View style={Styles.validity}>
                     <Text style={Styles.validity_text}>Validity of Your Subscription Will Expire in {userData.validity != null ? userData.validity : null} days</Text>
                 </View>
@@ -71,7 +71,7 @@ export class ValidityScreen extends Component<ValidityScreenProps, ThemedCompone
                     <Text style={Styles.validity_text}>Recharge</Text>
                 </TouchableOpacity> */}
 
-                {/* </Content> */}
+                </ScrollView>
             </SafeAreaLayout>
         );
     }

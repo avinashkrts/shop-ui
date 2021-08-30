@@ -21,7 +21,13 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
             refund: "",
             cashPay: "",
             userData: [],
-            walletPay: ''
+            walletPay: '',
+            userDenied: '',
+            shopping: '',
+            planPurchase: '',
+            withdrawRequest: '',
+            withdrawDone: '',
+            adminRejected: ''
         }
 
         this.onRefresh = this.onRefresh.bind(this);
@@ -52,10 +58,20 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
 
             axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
                 //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
-                .then((res) =>
-                    res.data.PAYMENT_MODE.map((data) => data.lookUpName == "ONLINE_PAYMENT" ?
-                        this.setState({ onlinePay: data.lookUpId }) : data.lookUpName == "REFUND" ? this.setState({ refund: data.lookUpId }) : data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) : data.lookUpName == "WALLET_PAYMENT" ? this.setState({ walletPay: data.lookUpId }) : null)
-                )
+                .then((res) => {
+                    res.data.TRANSACTION_TYPE.map((data) => data.lookUpName == "USER_DENIED" ? this.setState({ userDenied: data.lookUpId }) :
+                        data.lookUpName == "SHOPING" ? this.setState({ shopping: data.lookUpId }) :
+                            data.lookUpName == "PLAN_PURCHASE" ? this.setState({ planPurchase: data.lookUpId }) :
+                                data.lookUpName == "WITHDRAW_REQUEST" ? this.setState({ withdrawRequest: data.lookUpId }) :
+                                    data.lookUpName == "WITHDRAW_DONE" ? this.setState({ withdrawDone: data.lookUpId }) :
+                                        data.lookUpName == "ADMIN_REJECTED" ? this.setState({ adminRejected: data.lookUpId }) :
+                                            null)
+
+                    res.data.PAYMENT_MODE.map((data) => data.lookUpName == "ONLINE_PAYMENT" ? this.setState({ onlinePay: data.lookUpId }) :
+                        data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) :
+                            data.lookUpName == "WALLET_PAYMENT" ? this.setState({ walletPay: data.lookUpId }) :
+                                null)
+                })
                 .catch(error => console.log(error))
         }
     }
@@ -68,7 +84,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
     }
 
     render() {
-        const { userData, single,walletPay, shopName, transactionData, onlinePay, cashPay, refund } = this.state;
+        const { userData, single, userDenied, shopping, planPurchase, withdrawRequest, withdrawDone, adminRejected, walletPay, shopName, transactionData, onlinePay, cashPay, refund } = this.state;
         let total = 0
         return (
             <SafeAreaLayout style={Styles.safeArea}>
@@ -133,7 +149,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                         }
                     >
                         {null != transactionData ? transactionData.map((data, index) => {
-                            data.paymentMode == onlinePay ? total = total + data.totalAmount : data.paymentMode == refund ? total = total - data.totalAmount : null
+                            data.paymentMode == onlinePay && (data.transactionType == shopping ) ? total = total + data.totalAmount : data.paymentMode == walletPay && (data.transactionType == adminRejected || data.transactionType == userDenied || data.transactionType == withdrawRequest || data.transactionType == planPurchase )  ? total = total - data.totalAmount : null
                             return (
                                 <View>
                                     <Divider />
@@ -167,7 +183,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                                             </View>
                                             <View style={Styles.bill_column_6}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design_green}>{data.paymentMode ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == refund ? 'Refund' : data.paymentMode == walletPay ? 'Withdraw' : null : null}</Text> 
+                                                <Text style={Styles.text_design_green}>{data.paymentMode ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == walletPay && data.transactionType == adminRejected  ? 'Rejected' : data.paymentMode == walletPay && data.transactionType == userDenied  ? 'Not Delivered' : data.paymentMode == walletPay && data.transactionType == withdrawRequest ? 'Withdraw' : data.paymentMode == walletPay && data.transactionType == planPurchase ? 'Recharge' : null : null}</Text>
                                                 {/* </View> */}
                                             </View>
                                         </View>

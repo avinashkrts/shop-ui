@@ -96,27 +96,35 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
           playerId: deviceState.userId
         },
       }).then((response) => {
+        // console.log('Res', response.data)
         if (response.data) {
-          if (response.data.token.length > 30) {
-            if (response.data.userType == admin) {
-              AsyncStorage.setItem("logedIn", JSON.stringify(true))
-              AsyncStorage.setItem("userId", JSON.stringify(response.data.adminId))
-              AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-                this.navigateHome();
-              })
-            } else if (response.data.userType == customer) {
-              AsyncStorage.setItem("logedIn", JSON.stringify(true))
-              AsyncStorage.setItem("userId", JSON.stringify(response.data.userId))
-              AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-                this.navigateCustomerHome();
-              })
+          if (response.data.status === 'false') {
+            Alert.alert("Please enter a valid email ID and password.")
+          } else {
+            if (response.data.token.length > 30) {
+              if (response.data.userType == admin) {
+                AsyncStorage.setItem("logedIn", JSON.stringify(true))
+                AsyncStorage.setItem("userId", JSON.stringify(response.data.adminId))
+                AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
+                  this.navigateHome();
+                })
+              } else if (response.data.userType == customer) {
+                AsyncStorage.setItem("logedIn", JSON.stringify(true))
+                AsyncStorage.setItem("userId", JSON.stringify(response.data.userId))
+                AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
+                  this.navigateCustomerHome();
+                })
+              }
+            } else {
+              Alert.alert("Please enter a valid email ID and password.")
             }
           }
         } else {
           Alert.alert("Please enter a valid email ID and password.")
         }
       }, (error) => {
-        Alert.alert("Server error.")
+        // console.log('Error', error)
+        Alert.alert("Please enter a valid email ID and password.")
       });
     }
   };
@@ -154,7 +162,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
             <Image
               source={require('../../assets/logo.png')}
               resizeMode="contain"
-              style={[Styles.loginImage, {marginBottom: scale(50), marginTop: scale(80)}]}
+              style={[Styles.loginImage, { marginBottom: scale(50), marginTop: scale(80) }]}
             />
 
             {/* <View style={Styles.center}>
@@ -172,7 +180,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
 
             <View style={Styles.inputTextView}>
               <TextInput
-              secureTextEntry={passwordVisible}
+                secureTextEntry={passwordVisible}
                 style={Styles.inputTextWithIcon}
                 placeholder={Placeholder.PASSWORD}
                 value={pwd}

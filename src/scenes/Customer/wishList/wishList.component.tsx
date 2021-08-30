@@ -205,8 +205,8 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
         })
     }
 
-    async handleAddTocart(productId) {
-        const { userData, shopId } = this.state;
+    async handleAddTocart(productId, shopId) {
+        const { userData } = this.state;
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
             // Alert.alert(''+ userData.userId + productId + logedIn)
@@ -214,7 +214,7 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                 method: 'POST',
                 url: AppConstants.API_BASE_URL + '/api/cart/create',
                 data: {
-                    shopId: userData.shopId,
+                    shopId: shopId,
                     userId: userData.userId,
                     productId: productId,
                     productQuantity: 1
@@ -310,7 +310,7 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                                             <Text style={Styles.cart_quantity_text}>3</Text>
                                         </View> */}
 
-                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleAddTocart(item.productId) }}>
+                                        <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleAddTocart(item.productId, item.shopId) }}>
                                             <Text style={Styles.cart_button_text}>Add to cart</Text>
                                         </TouchableOpacity>
                                     </View>

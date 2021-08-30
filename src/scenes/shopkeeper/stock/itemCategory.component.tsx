@@ -165,7 +165,7 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
                             </View>
                         </View>
 
-                        <View style={[Styles.itemCategoryEdit, Styles.center]}>
+                        {/* <View style={[Styles.itemCategoryEdit, Styles.center]}>
                             <View>
                                 <Text style={Styles.itemCategoryEditIcon}><EditIcon /></Text>
                             </View>
@@ -175,7 +175,7 @@ export class ItemCategoryScreen extends React.Component<ItemCategoryScreenProps 
                             <View>
                                 <Text style={Styles.itemCategoryEditIcon} onPress={() => { this.handleDeleteCategory(item.id) }}><CancelIcon fontSize={25} /></Text>
                             </View>
-                        </View>
+                        </View> */}
                     </View>
                 </View> :
                 <ActivityIndicator size='large' color='green' />}

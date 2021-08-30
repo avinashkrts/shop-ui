@@ -37,6 +37,7 @@ export class LableText {
     public static readonly CHOOSE_IMAGE = 'Choose Image';
     public static readonly UPLOAD = 'Upload';
     public static readonly NEXT = 'Next';
+    public static readonly FINISH = 'Finish';
     public static readonly WELCOME_TEXT = 'Milaan IT Projects';
     public static readonly SIGN_IN = 'Sign In';
     public static readonly ADD = 'Add';
@@ -82,7 +83,7 @@ export class LableText {
     public static readonly COUNTRY = 'Country';
     public static readonly REJECTION_CAUSE = 'Why are you going to reject?';
     public static readonly WRIET_REVIEW = 'Write your review';
-    public static readonly DENIE_REVIEW = 'Please write coreect reason?';
+    public static readonly DENIE_REVIEW = 'Please write correct reason?';
     public static readonly EXPECTED_D_DATE = 'Expected delivery date and time.';
     public static readonly D_BOY_NAME = 'Name of delivery boy.';
     public static readonly COURIER_NAME = 'Name of courier company.';
@@ -120,11 +121,14 @@ export class LableText {
     public static readonly BARCODE = 'Barcode';
     public static readonly PRODUCT_NAME = 'Product Name';
     public static readonly STOCK = 'Stock Quantity';
+    public static readonly OUT_OF_STOCK = 'Stock Limit(Alert)';
     public static readonly CATEGORY = 'Category';
     public static readonly BRAND = 'Brand';
     public static readonly OFFER = 'Offer';
     public static readonly OFFER_FROM = 'Offer From';
     public static readonly OFFER_TO = 'Offer To';
+    public static readonly MANUFACTURE_DATE = 'Date of Manufacture';
+    public static readonly EXPIRE_DATE = 'Date of Expire';
     public static readonly OFFER_PERCENT = 'Offer Percent';
     public static readonly DISCOUNT = 'Discount Percentage';
     public static readonly FROM_DATE = 'From Which Date';

@@ -13,6 +13,7 @@ import Axios from "axios";
 import DatePicker from 'react-native-datepicker'
 import { AppRoute } from "../../../navigation/app-routes";
 import Modal from "react-native-modal";
+import moment from "moment";
 
 export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -32,14 +33,17 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             costPrice: '',
             oldPrice: '',
             offerPercent: '',
-            offerFrom: String(new Date().getFullYear() + '-' + Number(new Date().getMonth() + 1) + '-' + new Date().getDate()),
-            offerTo: String(new Date().getFullYear() + '-' + Number(new Date().getMonth() + 1) + '-' + new Date().getDate()),
             offerActiveInd: false,
             gstAmount: '',
             measurement: '',
             deliveryCharge: '',
             gstPercent: '',
-            minDate: String(new Date().getFullYear() + '-' + Number(new Date().getMonth() + 1) + '-' + new Date().getDate()),
+            manufactureDate: String(moment(new Date).format('YYYY-MM-DD')),
+            expireDate: String(moment(new Date).add('days', 1).format('YYYY-MM-DD')),
+            offerFrom: String(moment(new Date).format('YYYY-MM-DD')),
+            offerTo: String(moment(new Date).add('days', 1).format('YYYY-MM-DD')),
+            minDate: String(moment(new Date).format('YYYY-MM-DD')),
+            manufactureMinDate: String(moment(new Date).subtract('years', 5).format('YYYY-MM-DD')),
             allCategory: [],
             allBrand: [],
             allMeasurement: [],
@@ -50,12 +54,13 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             brandVisible: false,
             brandName: '',
             brandCatId: '',
+            outOfStock: '',
             allData: [{
                 url: '/api/lookup/getallmeasurementtype',
                 method: 'GET',
                 variable: 'allMeasurement',
             }
-           ],
+            ],
         }
         this.onRefresh = this.onRefresh.bind(this);
     }
@@ -121,7 +126,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
     }
 
     handleSubmit() {
-        const { isEditable, name, category, brand, shopId, avatar, price, quantity, description, barcode,
+        const { isEditable, outOfStock, name, manufactureDate, expireDate, category, brand, shopId, avatar, price, quantity, description, barcode,
             stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
             gstAmount, measurement, deliveryCharge, gstPercent } = this.state
 
@@ -143,6 +148,8 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             Alert.alert("Please enter GST percent.");
         } else if (stock == null || stock === '') {
             Alert.alert("Please enter stock.");
+        } else if (outOfStock == null || outOfStock === '') {
+            Alert.alert("Please enter out of stock limit.");
         } else if (quantity == null || quantity === '') {
             Alert.alert("Please enter quantity.");
         } else if (measurement == null || measurement === '') {
@@ -174,6 +181,9 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                     offerActiveInd: offerActiveInd,
                     measurement: measurement,
                     gstPercent: gstPercent,
+                    dateOfManufacturing: manufactureDate,
+                    dateOfExpire: expireDate,
+                    outOfStock: outOfStock
                 }
             }).then((response) => {
                 if (null != response.data) {
@@ -198,7 +208,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                 categoryVisible: !categoryVisible
             })
             // this.props.navigation.navigate(AppRoute.ADD_CATEGORY)
-        } else {            
+        } else {
             Axios({
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/brand/getallDeactivebrandbyshopid/' + value,
@@ -211,7 +221,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                 }
             }, (error) => {
                 Alert.alert("Server error!.")
-            });           
+            });
         }
     }
 
@@ -282,13 +292,13 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
     }
 
     categoryModal() {
-        const {categoryVisible} = this.state;
-        this.setState({categoryVisible: !categoryVisible});
+        const { categoryVisible } = this.state;
+        this.setState({ categoryVisible: !categoryVisible });
     }
 
     brandModal() {
-        const {brandVisible} = this.state;
-        this.setState({brandVisible: !brandVisible});
+        const { brandVisible } = this.state;
+        this.setState({ brandVisible: !brandVisible });
     }
 
     handleAddImageCategory() {
@@ -370,7 +380,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
     }
 
     render() {
-        const { isEditable, brandVisible, brandName, brandCatId, catImage, catName, categoryVisible, allCategory, allBrand, name, category, brand, shopId, avatar, price, quantity, description, barcode,
+        const { isEditable, outOfStock, manufactureMinDate, brandVisible, manufactureDate, expireDate, brandName, brandCatId, catImage, catName, categoryVisible, allCategory, allBrand, name, category, brand, shopId, avatar, price, quantity, description, barcode,
             stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
             gstAmount, measurement, gstPercent, minDate, allMeasurement } = this.state
         return (
@@ -475,6 +485,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                             <View style={Styles.user_detail_data}>
                                 <TextInput
                                     editable={isEditable}
+                                    keyboardType='numeric'
                                     value={costPrice}
                                     onChangeText={(value) => { this.setState({ costPrice: value }) }}
                                     style={Styles.cash_pay_input}
@@ -492,6 +503,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                 <TextInput
                                     editable={isEditable}
                                     value={sellingPrice}
+                                    keyboardType='numeric'
                                     onChangeText={(value) => { this.setState({ sellingPrice: value }) }}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.SELLING_PRICE}
@@ -506,6 +518,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                             <View style={Styles.user_detail_data}>
                                 <TextInput
                                     editable={isEditable}
+                                    keyboardType='numeric'
                                     value={gstPercent}
                                     onChangeText={(value) => { this.setState({ gstPercent: value }) }}
                                     style={Styles.cash_pay_input}
@@ -522,9 +535,26 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                 <TextInput
                                     editable={isEditable}
                                     value={stock}
+                                    keyboardType='numeric'
                                     onChangeText={(value) => { this.setState({ stock: value }) }}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.STOCK}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={Styles.user_detail}>
+                            <View style={Styles.user_detail_header}>
+                                <Text style={Styles.user_detail_header_text}>{LableText.OUT_OF_STOCK}</Text>
+                            </View>
+                            <View style={Styles.user_detail_data}>
+                                <TextInput
+                                    editable={isEditable}
+                                    value={outOfStock}
+                                    keyboardType='numeric'
+                                    onChangeText={(value) => { this.setState({ outOfStock: value }) }}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.OUT_OF_STOCK}
                                 />
                             </View>
                         </View>
@@ -537,6 +567,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                 <TextInput
                                     editable={isEditable}
                                     value={quantity}
+                                    keyboardType='numeric'
                                     onChangeText={(value) => { this.setState({ quantity: value }) }}
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.QUANTITY}
@@ -587,6 +618,68 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
 
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
+                                <Text style={Styles.user_detail_header_text}>{LableText.MANUFACTURE_DATE}</Text>
+                            </View>
+                            <View style={Styles.user_detail_data}>
+                                <DatePicker
+                                    style={{ width: '100%' }}
+                                    date={manufactureDate}
+                                    mode="date"
+                                    placeholder="select date"
+                                    format="YYYY-MM-DD"
+                                    minDate={manufactureMinDate}
+                                    // maxDate="2016-06-01"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    customStyles={{
+                                        dateIcon: {
+                                            position: 'absolute',
+                                            left: 0,
+                                            top: 5,
+                                            marginLeft: 0
+                                        },
+                                        dateInput: {
+                                            borderColor: '#fff'
+                                        }
+                                    }}
+                                    onDateChange={(date) => { this.setState({ manufactureDate: date }) }}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={Styles.user_detail}>
+                            <View style={Styles.user_detail_header}>
+                                <Text style={Styles.user_detail_header_text}>{LableText.EXPIRE_DATE}</Text>
+                            </View>
+                            <View style={Styles.user_detail_data}>
+                                <DatePicker
+                                    style={{ width: '100%' }}
+                                    date={expireDate}
+                                    mode="date"
+                                    placeholder="select date"
+                                    format="YYYY-MM-DD"
+                                    minDate={moment(minDate).add('days', 1).format('YYYY-MM-DD')}
+                                    // maxDate="2016-06-01"
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    customStyles={{
+                                        dateIcon: {
+                                            position: 'absolute',
+                                            left: 0,
+                                            top: 5,
+                                            marginLeft: 0
+                                        },
+                                        dateInput: {
+                                            borderColor: '#fff'
+                                        }
+                                    }}
+                                    onDateChange={(date) => { this.setState({ expireDate: date }) }}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={Styles.user_detail}>
+                            <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.DESCRIPTION}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
@@ -619,6 +712,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                             multiline={true}
                                             editable={isEditable}
                                             value={offerPercent}
+                                            keyboardType='numeric'
                                             onChangeText={(value) => { this.setState({ offerPercent: value }) }}
                                             style={Styles.cash_pay_input}
                                             placeholder={LableText.OFFER_PERCENT}
@@ -652,7 +746,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                                     borderColor: '#fff'
                                                 }
                                             }}
-                                            onDateChange={(date) => { this.setState({ offerFrom: date }) }}
+                                            onDateChange={(date) => { this.setState({ offerFrom: date, offerTo: moment(date).add('days', 1).format('YYYY-MM-DD') }) }}
                                         />
                                     </View>
                                 </View>
@@ -668,7 +762,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                             mode="date"
                                             placeholder="select date"
                                             format="YYYY-MM-DD"
-                                            minDate={minDate}
+                                            minDate={moment(offerFrom).add('days', 1).format('YYYY-MM-DD')}
                                             // maxDate="2016-06-01"
                                             confirmBtnText="Confirm"
                                             cancelBtnText="Cancel"
@@ -798,25 +892,25 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                 <View style={[{ width: '100%' }]}>
                                     {/* <View style={[Styles.center, { width: '100%' }]}> */}
 
-                                        <View style={[{ width: '90%' }]}>
-                                            <Text style={[{ paddingHorizontal: 30 }]}>{LableText.CATEGORY}</Text>
-                                        </View>
-                                        <View style={[Styles.inputTextView, { width: '90%' }]}>
-                                            <Picker
-                                                note
-                                                mode="dropdown"
-                                                style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
-                                                selectedValue={category}
-                                                onValueChange={(value) => { this.setState({ category: value }) }}
-                                            >
-                                                <Picker.Item label="Select category" value="" />
-                                                {null != allCategory ? allCategory.map((data, index) => {
-                                                    return (
-                                                        <Picker.Item label={data.name} value={data.id} />
-                                                    )
-                                                }) : null}
-                                            </Picker>
-                                        </View>
+                                    <View style={[{ width: '90%' }]}>
+                                        <Text style={[{ paddingHorizontal: 30 }]}>{LableText.CATEGORY}</Text>
+                                    </View>
+                                    <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                        <Picker
+                                            note
+                                            mode="dropdown"
+                                            style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
+                                            selectedValue={category}
+                                            onValueChange={(value) => { this.setState({ category: value }) }}
+                                        >
+                                            <Picker.Item label="Select category" value="" />
+                                            {null != allCategory ? allCategory.map((data, index) => {
+                                                return (
+                                                    <Picker.Item label={data.name} value={data.id} />
+                                                )
+                                            }) : null}
+                                        </Picker>
+                                    </View>
                                     {/* </View> */}
 
                                     <View style={[{ width: '90%' }]}>

@@ -28,7 +28,10 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
             totalAmount: '',
             price: '',
             userData: [],
-            planId: ''
+            planId: '',
+            onlinePay: '',
+            cashPay: '',
+            walletPayment: ''
         }
         this.onRefresh = this.onRefresh.bind(this);
     }
@@ -36,9 +39,7 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
     async componentDidMount() {
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
-        this.setState({
-            userData: userData
-        })
+       
         Axios({
             method: 'GET',
             url: AppConstants.API_BASE_URL + '/api/plan/getallplan/'
@@ -49,8 +50,31 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
                 })
             }
         }, (error) => {
-            Alert.alert("Server error!.")
+            // Alert.alert("Server error!.")
         });
+
+        Axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/admin/get/' + userData.adminId
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    userData: response.data
+                })
+            }
+        }, (error) => {
+            // Alert.alert("Server error!.")
+        });
+
+        Axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
+        //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
+        .then((res) => {
+            res.data.PAYMENT_MODE.map((data) => data.lookUpName == "ONLINE_PAYMENT" ? this.setState({ onlinePay: data.lookUpId }) :
+                data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) :
+                    data.lookUpName == "WALLET_PAYMENT" ? this.setState({ walletPayment: data.lookUpId }) :
+                        null)
+        })
+        .catch(error => console.log(error))
     }
 
     onRefresh() {
@@ -130,8 +154,8 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
     }
 
     payNow() {
-        const { userData, walletPay, planId, payOnline, planCode, totalAmount } = this.state;
-        console.log('All DATA', userData.wallet);
+        const { userData, walletPay, planId, walletPayment, payOnline, planCode, totalAmount } = this.state;
+        console.log('All DATA', userData.wallet, userData.adminId, userData.shopId, planId, walletPayment, planCode);
         var percent = Math.ceil((totalAmount * 2) / 100);
        var deduct = percent + 500 + totalAmount;
         if (walletPay) {
@@ -145,13 +169,13 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
                             planId: planId,
                             shopId: userData.shopId,
                             transactionId: 'WALLET-MILAAN-123',
-                            paymentMode: 89,
+                            paymentMode: walletPayment,
                             discountType: planCode
                         }
                     }).then((response) => {
                         if (null != response.data) {
                             this.toggleModal();
-
+                            Alert.alert("Recharse done.")
                         }
                     }, (error) => {
                         Alert.alert("Server error!.")
@@ -165,11 +189,12 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
                             planId: planId,
                             shopId: userData.shopId,
                             transactionId: 'WALLET-MILAAN-123',
-                            paymentMode: 89
+                            paymentMode: walletPayment
                         }
                     }).then((response) => {
                         if (null != response.data) {
                             this.toggleModal();
+                            Alert.alert("Recharse done.")
                         }
                     }, (error) => {
                         Alert.alert("Server error!.")
@@ -184,7 +209,7 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
     }
 
     startPayment() {
-        const { userData, totalAmount, planId, planCode, userMobileNo, userName } = this.state;
+        const { userData, totalAmount, onlinePay, planId, planCode, userMobileNo, userName } = this.state;
         const options = {
             description: "MILAAN IT",
             image: 'http://ec2-65-0-32-190.ap-south-1.compute.amazonaws.com/shop/61_4_MILAAN661_shop.png',
@@ -211,12 +236,13 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
                     planId: planId,
                     shopId: userData.shopId,
                     transactionId: data.razorpay_payment_id,
-                    paymentMode: 14,
+                    paymentMode: onlinePay,
                     discountType: planCode
                 }
             }).then((response) => {
                 if (null != response.data) {
                     this.toggleModal();
+                    Alert.alert("Recharse done.")
                 }
             }, (error) => {
                 Alert.alert("Server error!.")

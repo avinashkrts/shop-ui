@@ -162,7 +162,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                             </View>
                         </View>
 
-                        <View style={[Styles.itemCategoryEdit, Styles.center]}>
+                        {/* <View style={[Styles.itemCategoryEdit, Styles.center]}>
                             <View>
                                 <Text style={Styles.itemCategoryEditIcon}><EditIcon /></Text>
                             </View>
@@ -173,7 +173,7 @@ export class BrandListScreen extends React.Component<BrandListScreenProps & Them
                                     <Text style={Styles.itemCategoryEditIcon} ><CancelIcon fontSize={25} /></Text>
                                 </View>
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
                     </View>
                 </View> :
                 <ActivityIndicator size='large' color='green' />}

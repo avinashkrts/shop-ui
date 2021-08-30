@@ -23,7 +23,8 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
             modalVisible: false,
             description: '',
             orderstatusData: [],
-            customerType: ''
+            customerType: '',
+            rejectcartId: ''
         }
     }
     async componentDidMount() {
@@ -67,7 +68,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
     }
 
     handleOrderStatus(orderStatus, cartId, userId) {
-        const { userData, description } = this.state;
+        const { userData, rejectcartId, description } = this.state;
         // Alert.alert(userData.shopId + cartId + orderStatus)
         switch (orderStatus) {
             case 'ACCEPT':
@@ -86,12 +87,12 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                 });
                 break;
             case 'REJECT':
-                // Alert.alert(orderStatus)
+                // Alert.alert("" + rejectcartId)
                 Axios({
                     method: 'POST',
                     url: AppConstants.API_BASE_URL + '/api/cart/order/reject',
                     data: {
-                        cartId: cartId,
+                        cartId: rejectcartId,
                         shopId: userData.shopId,
                         description: description
                     }
@@ -119,6 +120,11 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
     toggleModal() {
         const { modalVisible } = this.state;
         this.setState({ modalVisible: !modalVisible })
+    }
+
+    toggleReject(cartId) {
+        const { modalVisible } = this.state;
+        this.setState({ modalVisible: !modalVisible, rejectcartId: cartId })
     }
 
     _onRefresh() {
@@ -162,7 +168,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                                     if (orderStatus.lookUpName === "PLACED") {
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text onPress={() => { this.toggleModal() }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.REJECT}</Text>
+                                                <Text onPress={() => { this.toggleReject(item.cartId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.REJECT}</Text>
                                             )
                                         }
                                     } else if (orderStatus.lookUpName === "REJECTED") {

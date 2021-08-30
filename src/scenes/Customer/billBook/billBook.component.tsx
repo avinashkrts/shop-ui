@@ -65,7 +65,7 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
                 //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
                 .then((res) =>
                     res.data.PAYMENT_MODE.map((data) => data.lookUpName == "ONLINE_PAYMENT" ?
-                        this.setState({ onlinePay: data.lookUpId }) : data.lookUpName == "REFUND" ? this.setState({ refund: data.lookUpId }) : data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) : null)
+                        this.setState({ onlinePay: data.lookUpId }) : data.lookUpName == "WALLET_PAYMENT" ? this.setState({ refund: data.lookUpId }) : data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) : null)
                 )
                 .catch(error => console.log(error))
         }
@@ -137,7 +137,7 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
                         }
                     >
                         {null != transactionData ? transactionData.map((data, index) => {
-                           data.paymentMode ? data.paymentMode == refund ? total = total + data.amount : null : null
+                           data.paymentMode ? data.paymentMode == refund ? total = total + data.totalAmount : null : null
                             return (
                                 <View>
                                     <Divider />
@@ -172,7 +172,7 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
                                             <View style={Styles.bill_column_6}>
                                                 {/* <View style={Styles.bill_box}> */}
                                                 {/* {data.paymentMode == refund ? */}
-                                                    <Text style={Styles.text_design_green}>{data.paymentMode == onlinePay ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == refund ? 'Refund' : null : null}</Text> 
+                                                    <Text style={Styles.text_design_green}>{data.paymentMode ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == refund ? 'Refund' : null : null}</Text> 
                                                     {/* : <Text style={Styles.text_design}> -- </Text>} */}
                                                 {/* </View> */}
                                             </View>

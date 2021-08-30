@@ -49,14 +49,14 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
 
   onFormSubmit() {
     const { firstName, lastName, userType, pwd, mobileNo } = this.state
-    if (firstName === " " || firstName.length === 0) {
+    if (firstName === " " || firstName.length == 0) {
       Alert.alert("Enter First Name");
-    } else if (lastName === "" || lastName.length === 0) {
+    } else if (lastName === "" || lastName.length == 0) {
       Alert.alert("Enter Last Name");
-    } else if (mobileNo === "" || mobileNo.length === 0 || mobileNo.lenght < 10 || mobileNo.length > 10) {
-      Alert.alert("Enter Mobile Number");
-    } else if (pwd === "" || pwd.length === 0 || pwd.length < 8) {
-      Alert.alert("Password Length Must Be More Than 8 Digits");
+    } else if (mobileNo === "" || mobileNo.length == 0 || mobileNo.length < 10 || mobileNo.length > 10) {
+      Alert.alert("Enter a valid Mobile Number");
+    } else if (pwd === "" || pwd.length == 0 || pwd.length < 8) {
+      Alert.alert("Password length must be more than 8 digits");
     } else {
       axios({
         method: 'post',
@@ -73,7 +73,8 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
           Alert.alert(response.data.description);
         } else {
           AsyncStorage.setItem('phoneForOtp', JSON.stringify(mobileNo), () => {
-            this.props.navigation.navigate(AppRoute.OTP);
+            Alert.alert('User account created successfully, login with your credential.');
+            this.props.navigation.navigate(AppRoute.SIGN_IN);
           })
         }
       }, (error) => {
@@ -128,6 +129,7 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
             <View style={Styles.inputTextView}>
               <TextInput
                 style={Styles.inputText}
+                keyboardType='numeric'
                 placeholder={Placeholder.PHONE}
                 value={mobileNo}
                 onChangeText={(value) => { this.setState({ mobileNo: value }) }}

@@ -70,7 +70,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
             if (null != response.data) {
                 this.setState({
                     userData: response.data,
-                    leftBalance: String(response.data.wallet)
+                    leftBalance: String(response.data.availableAmount)
                 })
             }
         }, (error) => {
@@ -266,7 +266,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
 
     amountCalc(withdrawAmount) {
         const { userData } = this.state;
-        var withdrawableAmt = Number(userData.wallet) - 500
+        var withdrawableAmt = Number(userData.availableAmount) - 500
         if (Number(withdrawAmount) > withdrawableAmt) {
             Alert.alert('Your withdraw limit is:' + withdrawableAmt)
         } else {

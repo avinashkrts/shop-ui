@@ -159,7 +159,7 @@ export class AddDrawerProductImageScreen extends Component<AddDrawerProductImage
                     {null != imageUploaded ? imageUploaded ?
                         <View style={{ marginHorizontal: '10%' }}>
                             <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.props.navigation.navigate(AppRoute.HOME) }}>
-                                <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
+                                <Text style={Styles.buttonName}>{LableText.FINISH}</Text>
                             </TouchableOpacity>
                         </View> : null : null}
 

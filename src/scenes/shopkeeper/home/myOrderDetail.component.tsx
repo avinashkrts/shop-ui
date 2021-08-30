@@ -60,7 +60,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
             productList: [],
             shopId: '',
             cartId: '',
-            deliveryDate: String(moment(new Date()).format('YYYY-MM-DD hh:mm:a')),
+            deliveryDate: '',
             addressData: [],
             orderstatusData: [],
             modalVisible: false,
@@ -82,7 +82,10 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
             deliveryCharge: '',
             userId: '',
             homeDelivery: '',
-            selfPick: ''
+            selfPick: '',
+            cashPay: '',
+            walletPay: '',
+            onlinePay: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -109,9 +112,10 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/cart/get/' + cartId
             }).then((response) => {
-                console.log('delivery date ' + cartId + ' ', moment(response.data.deliveryDate).format('DD-MM-YYYY hh:mm a'))
+                console.log('delivery date ' + cartId + ' ', moment(response.data.slotDate).format('DD-MM-YYYY hh:mm a'))
                 this.setState({
-                    userId: response.data.userId
+                    userId: response.data.userId,
+                    deliveryDate: String(moment(response.data.slotDate).format('YYYY-MM-DD hh:mm:a'))
                 })
                 axios({
                     method: 'GET',
@@ -140,13 +144,23 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
 
             Axios({
                 method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/lookup/getallorderstatus',
+                url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',
             }).then((response) => {
                 if (null != response.data) {
                     console.log(response.data);
                     this.setState({
-                        orderstatusData: response.data
+                        orderstatusData: response.data.ORDER_STATUS
                     })
+                    response.data.PAYMENT_MODE.map((data, index) => {
+                        data.lookUpName === "CASH" ?
+                            this.setState({ cashPay: data.lookUpId }) :
+                            data.lookUpName === "ONLINE_PAYMENT" ?
+                                this.setState({ onlinePay: data.lookUpId }) :
+                                data.lookUpName === "WALLET_PAYMENT" ?
+                                    this.setState({ walletPay: data.lookUpId }) :
+                                    null
+                    })
+
                 }
             }, (error) => {
                 Alert.alert("Server error!.")
@@ -193,7 +207,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                             this.setState({
                                 selfPick: delivery.lookUpId
                             })
-                        } 
+                        }
                     })
                 }
             }, (error) => {
@@ -212,7 +226,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
     }
 
     handleOrderStatus(orderStatus, cartId) {
-        const { userData, description,cartData, selfPick, homeDelivery, userId,byDBoyDType, deliveryCharge, bySelfDType, byCourierDType, deliveryDate, deliveryType, byDeliveryBoy, byCourier, selfPickUp, dBoyName, dBoyNumber, courierName, courierId } = this.state;
+        const { userData, description, cartData, selfPick, homeDelivery, userId, byDBoyDType, deliveryCharge, bySelfDType, byCourierDType, deliveryDate, deliveryType, byDeliveryBoy, byCourier, selfPickUp, dBoyName, dBoyNumber, courierName, courierId } = this.state;
         // Alert.alert(userData.shopId + cartId + orderStatus)
         switch (orderStatus) {
             case 'ACCEPT':
@@ -230,7 +244,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                 });
                 break;
             case 'REJECT':
-                // Alert.alert(orderStatus)
+                // Alert.alert(cartId, "")
                 Axios({
                     method: 'POST',
                     url: AppConstants.API_BASE_URL + '/api/cart/order/reject',
@@ -320,7 +334,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                             Alert.alert("Server error!.")
                         });
                     }
-                } else if(cartData.orderType == selfPick){
+                } else if (cartData.orderType == selfPick) {
                     Axios({
                         method: 'POST',
                         url: AppConstants.API_BASE_URL + '/api/cart/order/shipped',
@@ -498,7 +512,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
         }
     }
     render() {
-        const { cartData, cartId, deliveryCharge,  homeDelivery, selfPick, byDBoyDType, bySelfDType, byCourierDType, shippedDate, deliveryDate, rejectionModal, shippedModal, deliveryModal, addressData, orderstatusData, productList } = this.state
+        const { cartData, cartId, deliveryCharge, cashPay, onlinePay, walletPay, homeDelivery, selfPick, byDBoyDType, bySelfDType, byCourierDType, shippedDate, deliveryDate, rejectionModal, shippedModal, deliveryModal, addressData, orderstatusData, productList } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -521,6 +535,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                 >
 
                     <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Payment Mode: {cartData.transactionType ? cartData.transactionType == cashPay ? 'Cash Payment' : cartData.transactionType == onlinePay ? 'Online Payment' : cartData.transactionType == walletPay ? 'Wallet Payment' : null : null}</Text>
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Address</Text>
                         {null != addressData ?
                             <Text style={{ marginVertical: 5 }}>{addressData.city}, {addressData.landmark}, {addressData.district}, {addressData.state}, {addressData.pinCode}</Text>
@@ -567,10 +582,10 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                                                 <Radio selected={this.state.selfPickUp} selectedColor='#0099cc' onPress={() => { this.handleDeliveryType('SELFPICK') }} />
                                                 <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>Self pick up</Text>
                                             </View> :
-                                            cartData.orderType == homeDelivery || cartData.orderType == homeDelivery ? 
+                                            cartData.orderType == homeDelivery || cartData.orderType == homeDelivery ?
                                                 <>
                                                     <View style={{ flexDirection: 'row', marginRight: 20 }}>
-                                                        <Radio selected={this.state.byDeliveryBoy} selectedColor='#0099cc' onPress={() => {this.handleDeliveryType('DBOY') }} />
+                                                        <Radio selected={this.state.byDeliveryBoy} selectedColor='#0099cc' onPress={() => { this.handleDeliveryType('DBOY') }} />
                                                         <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>By delivery boy</Text>
                                                     </View>
 
@@ -717,10 +732,10 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                                 <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData.gstAmount ? cartData.gstAmount.toFixed(2) : null}</Text>
                             </View>
 
-                            <View style={Styles.price_detail_2_1}>
+                            {/* <View style={Styles.price_detail_2_1}>
                                 <Text style={Styles.cart_price_text_head}>Delevery Charges</Text>
                                 <Text style={Styles.cart_price_text_data}>FREE</Text>
-                            </View>
+                            </View> */}
                         </View>
 
                         <View style={Styles.cart_total_view}>

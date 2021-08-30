@@ -52,6 +52,7 @@ import { lookup } from 'dns';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 import RazorpayCheckout from 'react-native-razorpay';
+import moment from 'moment';
 
 const allTodos: TimeLineData[] = [
     TimeLineData.getAllTimelineData()
@@ -90,7 +91,8 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             cashDelivery: true,
             payOnline: false,
             homeDelivery: true,
-            slotDate: String(new Date().getFullYear() + '-' + Number(new Date().getMonth() + 1) + '-' + new Date().getDate()),
+            slotDate: String(moment(new Date).format('YYYY-MM-DD')),
+            minDate: String(moment(new Date).format('YYYY-MM-DD')),
             selfPickup: false,
             allLookUp: [],
             order_type: [],
@@ -145,7 +147,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 }
 
             }, (error) => {
-                Alert.alert("Server problem")
+                Alert.alert("Please add your address.")
             })
 
             axios({
@@ -265,55 +267,60 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
 
 
     handlePlaceOrder() {
-        const { orderType, addressId, slotDate, homeDelivery, selfPick, cashDelivery, payOnline, homeId, cashId, onlineId, selfId, paymentType, cartId, } = this.state;
+        const { orderType, addressId, addressData, slotDate, homeDelivery, selfPick, cashDelivery, payOnline, homeId, cashId, onlineId, selfId, paymentType, cartId, } = this.state;
         console.log('data', orderType, paymentType, homeDelivery, selfPick, cashDelivery, payOnline, cashId, onlineId, homeId, selfId, cartId);
-        if (payOnline) {
-            axios({
-                method: 'PUT',
-                url: AppConstants.API_BASE_URL + '/api/cart/placeorder',
-                data: {
-                    transactionType: paymentType,
-                    cartId: cartId,
-                    orderType: orderType,
-                    addressId: addressId,
-                    slotDate: slotDate
-                }
-            }).then((response) => {
-                if (response.data) {
-                    if (response.data.status) {
-                        // Alert.alert(response.data.transactionId)
-                        this.startPayment(response.data.transactionId);
-                    } else {
-                        Alert.alert("Got error while placing Order.")
+        if (addressData != null) {
+            if (payOnline) {
+
+                axios({
+                    method: 'PUT',
+                    url: AppConstants.API_BASE_URL + '/api/cart/placeorder',
+                    data: {
+                        transactionType: paymentType,
+                        cartId: cartId,
+                        orderType: orderType,
+                        addressId: addressId,
+                        slotDate: slotDate
                     }
-                }
-            }, (error) => {
-                Alert.alert("Server problem")
-            })
-        } else if (cashDelivery) {
-            axios({
-                method: 'PUT',
-                url: AppConstants.API_BASE_URL + '/api/cart/placeorder',
-                data: {
-                    transactionType: paymentType,
-                    cartId: cartId,
-                    orderType: orderType,
-                    addressId: addressId,
-                    slotDate: slotDate
-                }
-            }).then((response) => {
-                if (response.data) {
-                    if (response.data.status) {
-                        this.notification()
-                       
-                        // this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER)
-                    } else {
-                        Alert.alert("Got error while placing Order.")
+                }).then((response) => {
+                    if (response.data) {
+                        if (response.data.status) {
+                            // Alert.alert(response.data.transactionId)
+                            this.startPayment(response.data.transactionId);
+                        } else {
+                            Alert.alert("Got error while placing Order.")
+                        }
                     }
-                }
-            }, (error) => {
-                Alert.alert("Server problem")
-            })
+                }, (error) => {
+                    Alert.alert("Server problem")
+                })
+            } else if (cashDelivery) {
+                axios({
+                    method: 'PUT',
+                    url: AppConstants.API_BASE_URL + '/api/cart/placeorder',
+                    data: {
+                        transactionType: paymentType,
+                        cartId: cartId,
+                        orderType: orderType,
+                        addressId: addressId,
+                        slotDate: slotDate
+                    }
+                }).then((response) => {
+                    if (response.data) {
+                        if (response.data.status) {
+                            this.notification()
+
+                            // this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER)
+                        } else {
+                            Alert.alert("Got error while placing Order.")
+                        }
+                    }
+                }, (error) => {
+                    Alert.alert("Please select your address.")
+                })
+            }
+        } else {
+            Alert.alert("Please add your address.")
         }
     }
 
@@ -445,7 +452,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
     )
 
     render() {
-        const { cartData, addressData, homeDelivery, payOnline, cashDelivery, selfPick, totalAmt, productList, slotDate } = this.state
+        const { cartData, minDate, addressData, homeDelivery, payOnline, cashDelivery, selfPick, totalAmt, productList, slotDate } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -563,7 +570,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                                     mode="date"
                                     placeholder="select date"
                                     format="YYYY-MM-DD"
-                                    minDate={slotDate}
+                                    minDate={minDate}
                                     // maxDate="2016-06-01"
                                     confirmBtnText="Confirm"
                                     cancelBtnText="Cancel"
