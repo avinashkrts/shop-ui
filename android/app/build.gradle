@@ -140,7 +140,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.shop"
+        applicationId "com.milaansearch"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
@@ -150,6 +150,11 @@ android {
                                 onesignal_google_project_number: "REMOTE"]
          
     }
+    
+    dexOptions {
+       javaMaxHeapSize "4g"
+    }
+
     splits {
         abi {
             reset()
