@@ -1,4 +1,4 @@
-package com.shop;
+package com.milaansearch;
 
 import android.os.Bundle;
 
