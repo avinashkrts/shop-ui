@@ -71,7 +71,7 @@ export class MapScreen extends Component<MapScreenProps, ThemedComponentProps & 
                         language: 'en',
                     }}
                 // currentLocation={true}
-                // currentLocationLabel='Current location'
+                // currentLocationLabel=LableText.USE_CURRENT_LOCATION
                 />
                 {lat !== '' && long !== '' ?
                     <>

@@ -61,7 +61,10 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
             orderstatusData: [],
             modalVisible: false,
             description: '',
-            userData: []
+            userData: [],
+            cashPay: '',
+            onlinePay: '',
+            walletPay: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -98,7 +101,7 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                             addressData: response.data
                         })
                     }
-    
+
                 }, (error) => {
                     Alert.alert("Server problem")
                 })
@@ -109,6 +112,30 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
             }, (error) => {
                 Alert.alert("Server problem")
             })
+
+            Axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',
+            }).then((response) => {
+                if (null != response.data) {
+                    console.log(response.data);
+                    this.setState({
+                        orderstatusData: response.data.ORDER_STATUS
+                    })
+                    response.data.PAYMENT_MODE.map((data, index) => {
+                        data.lookUpName === "CASH" ?
+                            this.setState({ cashPay: data.lookUpId }) :
+                            data.lookUpName === "ONLINE_PAYMENT" ?
+                                this.setState({ onlinePay: data.lookUpId }) :
+                                data.lookUpName === "WALLET_PAYMENT" ?
+                                    this.setState({ walletPay: data.lookUpId }) :
+                                    null
+                    })
+
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
 
             Axios({
                 method: 'GET',
@@ -244,7 +271,7 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                     </View>
 
                     <View>
-                        <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>{item.offersAvailable ? item.offersAvailable  : null } {item.offersAvailable ? 'offers available' : null }</Text>
+                        <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>{item.offersAvailable ? item.offersAvailable : null} {item.offersAvailable ? 'offers available' : null}</Text>
                     </View>
                 </View>
                 :
@@ -268,7 +295,7 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
 
 
     render() {
-        const { cartData, cartId, addressData, orderstatusData, productList } = this.state
+        const { cartData, cashPay, onlinePay, walletPay, cartId, addressData, orderstatusData, productList } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -291,8 +318,15 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                 >
 
                     <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
-                        <Text style={{alignSelf: 'center',  fontSize: 20, color: '#0099cc', fontWeight: 'bold' }}>{null != cartData ? cartData.shopName : null}</Text>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Address</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Payment Mode:</Text>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}> {cartData.transactionType ? cartData.transactionType == cashPay ? 'COD' : cartData.transactionType == onlinePay ? 'Online Payment' : cartData.transactionType == walletPay ? 'Wallet Payment' : null : null}</Text>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Address</Text>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Order Id: {cartData.cartId ? cartData.cartId : null} </Text>
+                        </View>
                         {null != addressData ?
                             <Text style={{ marginVertical: 5 }}>{addressData.city}, {addressData.landmark}, {addressData.district}, {addressData.state}, {addressData.pinCode}</Text>
                             : null}
@@ -351,10 +385,10 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                                 <Text style={Styles.cart_price_text_data}><RupeeIcon fontSize={18} />{null != cartData.gstAmount ? cartData.gstAmount.toFixed(2) : null}</Text>
                             </View>
 
-                            <View style={Styles.price_detail_2_1}>
+                            {/* <View style={Styles.price_detail_2_1}>
                                 <Text style={Styles.cart_price_text_head}>Delevery Charges</Text>
                                 <Text style={Styles.cart_price_text_data}>FREE</Text>
-                            </View>
+                            </View> */}
                         </View>
 
                         <View style={Styles.cart_total_view}>

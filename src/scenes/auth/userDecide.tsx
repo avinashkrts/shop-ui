@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Alert, Image, Text, ActivityIndicator, } from 'react-native';
+import { View, Alert, Image, Text, ActivityIndicator, PermissionsAndroid, } from 'react-native';
 import { UserDecideProps } from '../../navigation/userDecide.navigator';
 import { AppRoute } from '../../navigation/app-routes';
 import { Placeholder, LableText } from '../../constants';
@@ -12,6 +12,7 @@ import { AsyncStorage } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import RazorpayCheckout from 'react-native-razorpay';
 import OneSignal from 'react-native-onesignal';
+import Geolocation from '@react-native-community/geolocation';
 
 interface State {
     email: string | undefined;
@@ -36,12 +37,43 @@ export class UserDecide extends Component<UserDecideProps, any & State & any> {
         OneSignal.setLogLevel(6, 0);
         OneSignal.setAppId("43e3395b-0019-492b-b999-4321444f25ad");
 
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                    title: "Milaan Location Permission",
+                    message:
+                        "Milaan needs access to your Location " +
+                        "so you can get your nearest shop.",
+                    buttonNeutral: "Ask Me Later",
+                    buttonNegative: "Cancel",
+                    buttonPositive: "OK"
+                }
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                Geolocation.getCurrentPosition((position) => {
+                    var lat = position.coords.latitude
+                    var long = position.coords.longitude
+                    AsyncStorage.setItem('latitude', String(lat))
+                    AsyncStorage.setItem('longitude', String(long))
+                    AsyncStorage.setItem('location', 'Current Location')
+                    console.log('location', lat, position.coords.accuracy)
+                }, (err) => {
+
+                }, { enableHighAccuracy: true })
+            } else {
+                console.log("Location permission denied");
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+
         const contents = 'You are first in line';
         // const playerId = '8a6d8667-7422-4bad-b9e6-5d5625f73a96';
         // OneSignal.postNotification(contents, data, playerId);
-        const deviceState = await OneSignal.getDeviceState();    
+        const deviceState = await OneSignal.getDeviceState();
         console.log('one signal', deviceState)
-        
+
         AsyncStorage.setItem('productCount', '0');
         AsyncStorage.setItem('wishCount', '0');
         AsyncStorage.setItem('billCount', '0');

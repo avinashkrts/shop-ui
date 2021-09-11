@@ -58,6 +58,8 @@ import { AddProductNavigator } from './addProductNavigator.navigator';
 import { OrderNavigator } from './shopKeeperNavigator/order.navigator';
 import { ProfileDrawerNavigator } from './shopKeeperNavigator/profile.Navigator';
 import { AsyncStorage } from 'react-native';
+import { RegistrationNavigator } from './registration.navigator';
+import { OrderSearchNavigator } from './shopKeeperNavigator/orderSearch.navigator';
 
 type HomeDrawerNavigatorParams = {
   [AppRoute.HOME]: undefined;
@@ -70,11 +72,13 @@ type HomeDrawerNavigatorParams = {
   [AppRoute.IMAGEUPLOAD]: undefined;
   [AppRoute.LOGOUT]: undefined;
   [AppRoute.AUTH]: undefined;
+  // [AppRoute.REGISTRATION]: undefined;
   [AppRoute.ORDER]: undefined;
   [AppRoute.ADD_PRODUCT_NAVIGATOR]: undefined;
   [AppRoute.PROFILE]: undefined;
   [AppRoute.MY_WALLET]: undefined;
   [AppRoute.MY_ORDER]: undefined;
+  [AppRoute.MY_ORDER_SEARCH]: undefined;
   [AppRoute.VALIDITY]: undefined;
   [AppRoute.NOTIFICATION]: undefined;
   [AppRoute.PAY_NOW]: undefined;
@@ -169,9 +173,19 @@ export interface AuthNavigatorScreenProps {
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.AUTH>;
 }
 
+// export interface RegistrationNavigatorScreenProps {
+//   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.REGISTRATION>;
+//   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.REGISTRATION>;
+// }
+
 export interface OrderNavigatorScreenProps {
   navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.ORDER>;
   route: RouteProp<HomeDrawerNavigatorParams, AppRoute.ORDER>;
+}
+
+export interface OrderSearchNavigatorScreenProps {
+  navigation: DrawerNavigationProp<HomeDrawerNavigatorParams, AppRoute.MY_ORDER_SEARCH>;
+  route: RouteProp<HomeDrawerNavigatorParams, AppRoute.MY_ORDER_SEARCH>;
 }
 
 export interface AddProductNavigatorScreenProps {
@@ -362,7 +376,7 @@ export const HomeNavigator = (): React.ReactElement => (
       options={{ title: 'My Wallet', drawerIcon: WalletIcon }}
     />
 
-      <Drawer.Screen
+    <Drawer.Screen
       name={AppRoute.WITHDRAW}
       component={WithdrawScreen}
       options={{ title: 'Withdraw', drawerIcon: WalletIcon }}
@@ -378,6 +392,12 @@ export const HomeNavigator = (): React.ReactElement => (
       name={AppRoute.ORDER}
       component={OrderNavigator}
       options={{ title: 'My Order', drawerIcon: MyOrderIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.MY_ORDER_SEARCH}
+      component={OrderSearchNavigator}
+      options={{ title: 'Search Order', drawerIcon: MyOrderIcon }}
     />
 
     <Drawer.Screen
@@ -446,11 +466,11 @@ export const HomeNavigator = (): React.ReactElement => (
       options={{ title: 'Offers', drawerIcon: OfferIcon }}
     /> */}
 
-    <Drawer.Screen
+    {/* <Drawer.Screen
       name={AppRoute.DAILY_MESSAGE}
       component={DailyMessageScreen}
       options={{ title: 'Daily Message', drawerIcon: DailyMessageIcon }}
-    />
+    /> */}
 
     <Drawer.Screen
       name={AppRoute.CONTACTUS}

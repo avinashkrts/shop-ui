@@ -19,7 +19,7 @@ import { ScrollableTab, Tab, Item, Container, Content, Tabs, Radio, Header, TabH
 import { CartScreenProps } from '../../../navigation/shopKeeperNavigator/allItem.Navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
-import { SearchIcon, MinusIcon, RupeeIcon, PlusCircle, BackIcon, CancelIcon, PlusIcon, AddIcon, RightArrowIcon } from '../../../assets/icons';
+import { SearchIcon, MinusIcon, RupeeIcon, PlusCircle, BackIcon, CancelIcon, PlusIcon, AddIcon, RightArrowIcon, BagIcon } from '../../../assets/icons';
 import { TimeLineData } from '../../../data/TimeLineData.model';
 import { AppConstants } from '../../../constants/AppConstants';
 import { Toolbar } from '../../../components/toolbar.component';
@@ -49,6 +49,7 @@ import DatePicker from 'react-native-datepicker'
 import { MyOrderDetailScreenProps } from '../../../navigation/shopKeeperNavigator/order.navigator';
 import moment from 'moment';
 import { Notification } from '../../../components/notification';
+import { scale } from 'react-native-size-matters';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -72,6 +73,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
             byDeliveryBoy: false,
             byCourier: false,
             selfPickUp: true,
+            deliverModal: false,
             courierName: '',
             courierId: '',
             dBoyName: '',
@@ -85,7 +87,11 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
             selfPick: '',
             cashPay: '',
             walletPay: '',
-            onlinePay: ''
+            onlinePay: '',
+            otp: '',
+            isOtp: true,
+            isCancel: true,
+            review: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -104,8 +110,10 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
         this.setState({
             shopId: shopId,
             cartId: cartId,
-            userData: userData
+            userData: userData,
+            deliverModal: false
         })
+
         if (null != logedIn && logedIn === 'true') {
             // Alert.alert("" + userData.adminId, cartId)
             axios({
@@ -226,7 +234,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
     }
 
     handleOrderStatus(orderStatus, cartId) {
-        const { userData, description, cartData, selfPick, homeDelivery, userId, byDBoyDType, deliveryCharge, bySelfDType, byCourierDType, deliveryDate, deliveryType, byDeliveryBoy, byCourier, selfPickUp, dBoyName, dBoyNumber, courierName, courierId } = this.state;
+        const { userData, description, cartData, otp, selfPick, homeDelivery, userId, byDBoyDType, deliveryCharge, bySelfDType, byCourierDType, deliveryDate, deliveryType, byDeliveryBoy, byCourier, selfPickUp, dBoyName, dBoyNumber, courierName, courierId } = this.state;
         // Alert.alert(userData.shopId + cartId + orderStatus)
         switch (orderStatus) {
             case 'ACCEPT':
@@ -357,18 +365,24 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                 }
                 break;
             case 'DELIVERED':
-                // Alert.alert( orderStatus)
-                Axios({
-                    method: 'GET',
-                    url: AppConstants.API_BASE_URL + '/api/cart/order/delivered/' + cartId,
-                }).then((response) => {
-                    if (null != response.data) {
-                        Notification(userId, 2, Contents.DELIVERY, 'null');
-                        this._onRefresh();
-                    }
-                }, (error) => {
-                    Alert.alert("Server error!.")
-                });
+                // Alert.alert( '' +cartId)
+                if (otp === '' || otp.length < 0) {
+                    Alert.alert('Please enter OTP.')
+                } else {
+                    Axios({
+                        method: 'GET',
+                        url: AppConstants.API_BASE_URL + '/api/cart/order/delivered/' + cartId + '/' + otp,
+                    }).then((response) => {
+                        if (null != response.data && response.data.status === 'true') {
+                            Notification(userId, 2, Contents.DELIVERY, 'null');
+                            this._onRefresh();
+                        } else {
+                            Alert.alert("Enter a valid OTP.")
+                        }
+                    }, (error) => {
+                        Alert.alert("Enter a valid OTP.")
+                    });
+                }
                 break;
             default:
                 Alert.alert("Cart ID not found.");
@@ -511,8 +525,51 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                 Alert.alert('Delivery type not found.')
         }
     }
+
+    handleDenied() {
+        const { review, cartData, adminData, received, denied, receivedCartId } = this.state;
+        // Alert.alert(cartId + receivedCartId +'')
+        if (review === '' || review.length < 50) {
+            Alert.alert('Please write correct reason.')
+        } else {
+            // Alert.alert('Done' + review.length)
+            Axios({
+                method: 'POST',
+                url: AppConstants.API_BASE_URL + '/api/cart/order/denied',
+                data: {
+                    cartId: cartData.cartId,
+                    comment: review,
+                    denied: true
+                }
+            }).then((response) => {
+                if (null != response.data) {
+                    Notification(cartData.userId, 2, Contents.ORDER_NOT_DELIVERED, 'null');
+
+                    this.setState({ deliverModal: false })
+                    // Axios({
+                    //     method: 'GET',
+                    //     url: AppConstants.API_BASE_URL + '/api/admin/get/activeadminbyshopid/' + shopId
+                    // }).then((response) => {
+                    //     if (response.data) {
+                    //         Notification(response.data[0].adminId, response.data[0].userType, denied ? Contents.ORDER_NOT_DELIVERED : Contents.ORDER_DELIVERED, 'null');
+                    //         this.toggleModal('CLOSE', '');
+                    //         this.onRefresh();
+                    //     }
+
+                    // }, (error) => {
+                    //     Alert.alert("Server problem")
+                    // })
+
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+        }
+
+    }
+
     render() {
-        const { cartData, cartId, deliveryCharge, cashPay, onlinePay, walletPay, homeDelivery, selfPick, byDBoyDType, bySelfDType, byCourierDType, shippedDate, deliveryDate, rejectionModal, shippedModal, deliveryModal, addressData, orderstatusData, productList } = this.state
+        const { cartData, cartId, isOtp, review, isCancel, deliverModal, otp, deliveryCharge, cashPay, onlinePay, walletPay, homeDelivery, selfPick, byDBoyDType, bySelfDType, byCourierDType, shippedDate, deliveryDate, rejectionModal, shippedModal, deliveryModal, addressData, orderstatusData, productList } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -524,6 +581,65 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
+                <Modal style={Styles.modal} isVisible={deliverModal}>
+                    <View style={Styles.modalHeader}>
+                        <TouchableOpacity>
+                            <Text onPress={() => { this.setState({ deliverModal: false }) }}><CancelIcon fontSize={25} /></Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={Styles.user_detail}>
+                        <View style={[Styles.user_detail_header, Styles.user_detail_data, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                            <Text onPress={() => { this.setState({ isCancel: !isCancel }) }} style={[{ width: '90%' }, Styles.user_detail_header_text]}>Enter OTP</Text>
+                            <Text onPress={() => { this.setState({ isCancel: !isCancel }) }} style={[isCancel ? Styles.show_otp : Styles.hide_otp, Styles.user_detail_header_text]}><RightArrowIcon fontSize={scale(15)} /></Text>
+                        </View>
+                        {isCancel ?
+                            <>
+                                <View style={Styles.user_detail_header}>
+                                    <Text style={Styles.user_detail_header_text}>{LableText.ENTER_OTP}</Text>
+                                </View>
+                                <View style={Styles.user_detail_data}>
+                                    <TextInput
+                                        style={Styles.cash_pay_input}
+                                        placeholder={LableText.ENTER_OTP}
+                                        value={otp}
+                                        onChangeText={(value) => { this.setState({ otp: value }) }}
+                                    />
+                                </View>
+                                <View style={[Styles.center, { marginTop: 30 }]}>
+                                    <Text onPress={() => { this.handleOrderStatus('DELIVERED', cartData.cartId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.SUBMIT}</Text>
+                                </View>
+                            </> : null}
+                    </View>
+
+
+                    <View style={Styles.user_detail}>
+                        <View style={[Styles.user_detail_header, Styles.user_detail_data, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                            <Text onPress={() => { this.setState({ isCancel: !isCancel }) }} style={[{ width: '90%' }, Styles.user_detail_header_text]}>Cancel Order</Text>
+                            <Text onPress={() => { this.setState({ isCancel: !isCancel }) }} style={[!isCancel ? Styles.show_otp : Styles.hide_otp, Styles.user_detail_header_text]}><RightArrowIcon fontSize={scale(15)} /></Text>
+                        </View>
+
+                        {!isCancel ?
+                            <>
+                                <View style={Styles.user_detail_header}>
+                                    <Text style={Styles.user_detail_header_text}>{LableText.CANCEL_REASION} {review.length < 50 ? 50 - review.length : null}</Text>
+                                </View>
+                                <View style={Styles.user_detail_data}>
+                                    <TextInput
+                                        style={[Styles.cash_pay_input, { height: scale(100), textAlignVertical: 'top' }]}
+                                        placeholder={LableText.ENTER_CANCEL_REASION}
+                                        multiline={true}
+                                        value={review}
+                                        onChangeText={(value) => { this.setState({ review: value }) }}
+                                    />
+                                </View>
+                                <View style={[Styles.center, { marginTop: 30 }]}>
+                                    <Text onPress={() => { this.handleDenied() }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.SUBMIT}</Text>
+                                </View>
+                            </>
+                            : null}
+                    </View>
+                </Modal>
 
                 <Content style={Styles.cart_content} showsVerticalScrollIndicator={false}
                     refreshControl={
@@ -535,8 +651,15 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                 >
 
                     <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Payment Mode: {cartData.transactionType ? cartData.transactionType == cashPay ? 'Cash Payment' : cartData.transactionType == onlinePay ? 'Online Payment' : cartData.transactionType == walletPay ? 'Wallet Payment' : null : null}</Text>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Address</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Payment Mode:</Text>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}> {cartData.transactionType ? cartData.transactionType == cashPay ? 'COD' : cartData.transactionType == onlinePay ? 'Online Payment' : cartData.transactionType == walletPay ? 'Wallet Payment' : null : null}</Text>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Address</Text>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Order Id: {cartData.cartId ? cartData.cartId : null} </Text>
+                        </View>
                         {null != addressData ?
                             <Text style={{ marginVertical: 5 }}>{addressData.city}, {addressData.landmark}, {addressData.district}, {addressData.state}, {addressData.pinCode}</Text>
                             : null}
@@ -745,7 +868,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                     </View>
                     {null != cartData.review ?
                         <View style={Styles.price_detail_1}>
-                            <Text style={Styles.cart_price_detail_1_text}>Review</Text>
+                            <Text style={Styles.cart_price_detail_1_text}>Remarks</Text>
                             <View style={Styles.price_detail_2}>
                                 <View style={Styles.price_detail_2_1}>
                                     <Text style={Styles.cart_price_text_head}>{cartData.review}</Text>
@@ -829,7 +952,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                                     </View>
 
                                     <View>
-                                        <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handleOrderStatus('DELIVERED', cartData.cartId) }}>
+                                        <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.setState({ deliverModal: true }) }}>
                                             <Text style={Styles.cart_bottom_box_button_text}>Delivered</Text>
                                         </TouchableOpacity>
                                     </View>

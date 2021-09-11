@@ -24,6 +24,10 @@ export const PeopleIcon = (style): AntDesign => (
   <SimpleLineIcons size={20} name='people' />
 );
 
+export const FilterIcon = (style): AntDesign => (
+  <AntDesign size={scale(20)} color='#0099cc' name='filter' />
+);
+
 export const EditIcon = (style): AntDesign => (
   <MaterialIcons size={25} name='edit' />
 );

@@ -142,6 +142,10 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             Alert.alert("Please select brand.");
         } else if (costPrice == null || costPrice === '') {
             Alert.alert("Please enter cost price.");
+        } else if (quantity == null || quantity === '') {
+            Alert.alert("Please enter selling product quantity.");        
+        } else if (measurement == null || measurement === '') {
+            Alert.alert("Please select measurement.");
         } else if (sellingPrice == null || sellingPrice === '') {
             Alert.alert("Please enter selling price.");
         } else if (gstPercent == null || gstPercent === '') {
@@ -150,10 +154,6 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             Alert.alert("Please enter stock.");
         } else if (outOfStock == null || outOfStock === '') {
             Alert.alert("Please enter out of stock limit.");
-        } else if (quantity == null || quantity === '') {
-            Alert.alert("Please enter quantity.");
-        } else if (measurement == null || measurement === '') {
-            Alert.alert("Please select measurement.");
         } else if (barcode == null || barcode === '') {
             Alert.alert("Please enter barcode.");
         } else if (description == null || description === '') {
@@ -188,6 +188,44 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             }).then((response) => {
                 if (null != response.data) {
                     if (response.data.status === 'true') {
+                        this.setState({
+                            name: '',
+                            category: '',
+                            brand: '',
+                            shopId: '',
+                            avatar: '123asd',
+                            price: '',
+                            quantity: '',
+                            description: '',
+                            barcode: '',
+                            stock: '',
+                            sellingPrice: '',
+                            costPrice: '',
+                            oldPrice: '',
+                            offerPercent: '',
+                            offerActiveInd: false,
+                            gstAmount: '',
+                            measurement: '',
+                            deliveryCharge: '',
+                            gstPercent: '',
+                            manufactureDate: String(moment(new Date).format('YYYY-MM-DD')),
+                            expireDate: String(moment(new Date).add('days', 1).format('YYYY-MM-DD')),
+                            offerFrom: String(moment(new Date).format('YYYY-MM-DD')),
+                            offerTo: String(moment(new Date).add('days', 1).format('YYYY-MM-DD')),
+                            minDate: String(moment(new Date).format('YYYY-MM-DD')),
+                            manufactureMinDate: String(moment(new Date).subtract('years', 5).format('YYYY-MM-DD')),
+                            allCategory: [],
+                            allBrand: [],
+                            allMeasurement: [],
+                            categoryVisible: false,
+                            BrandVisible: false,
+                            catImage: false,
+                            catName: '',
+                            brandVisible: false,
+                            brandName: '',
+                            brandCatId: '',
+                            outOfStock: '',
+                        })
                         Alert.alert("Product created.")
                         console.log("product Created Id", response.data.productId)
                         this.props.navigation.navigate(AppRoute.ADD_DRAWER_PRODUCT_IMAGE, { productId: response.data.productId })
@@ -464,7 +502,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                     selectedValue={brand}
                                     onValueChange={(value) => { this.handleAddBrand(value) }}
                                 >
-                                    <Picker.Item label="Select category" value="" />
+                                    <Picker.Item label="Select Brand" value="" />
                                     {null != allBrand ? allBrand.map((data, index) => {
                                         return (
                                             <Picker.Item label={data.name} value={data.id} />
@@ -493,7 +531,48 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                 />
                             </View>
                         </View>
+                                                
+                        <View style={Styles.user_detail}>
+                            <View style={Styles.user_detail_header}>
+                                <Text style={Styles.user_detail_header_text}>{LableText.QUANTITY}</Text>
+                            </View>
+                            <View style={Styles.user_detail_data}>
+                                <TextInput
+                                    editable={isEditable}
+                                    value={quantity}
+                                    keyboardType='numeric'
+                                    onChangeText={(value) => { this.setState({ quantity: value }) }}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.QUANTITY}
+                                />
+                            </View>
+                        </View>
 
+                        <View style={Styles.user_detail}>
+                            <View style={Styles.user_detail_header}>
+                                <Text style={Styles.user_detail_header_text}>{LableText.MEASUREMENT}</Text>
+                            </View>
+                            <View style={Styles.user_detail_data}>
+                                <Picker
+                                    note
+                                    mode="dropdown"
+                                    style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
+                                    selectedValue={measurement}
+                                    onValueChange={(value) => { this.handleAddMeasurement(value) }}
+                                >
+                                    <Picker.Item label="Select measurement" value="" />
+                                    {null != allMeasurement ? allMeasurement.map((data, index) => {
+                                        return (
+                                            <Picker.Item label={data.lookUpName} value={data.lookUpId} />
+                                        )
+                                    }) : null}
+                                    <Picker.Item label="Add measurement" value="add" />
+
+                                    {/* <Picker.Item label="Mobile" value="1" />
+                                        <Picker.Item label="Laptop" value="2" /> */}
+                                </Picker>
+                            </View>
+                        </View>
 
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
@@ -556,48 +635,6 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                     style={Styles.cash_pay_input}
                                     placeholder={LableText.OUT_OF_STOCK}
                                 />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.QUANTITY}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    value={quantity}
-                                    keyboardType='numeric'
-                                    onChangeText={(value) => { this.setState({ quantity: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.QUANTITY}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.MEASUREMENT}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <Picker
-                                    note
-                                    mode="dropdown"
-                                    style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
-                                    selectedValue={measurement}
-                                    onValueChange={(value) => { this.handleAddMeasurement(value) }}
-                                >
-                                    <Picker.Item label="Select measurement" value="" />
-                                    {null != allMeasurement ? allMeasurement.map((data, index) => {
-                                        return (
-                                            <Picker.Item label={data.lookUpName} value={data.lookUpId} />
-                                        )
-                                    }) : null}
-                                    <Picker.Item label="Add measurement" value="add" />
-
-                                    {/* <Picker.Item label="Mobile" value="1" />
-                                        <Picker.Item label="Laptop" value="2" /> */}
-                                </Picker>
                             </View>
                         </View>
 

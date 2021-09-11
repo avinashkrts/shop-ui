@@ -33,7 +33,10 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
       allUserType: [],
       deviceId: '',
       admin: '',
-      customer: ''
+      customer: '',
+      regImage: '',
+      regAddress: '',
+      regCompleted: ''
     }
 
     this.onFormSubmit = this.onFormSubmit.bind(this);
@@ -49,27 +52,42 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     let deviceId = DeviceInfo.getUniqueId();
     axios({
       method: 'GET',
-      url: AppConstants.API_BASE_URL + '/api/lookup/getallusertype',
+      url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',
     }).then((response) => {
 
-      response.data.map((data, index) => {
+      response.data.USER_TYPE.map((data, index) => {
         if (data.lookUpName === 'ADMIN') {
           AsyncStorage.setItem('adminType', JSON.stringify(data.lookUpId));
           this.setState({
-            allUserType: response.data,
+            allUserType: response.data.USER_TYPE,
             deviceId: deviceId,
             admin: data.lookUpId
           })
         } else if (data.lookUpName === 'CUSTOMER') {
           AsyncStorage.setItem('customerType', JSON.stringify(data.lookUpId));
           this.setState({
-            allUserType: response.data,
+            allUserType: response.data.USER_TYPE,
             deviceId: deviceId,
             customer: data.lookUpId
           })
         }
       })
 
+      response.data.REGISTRATION_STATUS.map((data, index) => {
+        if (data.lookUpName === 'REG_ADDRESS') {
+          this.setState({
+            regAddress: data.lookUpId
+          })
+        } else if (data.lookUpName === 'REG_IMAGE') {
+          this.setState({
+            regImage: data.lookUpId
+          })
+        } else if (data.lookUpName === 'REG_COMPLETED') {
+          this.setState({
+            regCompleted: data.lookUpId
+          })
+        }
+      })
 
     },
       (error) => {
@@ -78,7 +96,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
   }
 
   async onFormSubmit() {
-    const { emailId, pwd, admin, customer, allUserType, deviceId } = this.state
+    const { emailId, pwd, admin, customer, allUserType, deviceId, regAddress, regImage, regCompleted } = this.state
     const deviceState = await OneSignal.getDeviceState();
 
     if (emailId == null || emailId === '') {
@@ -98,10 +116,14 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
       }).then((response) => {
         // console.log('Res', response.data)
         if (response.data) {
+          // console.log('ssssss', response.data);
+
           if (response.data.status === 'false') {
+            // console.log('ssssss', response.data);
+
             Alert.alert("Please enter a valid email ID and password.")
           } else {
-            if (response.data.token.length > 30) {
+            if (response.data.token && response.data.token.length > 30) {
               if (response.data.userType == admin) {
                 AsyncStorage.setItem("logedIn", JSON.stringify(true))
                 AsyncStorage.setItem("userId", JSON.stringify(response.data.adminId))
@@ -115,9 +137,17 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
                   this.navigateCustomerHome();
                 })
               }
+            } else if (response.data.registrationStatus == regAddress) {
+              this.props.navigation.navigate(AppRoute.SIGN_REG_ADDRESS, { adminId: response.data.adminId, shopId: response.data.shopId, mobileNo: response.data.mobileNo, emailId: emailId, from: 'signIn' });
+            } else if (response.data.registrationStatus == regImage) {
+              this.props.navigation.navigate(AppRoute.SIGN_REG_IMAGE, { adminId: response.data.adminId, shopId: response.data.shopId, mobileNo: response.data.mobileNo, emailId: emailId });
+            } else if (response.data.registrationStatus == regCompleted) {
+              Alert.alert("Please contact us to activate your account.")
+              // console.log('regCompleted')
             } else {
               Alert.alert("Please enter a valid email ID and password.")
             }
+
           }
         } else {
           Alert.alert("Please enter a valid email ID and password.")

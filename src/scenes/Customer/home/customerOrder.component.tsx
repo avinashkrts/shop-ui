@@ -17,6 +17,7 @@ import { CustomerOrderProductScreenProps } from "../../../navigation/customer-na
 import { Notification } from "../../../components/notification";
 import { Contents } from "../../../constants/LabelConstants";
 import { StackActions } from "@react-navigation/core";
+import { scale } from "react-native-size-matters";
 
 export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & CustomerOrderProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -183,9 +184,9 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
     }
 
     renderCart = ({ item, index }: any): ListItemElement => (
-        <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
+        <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1}}>
             {item != null ?
-                <View>
+                <View style={{paddingHorizontal: scale(10)}}>
                     <Modal style={Styles.modal} isVisible={this.state.reviewModal}>
                         <View style={Styles.modalHeader}>
                             <TouchableOpacity>
@@ -534,6 +535,9 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                             if (orderStatus.lookUpId == item.orderStatus) {
                                 return (
                                     <>
+                                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>OTP</Text>
+                                    <Text style={{ marginVertical: 5, fontWeight: 'bold', fontSize: 16 }}> {item.otp}</Text>
+                                                                
                                         {null != this.state.deliveryTypeData ? this.state.deliveryTypeData.map((deliveryType, dIndex) => {
                                             if (deliveryType.lookUpName === "BY_DELIVERY_BOY") {
                                                 if (deliveryType.lookUpId == item.deliveryType) {
@@ -588,12 +592,12 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                     )
                         : null}
                     {null != this.state.orderstatusData ? this.state.orderstatusData.map((orderStatus, oIndex) => {
-                        if (orderStatus.lookUpName === "DELIVERED" || orderStatus.lookUpName === "SHIPPED") {
+                        if (orderStatus.lookUpName === "DELIVERED") {
                             if (orderStatus.lookUpId == item.orderStatus) {
                                 return (
                                     <>
                                         <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
-                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Have you received your order?</Text>
+                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Do you want to write your review?</Text>
                                             <View style={Styles.cart_bottom_box_view}>
                                                 <View>
                                                     <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.toggleModal('RECEIVED', item.cartId) }}>
@@ -601,11 +605,11 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                                                     </TouchableOpacity>
                                                 </View>
 
-                                                <View>
+                                                {/* <View>
                                                     <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.toggleModal('DENIED', item.cartId) }}>
                                                         <Text style={{ paddingVertical: 10, paddingHorizontal: 20, color: Color.BUTTON_NAME_COLOR }}>No</Text>
                                                     </TouchableOpacity>
-                                                </View>
+                                                </View> */}
                                             </View>
                                             {/* <Text style={{ marginVertical: 5, fontWeight: 'bold', fontSize: 16 }}>Rs. {item.deliveryCharge}</Text>
                                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Delivery boy detail</Text>
@@ -620,7 +624,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                                 return (
                                     <>
                                         <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
-                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Reveiw</Text>
+                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{orderStatus.lookUpName === "DENIED" ? 'Remarks' : orderStatus.lookUpName === "RECEIVED" ? 'Review' : null}</Text>
 
                                             {/* <Text style={{ marginVertical: 5, fontWeight: 'bold', fontSize: 16 }}>Rs. {item.deliveryCharge}</Text>
                                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Delivery boy detail</Text> */}

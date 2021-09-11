@@ -33,6 +33,7 @@ export class LableText {
     public static readonly USER = 'user';
     public static readonly ACCEPT = 'Accept';
     public static readonly YOUR_PLAN_CODE = 'Plan Code';
+    public static readonly SELECT_CUSTOM_LOCATION = 'Search Location';
     public static readonly REJECT = 'Reject';
     public static readonly CHOOSE_IMAGE = 'Choose Image';
     public static readonly UPLOAD = 'Upload';
@@ -105,7 +106,7 @@ export class LableText {
     public static readonly SAVE = 'Save';
     public static readonly EDIT = 'Edit';
     public static readonly ADDNEWADDRESS = 'Add New Address';
-    public static readonly SHOPNAME = 'Shop Name';
+    public static readonly SHOPNAME = 'Business Name';
     public static readonly GST = 'GST No.';
     public static readonly BANK_ACCOUNT = 'Bank Account Details';
     public static readonly BANK_NAME = 'Bank Name';
@@ -148,7 +149,17 @@ export class LableText {
     public static readonly ACCOUNT_HOLDER_NAME= 'Account Holder Name';
     public static readonly IFSC_CODE= 'IFSC Code';
     public static readonly BRANCH_NAME= 'Branch Name';
-    
+    public static readonly SHOP_NAME= 'Business Name';
+    public static readonly GENDER= 'Gender';
+    public static readonly BUSINESS_TYPE= 'Business Type';
+    public static readonly ADHAR_NO= 'Adhar Number';
+    public static readonly PAN_NO= 'Pan Number';
+    public static readonly GST_NO= 'GST Number';
+    public static readonly BUSINESS_DESCRIPTION= 'Business Description';
+    public static readonly USE_CURRENT_LOCATION= 'Use Current Location';
+    public static readonly CANCEL_REASION= 'Cancellation Reason';
+    public static readonly ENTER_CANCEL_REASION= 'Enter Cancellation Reason (minimum 50 letters)';
+    public static readonly ENTER_OTP = 'Enter OTP';    
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/

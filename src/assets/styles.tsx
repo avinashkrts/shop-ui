@@ -145,7 +145,6 @@ export const Styles = ScaledSheet.create({
     width: '48%',
     backgroundColor: '#000',
     margin: '1%',
-    // height: 1000
   },
 
   all_Item_Image: {
@@ -294,7 +293,7 @@ export const Styles = ScaledSheet.create({
   recharge_no_offer_input: {
     width: '90@s',
     height: '50@s'
-   
+
   },
 
   invoice_main_view: {
@@ -667,15 +666,15 @@ export const Styles = ScaledSheet.create({
     backgroundColor: "#fafafa",
     height: '90%',
     width: '90%',
-    borderRadius: 5,
-    borderWidth: 1,
+    borderRadius: '5@s',
+    borderWidth: '1@s',
     borderColor: '#fafafa',
-    marginTop: 10,
-    padding: 10
+    marginTop: '10@s',
+    padding: '10@s'
   },
 
   modalHeader: {
-    height: 20,
+    height: '20@s',
     alignItems: 'flex-end'
   },
 
@@ -814,6 +813,18 @@ export const Styles = ScaledSheet.create({
     padding: 5
   },
 
+  show_otp: {
+    fontSize: '25@s',
+    width: '20@s',
+    textAlign: 'center',
+    transform: [{ rotateZ: '90deg' }]
+  },
+
+  hide_otp: {
+    fontSize: '25@s',
+    width: '20@s',
+    textAlign: 'center'
+  },
 
 
 
@@ -821,18 +832,57 @@ export const Styles = ScaledSheet.create({
   /*---------------------------------------------This Style is for order Of Customer--------------------------------------------------------- */
 
   notification_main: {
-    borderWidth: 1,
+    borderWidth: '1@s',
     borderColor: 'silver',
-    backgroundColor: '#0099cc',
-    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderRadius: '5@s',
+    marginVertical: '2@s',
+    marginHorizontal: '10@s'
+  },
+
+  notification_text_box: {
   },
 
   notification_text: {
-    padding: 10,
-    color: 'white',
+    padding: '10@s',
+    color: 'black',
+    fontSize: '18@s'
+
   },
+  notification_date_box: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end'
 
+  },
+  notification_text_date: {
+    padding: '10@s',
+    color: 'black',
+    fontSize: '15@s'
 
+  },
+  notification_button: {
+    borderRadius: '20@s',
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: 'pink',
+    borderWidth: 0,
+    marginHorizontal: '10@s',
+    marginVertical: '1@s'
+  },
+  notification_button_text: {
+    color: 'black',
+    width: '100%',
+    fontSize: '20@s',
+    paddingVertical: '5@s',
+    textAlign: 'center',
+  },
+  notification_devider: {
+    height: 0.5,
+    backgroundColor: 'silver',
+    marginVertical: '5@s'
+
+  },
 
   /*---------------------------------------------This Style is for  Contact_us Page--------------------------------------------------------- */
 
@@ -1394,7 +1444,7 @@ export const Styles = ScaledSheet.create({
     height: 50
   },
 
- order_list_image: {
+  order_list_image: {
     margin: 10,
     width: '15%',
   },

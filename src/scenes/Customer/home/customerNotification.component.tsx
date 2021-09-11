@@ -1,44 +1,170 @@
-import React, { Component } from "react";
-import { View, Text, RefreshControl } from "react-native";
-import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
-import { CustomerNotificationScreenProps } from "../../../navigation/customer-navigator/customerHome.navigator";
-import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
-import { Toolbar } from "../../../components/toolbar.component";
-import { BackIcon, MenuIcon } from "../../../assets/icons";
-import { Styles } from "../../../assets/styles";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { LableText } from "../../../constants";
 import { Content } from "native-base";
-import { Padding } from "src/constants/LabelConstants";
+import React, { Component } from "react";
+import { RefreshControl, View, Text, Alert } from "react-native";
+import { Divider, ThemedComponentProps, List, ListItemElement, ListItem } from "react-native-ui-kitten";
+import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
+import { Toolbar } from "../../../components/toolbar.component";
+import { BackIcon, PlusCircle, CancelIcon, FilterIcon } from "../../../assets/icons";
+import { Styles } from "../../../assets/styles";
+import Modal from "react-native-modal";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import Axios from "axios";
+import moment from "moment";
+import { AppConstants } from "../../../constants";
+import { CustomerNotificationScreenProps } from "../../../navigation/customer-navigator/customerHome.navigator";
 
 export class CustomerNotificationScreen extends Component<CustomerNotificationScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            isFilter: false,
+            notificationData: [],
+            notificationDataTemp: [],
+            orderNotification: '',
+            rechargeNotification: '',
+            withdrawNotification: '',
+            transaferNotification: ''
+        }
 
         this.onRefresh = this.onRefresh.bind(this);
+        this.handaleFilter = this.handaleFilter.bind(this);
     }
+    async componentDidMount() {
+        Axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/notification/getall'
+        }).then((response) => {
+            console.log('all notification', response.data)
+            this.setState({
+                notificationData: response.data.reverse(),
+                notificationDataTemp: response.data
+            })
+        }, (error) => {
+            console.log('ASDF', error)
+        });
+
+        Axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup'
+        }).then((response) => {
+            console.log('all lookupData', response.data.NOTIFICATION_TYPE)
+            if (response.data) {
+                response.data.NOTIFICATION_TYPE.map((data, index) => {
+                    if (data.lookUpName === 'ORDER_NOTIFICATION') {
+                        this.setState({ orderNotification: data.lookUpId })
+                    } else if (data.lookUpName === 'RECHARGE_NOTIFICATION') {
+                        this.setState({ rechargeNotification: data.lookUpId })
+                    } else if (data.lookUpName === 'WITHDRAW_NOTIFICATION') {
+                        this.setState({ withdrawNotification: data.lookUpId })
+                    } else if (data.lookUpName === 'TRANSFER_NOTIFICATION') {
+                        this.setState({ transaferNotification: data.lookUpId })
+                    }
+                })
+            }
+        }, (error) => {
+            console.log('ASDF', error)
+        });
+
+    }
+
+
 
     onRefresh() {
         this.setState({ refreshing: true });
         this.componentDidMount().then(() => {
             this.setState({ refreshing: false });
         });
+
     }
 
+    handaleFilter(notificationType) {
+        this.toggelModal();
+        // console.log('All data', notificationType)
+        const { notificationData, notificationDataTemp } = this.state;
+        var notification = []
+        if (notificationDataTemp) {
+            notificationDataTemp.map((data, index) => {
+                if (data.notificationType == notificationType) {
+                    notification.push(data)
+                }
+            })
+        }
+
+        console.log('ddd', notification);
+
+        this.setState({
+            notificationData: notification
+        })
+    }
+
+    toggelModal() {
+        const { isFilter } = this.state
+        this.setState({ isFilter: !isFilter })
+    }
+
+    renderAddress = ({ item, index }: any): ListItemElement => (
+        <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
+            {item != null ?
+                <View style={Styles.notification_main}>
+                    <View style={Styles.notification_text_box}>
+                        <Text style={Styles.notification_text}>
+                            {item.summeryDetails}
+                        </Text>
+                    </View>
+
+                    <View style={Styles.notification_date_box}>
+                        <Text style={Styles.notification_text_date}>
+                            {moment(item.createdOn).format('DD/MM/YYYY hh:mm A')}
+                        </Text>
+                    </View>
+
+                </View>
+                :
+                <ActivityIndicator size='large' color='green' />}
+        </ListItem>
+    )
+
+
     render() {
-        const { isEditable } = this.state
+        const { isFilter, notificationData, orderNotification, rechargeNotification, withdrawNotification, transaferNotification } = this.state
         return (
-            <SafeAreaLayout
-                style={Styles.safeArea}
-                insets={SaveAreaInset.TOP}>
+            <SafeAreaLayout style={Styles.safeArea}>
                 <Toolbar
-                    title='Notifications'
+                    title='Notification'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
+                    onRightPress={() => { this.toggelModal() }}
+                    menuIcon={FilterIcon}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
+                <Modal style={Styles.modal} isVisible={isFilter}>
+                    <View style={Styles.modalHeader}>
+                        <TouchableOpacity>
+                            <Text onPress={() => { this.toggelModal() }}><CancelIcon fontSize={25} /></Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={Styles.notification_devider}></View>
+                    <View style={Styles.notification_button}>
+                        <Text style={Styles.notification_button_text} onPress={() => { this.handaleFilter(orderNotification) }}>
+                            Order
+                        </Text>
+                    </View>
+                    <View style={Styles.notification_devider}></View>
+                    <View style={Styles.notification_button}>
+                        <Text style={Styles.notification_button_text} onPress={() => { this.handaleFilter(rechargeNotification) }}>Vailidity</Text>
+                    </View>
+                    <View style={Styles.notification_devider}></View>
+                    <View style={Styles.notification_button}>
+                        <Text style={Styles.notification_button_text} onPress={() => { this.handaleFilter(withdrawNotification) }}>Withdrawl Request</Text>
+                    </View>
+                    <View style={Styles.notification_devider}></View>
+                    <View style={Styles.notification_button}>
+                        <Text style={Styles.notification_button_text} onPress={() => { this.handaleFilter(transaferNotification) }}>Payment Settlement</Text>
+                    </View>
+                    <View style={Styles.notification_devider}></View>
+                </Modal>
                 <Content style={Styles.content}
                     refreshControl={
                         <RefreshControl
@@ -47,174 +173,15 @@ export class CustomerNotificationScreen extends Component<CustomerNotificationSc
                         />
                     }
                 >
-                    {/* <View style={[Styles.profile, Styles.center]}>
-                        <View style={Styles.profile_image}>
-                            <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
-                        </View>
-                    </View> */}
 
-                    <Divider />
+                    {null != notificationData ?
+                        <List data={notificationData}
+                            renderItem={this.renderAddress}
+                        /> : null}
 
-                <View style={Styles.notification_main}>
-                    
-                        <Text  style={Styles.notification_text}>HP Notebook at 15% off</Text>
-                 
-                   
-                </View>
-
-
-
-
-
-
-
-
-
-                    {/* <View>
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.FIRST_NAME}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.FIRST_NAME} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.LAST_NAME}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.LAST_NAME} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.FATHER_NAME}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.FATHER_NAME} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.PHONE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.PHONE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.EMAIL_ID}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.EMAIL_ID} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.STREET}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.STREET} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.LAND_MARK}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.LAND_MARK} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.VILLAGE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.VILLAGE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.POST_OFFICE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.POST_OFFICE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.POLICE_STATION}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.POLICE_STATION} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.DISTRICT}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.DISTRICT} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.PIN_CODE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.PIN_CODE} />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.STATE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} style={Styles.cash_pay_input} placeholder={LableText.STATE} />
-                            </View>
-                        </View>
-
-  
- 
-
-
-                                             
-                    </View>
-
-
-                    <View style={{ marginHorizontal: '10%' }}>
-                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
-                            <Text style={Styles.buttonName}>{LableText.EDIT}</Text>
-                        </TouchableOpacity>
-                        </View>
-
-
-                    <View style={{ marginHorizontal: '10%' }}>
-                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
-                            <Text style={Styles.buttonName}>{LableText.SAVE}</Text>
-                        </TouchableOpacity>
-                    </View> */}
-                    
-
-                    <View style={Styles.bottomSpace}></View>
+                    <View style={Styles.bottomSpace} />
                 </Content>
-
             </SafeAreaLayout>
         );
     }
-
 }

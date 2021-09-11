@@ -286,7 +286,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                     if (response.data) {
                         if (response.data.status) {
                             // Alert.alert(response.data.transactionId)
-                            this.startPayment(response.data.transactionId);
+                            this.startPayment(response.data.transactionId, response.data.orderId);
                         } else {
                             Alert.alert("Got error while placing Order.")
                         }
@@ -329,15 +329,16 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
         this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
     }
 
-    startPayment(transactionId) {
+    startPayment(transactionId, orderId) {
         const { cartId, totalAmt, userEmailId, userMobileNo, userName } = this.state;
         const options = {
             description: "MILAAN IT",
             image: 'http://ec2-65-0-32-190.ap-south-1.compute.amazonaws.com/shop/61_4_MILAAN661_shop.png',
             currency: "INR",
-            key: 'rzp_test_WHYgLdAAnKqBLN',
+            key: 'rzp_live_SWEdMTS7nSOemz',
             amount: totalAmt * 100,
             name: 'MILAAN IT',
+            order_id: orderId,
             prefill: {
                 email: userEmailId,
                 contact: userMobileNo,
@@ -346,8 +347,8 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             theme: { color: '#0099cc' }
         }
         RazorpayCheckout.open(options).then((data) => {
-            console.log('razor pay response', data.razorpay_payment_id);
-            console.log(cartId, totalAmt, transactionId, data.razorpay_payment_id)
+            // console.log('razor pay response', data.razorpay_payment_id);
+            // console.log(cartId, totalAmt, transactionId, data.razorpay_payment_id)
 
             axios({
                 method: 'POST',
@@ -369,7 +370,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                     }
                 }
             }, (error) => {
-                Alert.alert("Server problem")
+                Alert.alert("Payment failed")
             })
         })
     }

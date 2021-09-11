@@ -7,3 +7,4 @@ export {CustomerNotificationScreen} from './customerNotification.component';
 export {CustomerContactScreen} from './customerContact.component';
 export {CustomerWalletScreen} from './customerWallet';
 export {AddCustomerImageScreen} from './customerAddImage';
+export {SearchProductScreen} from './searchProduct';

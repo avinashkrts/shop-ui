@@ -19,6 +19,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Header } from 'native-base';
 import { StackActions } from "@react-navigation/native";
 import { scale } from "react-native-size-matters";
+import {LableText} from '../../../constants/LabelConstants';
 
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
@@ -131,47 +132,28 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
             });
         } else {
             try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                    {
-                        title: "Cool Photo App Camera Permission",
-                        message:
-                            "Cool Photo App needs access to your camera " +
-                            "so you can take awesome pictures.",
-                        buttonNeutral: "Ask Me Later",
-                        buttonNegative: "Cancel",
-                        buttonPositive: "OK"
-                    }
-                );
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    Geolocation.getCurrentPosition((position) => {
-                        var lat = position.coords.latitude
-                        var long = position.coords.longitude
-                        console.log('location', lat, position.coords.accuracy)
-
-                        axios({
-                            method: 'GET',
-                            url: AppConstants.API_BASE_URL + '/api/product/getbylocation/' + lat + '/' + long,
-                        }).then((response) => {
-                            this.setState({
-                                allProduct: response.data,
-                                lat: position.coords.latitude,
-                                long: position.coords.longitude,
-                                location: 'Current Location',
-                                single: false
-                            })
-                        }, (error) => {
-                            Alert.alert("Server error.")
-                        });
-                    }, (erroe) => {
-
-                    }, { enableHighAccuracy: true })
-                } else {
-                    console.log("Camera permission denied");
-                }
+                var lat = await AsyncStorage.getItem('latitude')
+                var long = await AsyncStorage.getItem('longitude')
+                var location = await AsyncStorage.getItem('location')
+    
+                axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/product/getbylocation/' + lat + '/' + long,
+                }).then((response) => {
+                    this.setState({
+                        allProduct: response.data,
+                        lat:lat,
+                        long: long,
+                        location: location,
+                        single: false
+                    })
+                }, (error) => {
+                    Alert.alert("Server error.")
+                });
             } catch (err) {
                 console.warn(err);
             }
+
             axios({
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
@@ -388,6 +370,10 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
         }).then((response) => {
             const { data: { result: { geometry: { location } } } } = response
             const { lat, lng } = location
+            AsyncStorage.setItem('latitude', String(lat))
+            AsyncStorage.setItem('longitude', String(lng))
+            AsyncStorage.setItem('location', String(data.structured_formatting.main_text))
+
             console.log('Location', data.structured_formatting.main_text)
             axios({
                 method: 'GET',
@@ -409,7 +395,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
         })
     }
 
-    onCurrentLocation() {
+    async onCurrentLocation() {
         console.log('Map Clicked')
         this.toggleModal();
         // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -417,6 +403,9 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
             var lat = position.coords.latitude
             var long = position.coords.longitude
             console.log('location', lat, position.coords.accuracy)
+            AsyncStorage.setItem('latitude', String(lat))
+            AsyncStorage.setItem('longitude', String(long))
+            AsyncStorage.setItem('location', 'Current Location')
 
             axios({
                 method: 'GET',
@@ -483,7 +472,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                     </View>
                     <View style={{ flex: 1 }}>
                         <View>
-                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>Current Location</Text>
+                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>{LableText.USE_CURRENT_LOCATION}</Text>
                         </View>
                         <GooglePlacesAutocomplete
                             placeholder='Search'
@@ -498,7 +487,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                 language: 'en',
                             }}
                         // currentLocation={true}
-                        // currentLocationLabel='Current location'
+                        // currentLocationLabel=LableText.USE_CURRENT_LOCATION
                         />
                         {lat !== '' && long !== '' ?
                             <>
@@ -507,15 +496,15 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                     provider={PROVIDER_GOOGLE}
                                     showsUserLocation={true}
                                     initialRegion={{
-                                        latitude: lat,
-                                        longitude: long,
+                                        latitude: Number(lat),
+                                        longitude: Number(long),
                                         latitudeDelta: 0.0922,
                                         longitudeDelta: 0.0421,
                                     }}
 
                                     region={{
-                                        latitude: lat,
-                                        longitude: long,
+                                        latitude: Number(lat),
+                                        longitude: Number(long),
                                         latitudeDelta: 0.0922,
                                         longitudeDelta: 0.0421,
                                     }}
@@ -523,8 +512,8 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
 
                                     <Marker
                                         coordinate={{
-                                            latitude: lat,
-                                            longitude: long
+                                            latitude: Number(lat),
+                                            longitude: Number(long),
                                         }
                                         }
                                     >

@@ -1,19 +1,19 @@
 import React, { Component } from "react";
 import { View, Text, RefreshControl, Alert, AsyncStorage, ActivityIndicator } from "react-native";
 import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
-import { AddCustomerImageScreenProps } from "../../../navigation/customer-navigator/customerProfile.Navigator";
-import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
-import { Toolbar } from "../../../components/toolbar.component";
-import { BackIcon, MenuIcon } from "../../../assets/icons";
-import { Styles } from "../../../assets/styles";
+import { SafeAreaLayout, SaveAreaInset } from "../../components/safe-area-layout.component";
+import { Toolbar } from "../../components/toolbar.component";
+import { BackIcon, MenuIcon } from "../../assets/icons";
+import { Styles } from "../../assets/styles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { AppConstants, Color, LableText } from "../../../constants";
+import { AppConstants, Color, LableText } from "../../constants";
 import { CheckBox, Content, Picker } from "native-base";
-import Axios from "axios";
-import DatePicker from 'react-native-datepicker'
-import { AppRoute } from "../../../navigation/app-routes";
+import { AppRoute } from "../../navigation/app-routes";
 import ImagePicker from 'react-native-image-picker';
+import { ShopImageScreenProps } from "../../navigation/registration.navigator";
 import { scale } from "react-native-size-matters";
+import { SignRegImageScreenProps } from "../../navigation/auth.navigator";
+import { StackActions } from "@react-navigation/routers";
 
 const options = {
     title: 'Select a Photo',
@@ -23,7 +23,7 @@ const options = {
     type: 'image'
 }
 
-export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProps, ThemedComponentProps & any> {
+export class ShopImageScreen extends Component<ShopImageScreenProps & SignRegImageScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
         this.state = {
@@ -34,6 +34,8 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
             name: '',
             title: '',
             imageUploaded: false,
+            mobileNo: '',
+            emailId: '',
             isUploaded: false
         }
         this.onRefresh = this.onRefresh.bind(this);
@@ -41,13 +43,17 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
 
     async componentDidMount() {
         const value = await AsyncStorage.getItem('userDetail');
-        const userId = await AsyncStorage.getItem('userId');
-        const user = JSON.parse(value);
+        const shopId = this.props.route.params.shopId;
+        const adminId = this.props.route.params.adminId;
+        const mobileNo = this.props.route.params.mobileNo;
+        const emailId = this.props.route.params.emailId;
+        // console.log('Product Id', productId)
 
         this.setState({
-            shopId: user.shopId,
-            userType: user.userType,
-            userId: userId
+            shopId: shopId,
+            productId: adminId,
+            mobileNo: mobileNo,
+            emailId: emailId
         })
     }
 
@@ -63,20 +69,19 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
 
                 this.setState({
                     imageSource: source,
-                    file: file,
+                    file: file
                 });
             }
         });
     }
 
     uploadImage() {
-        const { shopId, userType, userId, productId, imageUploaded, file } = this.state;
-        console.log(userId, userType)
+        const { shopId, productId, imageUploaded, file } = this.state;
         const formData = new FormData();
         formData.append('file', file);
         console.log(productId);
         this.toggleUpload()
-        fetch(AppConstants.API_BASE_URL + '/api/file/upload/avatar/' + userType + '/' + userId + '/' + 'avatar', {
+        fetch(AppConstants.API_BASE_URL + '/api/shopimage/upload/avatar/' + shopId + '/' + productId, {
             method: 'post',
             body: formData
         }).then(res => {
@@ -84,7 +89,7 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
                 this.setState({
                     imageSource: '',
                     file: null,
-                    imageUploaded: !imageUploaded,
+                    imageUploaded: true,
                     isUploaded: false
                 });
                 Alert.alert("File uploaded successfully.");
@@ -114,6 +119,10 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
         this.setState({
             isUploaded: !isUploaded
         })
+    }
+    handleFinish(){
+        const pushAction = StackActions.push(AppRoute.AUTH)
+        this.props.navigation.dispatch(pushAction);
     }
 
     render() {
@@ -167,7 +176,7 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
                         <>
                             <View style={{ marginHorizontal: '10%' }}>
                                 <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.selectPhoto() }}>
-                                    <Text style={Styles.buttonName}>{LableText.CHOOSE_IMAGE}</Text>
+                                    <Text style={Styles.buttonName}>Select Shop Image</Text>
                                 </TouchableOpacity>
                             </View>
 
@@ -178,7 +187,7 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
                             </View>
                             {null != imageUploaded ? imageUploaded ?
                                 <View style={{ marginHorizontal: '10%' }}>
-                                    <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.props.navigation.navigate(AppRoute.CUSTOMER_HOME) }}>
+                                    <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleFinish() }}>
                                         <Text style={Styles.buttonName}>{LableText.FINISH}</Text>
                                     </TouchableOpacity>
                                 </View> : null : null}
@@ -191,4 +200,5 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
             </SafeAreaLayout>
         );
     }
+
 }

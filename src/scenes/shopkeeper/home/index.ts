@@ -1,3 +1,4 @@
+export { MyOrderSearchScreen } from './myOrderSearch.component';
 export { MyOrderScreen } from './myOrder.component';
 export { MyOrderDetailScreen } from './myOrderDetail.component';
 export { ContactUsScreen } from './contactUs.component';

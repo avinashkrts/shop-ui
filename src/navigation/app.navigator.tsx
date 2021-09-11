@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthNavigator } from './auth.navigator';
+import {RegistrationNavigator} from './registration.navigator'
 import { UserDecideNavigator } from './userDecide.navigator';
 import { AddProductNavigator } from './addProductNavigator.navigator';
 import { HomeNavigator } from './home.navigator';
@@ -15,6 +16,7 @@ type StackNavigatorProps = React.ComponentProps<typeof Stack.Navigator>;
 
 export type AppNavigatorParams = {
   [AppRoute.AUTH]: undefined;
+  [AppRoute.REGISTRATION]: undefined;
   [AppRoute.ORDER]: undefined;
   [AppRoute.CUSTOMER_ORDER]: undefined;
   [AppRoute.USER_DECIDE]: undefined;
@@ -31,6 +33,7 @@ const Stack = createStackNavigator<AppNavigatorParams>();
 export const AppNavigator = (props: Partial<StackNavigatorProps>): React.ReactElement => (
   <Stack.Navigator {...props} headerMode='none'>
     <Stack.Screen name={AppRoute.AUTH} component={AuthNavigator}/>
+    <Stack.Screen name={AppRoute.REGISTRATION} component={RegistrationNavigator}/>
     <Stack.Screen name={AppRoute.ORDER} component={OrderNavigator}/>
     <Stack.Screen name={AppRoute.CUSTOMER_ORDER} component={CustomerOrderNavigator}/>
     <Stack.Screen name={AppRoute.USER_DECIDE} component={UserDecideNavigator}/>
