@@ -335,7 +335,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             description: "MILAAN IT",
             image: 'http://ec2-65-0-32-190.ap-south-1.compute.amazonaws.com/shop/61_4_MILAAN661_shop.png',
             currency: "INR",
-            key: 'rzp_live_SWEdMTS7nSOemz',
+            key: '',
             amount: totalAmt * 100,
             name: 'MILAAN IT',
             order_id: orderId,
