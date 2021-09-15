@@ -451,22 +451,22 @@ export const Styles = ScaledSheet.create({
 
   cart_main_view: {
     borderBottomColor: Color.BORDER,
-    borderBottomWidth: 0.5,
+    borderBottomWidth: '1@s',
     borderTopColor: Color.BORDER,
-    borderTopWidth: 0.5,
-    paddingVertical: 25,
+    borderTopWidth: '1@s',
+    paddingVertical: '25@s',
     backgroundColor: Color.BUTTON_NAME_COLOR
   },
 
   cart_view_1: {
     width: '100%',
-    paddingBottom: 20,
+    paddingBottom: '20@s',
     flexDirection: 'row',
   },
 
   cart_view_1_1: {
     width: '30%',
-    height: 100,
+    height: '100@s',
   },
 
   cart_avatar_view: {
@@ -476,36 +476,43 @@ export const Styles = ScaledSheet.create({
 
   cart_avatar: {
     borderRadius: 0,
-    width: 100,
-    height: 120,
+    width: '100@s',
+    height: '120@s',
   },
 
   cart_view_1_2: {
     width: '70%',
-    height: 110,
-    paddingHorizontal: 10,
+    height: '110@s',
+    paddingHorizontal: '1@s',
   },
 
   cart_name_text: {
-    fontSize: 17,
-    fontWeight: '700'
+    fontSize: '15@s',
+    fontWeight: '700',
+  },
+
+  cart_name_text_view: {
+    width: '80%',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   },
 
   cart_price_view: {
     width: '100%',
+    // backgroundColor: 'red',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 25,
+    marginTop: '25@s',
   },
 
   price_text: {
-    fontSize: 19,
+    fontSize: '19@s',
     fontWeight: 'bold'
   },
 
   offer_price_text: {
-    fontSize: 14,
-    marginHorizontal: 20,
+    fontSize: '14@s',
+    marginHorizontal: '20@s',
     textDecorationLine: 'line-through'
   },
 
@@ -519,119 +526,119 @@ export const Styles = ScaledSheet.create({
   },
 
   cart_quantity_text: {
-    paddingVertical: 5,
-    paddingHorizontal: 10
+    paddingVertical: '5@s',
+    paddingHorizontal: '10@s'
   },
 
   cart_button: {
     backgroundColor: Color.COLOR,
-    borderRadius: 3
+    borderRadius: '2@s'
   },
 
   cart_button_text: {
-    paddingVertical: 7,
-    paddingHorizontal: 5,
+    paddingVertical: '8@s',
+    paddingHorizontal: '5@s',
     color: Color.BUTTON_NAME_COLOR
   },
 
   cart_offer_text: {
     color: Color.COLOR,
     fontWeight: 'bold',
-    fontSize: 17
+    fontSize: '17@s'
   },
 
   cart_shopping_view: {
     flexDirection: 'row',
     borderColor: Color.BORDER,
     backgroundColor: Color.BUTTON_NAME_COLOR,
-    borderTopWidth: 0.5,
-    borderBottomWidth: 0.5,
-    paddingVertical: 20,
-    marginTop: 5,
+    borderTopWidth: '1@s',
+    borderBottomWidth: '1@s',
+    paddingVertical: '20@s',
+    marginTop: '5@s',
     justifyContent: 'space-between',
     paddingHorizontal: Padding.HORIZONTAL_PADDING
   },
 
   cart_shopping_text: {
-    fontSize: 20
+    fontSize: '20@s'
   },
 
   price_detail_1: {
     backgroundColor: Color.BUTTON_NAME_COLOR,
-    marginVertical: 15,
-    paddingTop: 20,
+    marginVertical: '15@s',
+    paddingTop: '20@s',
     borderTopColor: Color.BORDER,
-    borderTopWidth: 0.5
+    borderTopWidth: '1@s'
   },
 
   cart_price_detail_1_text: {
-    fontSize: 20,
+    fontSize: '20@s',
     paddingHorizontal: Padding.HORIZONTAL_PADDING,
     color: Color.SILVER,
-    fontWeight: '700'
+    fontWeight: 'bold'
   },
 
   price_detail_2: {
-    paddingVertical: 15,
+    paddingVertical: '15@s',
     paddingHorizontal: Padding.HORIZONTAL_PADDING,
-    marginTop: 20,
+    marginTop: '20@s',
     borderColor: Color.BORDER,
-    borderTopWidth: 1,
-    borderBottomWidth: 1
+    borderTopWidth: '1@s',
+    borderBottomWidth: '1@s'
   },
 
   price_detail_2_1: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 5
+    paddingVertical: '5@s'
   },
 
   cart_price_text_head: {
-    fontWeight: '600',
-    fontSize: 18
+    fontWeight: 'bold',
+    fontSize: '18@s'
   },
 
   cart_price_text_data: {
-    fontWeight: '600',
-    fontSize: 18,
+    fontWeight: 'bold',
+    fontSize: '18@s',
     color: Color.COLOR,
   },
 
   cart_total_view: {
     paddingHorizontal: Padding.HORIZONTAL_PADDING,
-    marginVertical: 15,
+    marginVertical: '15@s',
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
 
   cart_total_text_head: {
-    fontSize: 18,
+    fontSize: '18@s',
     fontWeight: 'bold'
   },
 
   cart_bottom_box_view: {
     flexDirection: 'row',
     paddingHorizontal: Padding.HORIZONTAL_PADDING,
-    paddingVertical: 10,
+    paddingVertical: '10@s',
     justifyContent: 'space-between'
   },
 
   cart_bottom_box_price_text: {
-    fontSize: 25,
-    paddingTop: 5,
+    fontSize: '25@s',
+    paddingTop: '5@s',
     fontWeight: 'bold',
-    marginBottom: 5
+    marginBottom: '5@s'
   },
 
   cart_bottom_box_button: {
-    borderRadius: 5,
+    borderRadius: '5@s',
     backgroundColor: Color.COLOR,
   },
 
   cart_bottom_box_button_text: {
     color: Color.BUTTON_NAME_COLOR,
-    fontSize: 20,
-    paddingVertical: 15,
+    fontSize: '20@s',
+    paddingVertical: '15@s',
     paddingHorizontal: '10%'
   },
 
@@ -1129,44 +1136,44 @@ export const Styles = ScaledSheet.create({
 
   wallet_column_1: {
     width: '10%',
-    padding: 4,
+    padding: '4@s',
   },
 
   wallet_column_2: {
     width: '22%',
-    paddingLeft: 2,
-    paddingRight: 2,
-    paddingTop: 4,
+    paddingLeft: '2@s',
+    paddingRight: '2@s',
+    paddingTop: '4@s',
 
   },
 
   wallet_column_3: {
     width: '32%',
-    padding: 4,
+    padding: '4@s',
   },
 
   wallet_column_4: {
     width: '18%',
-    padding: 4,
+    padding: '4@s',
   },
 
   wallet_column_5: {
     width: '18%',
-    padding: 4,
+    padding: '4@s',
   },
 
 
   wallet_design: {
-    fontSize: 14,
-    padding: 2,
+    fontSize: '14@s',
+    padding: '2@s',
     alignSelf: 'center',
     color: 'white'
   },
 
   wallet_design1: {
-    fontSize: 18,
+    fontSize: '18@s',
     fontWeight: 'bold',
-    padding: 2,
+    padding: '2@s',
     alignSelf: 'center',
     color: 'white'
   },
@@ -1174,27 +1181,27 @@ export const Styles = ScaledSheet.create({
 
   wallet_bottom_text: {
     textAlign: 'right',
-    padding: 2,
+    padding: '2@s',
     width: '64%',
     color: 'white',
-    fontSize: 16,
+    fontSize: '16@s',
   },
 
 
   wallet_paid: {
     textAlign: 'center',
-    padding: 2,
+    padding: '2@s',
     width: '18%',
     color: 'white',
-    fontSize: 16,
+    fontSize: '16@s',
   },
 
   wallet_due: {
     textAlign: 'center',
-    padding: 2,
+    padding: '2@s',
     width: '18%',
     color: 'white',
-    fontSize: 16,
+    fontSize: '16@s',
   },
 
 
@@ -1210,11 +1217,11 @@ export const Styles = ScaledSheet.create({
   cart_view: {
     width: '100%',
     flexDirection: 'row',
-    padding: 2,
-    paddingVertical: 5,
+    padding: '2@s',
+    paddingVertical: '5@s',
     backgroundColor: Color.COLOR,
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
+    borderTopLeftRadius: '5@s',
+    borderTopRightRadius: '5@s',
     flexWrap: 'wrap',
   },
 
@@ -1237,10 +1244,10 @@ export const Styles = ScaledSheet.create({
   cart_quantity_view: {
     flexDirection: 'row',
     backgroundColor: Color.COLOR,
-    width: '45%',
+    // width: '50%',
     justifyContent: 'space-between',
-    padding: 5,
-    borderRadius: 5
+    padding: '1@s',
+    borderRadius: '2@s'
   },
 
   cart_amount_view: {
@@ -1680,27 +1687,28 @@ export const Styles = ScaledSheet.create({
   payment_box_view: {
     width: '90%',
     borderColor: Color.SILVER,
-    borderRadius: 3,
-    borderWidth: .5,
-    padding: 20,
-    paddingLeft: 20,
-    marginVertical: 15
+    borderRadius: '3@s',
+    borderWidth: '1@s',
+    padding: '20@s',
+    paddingLeft: '20@s',
+    marginVertical: '15@s'
   },
 
   payment_selection_view: {
     flexDirection: 'row',
-    width: '100%'
+    width: '100%',
+    flexWrap: 'wrap'
   },
 
   payment_selection_header: {
-    fontSize: 20,
+    fontSize: '20@s',
     fontWeight: 'bold',
-    marginBottom: 10
+    marginBottom: '10@s'
   },
 
   payment_selection_text: {
-    marginLeft: 10,
-    fontSize: 18,
+    marginLeft: '10@s',
+    fontSize: '18@s',
     // fontWeight: '700'
   },
 

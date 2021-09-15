@@ -1,6 +1,6 @@
 import { Content } from "native-base";
 import React, { Component } from "react";
-import { RefreshControl, View, Text, Alert, ActivityIndicator } from "react-native";
+import { RefreshControl, View, Text, Alert, ActivityIndicator, AsyncStorage } from "react-native";
 import { Divider, ThemedComponentProps, List, ListItemElement, ListItem } from "react-native-ui-kitten";
 import { NotificationScreenProps } from "../../../navigation/home.navigator";
 import { SafeAreaLayout } from "../../../components/safe-area-layout.component";
@@ -30,9 +30,17 @@ export class NotificationScreen extends Component<NotificationScreenProps, Theme
         this.handaleFilter = this.handaleFilter.bind(this);
     }
     async componentDidMount() {
+        let userDetail = await AsyncStorage.getItem('userDetail');
+        let logedIn = await AsyncStorage.getItem('logedIn');
+        const shopId = await AsyncStorage.getItem('shopId');
+        const shopName = await AsyncStorage.getItem('shopName')
+
+        let userData = JSON.parse(userDetail);
+
+        if (null != logedIn && logedIn === 'true') {
         Axios({
             method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/notification/getall'
+            url: AppConstants.API_BASE_URL + '/api/notification/getby/adminid/' + userData.adminId
         }).then((response) => {
             console.log('all notification', response.data)
             this.setState({
@@ -64,6 +72,7 @@ export class NotificationScreen extends Component<NotificationScreenProps, Theme
         }, (error) => {
             console.log('ASDF', error)
         });
+    }
 
     }
 

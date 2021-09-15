@@ -100,7 +100,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                     location: location
                 })
             }, (error) => {
-                Alert.alert("Server error.")
+                // Alert.alert("Server error.")
             });
         } catch (err) {
             console.warn(err);
@@ -111,7 +111,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
         // Alert.alert(""+userData.userId);
-        // console.log("User Data",userData.userId)
+        // console.log("User Data in shop page",userData)
 
         this.setState({
             userData: userData
@@ -127,7 +127,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                     wishList: response.data.wishList
                 })
             }, (error) => {
-                Alert.alert("Server error.")
+                // Alert.alert("Server error.")
             });
         }
 

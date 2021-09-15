@@ -42,10 +42,11 @@ import { pathToFileURL, fileURLToPath } from 'url';
 // import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
-import { Color } from '../../../constants/LabelConstants';
+import { Color, Padding } from '../../../constants/LabelConstants';
 import Axios from 'axios';
 import { CustomerCartScreenProps } from '../../../navigation/customer-navigator/customerHome.navigator';
 import { StackActions } from '@react-navigation/core';
+import { scale } from 'react-native-size-matters';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -85,7 +86,8 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
             cartId: '',
             addressData: [],
             single: false,
-            shopName: ''
+            shopName: '',
+            outOfStock: false
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -188,10 +190,26 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         })
     }
 
-    handlePlaceOrder(cartId, totalAmt) {
-        // Alert.alert(''+cartId + " " + totalAmt)
-        const pushAction = StackActions.push(AppRoute.PAYMENT, { cartId: String(cartId), totalAmt: String(totalAmt) })
-        this.props.navigation.dispatch(pushAction);
+    handlePlaceOrder(cartId, totalAmt, index) {
+        const { cartData } = this.state;
+        // if (cartData) {
+        //     cartData[index].productList.map((cart, index) => {
+        //         if (cart) {
+        //             if (cart.productQuantity > cart.currentStock) {
+                        
+                        // this.setState({
+                        //     outOfStock: true
+                        // })
+                    //     Alert.alert("It seems any product is out of stock"+cart.productQuantity + " " + cart.currentStock);
+                    // } else {
+                    //     Alert.alert(''+cart.productQuantity + " " + cart.currentStock)
+                        const pushAction = StackActions.push(AppRoute.PAYMENT, { cartId: String(cartId), totalAmt: String(totalAmt) })
+                        this.props.navigation.dispatch(pushAction);
+        //             }
+        //         }
+        //     })
+        // }
+
     }
 
     renderCart = ({ item }: any): ListItemElement => (
@@ -209,9 +227,11 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
 
                         <View style={Styles.cart_view_1_2}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={Styles.cart_name_text}>{item.productName}</Text>
+                                <View style={Styles.cart_name_text_view}>
+                                    <Text style={Styles.cart_name_text}>{item.productName}</Text>
+                                </View>
                                 <TouchableOpacity onPress={() => { this.handleDelete(item.id) }}>
-                                    <Text style={Styles.cart_name_text}><CancelIcon fontSize={25} /></Text>
+                                    <Text style={Styles.cart_name_text}><CancelIcon fontSize={scale(25)} /></Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={Styles.cart_price_view}>
@@ -221,17 +241,26 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                 </View>
 
                                 <View style={Styles.cart_quantity_view}>
-                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleDecrease(item.productId, item.cartId, item.productQuantity) }}>
-                                        <Text style={Styles.cart_button_text}><MinusIcon /></Text>
-                                    </TouchableOpacity>
+                                    {item.currentStock ? item.currentStock >= item.productQuantity ?
+                                        <>
+                                            <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleDecrease(item.productId, item.cartId, item.productQuantity) }}>
+                                                <Text style={Styles.cart_button_text}><MinusIcon /></Text>
+                                            </TouchableOpacity>
 
-                                    <View style={Styles.cart_quantity_text_view}>
-                                        <Text style={Styles.cart_quantity_text}>{item.productQuantity}</Text>
-                                    </View>
+                                            <View style={Styles.cart_quantity_text_view}>
+                                                <Text style={Styles.cart_quantity_text}>{item.productQuantity}</Text>
+                                            </View>
 
-                                    <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleIncrease(item.productId, item.cartId) }}>
-                                        <Text style={Styles.cart_button_text}><AddIcon /></Text>
-                                    </TouchableOpacity>
+                                            <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleIncrease(item.productId, item.cartId) }}>
+                                                <Text style={Styles.cart_button_text}><AddIcon /></Text>
+                                            </TouchableOpacity>
+                                        </> :
+                                        <View style={{ paddingHorizontal: scale(2), alignItems: 'center', justifyContent: 'center' }}>
+                                            <Text style={{ color: 'white' }}>Out of Stock</Text>
+                                        </View> :
+                                        <View style={{ paddingHorizontal: scale(2), alignItems: 'center', justifyContent: 'center' }}>
+                                            <Text style={{ color: 'white' }}>Out of Stock</Text>
+                                        </View>}
                                 </View>
                             </View>
 
@@ -251,26 +280,26 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         </ListItem>
     )
 
-    renderCombinedCart = ({ item }: any): ListItemElement => (
+    renderCombinedCart = ({ item, index }: any): ListItemElement => (
         <>
             {item != null && item.productList ?
                 <ListItem style={{ margin: 10, borderColor: '#0099cc', borderWidth: 1, flexDirection: 'column' }}>
                     {item != null && item.productList ?
                         <>
-                        <View>
-                            <Text style={{fontWeight: 'bold', fontSize: 20, color: '#0099cc'}}>{item.shopName}</Text>
-                        </View>
-                            <List data={item.productList.slice(0).reverse()}
+                            <View>
+                                <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#0099cc' }}>{item.shopName}</Text>
+                            </View>
+                            <List data={item.productList ? item.productList.slice(0).reverse() : null}
                                 renderItem={this.renderCart}
                             />
 
-                            <View style={[Styles.price_detail_1, {width: '100%'}]}>
+                            <View style={[Styles.price_detail_1, { width: '100%' }]}>
                                 <Text style={Styles.cart_price_detail_1_text}>PRICE DETAILS</Text>
 
                                 <View style={Styles.price_detail_2}>
                                     <View style={Styles.price_detail_2_1}>
                                         <Text style={Styles.cart_price_text_head}>Price ({null != item.productList ? item.productList.length : null} items)</Text>
-                                        <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{item.totalAmount ? (item.totalAmount - item.gstAmount).toFixed(2) : null}</Text>
+                                        <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{item.totalAmount ? (item.price).toFixed(2) : null}</Text>
                                     </View>
 
                                     <View style={Styles.price_detail_2_1}>
@@ -307,7 +336,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                 </View>
 
                                 <View style={{ justifyContent: 'center', margin: 10 }}>
-                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(item.cartId, item.payableAmount) }}>
+                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(item.cartId, item.payableAmount, index) }}>
                                         <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -330,10 +359,10 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
     }
 
     continiueShopping() {
-        const {single} = this.state;
+        const { single } = this.state;
         single ?
-        this.props.navigation.navigate(AppRoute.COMBINED_PRODUCT) :
-        this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
+            this.props.navigation.navigate(AppRoute.COMBINED_PRODUCT) :
+            this.props.navigation.navigate(AppRoute.CUSTOMER_ALL_SHOP)
     }
 
     addItem() { }
@@ -345,7 +374,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title= {single ? shopName : 'All Shop Cart'}
+                    title={single ? shopName : 'All Shop Cart'}
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     onRightPress={() => { this.continiueShopping() }}
@@ -384,7 +413,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                     </View> */}
                     {single ?
                         <>
-                            <List data={productList.slice(0).reverse()}
+                            <List data={productList ? productList.slice(0).reverse() : null}
                                 renderItem={this.renderCart}
                             />
 
@@ -399,7 +428,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                 <View style={Styles.price_detail_2}>
                                     <View style={Styles.price_detail_2_1}>
                                         <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} items)</Text>
-                                        <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.totalAmount  ? (cartData.totalAmount - cartData.gstAmount).toFixed(2) : null}</Text>
+                                        <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.totalAmount ? (cartData.price).toFixed(2) : null}</Text>
                                     </View>
 
                                     <View style={Styles.price_detail_2_1}>
@@ -454,7 +483,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                             </View>
 
                             <View>
-                                <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(cartData.cartId, cartData.payableAmount) }}>
+                                <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(cartData.cartId, cartData.payableAmount, 0) }}>
                                     <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
                                 </TouchableOpacity>
                             </View>

@@ -12,7 +12,7 @@ import { AsyncStorage } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import RazorpayCheckout from 'react-native-razorpay';
 import OneSignal from 'react-native-onesignal';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 
 interface State {
     email: string | undefined;
@@ -30,6 +30,7 @@ export class UserDecide extends Component<UserDecideProps, any & State & any> {
             data: [],
             playerId: '8a6d8667-7422-4bad-b9e6-5d5625f73a96'
         }
+        this.navigate = this.navigate.bind(this);
     }
 
     async componentDidMount() {
@@ -57,17 +58,23 @@ export class UserDecide extends Component<UserDecideProps, any & State & any> {
                     AsyncStorage.setItem('latitude', String(lat))
                     AsyncStorage.setItem('longitude', String(long))
                     AsyncStorage.setItem('location', 'Current Location')
-                    console.log('location', lat, position.coords.accuracy)
+                    // console.log('location', lat, position.coords.accuracy)
+                    this.navigate()
                 }, (err) => {
 
                 }, { enableHighAccuracy: true })
             } else {
                 console.log("Location permission denied");
+                Alert.alert("Please give location permition to use this application.")
             }
         } catch (err) {
             console.warn(err);
         }
 
+    }
+
+   async navigate() {
+        
         const contents = 'You are first in line';
         // const playerId = '8a6d8667-7422-4bad-b9e6-5d5625f73a96';
         // OneSignal.postNotification(contents, data, playerId);

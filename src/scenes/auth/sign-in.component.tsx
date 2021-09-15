@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Alert, Image, Text, } from 'react-native';
+import { View, Alert, Image, Text, PermissionsAndroid } from 'react-native';
 import { SignInScreenProps } from '../../navigation/auth.navigator';
 import { AppRoute } from '../../navigation/app-routes';
 import { Placeholder, LableText, Color, AppConstants } from '../../constants';
@@ -15,6 +15,7 @@ import base64 from 'react-native-base64'
 import OneSignal from 'react-native-onesignal';
 import { StackActions } from '@react-navigation/core';
 import { scale } from 'react-native-size-matters';
+import Geolocation from 'react-native-geolocation-service';
 
 interface State {
   email: string | undefined;
@@ -48,8 +49,40 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
   }
 
 
-  componentDidMount() {
+  async componentDidMount() {
     let deviceId = DeviceInfo.getUniqueId();
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: "Milaan Location Permission",
+          message:
+            "Milaan needs access to your Location " +
+            "so you can get your nearest shop.",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition((position) => {
+          var lat = position.coords.latitude
+          var long = position.coords.longitude
+          AsyncStorage.setItem('latitude', String(lat))
+          AsyncStorage.setItem('longitude', String(long))
+          AsyncStorage.setItem('location', 'Current Location')
+          // console.log('location', lat, position.coords.accuracy)
+        }, (err) => {
+
+        }, { enableHighAccuracy: true })
+      } else {
+        console.log("Location permission denied");
+        Alert.alert("Please give location permition to use this application.")
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+
     axios({
       method: 'GET',
       url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',
@@ -96,8 +129,9 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
   }
 
   async onFormSubmit() {
-    const { emailId, pwd, admin, customer, allUserType, deviceId, regAddress, regImage, regCompleted } = this.state
+    const { emailId, pwd, admin, customer, allUserType, regAddress, regImage, regCompleted } = this.state
     const deviceState = await OneSignal.getDeviceState();
+    let deviceId = DeviceInfo.getUniqueId();
 
     if (emailId == null || emailId === '') {
       Alert.alert("Please enter Email Id.");

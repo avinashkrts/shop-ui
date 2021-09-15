@@ -49,7 +49,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
             }).then((response) => {
                 if (null != response.data) {
                     this.setState({
-                        transactionData: response.data,
+                        transactionData: response.data.reverse(),
                     })
                 }
             }, (error) => {
@@ -167,18 +167,20 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                                             </View>
                                             <View style={Styles.bill_column_3}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design}>{data.id}</Text>
+                                                <Text style={Styles.text_design}>
+                                                    {data.transactionType ? data.transactionType == shopping || data.transactionType == adminRejected || data.transactionType == userDenied ? data.cartId : data.transactionType == planPurchase ? data.purchaseId : data.transactionType == withdrawRequest || data.transactionType == withdrawDone ? data.withdrawId : null : null}
+                                                </Text>
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_4}>
                                                 {/* <View style={Styles.bill_box}> */}
                                                 {data.paymentMode == refund || data.paymentMode == walletPay ?
-                                                    <Text style={Styles.text_design_red}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
+                                                    <Text style={Styles.text_design_red}>{data.totalAmount}</Text> : <Text style={Styles.text_design}> -- </Text>}
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_5}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                {data.paymentMode == onlinePay || data.paymentMode == cashPay ? <Text style={Styles.text_design_green}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
+                                                {data.paymentMode == onlinePay || data.paymentMode == cashPay ? <Text style={Styles.text_design_green}>{data.totalAmount}</Text> : <Text style={Styles.text_design}> -- </Text>}
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_6}>

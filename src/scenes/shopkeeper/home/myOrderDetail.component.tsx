@@ -842,7 +842,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                         <View style={Styles.price_detail_2}>
                             <View style={Styles.price_detail_2_1}>
                                 <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} items)</Text>
-                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.totalAmount ? (cartData.totalAmount - cartData.gstAmount).toFixed(2) : null}</Text>
+                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.price ? (cartData.price).toFixed(2) : null}</Text>
                             </View>
 
                             <View style={Styles.price_detail_2_1}>

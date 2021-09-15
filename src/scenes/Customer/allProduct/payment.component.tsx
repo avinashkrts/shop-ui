@@ -53,6 +53,7 @@ import { lookup } from 'dns';
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 import RazorpayCheckout from 'react-native-razorpay';
 import moment from 'moment';
+import { scale } from 'react-native-size-matters';
 
 const allTodos: TimeLineData[] = [
     TimeLineData.getAllTimelineData()
@@ -292,7 +293,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                         }
                     }
                 }, (error) => {
-                    Alert.alert("Server problem")
+                    Alert.alert("Please select your address.")
                 })
             } else if (cashDelivery) {
                 axios({
@@ -335,7 +336,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             description: "MILAAN IT",
             image: 'http://ec2-65-0-32-190.ap-south-1.compute.amazonaws.com/shop/61_4_MILAAN661_shop.png',
             currency: "INR",
-            key: '',
+            key: 'rzp_live_SWEdMTS7nSOemz',
             amount: totalAmt * 100,
             name: 'MILAAN IT',
             order_id: orderId,
@@ -531,7 +532,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                         <View style={[Styles.payment_box_view]}>
                             <Text style={Styles.payment_selection_header}>How do you want this order?</Text>
                             <View style={Styles.payment_selection_view}>
-                                <View style={{ flexDirection: 'row', marginRight: 20 }}>
+                                <View style={{ flexDirection: 'row', marginRight: scale(20) }}>
                                     <Radio selected={homeDelivery} selectedColor='#0099cc' onPress={() => { this.handleOrderType('HOME') }} />
                                     <Text style={Styles.payment_selection_text}>Home Delivery</Text>
                                 </View>
@@ -548,7 +549,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                         <View style={[Styles.payment_box_view]}>
                             <Text style={Styles.payment_selection_header}>How do you want to pay?</Text>
                             <View style={Styles.payment_selection_view}>
-                                <View style={{ flexDirection: 'row', marginRight: 20 }}>
+                                <View style={{ flexDirection: 'row', marginRight: scale(20) }}>
                                     <Radio selected={cashDelivery} selectedColor='#0099cc' onPress={() => { this.handlePaymentType('CASH') }} />
                                     <Text style={Styles.payment_selection_text}>Cash on Delivery</Text>
                                 </View>

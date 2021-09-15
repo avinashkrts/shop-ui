@@ -24,7 +24,13 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
             userData: [],
             single: false,
             shopName: '',
-            shopId: ''
+            shopId: '',
+            userDenied: '',
+            shoping: '',
+            planPurchase: '',
+            withdrawRequest: '',
+            withdrawDone: '',
+            adminRejected: ''
         }
 
         this.onRefresh = this.onRefresh.bind(this);
@@ -46,7 +52,7 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
                 // Alert.alert('')
                 this.setState({ single: true, shopName: shopName, shopId: shopIdAsync })
                 axios(AppConstants.API_BASE_URL + "/api/transaction/get/transactionby/userId/shopId/" + userData.userId + '/' + shopIdAsync)
-                    .then(res => this.setState({ transactionData: res.data }))
+                    .then(res => this.setState({ transactionData: res.data.reverse() }))
             } else {
                 axios({
                     method: 'GET',
@@ -54,7 +60,7 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
                 }).then((response) => {
                     if (null != response.data) {
                         this.setState({
-                            transactionData: response.data,
+                            transactionData: response.data.reverse(),
                         })
                     }
                 }, (error) => {
@@ -63,10 +69,36 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
             }
             axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
                 //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
-                .then((res) =>
-                    res.data.PAYMENT_MODE.map((data) => data.lookUpName == "ONLINE_PAYMENT" ?
-                        this.setState({ onlinePay: data.lookUpId }) : data.lookUpName == "WALLET_PAYMENT" ? this.setState({ refund: data.lookUpId }) : data.lookUpName == "CASH" ? this.setState({ cashPay: data.lookUpId }) : null)
-                )
+                .then((res) => {
+                    if (res) {
+                        res.data.PAYMENT_MODE.map((data) => {
+                            if (data.lookUpName == "ONLINE_PAYMENT") {
+                                this.setState({ onlinePay: data.lookUpId })
+                            } else if (data.lookUpName == "WALLET_PAYMENT") {
+                                this.setState({ refund: data.lookUpId })
+                            } else if (data.lookUpName == "CASH") {
+                                this.setState({ cashPay: data.lookUpId })
+                            }
+                        })
+
+                        res.data.TRANSACTION_TYPE.map((transType) => {
+                            if (transType.lookUpName == "USER_DENIED") {
+                                this.setState({ userDenied: transType.lookUpId })
+                            } else if (transType.lookUpName == "SHOPING") {
+                                this.setState({ shoping: transType.lookUpId })
+                            } else if (transType.lookUpName == "PLAN_PURCHASE") {
+                                this.setState({ planPurchase: transType.lookUpId })
+                            } else if (transType.lookUpName == "WITHDRAW_REQUEST") {
+                                this.setState({ withdrawRequest: transType.lookUpId })
+                            } else if (transType.lookUpName == "WITHDRAW_DONE") {
+                                this.setState({ withdrawDone: transType.lookUpId })
+                            } else if (transType.lookUpName == "ADMIN_REJECTED") {
+                                this.setState({ adminRejected: transType.lookUpId })
+                            }
+                        })
+                    }
+
+                })
                 .catch(error => console.log(error))
         }
     }
@@ -81,7 +113,8 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
     }
 
     render() {
-        const { userData, single, shopName, transactionData, onlinePay, cashPay, refund } = this.state;
+        const { userData, single, userDenied, shoping, planPurchase,
+            withdrawRequest, withdrawDone, adminRejected, shopName, transactionData, onlinePay, cashPay, refund } = this.state;
         let total = 0
         return (
             <SafeAreaLayout style={Styles.safeArea}>
@@ -137,7 +170,7 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
                         }
                     >
                         {null != transactionData ? transactionData.map((data, index) => {
-                           data.paymentMode ? data.paymentMode == refund ? total = total + data.totalAmount : null : null
+                            data.paymentMode ? data.paymentMode == refund ? total = total + data.totalAmount : null : null
                             return (
                                 <View>
                                     <Divider />
@@ -155,7 +188,9 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
                                             </View>
                                             <View style={Styles.bill_column_3}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design}>{data.id}</Text>
+                                                <Text style={Styles.text_design}>
+                                                    {data.transactionType ? data.transactionType == shoping || data.transactionType == adminRejected || data.transactionType == userDenied ? data.cartId : data.transactionType == planPurchase ? data.purchaseId : data.transactionType == withdrawRequest || data.transactionType == withdrawDone ? data.withdrawId : null : null}
+                                                </Text>
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_4}>
@@ -172,8 +207,8 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
                                             <View style={Styles.bill_column_6}>
                                                 {/* <View style={Styles.bill_box}> */}
                                                 {/* {data.paymentMode == refund ? */}
-                                                    <Text style={Styles.text_design_green}>{data.paymentMode ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == refund ? 'Refund' : null : null}</Text> 
-                                                    {/* : <Text style={Styles.text_design}> -- </Text>} */}
+                                                <Text style={Styles.text_design_green}>{data.paymentMode ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == refund ? 'Refund' : null : null}</Text>
+                                                {/* : <Text style={Styles.text_design}> -- </Text>} */}
                                                 {/* </View> */}
                                             </View>
                                         </View>

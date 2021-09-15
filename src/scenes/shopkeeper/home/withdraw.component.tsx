@@ -66,45 +66,46 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
         Axios({
             method: 'GET',
             url: AppConstants.API_BASE_URL + '/api/admin/get/' + userData.adminId
-        }).then((response) => {
-            if (null != response.data) {
+        }).then((response1) => {
+            if (null != response1.data) {
                 this.setState({
-                    userData: response.data,
-                    leftBalance: String(response.data.availableAmount)
+                    userData: response1.data,
+                    leftBalance: String(response1.data.availableAmount)
                 })
+                Axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/account/getaccountbyuserid/' + userData.adminId
+                }).then((response) => {
+                    if (null != response.data && response.data.length > 0) {
+                        console.log('account Data', response.data[0].accountNum)
+                        this.setState({
+                            accountData: response.data,
+                            accountId: String(response.data[0].id),
+                            accountNo: String(response.data[0].accountNum),
+                            confAccountNo: String(response.data[0].accountNum),
+                            acHolderName: response.data[0].accountHolderName,
+                            ifscCode: response.data[0].ifsc,
+                            bankName: response.data[0].bankName,
+                            branchName: response.data[0].branchName,
+                            panNo: response.data[0].panNumber,
+                            adharNo: response.data[0].adharNumber,
+                            mobileNo: response.data[0].mobileNo,
+                            isAccount: true
+                        })
+                    } else {
+                        this.setState({
+                            isAccount: false
+                        })
+                    }
+                }, (error) => {
+                    Alert.alert("Server error!.")
+                });
             }
         }, (error) => {
             Alert.alert("Server error!.")
         });
 
-        Axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/account/getaccountbyuserid/' + userData.adminId
-        }).then((response) => {
-            if (null != response.data && response.data.length > 0) {
-                console.log('account Data', response.data[0].accountNum)
-                this.setState({
-                    accountData: response.data,
-                    accountId: String(response.data[0].id),
-                    accountNo: String(response.data[0].accountNum),
-                    confAccountNo: String(response.data[0].accountNum),
-                    acHolderName: response.data[0].accountHolderName,
-                    ifscCode: response.data[0].ifsc,
-                    bankName: response.data[0].bankName,
-                    branchName: response.data[0].branchName,
-                    panNo: response.data[0].panNumber,
-                    adharNo: response.data[0].adharNumber,
-                    mobileNo: response.data[0].mobileNo,
-                    isAccount: true
-                })
-            } else {
-                this.setState({
-                    isAccount: false
-                })
-            }
-        }, (error) => {
-            Alert.alert("Server error!.")
-        });
+
     }
 
     onRefresh() {
@@ -185,7 +186,7 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
 
     handleRequest() {
         const { accountNo, isAccount, userData, confAccountNo, mobileNo, acHolderName, ifscCode, bankName, branchName, panNo, adharNo, walletPay, planId, payOnline, planCode, totalAmount } = this.state;
-        console.log('Acc Post data', userData.shopId, accountNo, userData.adminId, userData.adminId, confAccountNo,mobileNo, acHolderName,ifscCode,bankName,branchName,panNo,adharNo);
+        console.log('Acc Post data', userData.shopId, accountNo, userData.adminId, userData.adminId, confAccountNo, mobileNo, acHolderName, ifscCode, bankName, branchName, panNo, adharNo);
         if (accountNo === '' || accountNo.length == 0) {
             Alert.alert('Please enter account number.')
         } else if (confAccountNo === '' || confAccountNo.length == 0) {
@@ -206,6 +207,8 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
             Alert.alert('Please enter adhar card number.')
         } else if (mobileNo === '' || mobileNo.length == 0) {
             Alert.alert('Please enter mobile number.')
+        } else if (isAccount) {
+            this.sendRequest();
         } else {
             Axios({
                 method: 'POST',
@@ -225,13 +228,9 @@ export class WithdrawScreen extends Component<WithdrawScreenProps, ThemedCompone
                 }
             }).then((response) => {
                 if (null != response.data) {
-                    if (isAccount) {
-                        this.sendRequest();
-                    } else {
-                        this.toggleModal();
-                        this.componentDidMount();
-                        Alert.alert('Account details added successfully please request again to withdraw.')
-                    }
+                    this.toggleModal();
+                    this.componentDidMount();
+                    Alert.alert('Account details added successfully please request again to withdraw.')
                 }
             }, (error) => {
                 Alert.alert("Server error!.")

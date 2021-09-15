@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Image, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Alert, View, Image, TextInput, TouchableOpacity, AsyncStorage, PermissionsAndroid } from 'react-native';
 import { Text } from 'react-native-ui-kitten';
 import { SafeAreaLayout, SaveAreaInset, } from '../../components/safe-area-layout.component';
 import { Content, Picker } from 'native-base';
@@ -11,6 +11,7 @@ import { AppConstants, Color, LableText, Placeholder } from '../../constants';
 import DeviceInfo from 'react-native-device-info';
 import { scale } from 'react-native-size-matters';
 import { ShopRegistrationScreenProps } from '../../navigation/registration.navigator';
+import Geolocation from 'react-native-geolocation-service';
 
 const data = [
     { text: 'Candidate' },
@@ -45,8 +46,41 @@ export class ShopRegistrationScreen extends Component<ShopRegistrationScreenProp
         this.onPasswordIconPress = this.onPasswordIconPress.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         let deviceId = DeviceInfo.getUniqueId();
+
+        try {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+              {
+                title: "Milaan Location Permission",
+                message:
+                  "Milaan needs access to your Location " +
+                  "so you can get your nearest shop.",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "OK"
+              }
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+              Geolocation.getCurrentPosition((position) => {
+                var lat = position.coords.latitude
+                var long = position.coords.longitude
+                AsyncStorage.setItem('latitude', String(lat))
+                AsyncStorage.setItem('longitude', String(long))
+                AsyncStorage.setItem('location', 'Current Location')
+                // console.log('location', lat, position.coords.accuracy)
+              }, (err) => {
+      
+              }, { enableHighAccuracy: true })
+            } else {
+              console.log("Location permission denied");
+              Alert.alert("Please give location permition to use this application.")
+            }
+          } catch (err) {
+            console.warn(err);
+          }
+
         axios({
             method: 'GET',
             url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',

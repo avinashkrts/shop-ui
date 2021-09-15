@@ -711,11 +711,24 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                                     }
 
                                                 </View>
+                                                {data.stock ? data.stock > 0 ? 
                                                 <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId, data.shopId) }}>
                                                     <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
                                                         <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
                                                     </View>
-                                                </TouchableOpacity>
+                                                </TouchableOpacity>:
+
+                                                <TouchableOpacity >
+                                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
+                                                    </View>
+                                                </TouchableOpacity>: 
+                                                 <TouchableOpacity >
+                                                 <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                     <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
+                                                 </View>
+                                             </TouchableOpacity>
+                                                }
                                             </View>
                                         </View>
                                     )

@@ -57,11 +57,11 @@ export const WishIcon = (style): AntDesign => (
 );
 
 export const MinusIcon = (style): AntDesign => (
-  <AntDesign size={20} name='minus' />
+  <AntDesign size={scale(20)} name='minus' />
 );
 
 export const AddIcon = (style): AntDesign => (
-  <AntDesign size={20} name='plus' />
+  <AntDesign size={scale(20)} name='plus' />
 );
 
 export const RupeeIcon = (style): AntDesign => (
