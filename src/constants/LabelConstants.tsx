@@ -31,9 +31,11 @@ const logedIn = async () => {
 export class LableText {
     public static readonly LOGOUT = logedIn() && Boolean(logIn) ? 'Logout' : 'Login';
     public static readonly USER = 'user';
+    public static readonly WARNING = 'Warning';
+    public static readonly CURRENT_STOCK = 'Current Stock';
     public static readonly ACCEPT = 'Accept';
     public static readonly YOUR_PLAN_CODE = 'Plan Code';
-    public static readonly SELECT_CUSTOM_LOCATION = 'Search Location';
+    public static readonly SELECT_CUSTOM_LOCATION = 'Set Location';
     public static readonly REJECT = 'Reject';
     public static readonly CHOOSE_IMAGE = 'Choose Image';
     public static readonly UPLOAD = 'Upload';
@@ -41,6 +43,7 @@ export class LableText {
     public static readonly FINISH = 'Finish';
     public static readonly WELCOME_TEXT = 'Milaan IT Projects';
     public static readonly SIGN_IN = 'Sign In';
+    public static readonly SKIP_LOGIN = 'Skip Login';
     public static readonly ADD = 'Add';
     public static readonly CANCLE = 'Cancle';
     public static readonly SIGN_UP = 'Sign Up';
@@ -115,21 +118,24 @@ export class LableText {
     public static readonly BANK_IFSC_CODE = 'SBIN0001342';
     public static readonly BACK_TO_SIGN_IN = 'Back to sign In'
     public static readonly SELLING_PRICE= 'Selling Price';
-    public static readonly COST_PRICE = 'Cost Price';
+    public static readonly COST_PRICE = 'Product Cost Price';
     public static readonly OLD_PRICE = 'Old Price';
     public static readonly QUANTITY = 'Selling Product Quantity';
     public static readonly DESCRIPTION = 'Description';
-    public static readonly BARCODE = 'Barcode';
+    public static readonly BARCODE = 'HSN Code';
     public static readonly PRODUCT_NAME = 'Product Name';
     public static readonly STOCK = 'Stock Quantity';
     public static readonly OUT_OF_STOCK = 'Stock Limit(Alert)';
+    public static readonly OUT_OF_STOCK_LIST = 'Out Of Stock';
     public static readonly CATEGORY = 'Category';
     public static readonly BRAND = 'Brand';
     public static readonly OFFER = 'Offer';
+    public static readonly EXPIRE = 'Expire';
     public static readonly OFFER_FROM = 'Offer From';
     public static readonly OFFER_TO = 'Offer To';
     public static readonly MANUFACTURE_DATE = 'Date of Manufacture';
     public static readonly EXPIRE_DATE = 'Date of Expire';
+    public static readonly EXPIRE_MANUFAFACTURE = 'Expiry/Manufacturing';
     public static readonly OFFER_PERCENT = 'Offer Percent';
     public static readonly DISCOUNT = 'Discount Percentage';
     public static readonly FROM_DATE = 'From Which Date';
@@ -160,12 +166,19 @@ export class LableText {
     public static readonly CANCEL_REASION= 'Cancellation Reason';
     public static readonly ENTER_CANCEL_REASION= 'Enter Cancellation Reason (minimum 50 letters)';
     public static readonly ENTER_OTP = 'Enter OTP';    
+    public static readonly SIGN_UP_ALERT = 'If you are facing network or any other issue while registring your bussiness, You may Log In with your Admin ID and Password to complete the registration.';    
+    public static readonly SIGN_UP_ALERT1 = 'If your registration have been failed in address registration or image uploading page due to network or any other issue while registring your bussiness, You may Log In with your Admin ID and Password to complete the registration.';  
+    public static readonly ALERT_REGISTER_SHOP = 'Are you really want to cancel the process of Business registration?';    
+    public static readonly ALERT_REGISTER_IMAGE = 'Are you really want to cancel the process of Business registration? kindly use Admin Id and Password to complete the business registration in future.';    
+    public static readonly CUS_HOME_PAGE = 'Are you really want to Exit?';    
+
 }
 
 /*------------------------------------------------------------PLACE HOLDER------------------------------------------------------------*/
 export class Placeholder {
 
     public static readonly PHONE = 'Phone';
+    public static readonly PHONE_EMAIL = 'Phone/Admin ID';
     public static readonly PASSWORD = 'Password';
     public static readonly FIRSTNAME = 'First Name';
     public static readonly LASTNAME = 'Last Name';

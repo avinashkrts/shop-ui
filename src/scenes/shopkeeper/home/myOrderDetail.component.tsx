@@ -596,7 +596,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                         {isCancel ?
                             <>
                                 <View style={Styles.user_detail_header}>
-                                    <Text style={Styles.user_detail_header_text}>{LableText.ENTER_OTP}</Text>
+                                    {/* <Text style={Styles.user_detail_header_text}>{LableText.ENTER_OTP}</Text> */}
                                 </View>
                                 <View style={Styles.user_detail_data}>
                                     <TextInput
@@ -661,7 +661,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Order Id: {cartData.cartId ? cartData.cartId : null} </Text>
                         </View>
                         {null != addressData ?
-                            <Text style={{ marginVertical: 5 }}>{addressData.city}, {addressData.landmark}, {addressData.district}, {addressData.state}, {addressData.pinCode}</Text>
+                            <Text style={{ marginVertical: 5 }}>{addressData.name}, {addressData.mobileNo}, {addressData.city}, {addressData.street}, {addressData.landmark}, {addressData.postOffice}, {addressData.policeStation}, {addressData.district}, {addressData.state}, {addressData.pinCode}, {addressData.country}</Text>
                             : null}
                         <View style={{ width: '100%', alignItems: 'flex-end' }}>
                             {/* <TouchableOpacity onPress={() => { this.props.navigation.navigate(AppRoute.CUSTOMER_ADDRESS) }} style={[Styles.center, { paddingVertical: 10, width: 100, borderRadius: 5, backgroundColor: Color.COLOR }]}>
@@ -852,7 +852,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
 
                             <View style={Styles.price_detail_2_1}>
                                 <Text style={Styles.cart_price_text_head}>GST Amount</Text>
-                                <Text style={Styles.cart_price_text_data}>-<RupeeIcon fontSize={18} />{null != cartData.gstAmount ? cartData.gstAmount.toFixed(2) : null}</Text>
+                                <Text style={Styles.cart_price_text_data}><RupeeIcon fontSize={18} />{null != cartData.gstAmount ? cartData.gstAmount.toFixed(2) : null}</Text>
                             </View>
 
                             {/* <View style={Styles.price_detail_2_1}>

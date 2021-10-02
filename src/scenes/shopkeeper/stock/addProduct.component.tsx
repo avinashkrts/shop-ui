@@ -267,7 +267,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                     <Divider />
 
                     <View>
-                        <View style={Styles.user_detail}>
+                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
                                 <Text style={Styles.user_detail_header_text}>{LableText.PRODUCT_NAME}</Text>
                             </View>
@@ -280,7 +280,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                                     placeholder={LableText.PRODUCT_NAME}
                                 />
                             </View>
-                        </View>
+                        </View> 
 
                         <View style={Styles.user_detail}>
                             <View style={Styles.user_detail_header}>
@@ -474,6 +474,8 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                             </View>
                         </View>
 
+                       
+
                         {offerActiveInd ?
                             <View style={Styles.user_detail_data}>
                                 <View style={Styles.user_detail}>
@@ -561,18 +563,18 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
                     </View>
 
 
-                    {/* <View style={{ marginHorizontal: '10%' }}>
+                     {/* <View style={{ marginHorizontal: '10%' }}>
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
                             <Text style={Styles.buttonName}>{LableText.EDIT}</Text>
                         </TouchableOpacity>
-                    </View> */}
+                    </View>  */}
 
 
-                    <View style={{ marginHorizontal: '10%' }}>
+                     <View style={{ marginHorizontal: '10%' }}>
                         <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleSubmit() }}>
                             <Text style={Styles.buttonName}>{LableText.NEXT}</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> 
 
 
                     <View style={Styles.bottomSpace}></View>

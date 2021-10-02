@@ -54,6 +54,7 @@ import { lookup } from 'dns';
 import RazorpayCheckout from 'react-native-razorpay';
 import moment from 'moment';
 import { scale } from 'react-native-size-matters';
+import { StackActions } from '@react-navigation/routers';
 
 const allTodos: TimeLineData[] = [
     TimeLineData.getAllTimelineData()
@@ -110,7 +111,9 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             addressId: '',
             shopId: '',
             cartData: [],
-            adminData: []
+            adminData: [],
+            insideShop: false,
+            orderPlacing: false
         }
         this.backFunction = this.backFunction.bind(this)
     }
@@ -124,15 +127,16 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
         let shopId = await AsyncStorage.getItem('shopId');
         let userData = JSON.parse(userDetail);
         const cartId = this.props.route.params.cartId;
-        const totalAmt = this.props.route.params.totalAmt
+        const insideShop = this.props.route.params.insideShop
+        // console.log('data', cartId, insideShop, typeof(insideShop))
         // Alert.alert(userData.emailId)
         this.setState({
             shopId: shopId,
             cartId: cartId,
-            totalAmt: totalAmt,
             userName: userData.firstName,
             userMobileNo: userData.mobileNo,
-            userEmailId: userData.emailId
+            userEmailId: userData.emailId,
+            insideShop: insideShop
         })
         if (null != logedIn && logedIn === 'true') {
             // Alert.alert("" + userData.userId)
@@ -156,9 +160,10 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 url: AppConstants.API_BASE_URL + '/api/cart/get/' + cartId
             }).then((response) => {
                 if (response.data) {
-                    console.log('cartData in payment', response.data)
+                    // console.log('cartData in payment', response.data)
                     this.setState({
                         cartData: response.data,
+                        totalAmt: response.data.payableAmount,
                     })
 
                     axios({
@@ -166,7 +171,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                         url: AppConstants.API_BASE_URL + '/api/admin/get/activeadminbyshopid/' + response.data.shopId
                     }).then((response) => {
                         if (response.data) {
-                            console.log('Admin Data in payment', response.data)
+                            // console.log('Admin Data in payment', response.data)
                             this.setState({
                                 adminData: response.data[0],
                             })
@@ -188,14 +193,33 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 if (response.data) {
                     response.data.ORDER_TYPE.map((order, orIndex) => {
                         if (order.lookUpName === "HOME_DELIVERY") {
-                            this.setState({
-                                homeId: order.lookUpId,
-                                orderType: order.lookUpId
-                            })
+                            if (insideShop) {
+                                this.setState({
+                                    homeId: order.lookUpId,
+                                    selfPick: true,
+                                    homeDelivery: false,
+                                })
+                            } else {
+                                this.setState({
+                                    homeId: order.lookUpId,
+                                    orderType: order.lookUpId,
+                                    selfPick: false,
+                                    homeDelivery: true,
+                                })
+                            }
                         } else if (order.lookUpName === "SELF_PICKUP") {
-                            this.setState({
-                                selfId: order.lookUpId,
-                            })
+                            if (insideShop) {
+                                this.setState({
+                                    selfId: order.lookUpId,
+                                    orderType: order.lookUpId,
+                                    selfPick: true,
+                                    homeDelivery: false,
+                                })
+                            } else {
+                                this.setState({
+                                    selfId: order.lookUpId,
+                                })
+                            }
                         }
                     })
 
@@ -203,7 +227,9 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                         if (order.lookUpName === "CASH") {
                             this.setState({
                                 cashId: order.lookUpId,
-                                paymentType: order.lookUpId
+                                paymentType: order.lookUpId,
+                                cashDelivery: true,
+                                payOnline: false,
                             })
                         } else if (order.lookUpName === "ONLINE_PAYMENT") {
                             this.setState({
@@ -268,8 +294,11 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
 
 
     handlePlaceOrder() {
-        const { orderType, addressId, addressData, slotDate, homeDelivery, selfPick, cashDelivery, payOnline, homeId, cashId, onlineId, selfId, paymentType, cartId, } = this.state;
+        const { orderType, insideShop, addressId, addressData, slotDate, homeDelivery, selfPick, cashDelivery, payOnline, homeId, cashId, onlineId, selfId, paymentType, cartId, } = this.state;
         console.log('data', orderType, paymentType, homeDelivery, selfPick, cashDelivery, payOnline, cashId, onlineId, homeId, selfId, cartId);
+        this.setState({
+            orderPlacing: true
+        })
         if (addressData != null) {
             if (payOnline) {
 
@@ -281,7 +310,8 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                         cartId: cartId,
                         orderType: orderType,
                         addressId: addressId,
-                        slotDate: slotDate
+                        slotDate: slotDate,
+                        insideShop: insideShop
                     }
                 }).then((response) => {
                     if (response.data) {
@@ -304,7 +334,8 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                         cartId: cartId,
                         orderType: orderType,
                         addressId: addressId,
-                        slotDate: slotDate
+                        slotDate: slotDate,
+                        insideShop: insideShop
                     }
                 }).then((response) => {
                     if (response.data) {
@@ -336,7 +367,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             description: "MILAAN IT",
             image: 'http://ec2-65-0-32-190.ap-south-1.compute.amazonaws.com/shop/61_4_MILAAN661_shop.png',
             currency: "INR",
-            key: 'rzp_live_SWEdMTS7nSOemz',
+            key: AppConstants.RAZORPAY_KEY,
             amount: totalAmt * 100,
             name: 'MILAAN IT',
             order_id: orderId,
@@ -363,6 +394,9 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             }).then((response) => {
                 if (response.data) {
                     if (response.data.status) {
+                        this.setState({
+                            orderPlacing: false
+                        })
                         Alert.alert("Order placed.")
                         this.notification();
                         this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER)
@@ -373,6 +407,8 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             }, (error) => {
                 Alert.alert("Payment failed")
             })
+        }, (error) => {
+            Alert.alert("Payment failed")
         })
     }
 
@@ -388,8 +424,13 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 content: Contents.ORDER_PLACED + cartData.totalAmount
             }
         }).then((response) => {
-            // Alert.alert("Order placed.")
-            this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER_PRODUCT, { id: this.backFunction.bind(this) })
+            this.setState({
+                orderPlacing: false
+            })
+            Alert.alert("Order placed.")
+            const pushAction = StackActions.push(AppRoute.CUSTOMER_ORDER_PRODUCT, { id: this.backFunction.bind(this) })
+            this.props.navigation.dispatch(pushAction);
+            // this.props.navigation.navigate(AppRoute.CUSTOMER_ORDER_PRODUCT, { id: this.backFunction.bind(this) })
         }, (error) => {
             Alert.alert("Server problem")
         })
@@ -454,7 +495,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
     )
 
     render() {
-        const { cartData, minDate, addressData, homeDelivery, payOnline, cashDelivery, selfPick, totalAmt, productList, slotDate } = this.state
+        const { cartData, orderPlacing, insideShop, minDate, addressData, homeDelivery, payOnline, cashDelivery, selfPick, totalAmt, productList, slotDate } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -528,22 +569,24 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                             style={Styles.searchInput}
                         />
                     </View> */}
-                    <View style={[Styles.center]}>
-                        <View style={[Styles.payment_box_view]}>
-                            <Text style={Styles.payment_selection_header}>How do you want this order?</Text>
-                            <View style={Styles.payment_selection_view}>
-                                <View style={{ flexDirection: 'row', marginRight: scale(20) }}>
-                                    <Radio selected={homeDelivery} selectedColor='#0099cc' onPress={() => { this.handleOrderType('HOME') }} />
-                                    <Text style={Styles.payment_selection_text}>Home Delivery</Text>
-                                </View>
+                    {!insideShop ?
+                        <View style={[Styles.center]}>
+                            <View style={[Styles.payment_box_view]}>
+                                <Text style={Styles.payment_selection_header}>How do you want this order?</Text>
+                                <View style={Styles.payment_selection_view}>
+                                    <View style={{ flexDirection: 'row', marginRight: scale(20) }}>
+                                        <Radio selected={homeDelivery} selectedColor='#0099cc' onPress={() => { this.handleOrderType('HOME') }} />
+                                        <Text style={Styles.payment_selection_text}>Home Delivery</Text>
+                                    </View>
 
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Radio selected={selfPick} selectedColor='#0099cc' onPress={() => { this.handleOrderType('SELF') }} />
-                                    <Text style={Styles.payment_selection_text}>Self Pickup</Text>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Radio selected={selfPick} selectedColor='#0099cc' onPress={() => { this.handleOrderType('SELF') }} />
+                                        <Text style={Styles.payment_selection_text}>Self Pickup</Text>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    </View>
+                        </View> :
+                        null}
 
                     <View style={[Styles.center]}>
                         <View style={[Styles.payment_box_view]}>
@@ -551,7 +594,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                             <View style={Styles.payment_selection_view}>
                                 <View style={{ flexDirection: 'row', marginRight: scale(20) }}>
                                     <Radio selected={cashDelivery} selectedColor='#0099cc' onPress={() => { this.handlePaymentType('CASH') }} />
-                                    <Text style={Styles.payment_selection_text}>Cash on Delivery</Text>
+                                    <Text style={Styles.payment_selection_text}>Cash</Text>
                                 </View>
 
                                 <View style={{ flexDirection: 'row' }}>
@@ -561,47 +604,53 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                             </View>
                         </View>
                     </View>
-
-                    <View style={[Styles.center]}>
-                        <View style={[Styles.payment_box_view]}>
-                            <Text style={Styles.payment_selection_header}>Delivery Slot</Text>
-                            <View style={Styles.payment_selection_view}>
-                                <DatePicker
-                                    style={{ width: '100%' }}
-                                    date={slotDate}
-                                    mode="date"
-                                    placeholder="select date"
-                                    format="YYYY-MM-DD"
-                                    minDate={minDate}
-                                    // maxDate="2016-06-01"
-                                    confirmBtnText="Confirm"
-                                    cancelBtnText="Cancel"
-                                    customStyles={{
-                                        dateIcon: {
-                                            position: 'absolute',
-                                            left: 0,
-                                            top: 5,
-                                            marginLeft: 0
-                                        },
-                                        dateInput: {
-                                            borderColor: '#fff'
-                                        }
-                                    }}
-                                    onDateChange={(date) => { this.setState({ slotDate: date }) }}
-                                />
+                    {!insideShop ?
+                        <View style={[Styles.center]}>
+                            <View style={[Styles.payment_box_view]}>
+                                <Text style={Styles.payment_selection_header}>Delivery Slot</Text>
+                                <View style={Styles.payment_selection_view}>
+                                    <DatePicker
+                                        style={{ width: '100%' }}
+                                        date={slotDate}
+                                        mode="date"
+                                        placeholder="select date"
+                                        format="YYYY-MM-DD"
+                                        minDate={minDate}
+                                        // maxDate="2016-06-01"
+                                        confirmBtnText="Confirm"
+                                        cancelBtnText="Cancel"
+                                        customStyles={{
+                                            dateIcon: {
+                                                position: 'absolute',
+                                                left: 0,
+                                                top: 5,
+                                                marginLeft: 0
+                                            },
+                                            dateInput: {
+                                                borderColor: '#fff'
+                                            }
+                                        }}
+                                        onDateChange={(date) => { this.setState({ slotDate: date }) }}
+                                    />
+                                </View>
                             </View>
-                        </View>
-                    </View>
+                        </View> : null}
 
                     {/* <List data={productList}
                         renderItem={this.renderCart}
                     /> */}
                 </Content>
-                <View>
-                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder() }}>
-                        <Text style={Styles.cart_bottom_box_button_text}>Place Order {totalAmt}</Text>
-                    </TouchableOpacity>
-                </View>
+                {orderPlacing ?
+                    <View>
+                        <View style={[Styles.cart_bottom_box_button, Styles.center]} >
+                            <Text style={Styles.cart_bottom_box_button_text}>Your order is placing...</Text>
+                        </View>
+                    </View> :
+                    <View>
+                        <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder() }}>
+                            <Text style={Styles.cart_bottom_box_button_text}>Place Order {totalAmt}</Text>
+                        </TouchableOpacity>
+                    </View>}
                 <Divider />
                 <Divider />
             </SafeAreaLayout>

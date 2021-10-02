@@ -7,9 +7,9 @@ import {
 import { AppRoute } from './app-routes';
 import { AppNavigatorParams } from './app.navigator';
 import {
-  SignInScreen 
+  SignInScreen
 } from '../scenes/auth';
-import { ShopRegistrationScreen, ShopAddressScreen, ShopImageScreen} from '../scenes/registration';
+import { ShopRegistrationScreen, ShopAddressScreen, ShopImageScreen } from '../scenes/registration';
 
 type RegistrationNavigatorParams = AppNavigatorParams & {
   [AppRoute.SHOP_REGISTRATION]: undefined;
@@ -36,9 +36,9 @@ export interface ShopImageScreenProps {
 const Stack = createStackNavigator<RegistrationNavigatorParams>();
 
 export const RegistrationNavigator = (): React.ReactElement => (
-  <Stack.Navigator headerMode='none'>    
+  <Stack.Navigator headerMode='none'>
     <Stack.Screen name={AppRoute.SHOP_REGISTRATION} component={ShopRegistrationScreen} />
     <Stack.Screen name={AppRoute.SHOP_ADDRESS} component={ShopAddressScreen} />
-	<Stack.Screen name={AppRoute.SHOP_IMAGE} component={ShopImageScreen} />
+    <Stack.Screen name={AppRoute.SHOP_IMAGE} component={ShopImageScreen} />
   </Stack.Navigator>
 );

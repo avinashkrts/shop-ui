@@ -1,6 +1,6 @@
 import { OffersScreenProps } from "../../../navigation/customer-navigator/offers.navigator";
 import React, { Component } from "react";
-import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet, PermissionsAndroid } from "react-native";
+import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet, PermissionsAndroid, BackHandler } from "react-native";
 import { Avatar, List, Divider, ListItemElement, ThemedComponentProps } from "react-native-ui-kitten";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
@@ -25,6 +25,7 @@ const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
 
 export class OffersScreen extends Component<OffersScreenProps, ThemedComponentProps & any> {
+    backHandler: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -56,9 +57,9 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
 
         this.onRefresh = this.onRefresh.bind(this);
         this.handleAddToCart = this.handleAddToCart.bind(this);
-    }
+    }   
 
-    async componentDidMount() {
+    async componentDidMount() {       
         const { allData } = this.state;
         const shopIdAsync = await AsyncStorage.getItem('shopId')
         const shopName = await AsyncStorage.getItem('shopName')

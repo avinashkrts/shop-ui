@@ -236,9 +236,9 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
             <View style={Styles.inputTextView}>
               <TextInput
                 style={Styles.inputText}
-                placeholder={Placeholder.PHONE}
+                placeholder={Placeholder.PHONE_EMAIL}
                 value={emailId}
-                onChangeText={(value) => { this.setState({ emailId: value }) }}
+                onChangeText={(value) => {this.setState({ emailId: value })}}
               />
             </View>
 
@@ -248,7 +248,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
                 style={Styles.inputTextWithIcon}
                 placeholder={Placeholder.PASSWORD}
                 value={pwd}
-                onChangeText={(value) => { this.setState({ pwd: value }) }}
+                onChangeText={(value) => { this.setState({ pwd: value })}}
               />
               <View style={[Styles.inputTextIcon, Styles.center]}>
                 {this.state.passwordVisible ?
@@ -275,6 +275,12 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
             <TouchableOpacity onPress={() => { this.props.navigation.navigate(AppRoute.SIGN_UP) }}>
               <Text style={Styles.dontHaveAccount}>{LableText.DONT_HAVE_ACCOUNT}</Text>
             </TouchableOpacity>
+
+             <View style={{ marginHorizontal: '10%' }}>
+              <TouchableOpacity style={[Styles.skip_buttonBox, Styles.center]} onPress={() => { this.navigateCustomerHome()}}>
+                <Text style={Styles.skip_buttonName}>{LableText.SKIP_LOGIN}</Text>
+              </TouchableOpacity>
+            </View> 
 
           </View>
           <View style={Styles.bottomSpace}></View>

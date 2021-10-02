@@ -12,7 +12,7 @@ import DeviceInfo from 'react-native-device-info';
 import { scale } from 'react-native-size-matters';
 import { ShopRegistrationScreenProps } from '../../navigation/registration.navigator';
 import Geolocation from 'react-native-geolocation-service';
-
+import { StyleSheet, BackHandler } from "react-native";
 const data = [
     { text: 'Candidate' },
     { text: 'HR' },
@@ -20,6 +20,7 @@ const data = [
 
 type State = {}
 export class ShopRegistrationScreen extends Component<ShopRegistrationScreenProps, any & State, any> {
+    backHandler: any;
     constructor(props) {
         super(props);
 
@@ -44,42 +45,74 @@ export class ShopRegistrationScreen extends Component<ShopRegistrationScreenProp
 
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onPasswordIconPress = this.onPasswordIconPress.bind(this);
+
+    }
+
+    backAction = () => {
+        Alert.alert("Alert!", LableText.ALERT_REGISTER_SHOP, [
+            {
+                text: "Cancel",
+                onPress: () => null,
+                style: "cancel"
+            },
+            {
+                text: "YES", onPress: () => {
+                    this.props.navigation.navigate(AppRoute.CUSTOMER_HOME);
+                }
+            }
+        ]);
+        return true;
+    };
+
+    componentWillUnmount() {
+        this.backHandler.remove();
     }
 
     async componentDidMount() {
+        this.props.navigation.addListener('focus', () => {
+            this.backHandler = BackHandler.addEventListener(
+                "hardwareBackPress",
+                this.backAction
+            );
+        })
+
+        this.props.navigation.addListener('blur', () => {
+            this.backHandler.remove();
+        })
+
         let deviceId = DeviceInfo.getUniqueId();
 
         try {
             const granted = await PermissionsAndroid.request(
-              PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-              {
-                title: "Milaan Location Permission",
-                message:
-                  "Milaan needs access to your Location " +
-                  "so you can get your nearest shop.",
-                buttonNeutral: "Ask Me Later",
-                buttonNegative: "Cancel",
-                buttonPositive: "OK"
-              }
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                    title: "Milaan Location Permission",
+                    message:
+                        "Milaan needs access to your Location " +
+                        "so you can get your nearest shop.",
+                    buttonNeutral: "Ask Me Later",
+                    buttonNegative: "Cancel",
+                    buttonPositive: "OK"
+                }
             );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-              Geolocation.getCurrentPosition((position) => {
-                var lat = position.coords.latitude
-                var long = position.coords.longitude
-                AsyncStorage.setItem('latitude', String(lat))
-                AsyncStorage.setItem('longitude', String(long))
-                AsyncStorage.setItem('location', 'Current Location')
-                // console.log('location', lat, position.coords.accuracy)
-              }, (err) => {
-      
-              }, { enableHighAccuracy: true })
+                Geolocation.getCurrentPosition((position) => {
+                    var lat = position.coords.latitude
+                    var long = position.coords.longitude
+                    AsyncStorage.setItem('latitude', String(lat))
+                    AsyncStorage.setItem('longitude', String(long))
+                    AsyncStorage.setItem('location', 'Current Location')
+                    // console.log('location', lat, position.coords.accuracy)
+                }, (err) => {
+
+                }, { enableHighAccuracy: true })
             } else {
-              console.log("Location permission denied");
-              Alert.alert("Please give location permition to use this application.")
+                console.log("Location permission denied");
+                Alert.alert("Please give location permition to use this application.")
             }
-          } catch (err) {
+        } catch (err) {
             console.warn(err);
-          }
+        }
 
         axios({
             method: 'GET',
@@ -93,6 +126,8 @@ export class ShopRegistrationScreen extends Component<ShopRegistrationScreenProp
         }, (error) => {
             Alert.alert("Didn't got data from server")
         });
+
+
     }
 
     onFormSubmit() {
@@ -172,6 +207,9 @@ export class ShopRegistrationScreen extends Component<ShopRegistrationScreenProp
                         {/* <View style={Styles.center}>
               <Text style={[Styles.loginWelcome, { paddingTop: 10 }]}>{LableText.WELCOME_TEXT}</Text>
             </View> */}
+                        <View style={Styles.center}>
+                            <Text style={[{ fontSize: scale(18), textAlign: 'justify', paddingHorizontal: scale(10), marginVertical: scale(10) }]}>{LableText.SIGN_UP_ALERT1}</Text>
+                        </View>
 
                         <View style={Styles.inputTextView}>
                             <TextInput

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl, Alert, AsyncStorage } from "react-native";
+import { View, Text, RefreshControl, Alert, AsyncStorage, ActivityIndicator } from "react-native";
 import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
 import { AddDrawerProductScreenProps } from "../../../navigation/home.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
@@ -14,6 +14,16 @@ import DatePicker from 'react-native-datepicker'
 import { AppRoute } from "../../../navigation/app-routes";
 import Modal from "react-native-modal";
 import moment from "moment";
+import ImagePicker from 'react-native-image-picker';
+import { scale } from "react-native-size-matters";
+
+const options = {
+    title: 'Select a Photo',
+    takePhoto: 'Take Photo',
+    chooseFromLibraryButtonTitle: 'Choose from gallery',
+    quality: 1,
+    type: 'image'
+}
 
 export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -55,6 +65,10 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             brandName: '',
             brandCatId: '',
             outOfStock: '',
+            isImage: false,
+            productId: '',
+            imageSource: '',
+            file: null,
             allData: [{
                 url: '/api/lookup/getallmeasurementtype',
                 method: 'GET',
@@ -81,6 +95,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/category/getcategoryforuserbyshopid/' + user.shopId,
             }).then((response) => {
+                console.log('all user data', response.data)
                 if (null != response.data) {
                     this.setState({
                         allCategory: response.data,
@@ -90,20 +105,6 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             }, (error) => {
                 Alert.alert("Server error!.")
             });
-
-            // Axios({
-            //     method: 'GET',
-            //     url: AppConstants.API_BASE_URL + '/api/brand/getbrandforuserbyshopid/' + user.shopId,
-            // }).then((response) => {
-            //     if (null != response.data) {
-            //         this.setState({
-            //             allBrand: response.data,
-            //             selectedBrand: response.data[0].id
-            //         })
-            //     }
-            // }, (error) => {
-            //     Alert.alert("Server error!.")
-            // });
         }
 
 
@@ -128,11 +129,11 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
     handleSubmit() {
         const { isEditable, outOfStock, name, manufactureDate, expireDate, category, brand, shopId, avatar, price, quantity, description, barcode,
             stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
-            gstAmount, measurement, deliveryCharge, gstPercent } = this.state
+            gstAmount, measurement, deliveryCharge, gstPercent, expireActiveInd } = this.state
 
-        // console.log('Product Data', name, category, brand, shopId, avatar, price, quantity, description, barcode,
-        //     stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
-        //     gstAmount, measurement, deliveryCharge, gstPercent);
+        console.log('Product Data', name, category, brand, shopId, avatar, price, quantity, description, barcode,
+            stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
+            gstAmount, measurement, deliveryCharge, gstPercent);
 
         if (name == null || name === '') {
             Alert.alert("Please enter product name.");
@@ -143,7 +144,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
         } else if (costPrice == null || costPrice === '') {
             Alert.alert("Please enter cost price.");
         } else if (quantity == null || quantity === '') {
-            Alert.alert("Please enter selling product quantity.");        
+            Alert.alert("Please enter selling product quantity.");
         } else if (measurement == null || measurement === '') {
             Alert.alert("Please select measurement.");
         } else if (sellingPrice == null || sellingPrice === '') {
@@ -181,8 +182,8 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                     offerActiveInd: offerActiveInd,
                     measurement: measurement,
                     gstPercent: gstPercent,
-                    dateOfManufacturing: manufactureDate,
-                    dateOfExpire: expireDate,
+                    dateOfManufacturing: expireActiveInd ? manufactureDate : '',
+                    dateOfExpire: expireActiveInd ? expireDate : '',
                     outOfStock: outOfStock
                 }
             }).then((response) => {
@@ -192,8 +193,6 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                             name: '',
                             category: '',
                             brand: '',
-                            shopId: '',
-                            avatar: '123asd',
                             price: '',
                             quantity: '',
                             description: '',
@@ -204,6 +203,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                             oldPrice: '',
                             offerPercent: '',
                             offerActiveInd: false,
+                            expireActiveInd: false,
                             gstAmount: '',
                             measurement: '',
                             deliveryCharge: '',
@@ -214,9 +214,6 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                             offerTo: String(moment(new Date).add('days', 1).format('YYYY-MM-DD')),
                             minDate: String(moment(new Date).format('YYYY-MM-DD')),
                             manufactureMinDate: String(moment(new Date).subtract('years', 5).format('YYYY-MM-DD')),
-                            allCategory: [],
-                            allBrand: [],
-                            allMeasurement: [],
                             categoryVisible: false,
                             BrandVisible: false,
                             catImage: false,
@@ -225,10 +222,12 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                             brandName: '',
                             brandCatId: '',
                             outOfStock: '',
+                            productId: response.data.productId,
+                            isImage: true
                         })
                         Alert.alert("Product created.")
-                        console.log("product Created Id", response.data.productId)
-                        this.props.navigation.navigate(AppRoute.ADD_DRAWER_PRODUCT_IMAGE, { productId: response.data.productId })
+                        // console.log("product Created Id", response.data.productId)
+                        // this.props.navigation.navigate(AppRoute.ADD_DRAWER_PRODUCT_IMAGE, { productId: response.data.productId })
                     } else if (response.data.status === 'false') {
                         Alert.alert("Product allready exists.")
                     }
@@ -269,7 +268,6 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             this.setState({
                 brandVisible: !brandVisible
             })
-            // this.props.navigation.navigate(AppRoute.ADD_BRAND)
         } else {
             this.setState({
                 brand: value
@@ -290,26 +288,44 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                 this.setState({
                     imageSource: source,
                     file: file,
-                    isVisible: true
                 });
             }
         });
     }
 
-    oploadImage() {
-        const formData = new FormData();
-        formData.append('file', this.state.selectedFile);
-        console.log(this.state.userId);
-        fetch(AppConstants.API_BASE_URL + '/api/file/upload/avatar/' + this.state.userId, {
-            method: 'post',
-            body: formData
-        }).then(res => {
-            if (res.ok) {
-                //   console.log(res.data);
-                Alert.alert("File uploaded successfully.");
-                //   window.location.reload(false);
-            }
-        });
+
+    async uploadImage() {
+        const { productId, file } = this.state;
+        const value = await AsyncStorage.getItem('userDetail');
+        if (value) {
+            const user = JSON.parse(value);
+            var shopId = user.shopId
+            const formData = new FormData();
+            formData.append('file', file);
+            console.log(productId, shopId);
+            this.toggleUpload()
+            fetch(AppConstants.API_BASE_URL + '/api/image/upload/avatar/' + shopId + '/' + productId, {
+                method: 'post',
+                body: formData
+            }).then(res => {
+                if (res.ok) {
+                    this.setState({
+                        imageSource: '',
+                        file: null,
+                        imageUploaded: true,
+                        isUploaded: false
+                    });
+                    Alert.alert("File uploaded successfully.");
+                }
+            });
+        }
+    }
+
+    toggleUpload() {
+        const { isUploaded } = this.state;
+        this.setState({
+            isUploaded: !isUploaded
+        })
     }
 
     handleAddMeasurement(value) {
@@ -374,9 +390,6 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                 Alert.alert("Server error!.")
             });
         }
-        // this.setState({
-        //     catImage: !catImage
-        // })
     }
 
     handleAddImageBrand() {
@@ -414,13 +427,17 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                 Alert.alert("Server error!.")
             });
         }
+    }
 
+    handleImageFinish() {
+        this.setState({ isImage: false })
+        this.props.navigation.navigate(AppRoute.HOME) 
     }
 
     render() {
-        const { isEditable, outOfStock, manufactureMinDate, brandVisible, manufactureDate, expireDate, brandName, brandCatId, catImage, catName, categoryVisible, allCategory, allBrand, name, category, brand, shopId, avatar, price, quantity, description, barcode,
+        const { isEditable, outOfStock, isImage, manufactureMinDate, brandVisible, manufactureDate, expireDate, brandName, brandCatId, catImage, catName, categoryVisible, allCategory, allBrand, name, category, brand, shopId, avatar, price, quantity, description, barcode,
             stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
-            gstAmount, measurement, gstPercent, minDate, allMeasurement } = this.state
+            gstAmount, measurement, gstPercent, minDate, allMeasurement, expireActiveInd, isUploaded, imageUploaded, imageSource } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -440,505 +457,72 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                         />
                     }
                 >
-                    {/* <View style={[Styles.profile, Styles.center]}>
-                        <View style={Styles.profile_image}>
-                            <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
-                        </View>
-                    </View> */}
-
-                    <Divider />
-
-                    <View>
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.PRODUCT_NAME}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    value={name}
-                                    onChangeText={(value) => { this.setState({ name: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.PRODUCT_NAME}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.CATEGORY}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <Picker
-                                    note
-                                    mode="dropdown"
-                                    style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
-                                    selectedValue={category}
-                                    onValueChange={(value) => { this.handleAddCategory(value) }}
-                                >
-                                    <Picker.Item label="Select category" value="" />
-                                    {null != allCategory ? allCategory.map((data, index) => {
-                                        return (
-                                            <Picker.Item label={data.name} value={data.id} />
-                                        )
-                                    }) : null}
-                                    <Picker.Item label="Add category" value="add" />
-
-                                    {/* <Picker.Item label="Mobile" value="1" />
-                                        <Picker.Item label="Laptop" value="2" /> */}
-                                </Picker>
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.BRAND}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <Picker
-                                    note
-                                    mode="dropdown"
-                                    style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
-                                    selectedValue={brand}
-                                    onValueChange={(value) => { this.handleAddBrand(value) }}
-                                >
-                                    <Picker.Item label="Select Brand" value="" />
-                                    {null != allBrand ? allBrand.map((data, index) => {
-                                        return (
-                                            <Picker.Item label={data.name} value={data.id} />
-                                        )
-                                    }) : null}
-                                    <Picker.Item label="Add Brand" value="add" />
-
-                                    {/* <Picker.Item label="Mobile" value="1" />
-                                        <Picker.Item label="Laptop" value="2" /> */}
-                                </Picker>
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.COST_PRICE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    keyboardType='numeric'
-                                    value={costPrice}
-                                    onChangeText={(value) => { this.setState({ costPrice: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.COST_PRICE}
-                                />
-                            </View>
-                        </View>
-                                                
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.QUANTITY}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    value={quantity}
-                                    keyboardType='numeric'
-                                    onChangeText={(value) => { this.setState({ quantity: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.QUANTITY}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.MEASUREMENT}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <Picker
-                                    note
-                                    mode="dropdown"
-                                    style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
-                                    selectedValue={measurement}
-                                    onValueChange={(value) => { this.handleAddMeasurement(value) }}
-                                >
-                                    <Picker.Item label="Select measurement" value="" />
-                                    {null != allMeasurement ? allMeasurement.map((data, index) => {
-                                        return (
-                                            <Picker.Item label={data.lookUpName} value={data.lookUpId} />
-                                        )
-                                    }) : null}
-                                    <Picker.Item label="Add measurement" value="add" />
-
-                                    {/* <Picker.Item label="Mobile" value="1" />
-                                        <Picker.Item label="Laptop" value="2" /> */}
-                                </Picker>
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.SELLING_PRICE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    value={sellingPrice}
-                                    keyboardType='numeric'
-                                    onChangeText={(value) => { this.setState({ sellingPrice: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.SELLING_PRICE}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.GST_PERCENT}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    keyboardType='numeric'
-                                    value={gstPercent}
-                                    onChangeText={(value) => { this.setState({ gstPercent: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.GST_PERCENT}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.STOCK}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    value={stock}
-                                    keyboardType='numeric'
-                                    onChangeText={(value) => { this.setState({ stock: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.STOCK}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.OUT_OF_STOCK}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    value={outOfStock}
-                                    keyboardType='numeric'
-                                    onChangeText={(value) => { this.setState({ outOfStock: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.OUT_OF_STOCK}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.BARCODE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    editable={isEditable}
-                                    value={barcode}
-                                    onChangeText={(value) => { this.setState({ barcode: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.BARCODE}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.MANUFACTURE_DATE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <DatePicker
-                                    style={{ width: '100%' }}
-                                    date={manufactureDate}
-                                    mode="date"
-                                    placeholder="select date"
-                                    format="YYYY-MM-DD"
-                                    minDate={manufactureMinDate}
-                                    // maxDate="2016-06-01"
-                                    confirmBtnText="Confirm"
-                                    cancelBtnText="Cancel"
-                                    customStyles={{
-                                        dateIcon: {
-                                            position: 'absolute',
-                                            left: 0,
-                                            top: 5,
-                                            marginLeft: 0
-                                        },
-                                        dateInput: {
-                                            borderColor: '#fff'
-                                        }
-                                    }}
-                                    onDateChange={(date) => { this.setState({ manufactureDate: date }) }}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.EXPIRE_DATE}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <DatePicker
-                                    style={{ width: '100%' }}
-                                    date={expireDate}
-                                    mode="date"
-                                    placeholder="select date"
-                                    format="YYYY-MM-DD"
-                                    minDate={moment(minDate).add('days', 1).format('YYYY-MM-DD')}
-                                    // maxDate="2016-06-01"
-                                    confirmBtnText="Confirm"
-                                    cancelBtnText="Cancel"
-                                    customStyles={{
-                                        dateIcon: {
-                                            position: 'absolute',
-                                            left: 0,
-                                            top: 5,
-                                            marginLeft: 0
-                                        },
-                                        dateInput: {
-                                            borderColor: '#fff'
-                                        }
-                                    }}
-                                    onDateChange={(date) => { this.setState({ expireDate: date }) }}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={Styles.user_detail_header}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.DESCRIPTION}</Text>
-                            </View>
-                            <View style={Styles.user_detail_data}>
-                                <TextInput
-                                    multiline={true}
-                                    editable={isEditable}
-                                    value={description}
-                                    onChangeText={(value) => { this.setState({ description: value }) }}
-                                    style={Styles.cash_pay_input}
-                                    placeholder={LableText.DESCRIPTION}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={Styles.user_detail}>
-                            <View style={[Styles.user_detail_header, { flexDirection: 'row' }]}>
-                                <Text style={Styles.user_detail_header_text}>{LableText.OFFER}</Text>
-                                <CheckBox style={{ marginLeft: 10 }} checked={offerActiveInd} onPress={(value) => { this.setState({ offerActiveInd: !offerActiveInd }) }} />
-                            </View>
-                        </View>
-
-                        {offerActiveInd ?
-                            <View style={Styles.user_detail_data}>
-                                <View style={Styles.user_detail}>
-                                    <View style={Styles.user_detail_header}>
-                                        <Text style={Styles.user_detail_header_text}>{LableText.OFFER_PERCENT}</Text>
-                                    </View>
-                                    <View style={Styles.user_detail_data}>
-                                        <TextInput
-                                            multiline={true}
-                                            editable={isEditable}
-                                            value={offerPercent}
-                                            keyboardType='numeric'
-                                            onChangeText={(value) => { this.setState({ offerPercent: value }) }}
-                                            style={Styles.cash_pay_input}
-                                            placeholder={LableText.OFFER_PERCENT}
-                                        />
-                                    </View>
+                    {isImage ?
+                        <View>
+                            <View style={[Styles.product_view, { borderColor: 'gray', borderWidth: scale(1) }]}>                              
+                                <View style={[Styles.product_image, Styles.center]}>                                   
+                                    <Avatar source={imageSource} style={Styles.product_avatar} />
                                 </View>
-
-                                <View style={Styles.user_detail}>
-                                    <View style={Styles.user_detail_header}>
-                                        <Text style={Styles.user_detail_header_text}>{LableText.OFFER_FROM}</Text>
-                                    </View>
-                                    <View style={Styles.user_detail_data}>
-                                        <DatePicker
-                                            style={{ width: '100%' }}
-                                            date={offerFrom}
-                                            mode="date"
-                                            placeholder="select date"
-                                            format="YYYY-MM-DD"
-                                            minDate={minDate}
-                                            // maxDate="2016-06-01"
-                                            confirmBtnText="Confirm"
-                                            cancelBtnText="Cancel"
-                                            customStyles={{
-                                                dateIcon: {
-                                                    position: 'absolute',
-                                                    left: 0,
-                                                    top: 5,
-                                                    marginLeft: 0
-                                                },
-                                                dateInput: {
-                                                    borderColor: '#fff'
-                                                }
-                                            }}
-                                            onDateChange={(date) => { this.setState({ offerFrom: date, offerTo: moment(date).add('days', 1).format('YYYY-MM-DD') }) }}
-                                        />
-                                    </View>
-                                </View>
-
-                                <View style={Styles.user_detail}>
-                                    <View style={Styles.user_detail_header}>
-                                        <Text style={Styles.user_detail_header_text}>{LableText.OFFER_TO}</Text>
-                                    </View>
-                                    <View style={Styles.user_detail_data}>
-                                        <DatePicker
-                                            style={{ width: '100%' }}
-                                            date={offerTo}
-                                            mode="date"
-                                            placeholder="select date"
-                                            format="YYYY-MM-DD"
-                                            minDate={moment(offerFrom).add('days', 1).format('YYYY-MM-DD')}
-                                            // maxDate="2016-06-01"
-                                            confirmBtnText="Confirm"
-                                            cancelBtnText="Cancel"
-                                            customStyles={{
-                                                dateIcon: {
-                                                    position: 'absolute',
-                                                    left: 0,
-                                                    top: 5,
-                                                    marginLeft: 0
-                                                },
-                                                dateInput: {
-                                                    borderColor: '#fff'
-                                                }
-                                            }}
-                                            onDateChange={(date) => { this.setState({ offerTo: date }) }}
-                                        />
-                                    </View>
-                                </View>
-
-
                             </View>
-                            : null}
 
-                    </View>
+                            <Divider />
 
-
-                    {/* <View style={{ marginHorizontal: '10%' }}>
-                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { }}>
-                            <Text style={Styles.buttonName}>{LableText.EDIT}</Text>
-                        </TouchableOpacity>
-                    </View> */}
-
-
-                    <View style={{ marginHorizontal: '10%' }}>
-                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleSubmit() }}>
-                            <Text style={Styles.buttonName}>{LableText.NEXT}</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <Modal style={Styles.modal} isVisible={categoryVisible}>
-                        <View style={Styles.modalHeader}>
-                            <TouchableOpacity>
-                                <Text onPress={() => { this.categoryModal() }}><CancelIcon fontSize={25} /></Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={Styles.center}>
-                            <View style={[Styles.center, { width: '100%' }]}>
-                                {/* {catImage && categoryVisible ?
-                                    <View style={[Styles.profile, Styles.center]}>
-                                        <View style={Styles.categoryImage}>
-                                            <View>
-                                                <TouchableOpacity onPress={() => { this.selectPhoto() }}>
-                                                    <View style={Styles.ImgBgOne} />
-                                                    <View style={Styles.ImgBgTwo} />
-                                                     <Avatar source={imageSource} style={Styles.profile_avatar} /> 
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
-                                                <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} >
-                                                    <Text style={[Styles.buttonName, { paddingHorizontal: 30 }]} onPress={() => { this.handleAddImageCategory() }}>{LableText.UPLOAD}</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-                                    </View> : */}
-                                <View style={[Styles.center, { width: '100%' }]}>
-                                    <View style={[{ width: '100%' }]}>
-                                        <Text style={[{ paddingHorizontal: 30 }]}>{LableText.CATEGORY}</Text>
+                            {isUploaded ?
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <ActivityIndicator size='large' />
+                                    <Text style={{ color: Color.COLOR, fontSize: scale(20) }}>Uploading...</Text>
+                                </View> :
+                                <>
+                                    <View style={{ marginHorizontal: '10%' }}>
+                                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.selectPhoto() }}>
+                                            <Text style={Styles.buttonName}>{LableText.CHOOSE_IMAGE}</Text>
+                                        </TouchableOpacity>
                                     </View>
 
-                                    <View style={[Styles.inputTextView, { width: '90%' }]}>
-                                        <TextInput
-                                            style={[Styles.inputText, { width: '90%' }]}
-                                            placeholder={Placeholder.NAME}
-                                            value={catName}
-                                            onChangeText={(value) => { this.setState({ catName: value }) }}
-                                        />
+                                    <View style={{ marginHorizontal: '10%' }}>
+                                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.uploadImage() }}>
+                                            <Text style={Styles.buttonName}>{LableText.UPLOAD}</Text>
+                                        </TouchableOpacity>
                                     </View>
-
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
-                                            <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} >
-                                                <Text style={[Styles.buttonName, { paddingHorizontal: 30 }]} onPress={() => { this.handleAddImageCategory() }}>{LableText.NEXT}</Text>
+                                    {null != imageUploaded ? imageUploaded ?
+                                        <View style={{ marginHorizontal: '10%' }}>
+                                            <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleImageFinish() }}>
+                                                <Text style={Styles.buttonName}>{LableText.FINISH}</Text>
                                             </TouchableOpacity>
-                                        </View>
+                                        </View> : null : null}
+
+                                </>
+                            }
+                        </View> :
+                        <View>
+                            <Divider />
+                            <View>
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.PRODUCT_NAME}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            editable={isEditable}
+                                            value={name}
+                                            onChangeText={(value) => { this.setState({ name: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.PRODUCT_NAME}
+                                        />
                                     </View>
                                 </View>
-                                {/* }  */}
-                            </View>
-                        </View>
-                    </Modal>
 
-                    <Modal style={Styles.modal} isVisible={brandVisible}>
-                        <View style={Styles.modalHeader}>
-                            <TouchableOpacity>
-                                <Text onPress={() => { this.brandModal() }}><CancelIcon fontSize={25} /></Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={Styles.center}>
-                            <View style={[Styles.center, { width: '100%' }]}>
-                                {/* {catImage && categoryVisible ?
-                                    <View style={[Styles.profile, Styles.center]}>
-                                        <View style={Styles.categoryImage}>
-                                            <View>
-                                                <TouchableOpacity onPress={() => { this.selectPhoto() }}>
-                                                    <View style={Styles.ImgBgOne} />
-                                                    <View style={Styles.ImgBgTwo} />
-                                                     <Avatar source={imageSource} style={Styles.profile_avatar} /> 
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-
-                                        <View style={{ flexDirection: 'row' }}>
-                                            <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
-                                                <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} >
-                                                    <Text style={[Styles.buttonName, { paddingHorizontal: 30 }]} onPress={() => { this.handleAddImageCategory() }}>{LableText.UPLOAD}</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-                                    </View> : */}
-
-
-                                <View style={[{ width: '100%' }]}>
-                                    {/* <View style={[Styles.center, { width: '100%' }]}> */}
-
-                                    <View style={[{ width: '90%' }]}>
-                                        <Text style={[{ paddingHorizontal: 30 }]}>{LableText.CATEGORY}</Text>
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.CATEGORY}</Text>
                                     </View>
-                                    <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                    <View style={Styles.user_detail_data}>
                                         <Picker
                                             note
                                             mode="dropdown"
                                             style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
                                             selectedValue={category}
-                                            onValueChange={(value) => { this.setState({ category: value }) }}
+                                            onValueChange={(value) => { this.handleAddCategory(value) }}
                                         >
                                             <Picker.Item label="Select category" value="" />
                                             {null != allCategory ? allCategory.map((data, index) => {
@@ -946,39 +530,502 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                                     <Picker.Item label={data.name} value={data.id} />
                                                 )
                                             }) : null}
+                                            <Picker.Item label="Add category" value="add" />
                                         </Picker>
                                     </View>
-                                    {/* </View> */}
+                                </View>
 
-                                    <View style={[{ width: '90%' }]}>
-                                        <Text style={[{ paddingHorizontal: 30 }]}>{LableText.BRAND}</Text>
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.BRAND}</Text>
                                     </View>
-                                    <View style={[Styles.inputTextView, { width: '90%' }]}>
-                                        <TextInput
-                                            style={[Styles.inputText, { width: '90%' }]}
-                                            placeholder={Placeholder.NAME}
-                                            value={brandName}
-                                            onChangeText={(value) => { this.setState({ brandName: value }) }}
-                                        />
-                                    </View>
-
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
-                                            <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} >
-                                                <Text style={[Styles.buttonName, { paddingHorizontal: 30 }]} onPress={() => { this.handleAddImageBrand() }}>{LableText.NEXT}</Text>
-                                            </TouchableOpacity>
-                                        </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <Picker
+                                            note
+                                            mode="dropdown"
+                                            style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
+                                            selectedValue={brand}
+                                            onValueChange={(value) => { this.handleAddBrand(value) }}
+                                        >
+                                            <Picker.Item label="Select Brand" value="" />
+                                            {null != allBrand ? allBrand.map((data, index) => {
+                                                return (
+                                                    <Picker.Item label={data.name} value={data.id} />
+                                                )
+                                            }) : null}
+                                            <Picker.Item label="Add Brand" value="add" />
+                                        </Picker>
                                     </View>
                                 </View>
-                                {/* }  */}
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.COST_PRICE}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            editable={isEditable}
+                                            keyboardType='numeric'
+                                            value={costPrice}
+                                            onChangeText={(value) => { this.setState({ costPrice: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.COST_PRICE}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.QUANTITY}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            editable={isEditable}
+                                            value={quantity}
+                                            keyboardType='numeric'
+                                            onChangeText={(value) => { this.setState({ quantity: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.QUANTITY}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.MEASUREMENT}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <Picker
+                                            note
+                                            mode="dropdown"
+                                            style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
+                                            selectedValue={measurement}
+                                            onValueChange={(value) => { this.handleAddMeasurement(value) }}
+                                        >
+                                            <Picker.Item label="Select measurement" value="" />
+                                            {null != allMeasurement ? allMeasurement.map((data, index) => {
+                                                return (
+                                                    <Picker.Item label={data.lookUpName} value={data.lookUpId} />
+                                                )
+                                            }) : null}
+                                            <Picker.Item label="Add measurement" value="add" />
+
+                                            {/* <Picker.Item label="Mobile" value="1" />
+                                        <Picker.Item label="Laptop" value="2" /> */}
+                                        </Picker>
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.SELLING_PRICE}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            editable={isEditable}
+                                            value={sellingPrice}
+                                            keyboardType='numeric'
+                                            onChangeText={(value) => { this.setState({ sellingPrice: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.SELLING_PRICE}
+                                        />
+                                    </View>
+                                </View>
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.BARCODE}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            editable={isEditable}
+                                            value={barcode}
+                                            onChangeText={(value) => { this.setState({ barcode: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.BARCODE}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.GST_PERCENT}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            editable={isEditable}
+                                            keyboardType='numeric'
+                                            value={gstPercent}
+                                            onChangeText={(value) => { this.setState({ gstPercent: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.GST_PERCENT}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.STOCK}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            editable={isEditable}
+                                            value={stock}
+                                            keyboardType='numeric'
+                                            onChangeText={(value) => { this.setState({ stock: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.STOCK}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.OUT_OF_STOCK}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            editable={isEditable}
+                                            value={outOfStock}
+                                            keyboardType='numeric'
+                                            onChangeText={(value) => { this.setState({ outOfStock: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.OUT_OF_STOCK}
+                                        />
+                                    </View>
+                                </View>
+
+                               
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.DESCRIPTION}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            multiline={true}
+                                            editable={isEditable}
+                                            value={description}
+                                            onChangeText={(value) => { this.setState({ description: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.DESCRIPTION}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={[Styles.user_detail_header, { flexDirection: 'row' }]}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.EXPIRE_MANUFAFACTURE}</Text>
+                                        <CheckBox style={{ marginLeft: 10 }} checked={expireActiveInd} onPress={(value) => { this.setState({ expireActiveInd: !expireActiveInd }) }} />
+                                    </View>
+                                </View>
+
+                                {expireActiveInd ?
+                                    <>
+                                        <View style={Styles.user_detail}>
+                                            <View style={Styles.user_detail_header}>
+                                                <Text style={Styles.user_detail_header_text}>{LableText.MANUFACTURE_DATE}</Text>
+                                            </View>
+                                            <View style={Styles.user_detail_data}>
+                                                <DatePicker
+                                                    style={{ width: '100%' }}
+                                                    date={manufactureDate}
+                                                    mode="date"
+                                                    placeholder="select date"
+                                                    format="YYYY-MM-DD"
+                                                    minDate={manufactureMinDate}
+                                                    // maxDate="2016-06-01"
+                                                    confirmBtnText="Confirm"
+                                                    cancelBtnText="Cancel"
+                                                    customStyles={{
+                                                        dateIcon: {
+                                                            position: 'absolute',
+                                                            left: 0,
+                                                            top: 5,
+                                                            marginLeft: 0
+                                                        },
+                                                        dateInput: {
+                                                            borderColor: '#fff'
+                                                        }
+                                                    }}
+                                                    onDateChange={(date) => { this.setState({ manufactureDate: date }) }}
+                                                />
+                                            </View>
+                                        </View>
+
+                                        <View style={Styles.user_detail}>
+                                            <View style={Styles.user_detail_header}>
+                                                <Text style={Styles.user_detail_header_text}>{LableText.EXPIRE_DATE}</Text>
+                                            </View>
+                                            <View style={Styles.user_detail_data}>
+                                                <DatePicker
+                                                    style={{ width: '100%' }}
+                                                    date={expireDate}
+                                                    mode="date"
+                                                    placeholder="select date"
+                                                    format="YYYY-MM-DD"
+                                                    minDate={moment(minDate).add('days', 1).format('YYYY-MM-DD')}
+                                                    // maxDate="2016-06-01"
+                                                    confirmBtnText="Confirm"
+                                                    cancelBtnText="Cancel"
+                                                    customStyles={{
+                                                        dateIcon: {
+                                                            position: 'absolute',
+                                                            left: 0,
+                                                            top: 5,
+                                                            marginLeft: 0
+                                                        },
+                                                        dateInput: {
+                                                            borderColor: '#fff'
+                                                        }
+                                                    }}
+                                                    onDateChange={(date) => { this.setState({ expireDate: date }) }}
+                                                />
+                                            </View>
+                                        </View>
+                                    </>
+                                    : null}
+
+
+
+                                <View style={Styles.user_detail}>
+                                    <View style={[Styles.user_detail_header, { flexDirection: 'row' }]}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.OFFER}</Text>
+                                        <CheckBox style={{ marginLeft: 10 }} checked={offerActiveInd} onPress={(value) => { this.setState({ offerActiveInd: !offerActiveInd }) }} />
+                                    </View>
+                                </View>
+
+                                {offerActiveInd ?
+                                    <View style={Styles.user_detail_data}>
+                                        <View style={Styles.user_detail}>
+                                            <View style={Styles.user_detail_header}>
+                                                <Text style={Styles.user_detail_header_text}>{LableText.OFFER_PERCENT}</Text>
+                                            </View>
+                                            <View style={Styles.user_detail_data}>
+                                                <TextInput
+                                                    multiline={true}
+                                                    editable={isEditable}
+                                                    value={offerPercent}
+                                                    keyboardType='numeric'
+                                                    onChangeText={(value) => { this.setState({ offerPercent: value }) }}
+                                                    style={Styles.cash_pay_input}
+                                                    placeholder={LableText.OFFER_PERCENT}
+                                                />
+                                            </View>
+                                        </View>
+
+                                        <View style={Styles.user_detail}>
+                                            <View style={Styles.user_detail_header}>
+                                                <Text style={Styles.user_detail_header_text}>{LableText.OFFER_FROM}</Text>
+                                            </View>
+                                            <View style={Styles.user_detail_data}>
+                                                <DatePicker
+                                                    style={{ width: '100%' }}
+                                                    date={offerFrom}
+                                                    mode="date"
+                                                    placeholder="select date"
+                                                    format="YYYY-MM-DD"
+                                                    minDate={minDate}
+                                                    // maxDate="2016-06-01"
+                                                    confirmBtnText="Confirm"
+                                                    cancelBtnText="Cancel"
+                                                    customStyles={{
+                                                        dateIcon: {
+                                                            position: 'absolute',
+                                                            left: 0,
+                                                            top: 5,
+                                                            marginLeft: 0
+                                                        },
+                                                        dateInput: {
+                                                            borderColor: '#fff'
+                                                        }
+                                                    }}
+                                                    onDateChange={(date) => { this.setState({ offerFrom: date, offerTo: moment(date).add('days', 1).format('YYYY-MM-DD') }) }}
+                                                />
+                                            </View>
+                                        </View>
+
+                                        <View style={Styles.user_detail}>
+                                            <View style={Styles.user_detail_header}>
+                                                <Text style={Styles.user_detail_header_text}>{LableText.OFFER_TO}</Text>
+                                            </View>
+                                            <View style={Styles.user_detail_data}>
+                                                <DatePicker
+                                                    style={{ width: '100%' }}
+                                                    date={offerTo}
+                                                    mode="date"
+                                                    placeholder="select date"
+                                                    format="YYYY-MM-DD"
+                                                    minDate={moment(offerFrom).add('days', 1).format('YYYY-MM-DD')}
+                                                    // maxDate="2016-06-01"
+                                                    confirmBtnText="Confirm"
+                                                    cancelBtnText="Cancel"
+                                                    customStyles={{
+                                                        dateIcon: {
+                                                            position: 'absolute',
+                                                            left: 0,
+                                                            top: 5,
+                                                            marginLeft: 0
+                                                        },
+                                                        dateInput: {
+                                                            borderColor: '#fff'
+                                                        }
+                                                    }}
+                                                    onDateChange={(date) => { this.setState({ offerTo: date }) }}
+                                                />
+                                            </View>
+                                        </View>
+
+
+                                    </View>
+                                    : null}
                             </View>
-                        </View>
-                    </Modal>
+
+                            <View style={{ marginHorizontal: '10%' }}>
+                                <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleSubmit() }}>
+                                    <Text style={Styles.buttonName}>{LableText.NEXT}</Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            <Modal style={Styles.modal} isVisible={categoryVisible}>
+                                <View style={Styles.modalHeader}>
+                                    <TouchableOpacity>
+                                        <Text onPress={() => { this.categoryModal() }}><CancelIcon fontSize={25} /></Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={Styles.center}>
+                                    <View style={[Styles.center, { width: '100%' }]}>
+                                        {/* {catImage && categoryVisible ?
+                                    <View style={[Styles.profile, Styles.center]}>
+                                        <View style={Styles.categoryImage}>
+                                            <View>
+                                                <TouchableOpacity onPress={() => { this.selectPhoto() }}>
+                                                    <View style={Styles.ImgBgOne} />
+                                                    <View style={Styles.ImgBgTwo} />
+                                                     <Avatar source={imageSource} style={Styles.profile_avatar} /> 
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
+                                                <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} >
+                                                    <Text style={[Styles.buttonName, { paddingHorizontal: 30 }]} onPress={() => { this.handleAddImageCategory() }}>{LableText.UPLOAD}</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                    </View> : */}
+                                        <View style={[Styles.center, { width: '100%' }]}>
+                                            <View style={[{ width: '100%' }]}>
+                                                <Text style={[{ paddingHorizontal: 30 }]}>{LableText.CATEGORY}</Text>
+                                            </View>
+
+                                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                                <TextInput
+                                                    style={[Styles.inputText, { width: '90%' }]}
+                                                    placeholder={Placeholder.NAME}
+                                                    value={catName}
+                                                    onChangeText={(value) => { this.setState({ catName: value }) }}
+                                                />
+                                            </View>
+
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
+                                                    <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} >
+                                                        <Text style={[Styles.buttonName, { paddingHorizontal: 30 }]} onPress={() => { this.handleAddImageCategory() }}>{LableText.NEXT}</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        </View>
+                                        {/* }  */}
+                                    </View>
+                                </View>
+                            </Modal>
+
+                            <Modal style={Styles.modal} isVisible={brandVisible}>
+                                <View style={Styles.modalHeader}>
+                                    <TouchableOpacity>
+                                        <Text onPress={() => { this.brandModal() }}><CancelIcon fontSize={25} /></Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={Styles.center}>
+                                    <View style={[Styles.center, { width: '100%' }]}>
+                                        {/* {catImage && categoryVisible ?
+                                    <View style={[Styles.profile, Styles.center]}>
+                                        <View style={Styles.categoryImage}>
+                                            <View>
+                                                <TouchableOpacity onPress={() => { this.selectPhoto() }}>
+                                                    <View style={Styles.ImgBgOne} />
+                                                    <View style={Styles.ImgBgTwo} />
+                                                     <Avatar source={imageSource} style={Styles.profile_avatar} /> 
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
+                                                <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} >
+                                                    <Text style={[Styles.buttonName, { paddingHorizontal: 30 }]} onPress={() => { this.handleAddImageCategory() }}>{LableText.UPLOAD}</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                    </View> : */}
+
+
+                                        <View style={[{ width: '100%' }]}>
+                                            {/* <View style={[Styles.center, { width: '100%' }]}> */}
+
+                                            <View style={[{ width: '90%' }]}>
+                                                <Text style={[{ paddingHorizontal: 30 }]}>{LableText.CATEGORY}</Text>
+                                            </View>
+                                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                                <Picker
+                                                    note
+                                                    mode="dropdown"
+                                                    style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
+                                                    selectedValue={category}
+                                                    onValueChange={(value) => { this.setState({ category: value }) }}
+                                                >
+                                                    <Picker.Item label="Select category" value="" />
+                                                    {null != allCategory ? allCategory.map((data, index) => {
+                                                        return (
+                                                            <Picker.Item label={data.name} value={data.id} />
+                                                        )
+                                                    }) : null}
+                                                </Picker>
+                                            </View>
+                                            {/* </View> */}
+
+                                            <View style={[{ width: '90%' }]}>
+                                                <Text style={[{ paddingHorizontal: 30 }]}>{LableText.BRAND}</Text>
+                                            </View>
+                                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                                                <TextInput
+                                                    style={[Styles.inputText, { width: '90%' }]}
+                                                    placeholder={Placeholder.NAME}
+                                                    value={brandName}
+                                                    onChangeText={(value) => { this.setState({ brandName: value }) }}
+                                                />
+                                            </View>
+
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
+                                                    <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} >
+                                                        <Text style={[Styles.buttonName, { paddingHorizontal: 30 }]} onPress={() => { this.handleAddImageBrand() }}>{LableText.NEXT}</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                        </View>
+                                        {/* }  */}
+                                    </View>
+                                </View>
+                            </Modal>
+                        </View>}
                     <View style={Styles.bottomSpace}></View>
                 </Content>
 
             </SafeAreaLayout>
         );
     }
-
 }

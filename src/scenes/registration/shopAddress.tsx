@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Image, TextInput, TouchableOpacity, AsyncStorage, PermissionsAndroid } from 'react-native';
+import { Alert, View, Image, TextInput, TouchableOpacity, AsyncStorage, PermissionsAndroid, RefreshControl } from 'react-native';
 import { Text } from 'react-native-ui-kitten';
 import { SafeAreaLayout, SaveAreaInset, } from '../../components/safe-area-layout.component';
 import { Content, Picker } from 'native-base';
@@ -17,6 +17,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Axios from 'axios';
 import { SignRegAddressScreenProps } from '../../navigation/auth.navigator';
+import {  StyleSheet, BackHandler } from "react-native";
 
 const data = [
     { text: 'Candidate' },
@@ -25,6 +26,7 @@ const data = [
 
 type State = {}
 export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRegAddressScreenProps, any & State, any> {
+    backHandler: any;
     constructor(props) {
         super(props);
 
@@ -46,14 +48,52 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
             userId: '',
             searchVisible: false,
             emailId: '',
-            from: ''
+            from: '',
+            location: ''
         }
 
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onPasswordIconPress = this.onPasswordIconPress.bind(this);
     }
 
-    async componentDidMount() {
+    
+
+    backAction = () => {
+       
+        Alert.alert("Alert!", LableText.ALERT_REGISTER_IMAGE, [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel"
+          },
+          { text: "YES", onPress: () =>{
+            // BackHandler.exitApp() 
+            this.props.navigation.navigate(AppRoute.CUSTOMER_HOME);
+          }  
+         
+        }
+        ]);
+        return true;
+       
+
+      };
+
+    componentWillUnmount() {
+        this.backHandler.remove();       
+      }
+
+    async componentDidMount() {        
+        this.props.navigation.addListener('focus', () => {
+            this.backHandler = BackHandler.addEventListener(
+                "hardwareBackPress",
+                this.backAction
+            );
+        })
+
+        this.props.navigation.addListener('blur', () => {
+            this.backHandler.remove();
+        })
+        
         let deviceId = DeviceInfo.getUniqueId();
         const shopId = this.props.route.params.shopId;
         const adminId = this.props.route.params.adminId;
@@ -67,7 +107,8 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
             userId: adminId,
             mobileNo: mobileNo,
             emailId: emailId,
-            from: from
+            from: from,
+            location: 'Set Location'
         })
         try {
             const granted = await PermissionsAndroid.request(
@@ -84,12 +125,34 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
             );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 Geolocation.getCurrentPosition((position) => {
-                    var lat = position.coords.latitude
+                // console.log('Location', position)
+                var lat = position.coords.latitude
                     var long = position.coords.longitude
                     // console.log('location', lat, position.coords.accuracy)
                     this.setState({
                         latitude: lat,
                         longitude: long
+                    })
+
+                    Axios({
+                        url: 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + long + '&key=' + AppConstants.GOOGLE_MAP_KEY,
+                    }).then((response) => {
+                        // const { data: { result: { geometry: { location } } } } = response
+                        // const { lat, lng } = location
+                        // console.log('Location', response.data)
+                        // axios({
+                        //     method: 'GET',
+                        //     url: AppConstants.API_BASE_URL + '/api/admin/getbylocation/' + lat + '/' + lng,
+                        // }).then((response) => {
+                        this.setState({
+                            location: response.data.results[0].formatted_address
+                        })
+                        // }, (error) => {
+                        //     Alert.alert("Server error.")
+                        // });
+            
+                    }, (error) => {
+                        console.log(error);
                     })
 
                 }, (erroe) => {
@@ -114,6 +177,7 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
         }, (error) => {
             Alert.alert("Didn't got data from server")
         });
+
     }
 
     onFormSubmit() {
@@ -166,9 +230,9 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
                 if (response) {
                     if (response.data.status === 'true') {
                         Alert.alert('User address created successfully, login with your credential.');
-                       if(from === 'shopReg') {
+                        if (from === 'shopReg') {
                             this.props.navigation.navigate(AppRoute.SHOP_IMAGE, { adminId: userId, shopId: shopId, mobileNo: mobileNo, emailId: emailId });
-                        } else if (from === 'signIn'){
+                        } else if (from === 'signIn') {
                             this.props.navigation.navigate(AppRoute.SIGN_REG_IMAGE, { adminId: userId, shopId: shopId, mobileNo: mobileNo, emailId: emailId });
                         }
                     }
@@ -188,7 +252,7 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
     };
 
     handleSearchLatLong(data, details) {
-        // this.toggleModal();
+        // this.toggleModal();   
 
         Axios({
             url: 'https://maps.googleapis.com/maps/api/place/details/json?key=' + AppConstants.GOOGLE_MAP_KEY + '&place_id=' + data.place_id
@@ -213,7 +277,7 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
 
         }, (error) => {
             console.log(error);
-        })
+        });
     }
 
     toggleModal() {
@@ -229,27 +293,32 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
         Geolocation.getCurrentPosition((position) => {
             var lat = position.coords.latitude
             var long = position.coords.longitude
-            console.log('location', lat, long, position.coords.accuracy)
-
-
-            this.setState({
-                latitude: lat,
-                longitude: long,
-                // searchVisible: false,
-                // location: LableText.USE_CURRENT_LOCATION
+            // console.log('location', lat, long, position.coords.accuracy)
+            Axios({
+                url: 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + long + '&key=' + AppConstants.GOOGLE_MAP_KEY,
+            }).then((response) => {
+                this.setState({
+                    location: response.data.results[0].formatted_address,
+                    latitude: lat,
+                    longitude: long,
+                })    
+            }, (error) => {
+                console.log(error);
             })
-
         }, (erroe) => {
 
         }, { enableHighAccuracy: true })
+    }
 
-        // } else {
-        //     console.log("Camera permission denied");
-        // }
+    onRefresh() {
+        this.setState({ refreshing: true });
+        this.componentDidMount().then(() => {
+            this.setState({ refreshing: false });
+        });
     }
 
     render() {
-        const { pinCode, emailId, city, state, searchVisible, country, latitude, longitude, mobileNo, landMark, userType, shopId, district, postOffice, policeStation, street, userId, } = this.state;
+        const { pinCode, emailId, location, city, state, searchVisible, country, latitude, longitude, mobileNo, landMark, userType, shopId, district, postOffice, policeStation, street, userId, } = this.state;
         // const { firstName, passwordVisible, lastName, mobileNo, pwd, gender, genderData, shopName, shopType, shopTypeData, panNo, adharNo, gstNo, description } = this.state;
         return (
             <SafeAreaLayout
@@ -315,7 +384,14 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
                         </View>
                     </View>
                 </Modal>
-                < Content style={Styles.content} >
+                < Content style={Styles.content}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
+                    }
+                >
                     <View>
                         <Image
                             source={require('../../assets/logo.png')}
@@ -323,7 +399,11 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
                             style={[Styles.loginImage, { marginBottom: scale(50), marginTop: scale(70) }]}
                         />
                         <View style={Styles.center}>
-                            <Text style={[{ fontSize: scale(18), textAlign: 'center', marginVertical: scale(10) }]}>Your Email ID - {emailId}</Text>
+                            <Text style={[{ fontSize: scale(18), textAlign: 'justify', paddingHorizontal: scale(10), marginVertical: scale(10) }]}>{LableText.SIGN_UP_ALERT}</Text>
+                        </View>
+
+                        <View style={Styles.center}>
+                            <Text style={[{ fontSize: scale(18), textAlign: 'center', marginVertical: scale(10) }]}>Your Admin ID - {emailId}</Text>
                         </View>
 
                         <View style={Styles.inputTextView}>
@@ -467,7 +547,7 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
                             <Text
                                 style={[Styles.inputText, { paddingVertical: scale(12), color: Color.SILVER }]}
                                 onPress={() => { this.setState({ searchVisible: true }) }}
-                            >{LableText.SELECT_CUSTOM_LOCATION}</Text>
+                            >{location}</Text>
                         </View>
 
                         <View style={{ marginHorizontal: '10%' }}>

@@ -14,6 +14,7 @@ import { ShopImageScreenProps } from "../../navigation/registration.navigator";
 import { scale } from "react-native-size-matters";
 import { SignRegImageScreenProps } from "../../navigation/auth.navigator";
 import { StackActions } from "@react-navigation/routers";
+import { StyleSheet, BackHandler } from "react-native";
 
 const options = {
     title: 'Select a Photo',
@@ -24,6 +25,7 @@ const options = {
 }
 
 export class ShopImageScreen extends Component<ShopImageScreenProps & SignRegImageScreenProps, ThemedComponentProps & any> {
+    backHandler: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -41,7 +43,41 @@ export class ShopImageScreen extends Component<ShopImageScreenProps & SignRegIma
         this.onRefresh = this.onRefresh.bind(this);
     }
 
+    backAction = () => {
+
+        Alert.alert("Alert!", LableText.ALERT_REGISTER_IMAGE, [
+            {
+                text: "Cancel",
+                onPress: () => null,
+                style: "cancel"
+            },
+            {
+                text: "YES", onPress: () => {
+                    this.props.navigation.navigate(AppRoute.CUSTOMER_HOME);
+                }
+
+            }
+        ]);
+        return true;
+
+
+    };
+
+    componentWillUnmount() {
+        this.backHandler.remove();
+    }
+
     async componentDidMount() {
+        this.props.navigation.addListener('focus', () => {
+            this.backHandler = BackHandler.addEventListener(
+                "hardwareBackPress",
+                this.backAction
+            );
+        })
+
+        this.props.navigation.addListener('blur', () => {
+            this.backHandler.remove();
+        })
         const value = await AsyncStorage.getItem('userDetail');
         const shopId = this.props.route.params.shopId;
         const adminId = this.props.route.params.adminId;
@@ -114,13 +150,13 @@ export class ShopImageScreen extends Component<ShopImageScreenProps & SignRegIma
         });
     }
 
-    toggleUpload(){
-        const {isUploaded} = this.state;
+    toggleUpload() {
+        const { isUploaded } = this.state;
         this.setState({
             isUploaded: !isUploaded
         })
     }
-    handleFinish(){
+    handleFinish() {
         const pushAction = StackActions.push(AppRoute.AUTH)
         this.props.navigation.dispatch(pushAction);
     }
@@ -148,10 +184,14 @@ export class ShopImageScreen extends Component<ShopImageScreenProps & SignRegIma
                     }
                 >
                     <View style={Styles.center}>
-                        <Text style={[{ fontSize: scale(18), textAlign: 'center', marginVertical: scale(10) }]}>Your Email ID - {emailId}</Text>
+                        <Text style={[{ fontSize: scale(18), textAlign: 'justify', paddingHorizontal: scale(10), marginVertical: scale(10) }]}>{LableText.SIGN_UP_ALERT}</Text>
                     </View>
 
-                    <View style={[Styles.product_view, {borderColor: 'gray', borderWidth: scale(1)}]}>
+                    <View style={Styles.center}>
+                        <Text style={[{ fontSize: scale(18), textAlign: 'center', marginVertical: scale(10) }]}>Your Admin ID - {emailId}</Text>
+                    </View>
+
+                    <View style={[Styles.product_view, { borderColor: 'gray', borderWidth: scale(1) }]}>
                         {/* <TouchableOpacity style={[{ justifyContent: 'flex-end', marginTop: 5, marginRight: 5, alignItems: 'flex-end' }]} onPress={() => { this.selectPhoto() }}>
                             <Text><EditIcon /></Text>
                         </TouchableOpacity> */}
@@ -169,9 +209,9 @@ export class ShopImageScreen extends Component<ShopImageScreenProps & SignRegIma
 
                     </View>
                     {isUploaded ?
-                        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <ActivityIndicator size='large' />
-                           <Text style={{color: Color.COLOR, fontSize: scale(20)}}>Uploading...</Text>
+                            <Text style={{ color: Color.COLOR, fontSize: scale(20) }}>Uploading...</Text>
                         </View> :
                         <>
                             <View style={{ marginHorizontal: '10%' }}>

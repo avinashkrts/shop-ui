@@ -328,7 +328,7 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Order Id: {cartData.cartId ? cartData.cartId : null} </Text>
                         </View>
                         {null != addressData ?
-                            <Text style={{ marginVertical: 5 }}>{addressData.city}, {addressData.landmark}, {addressData.district}, {addressData.state}, {addressData.pinCode}</Text>
+                            <Text style={{ marginVertical: 5 }}>{addressData.name}, {addressData.mobileNo}, {addressData.city}, {addressData.street}, {addressData.landmark}, {addressData.postOffice}, {addressData.policeStation}, {addressData.district}, {addressData.state}, {addressData.pinCode}, {addressData.country}</Text>
                             : null}
                         <View style={{ width: '100%', alignItems: 'flex-end' }}>
                             {/* <TouchableOpacity onPress={() => { this.props.navigation.navigate(AppRoute.CUSTOMER_ADDRESS) }} style={[Styles.center, { paddingVertical: 10, width: 100, borderRadius: 5, backgroundColor: Color.COLOR }]}>

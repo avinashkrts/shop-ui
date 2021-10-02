@@ -119,9 +119,14 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
             }
         )
     }
-    handleSummit(){
+
+    async componentDidMount() {
+
+    }
+
+    handleSummit() {
         const { isEditable, firstName, lastName, father, shopId, adharNumber, panNumber, salary, salaryType, workingDays, designation, employeeId, mobileNo, emailId, street } = this.state
-        console.log(isEditable, firstName, lastName, father, shopId, adharNumber, panNumber, salary, salaryType, workingDays, designation, employeeId, mobileNo, emailId, street )
+        console.log(isEditable, firstName, lastName, father, shopId, adharNumber, panNumber, salary, salaryType, workingDays, designation, employeeId, mobileNo, emailId, street)
         if (firstName == null || firstName === '') {
             Alert.alert("Please enter first name.");
         } else if (lastName == null || lastName === '') {
@@ -148,39 +153,40 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
             Alert.alert("Please enter pan number.");
         } else if (adharNumber == null || adharNumber === '') {
             Alert.alert("Please enter adhar number.");
-        
+
         } else {
-            Axios({
-                method: 'POST',
-                url: AppConstants.API_BASE_URL + '/api/employee/create',
-                data: {
-                    firstName: firstName,
-                    lastName: lastName,
-                    father: father,
-                    mobileNo: mobileNo,
-                    emailId: emailId,
-                    street: street,
-                    designation: designation,
-                    salary: salary,
-                    salaryType: salaryType,
-                    workingDays: workingDays,
-                    employeeId: employeeId,
-                    panNumber: panNumber,
-                    adharNumber: adharNumber,
-                    shopId: shopId
-                }
-            }).then((response) => {
-                if (null != response.data) {
-                    if (response.data.status === 'true') {
-                        Alert.alert("Employee created.")
-                        this.props.navigation.goBack()
-                    } else if (response.data.status === 'false') {
-                        Alert.alert("Employee allready exists.")
-                    }
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
+            // Axios({
+            //     method: 'POST',
+            //     url: AppConstants.API_BASE_URL + '/api/employee/create',
+            //     data: {
+            //         firstName: firstName,
+            //         lastName: lastName,
+            //         father: father,
+            //         mobileNo: mobileNo,
+            //         emailId: emailId,
+            //         street: street,
+            //         designation: designation,
+            //         salary: salary,
+            //         salaryType: salaryType,
+            //         workingDays: workingDays,
+            //         employeeId: employeeId,
+            //         panNumber: panNumber,
+            //         adharNumber: adharNumber,
+            //         shopId: shopId
+            //     }
+            // }).then((response) => {
+            //     if (null != response.data) {
+            //         if (response.data.status === 'true') {
+            //             Alert.alert("Employee created.")
+            //             this.props.navigation.goBack()
+            //         } else if (response.data.status === 'false') {
+            //             Alert.alert("Employee allready exists.")
+            //         }
+            //     }
+            // }, (error) => {
+            //     Alert.alert("Server error!.")
+            // });
+            Alert.alert("This page will be added soon")
         }
     }
 
@@ -292,7 +298,7 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                 >
                     <View style={[Styles.profile, Styles.center]}>
                         <View style={Styles.profile_image}>
-                            <Avatar source={require("../../../assets/profile.jpeg")} style={Styles.profile_avatar} />
+                            <Avatar source={require("../../../assets/logo.png")} style={Styles.profile_avatar} />
                         </View>
                     </View>
 
@@ -319,11 +325,11 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.LAST_NAME}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input} 
-                                placeholder={LableText.LAST_NAME}
-                                value = {lastName}
-                                onChangeText ={(value) => {this.setState({lastName: value})}} 
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.LAST_NAME}
+                                    value={lastName}
+                                    onChangeText={(value) => { this.setState({ lastName: value }) }}
                                 />
                             </View>
                         </View>
@@ -333,11 +339,11 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.FATHER_NAME}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input} 
-                                placeholder={LableText.FATHER_NAME}
-                                value ={father}
-                                onChangeText ={(value)=> {this.setState({father: value})}} 
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.FATHER_NAME}
+                                    value={father}
+                                    onChangeText={(value) => { this.setState({ father: value }) }}
                                 />
                             </View>
                         </View>
@@ -347,12 +353,12 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.PHONE}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input}
-                                 placeholder={LableText.PHONE}
-                                 value ={mobileNo} 
-                                 onChangeText={(value)=> {this.setState({mobileNo:value})}}
-                                 />
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.PHONE}
+                                    value={mobileNo}
+                                    onChangeText={(value) => { this.setState({ mobileNo: value }) }}
+                                />
                             </View>
                         </View>
 
@@ -361,12 +367,12 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.EMAIL_ID}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input}
-                                 placeholder={LableText.EMAIL_ID}
-                                 value ={emailId}
-                                 onChangeText= {(value)=>{this.setState({emailId:value})}}
-                                  />
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.EMAIL_ID}
+                                    value={emailId}
+                                    onChangeText={(value) => { this.setState({ emailId: value }) }}
+                                />
                             </View>
                         </View>
 
@@ -375,13 +381,13 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.STREET}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input}
-                                 placeholder={LableText.STREET}
-                                 value ={street}
-                                 onChangeText= {(Value)=>{this.setState({street:Value})}}
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.STREET}
+                                    value={street}
+                                    onChangeText={(Value) => { this.setState({ street: Value }) }}
 
-                                 />
+                                />
                             </View>
                         </View>
 
@@ -453,12 +459,12 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.DESIGNATION}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input} 
-                                placeholder={LableText.DESIGNATION}
-                                value= {designation}
-                                onChangeText= {(value)=>{this.setState({designation:value})}}
-                                 />
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.DESIGNATION}
+                                    value={designation}
+                                    onChangeText={(value) => { this.setState({ designation: value }) }}
+                                />
                             </View>
                         </View>
 
@@ -467,12 +473,12 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.SALARY}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input}
-                                 placeholder={LableText.SALARY}
-                                 value ={salary}
-                                 onChangeText= {(value)=>{this.setState({salary:value})}}
-                                  />
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.SALARY}
+                                    value={salary}
+                                    onChangeText={(value) => { this.setState({ salary: value }) }}
+                                />
                             </View>
                         </View>
 
@@ -481,12 +487,12 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.SALARY_TYPE}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input}
-                                 placeholder={LableText.SALARY_TYPE}
-                                 value={salaryType} 
-                                 onChangeText= {(value)=>{this.setState({salaryType:value})}}
-                                 />
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.SALARY_TYPE}
+                                    value={salaryType}
+                                    onChangeText={(value) => { this.setState({ salaryType: value }) }}
+                                />
                             </View>
                         </View>
 
@@ -531,11 +537,11 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.WORKING_DAYS}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input} 
-                                placeholder={LableText.WORKING_DAYS} 
-                                value= {workingDays}
-                                onChangeText= {(value)=>{this.setState({workingDays:value})}}
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.WORKING_DAYS}
+                                    value={workingDays}
+                                    onChangeText={(value) => { this.setState({ workingDays: value }) }}
                                 />
                             </View>
                         </View>
@@ -545,11 +551,11 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.EMPLOYEE_ID}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input} 
-                                placeholder={LableText.EMPLOYEE_ID} 
-                                value= {employeeId}
-                                onChangeText= {(value)=>{this.setState({employeeId:value})}}
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.EMPLOYEE_ID}
+                                    value={employeeId}
+                                    onChangeText={(value) => { this.setState({ employeeId: value }) }}
                                 />
                             </View>
                         </View>
@@ -558,11 +564,11 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.PAN_NUMBER}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input} 
-                                placeholder={LableText.PAN_NUMBER} 
-                                value= {panNumber}
-                                onChangeText= {(value)=>{this.setState({panNumber:value})}}
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.PAN_NUMBER}
+                                    value={panNumber}
+                                    onChangeText={(value) => { this.setState({ panNumber: value }) }}
                                 />
                             </View>
                         </View>
@@ -571,11 +577,11 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                                 <Text style={Styles.user_detail_header_text}>{LableText.ADHAR_NUMBER}</Text>
                             </View>
                             <View style={Styles.user_detail_data}>
-                                <TextInput editable={isEditable} 
-                                style={Styles.cash_pay_input} 
-                                placeholder={LableText.ADHAR_NUMBER} 
-                                value= {adharNumber}
-                                onChangeText= {(value)=>{this.setState({adharNumber:value})}}
+                                <TextInput editable={isEditable}
+                                    style={Styles.cash_pay_input}
+                                    placeholder={LableText.ADHAR_NUMBER}
+                                    value={adharNumber}
+                                    onChangeText={(value) => { this.setState({ adharNumber: value }) }}
                                 />
                             </View>
                         </View>
@@ -632,6 +638,12 @@ export class AddEmployeeScreen extends React.Component<AddEmployeeScreenProps & 
                             <Text style={Styles.buttonName}>{LableText.ADD}</Text>
                         </TouchableOpacity>
                     </View>
+
+                    {/* <View style={{ marginHorizontal: '10%' }}>
+                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleSummit() }}>
+                            <Text style={Styles.buttonName}>{LableText.ADD}</Text>
+                        </TouchableOpacity>
+                    </View> */}
 
                     <View style={Styles.bottomSpace}></View>
                 </Content>

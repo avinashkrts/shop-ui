@@ -454,11 +454,11 @@ export const HomeNavigator = (): React.ReactElement => (
       options={{ title: 'Stock List', drawerIcon: StockListIcon }}
     />
 
-    <Drawer.Screen
+    {/* <Drawer.Screen
       name={AppRoute.OUT_OF_STOCK}
       component={OutOfStockScreen}
       options={{ title: 'Out of Stock', drawerIcon: OutOfStockIcon }}
-    />
+    /> */}
 
     {/* <Drawer.Screen
       name={AppRoute.OFFERS}

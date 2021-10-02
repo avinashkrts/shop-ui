@@ -181,6 +181,8 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
                         Alert.alert("Server error!.")
                     });
                 } else {
+                    // console.log('Recharge Data', userData.adminId, planId, userData.shopId, walletPayment);
+                    
                     Axios({
                         method: 'POST',
                         url: AppConstants.API_BASE_URL + '/api/purchase/create',
@@ -188,7 +190,7 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
                             adminId: userData.adminId,
                             planId: planId,
                             shopId: userData.shopId,
-                            transactionId: 'WALLET-MILAAN-123',
+                            transactionId: 'WALLET-RECHARGE-FROM-MILAAN',
                             paymentMode: walletPayment
                         }
                     }).then((response) => {
@@ -214,7 +216,7 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
             description: "MILAAN IT",
             image: 'http://ec2-65-0-32-190.ap-south-1.compute.amazonaws.com/shop/61_4_MILAAN661_shop.png',
             currency: "INR",
-            key: 'rzp_test_WHYgLdAAnKqBLN',
+            key: AppConstants.RAZORPAY_KEY,
             amount: totalAmount * 100,
             name: 'MILAAN IT',
             prefill: {
@@ -242,7 +244,7 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
             }).then((response) => {
                 if (null != response.data) {
                     this.toggleModal();
-                    Alert.alert("Recharse done.")
+                    Alert.alert("Recharge done.")
                 }
             }, (error) => {
                 Alert.alert("Server error!.")

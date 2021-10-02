@@ -476,9 +476,9 @@ export class ProductDetailScreen extends React.Component<ProductDetailScreenProp
                                     </TouchableOpacity> */}
                                 </View>
 
-                                <View style={[Styles.product_2nd_wish_view, Styles.center, {backgroundColor: Color.COLOR, borderRadius: 5}]}>
+                                {/* <View style={[Styles.product_2nd_wish_view, Styles.center, {backgroundColor: Color.COLOR, borderRadius: 5}]}>
                                     <Text style={Styles.product_2nd_buy_text} onPress={() => {this.handleDeleteCategory(allProduct.productId)}}>Delete</Text>
-                                </View>
+                                </View> */}
 
 
                             </View>

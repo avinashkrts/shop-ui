@@ -39,9 +39,6 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
     async componentDidMount() {
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
-        // Alert.alert(""+userData.userId);
-        // console.log("User Data",userData.userId)
-
 
         const logedIn = await AsyncStorage.getItem('logedIn');
         if (null != logedIn && logedIn === 'true') {
@@ -113,7 +110,7 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
     }
 
     render() {
-        const { userData, single, userDenied, shoping, planPurchase,
+        const { single, userDenied, shoping, planPurchase,
             withdrawRequest, withdrawDone, adminRejected, shopName, transactionData, onlinePay, cashPay, refund } = this.state;
         let total = 0
         return (

@@ -12,15 +12,17 @@ export class OutOfStockScreen extends Component<OutOfStockScreenProps, ThemedCom
         super(props);
         this.state = {}
 
-        this.onRefresh = this.onRefresh.bind(this);
+        // this.onRefresh = this.onRefresh.bind(this);
     }
 
-    onRefresh() {
-        this.setState({ refreshing: true });
-        this.componentDidMount().then(() => {
-            this.setState({ refreshing: false });
-        });
-    }
+    // async componentDidMount() {}
+
+    // onRefresh() {
+    //     this.setState({ refreshing: true });
+    //     this.componentDidMount().then(() => {
+    //         this.setState({ refreshing: false });
+    //     });
+    // }
 
     render() {
         return (

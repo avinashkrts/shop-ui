@@ -23,10 +23,12 @@ import { StackActions } from "@react-navigation/native";
 import { scale } from "react-native-size-matters";
 import OneSignal from "react-native-onesignal";
 import { LableText } from '../../../constants/LabelConstants';
+import { BackHandler } from "react-native";
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
 
 export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps, ThemedComponentProps & any> {
+    backHandler: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -77,7 +79,37 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
         this.handleAddToCart = this.handleAddToCart.bind(this);
     }
 
+      backAction = () => {
+       
+        Alert.alert("Alert!", LableText.CUS_HOME_PAGE, [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel"
+          },
+          { text: "YES", onPress: () =>{
+             BackHandler.exitApp() 
+          }  
+         
+        }
+        ]);
+        return true;
+      };
+      componentWillUnmount() {
+       this.backHandler.remove();       
+      }
+
     async componentDidMount() {
+        this.props.navigation.addListener('focus', () => {
+            this.backHandler = BackHandler.addEventListener(
+                "hardwareBackPress",
+                this.backAction
+              );
+        })
+        this.props.navigation.addListener('blur', () => {
+            this.backHandler.remove();
+        })
+        
         const { allData } = this.state;
         // Alert.alert('')
         const clean = ''
@@ -88,7 +120,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
             var lat = await AsyncStorage.getItem('latitude')
             var long = await AsyncStorage.getItem('longitude')
             var location = await AsyncStorage.getItem('location')
-
+            console.log('Api Base Url', AppConstants.API_BASE_URL + '/api/admin/getbylocation/' + lat + '/' + long)
             axios({
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/admin/getbylocation/' + lat + '/' + long,
@@ -160,6 +192,8 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
             });
         })
     }
+
+  
 
     addToCart(id) {
 
@@ -554,7 +588,6 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                             </View>
                         </View>
                     </Header> */}
-
                 </Animated.View>
 
                 <Animated.ScrollView style={{ flex: 1 }}

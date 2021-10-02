@@ -1,6 +1,6 @@
 import { Content } from "native-base";
 import React, { Component } from "react";
-import { RefreshControl, View, Text, SafeAreaView, ActivityIndicator, AsyncStorage } from "react-native";
+import { RefreshControl, View, Text, SafeAreaView, ActivityIndicator, AsyncStorage, BackHandler, Alert } from "react-native";
 import {
     Divider, ThemedComponentProps,
     List, ListItem, ListItemElement
@@ -14,9 +14,9 @@ import { LabelConstants } from "../../../constants/LabelConstants";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import axios from "axios";
 import moment from "moment";
-import { AppConstants } from "../../../constants";
+import { AppConstants, LableText } from "../../../constants";
 import { scale } from "react-native-size-matters";
-
+import { AppRoute } from "../../../navigation/app-routes";
 export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props);
@@ -52,7 +52,6 @@ export class MyWalletScreen extends Component<MyWalletScreenProps, ThemedCompone
             this.setState({ refreshing: false });
         });
     }
-
 
     renderCustomer = ({ item, index }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>

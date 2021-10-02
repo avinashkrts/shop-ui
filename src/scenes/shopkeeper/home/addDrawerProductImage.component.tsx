@@ -138,7 +138,7 @@ export class AddDrawerProductImageScreen extends Component<AddDrawerProductImage
                     }
                 >
                     <View style={Styles.center}>
-                        <Text style={[{ fontSize: scale(18), textAlign: 'center', marginVertical: scale(10) }]}>Your Email ID - {emailId}</Text>
+                        {/* <Text style={[{ fontSize: scale(18), textAlign: 'center', marginVertical: scale(10) }]}>Your Product Image - {emailId}</Text> */}
                     </View>
 
                     <View style={[Styles.product_view, {borderColor: 'gray', borderWidth: scale(1)}]}>

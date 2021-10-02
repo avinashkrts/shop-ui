@@ -15,7 +15,7 @@ import {
     withStyles, TabBar,
     styled, Divider, Avatar, Icon, Button
 } from 'react-native-ui-kitten';
-import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab, Col } from 'native-base';
+import { ScrollableTab, Tab, Item, Container, Content, Tabs, Header, TabHeading, Thumbnail, Input, Label, Footer, FooterTab, Col, Radio } from 'native-base';
 import { CartScreenProps } from '../../../navigation/shopKeeperNavigator/allItem.Navigator';
 import { AppRoute } from '../../../navigation/app-routes';
 import { ProgressBar } from '../../../components/progress-bar.component';
@@ -47,6 +47,8 @@ import Axios from 'axios';
 import { CustomerCartScreenProps } from '../../../navigation/customer-navigator/customerHome.navigator';
 import { StackActions } from '@react-navigation/core';
 import { scale } from 'react-native-size-matters';
+import Modal from "react-native-modal";
+import { LableText } from '../../../constants';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
@@ -87,7 +89,10 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
             addressData: [],
             single: false,
             shopName: '',
-            outOfStock: false
+            outOfStock: false,
+            isModalVisible: false,
+            selectedCartId: '',
+            insideShop: false
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -190,26 +195,36 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         })
     }
 
-    handlePlaceOrder(cartId, totalAmt, index) {
-        const { cartData } = this.state;
+    handlePlaceOrder() {
+        const { insideShop, selectedCartId } = this.state;
+        // console.log('hjhjhj', String(insideShop));
+
         // if (cartData) {
         //     cartData[index].productList.map((cart, index) => {
         //         if (cart) {
         //             if (cart.productQuantity > cart.currentStock) {
-                        
-                        // this.setState({
-                        //     outOfStock: true
-                        // })
-                    //     Alert.alert("It seems any product is out of stock"+cart.productQuantity + " " + cart.currentStock);
-                    // } else {
-                    //     Alert.alert(''+cart.productQuantity + " " + cart.currentStock)
-                        const pushAction = StackActions.push(AppRoute.PAYMENT, { cartId: String(cartId), totalAmt: String(totalAmt) })
-                        this.props.navigation.dispatch(pushAction);
+
+        // this.setState({
+        //     outOfStock: true
+        // })
+        //     Alert.alert("It seems any product is out of stock"+cart.productQuantity + " " + cart.currentStock);
+        // } else {
+        //     Alert.alert(''+cart.productQuantity + " " + cart.currentStock)
+        this.toggleModal()
+        const pushAction = StackActions.push(AppRoute.PAYMENT, { cartId: String(selectedCartId), insideShop: insideShop })
+        this.props.navigation.dispatch(pushAction);
         //             }
         //         }
         //     })
         // }
 
+    }
+
+    handleCartId(cartId) {
+        this.setState({
+            isModalVisible: true,
+            selectedCartId: cartId
+        })
     }
 
     renderCart = ({ item }: any): ListItemElement => (
@@ -235,9 +250,12 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                 </TouchableOpacity>
                             </View>
                             <View style={Styles.cart_price_view}>
+
                                 <View style={{ flexDirection: 'row', width: '55%', flexWrap: 'wrap', justifyContent: 'space-between' }}>
                                     <Text style={Styles.price_text}><RupeeIcon /> {item.price.toFixed(2)}</Text>
-                                    <Text style={Styles.offer_price_text}>{item.oldPrice.toFixed(2)}</Text>
+                                    {item.offersAvailable ?
+                                        <Text style={Styles.offer_price_text}>{item.oldPrice.toFixed(2)}</Text> : null
+                                    }
                                 </View>
 
                                 <View style={Styles.cart_quantity_view}>
@@ -263,16 +281,18 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                         </View>}
                                 </View>
                             </View>
-
-                            <View>
-                                <Text style={Styles.cart_offer_text}>{item.offer}% off</Text>
-                            </View>
+                            {item.offersAvailable ?
+                                <View>
+                                    <Text style={Styles.cart_offer_text}>{item.offer}% off</Text>
+                                </View> : null
+                            }
                         </View>
                     </View>
-
-                    <View>
-                        <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>{item.offersAvailable} offers available</Text>
-                    </View>
+                    {item.offersAvailable ?
+                        <View>
+                            <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>{item.offersAvailable} offers available</Text>
+                        </View> : null
+                    }
                 </View>
                 :
                 <ActivityIndicator size='large' color='green' />}
@@ -336,7 +356,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                 </View>
 
                                 <View style={{ justifyContent: 'center', margin: 10 }}>
-                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(item.cartId, item.payableAmount, index) }}>
+                                    <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handleCartId(item.cartId) }}>
                                         <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -367,8 +387,13 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
 
     addItem() { }
 
+    toggleModal() {
+        const { isModalVisible } = this.state;
+        this.setState({ isModalVisible: !isModalVisible })
+    }
+
     render() {
-        const { cartData, shopName, single, addressData, productList } = this.state
+        const { cartData, insideShop, shopName, isModalVisible, single, addressData, productList } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -382,6 +407,34 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
+
+                <Modal style={Styles.modal} isVisible={isModalVisible}>
+                    <View style={Styles.modalHeader}>
+                        <TouchableOpacity>
+                            <Text onPress={() => { this.toggleModal() }}><CancelIcon fontSize={25} /></Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={[Styles.center]}>
+                        <View style={[Styles.payment_box_view]}>
+                            <Text style={Styles.payment_selection_header}>Are you inside the Mart/Shop?</Text>
+                            <View style={[Styles.payment_selection_view, { justifyContent: 'space-between' }]}>
+                                <View style={{ flexDirection: 'row', marginRight: scale(20) }}>
+                                    <Radio selectedColor='#0099cc' selected={insideShop} onPress={() => { this.setState({ insideShop: true }) }} />
+                                    <Text style={Styles.payment_selection_text}>Yes</Text>
+                                </View>
+
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Radio selectedColor='#0099cc' selected={!insideShop} onPress={() => { this.setState({ insideShop: false }) }} />
+                                    <Text style={Styles.payment_selection_text}>No</Text>
+                                </View>
+                            </View>
+                            <View style={Styles.inside_shop_button_box}>
+                                <Text onPress={() => { this.handlePlaceOrder() }} style={Styles.inside_shop_button_text}>{LableText.NEXT}</Text>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
 
                 <Content style={Styles.cart_content} showsVerticalScrollIndicator={false}
                     refreshControl={
@@ -483,7 +536,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                             </View>
 
                             <View>
-                                <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(cartData.cartId, cartData.payableAmount, 0) }}>
+                                <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handleCartId(cartData.cartId) }}>
                                     <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
                                 </TouchableOpacity>
                             </View>
@@ -493,7 +546,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
 
                 <Divider />
                 <Divider />
-            </SafeAreaLayout>
+            </SafeAreaLayout >
         )
     }
 }

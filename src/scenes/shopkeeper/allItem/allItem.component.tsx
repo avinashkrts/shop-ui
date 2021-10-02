@@ -6,13 +6,14 @@ import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-lay
 import { Toolbar } from "../../../components/toolbar.component";
 import { BackIcon, CartIcon, MenuIcon, PlusCircle, SearchIcon, WishIcon } from "../../../assets/icons";
 import { FlatList, ScrollView, TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { AppConstants, Color } from "../../../constants";
+import { AppConstants, Color, LableText } from "../../../constants";
 import { Styles } from "../../../assets/styles";
 import { Content, Header, Item, ListItem } from "native-base";
 import axios from 'axios';
 import Animated from "react-native-reanimated";
 import { AppRoute } from "../../../navigation/app-routes";
 import Axios from "axios";
+import { BackHandler } from "react-native";
 
 type MyState = {
     displayName: String,
@@ -31,6 +32,7 @@ const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 70;
 
 export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedComponentProps, MyState & any> {
+    backHandler: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -58,7 +60,38 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
         this.handleSearch = this.handleSearch.bind(this);
     }
 
+    backAction = () => {
+        Alert.alert("Alert!", LableText.CUS_HOME_PAGE, [
+            {
+                text: "Cancel",
+                onPress: () => null,
+                style: "cancel"
+            },
+            {
+                text: "YES", onPress: () => {
+                    BackHandler.exitApp()
+                }
+
+            }
+        ]);
+        return true;
+    };
+
+    componentWillUnmount() {
+        this.backHandler.remove();
+    }
+
     async componentDidMount() {
+        this.props.navigation.addListener('focus', () => {
+            this.backHandler = BackHandler.addEventListener(
+                "hardwareBackPress",
+                this.backAction
+            );
+        })
+
+        this.props.navigation.addListener('blur', () => {
+            this.backHandler.remove();
+        })
         const { allData } = this.state;
         const value = await AsyncStorage.getItem("userDetail")
         const user = JSON.parse(value);
@@ -212,7 +245,6 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
         this.componentDidMount().then(() => {
             this.setState({ refreshing: false });
         });
-
     }
 
     navigateProductDetail(id, shopId) {
@@ -311,7 +343,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                         return (
                                             <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
                                                 <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                    {/* <Text style={selectedCategory === 'all' ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>All</Text> */}
+                                                    {/* <Text style={selectedCategory === 'all' ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>All</Text> */}
                                                     <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
                                                 </View>
                                             </TouchableOpacity>
@@ -366,7 +398,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         >
 
                             <View style={Styles.all_Item_Main_View}>
-                                {null != allProduct ? allProduct.map((data, index) => {
+                                {null != allProduct ? allProduct.slice(0).reverse().map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
                                             <View style={{ height: 200 }}>

@@ -149,7 +149,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                         }
                     >
                         {null != transactionData ? transactionData.map((data, index) => {
-                            data.paymentMode == onlinePay && (data.transactionType == shopping ) ? total = total + data.totalAmount : data.paymentMode == walletPay && (data.transactionType == adminRejected || data.transactionType == userDenied || data.transactionType == withdrawRequest || data.transactionType == planPurchase )  ? total = total - data.totalAmount : null
+                            data.paymentMode == onlinePay && (data.transactionType == shopping) ? total = total + data.totalAmount : data.paymentMode == walletPay && (data.transactionType == adminRejected || data.transactionType == userDenied || data.transactionType == withdrawRequest || data.transactionType == planPurchase) ? total = total - data.totalAmount : null
                             return (
                                 <View>
                                     <Divider />
@@ -185,7 +185,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                                             </View>
                                             <View style={Styles.bill_column_6}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design_green}>{data.paymentMode ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == walletPay && data.transactionType == adminRejected  ? 'Rejected' : data.paymentMode == walletPay && data.transactionType == userDenied  ? 'Not Delivered' : data.paymentMode == walletPay && data.transactionType == withdrawRequest ? 'Withdraw' : data.paymentMode == walletPay && data.transactionType == planPurchase ? 'Recharge' : null : null}</Text>
+                                                <Text style={Styles.text_design_green}>{data.paymentMode ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == walletPay && data.transactionType == adminRejected ? 'Rejected' : data.paymentMode == walletPay && data.transactionType == userDenied ? 'Not Delivered' : data.paymentMode == walletPay && data.transactionType == withdrawRequest ? 'Withdraw' : data.paymentMode == walletPay && data.transactionType == planPurchase ? 'Recharge' : null : null}</Text>
                                                 {/* </View> */}
                                             </View>
                                         </View>

@@ -93,10 +93,39 @@ export const Styles = ScaledSheet.create({
     paddingVertical: '10@s',
     marginVertical: '20@s',
     backgroundColor: Color.COLOR,
-    borderRadius: '50@s'
+    borderRadius: '50@s',
+
+  },
+
+  buttonBox1: {
+    paddingVertical: '5@msr',
+    marginVertical: 1,
+    backgroundColor: Color.COLOR,
+    borderRadius: 10
+  },
+
+  skip_buttonBox: {
+    paddingVertical: '10@s',
+    marginVertical: '1@s',
+    width: '100@s',
+    backgroundColor: Color.COLOR,
+    borderRadius: '25@s',
+    alignSelf: 'center',
+
+
   },
 
   buttonName: {
+    fontSize: '15@s',
+    color: Color.BUTTON_NAME_COLOR,
+  },
+
+  buttonName1: {
+    fontSize: '15@s',
+    color: Color.BUTTON_NAME_COLOR,
+    marginRight: 10
+  },
+  skip_buttonName: {
     fontSize: '15@s',
     color: Color.BUTTON_NAME_COLOR,
   },
@@ -642,8 +671,230 @@ export const Styles = ScaledSheet.create({
     paddingHorizontal: '10%'
   },
 
-  /*---------------------------------------------This Style is for Address Of Customer--------------------------------------------------------- */
+  inside_shop_button_box: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '50@s'
+  },
 
+  inside_shop_button_text: {
+    backgroundColor: Color.COLOR,
+    color: 'white',
+    paddingVertical: '10@s',
+    paddingHorizontal: '50@s',
+    borderRadius: '5@s'
+  },
+
+  get_detail_button_box: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  get_detail_button_text: {
+    backgroundColor: Color.COLOR,
+    color: 'white',
+    paddingVertical: '10@s',
+    paddingHorizontal: '20@s',
+    borderRadius: '5@s'
+  },
+
+  /*---------------------------------------------This Style is for Stock List--------------------------------------------------------- */
+
+  // stock_text_box: {
+  //   fontSize: 15,
+  //   color: 'black'
+  // },
+
+  // stock_details: {
+  //   justifyContent: 'center',
+  //   alignItems: 'flex-start',
+  //   flexDirection: 'column',
+  //   marginTop: 15
+  // },
+  // stock_main: {
+  //   flexDirection: 'row',
+  //   backgroundColor: '#0099cc',
+  //   borderColor: 'silver',
+  //   borderWidth: 1
+  // },
+
+  // buttonBox1: {
+  //   paddingVertical: 10,
+  //   marginVertical: 1,
+  //   backgroundColor: Color.COLOR,
+  //   borderRadius: 10
+  // },
+
+  // buttonName1: {
+  //   fontSize: 20,
+  //   color: Color.BUTTON_NAME_COLOR,
+  //   marginRight: 10
+
+  // },
+
+
+  // stock_main1: {
+  //   width: '100%',
+  //   borderWidth: 2,
+  //   borderColor: '#0099cc',
+  //   borderRadius: 10
+
+  // },
+  // stock_main_text: {
+  //   flexDirection: 'row',
+  //   backgroundColor: '#0099cc',
+  //   borderColor: 'silver'
+
+  // },
+
+  // stock_box: {
+  //   backgroundColor: '#0099cc',
+  //   borderColor: 'silver',
+  //   width: '53%',
+  //   justifyContent: 'center',
+  //   alignItems: 'center'
+  // },
+
+  // stock_box1: {
+  //   backgroundColor: '#0099cc',
+  //   borderRightColor: 'silver',
+  //   borderRightWidth: 1,
+  //   padding: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   width: '23%'
+  // },
+  // stock_box2: {
+  //   backgroundColor: '#0099cc',
+  //   borderLeftColor: 'silver',
+  //   borderLeftWidth: 1,
+  //   padding: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   width: '23%'
+  // },
+
+
+  // stock_text: {
+  //   fontSize: 15,
+  //   color: 'white',
+  //   padding: 5
+
+  // },
+  // stock_text1: {
+  //   fontSize: 20,
+  //   color: '#0099cc',
+  //   padding: 5
+
+  // },
+
+  // out_of_stock_main: {
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   display: 'flex',
+  //   flexDirection: 'row',
+  //   backgroundColor: '#0099cc'
+  // },
+  // out_of_stock: {
+  //   borderRightWidth: 1,
+  //   borderRightColor: 'silver',
+  //   width: '23%',
+  //   alignItems: 'center'
+  // },
+  // out_of_stock1: {
+  //   width: '33%',
+  //   borderLeftColor: 'silver',
+  //   borderLeftWidth: 2,
+  //   alignItems:'center'
+  // },
+
+  // out_of_stock2: {
+  //   width: '50%',
+  //   alignItems:'center'
+  // },
+  // out_of_stock_text: {
+  //   fontSize: 20,
+  //   color: 'white',
+  //   padding:5
+  // },
+
+  // out_of_stock_text1: {
+  //   fontSize: 20,
+  //   color: 'white',
+  //   padding:5
+  // },
+  stock_text_box: {
+    fontSize: 15,
+    color: 'black'
+  },
+  stock_details: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+    marginTop: 15
+  },
+  stock_main: {
+    flexDirection: 'row',
+    // backgroundColor: '#0099cc',
+    borderColor: 'silver',
+    borderWidth: 0.5
+
+  },
+
+  stock_main1: {
+    width: '100@s',
+    borderWidth: 2,
+    borderColor: '#0099cc',
+    borderRadius: 10
+
+  },
+  stock_main_text: {
+    flexDirection: 'row',
+    backgroundColor: '#0099cc',
+    borderColor: 'silver'
+
+  },
+
+  stock_box: {
+    // backgroundColor: '#0099cc',
+    borderColor: 'silver',
+    width: '53%',
+    justifyContent: 'center'
+  },
+
+  stock_box1: {
+    // backgroundColor: '#0099cc',
+    borderRightColor: 'silver',
+    borderRightWidth: 0.5,
+    padding: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '60@s'
+  },
+  stock_box2: {
+    // backgroundColor: '#0099cc',
+    borderLeftColor: 'silver',
+    borderLeftWidth: 0.7,
+    padding: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100@s'
+  },
+
+  stock_text: {
+    fontSize: '18@s',
+    color: '#0099cc',
+    padding: '5@msr',
+    fontWeight: 'bold'
+  },
+
+  stock_text1: {
+    padding: 10,
+    color: 'black',
+    fontSize: '16@s'
+  },
+
+  /*---------------------------------------------This Style is for Address Of Customer--------------------------------------------------------- */
 
   address_container: {
     borderWidth: 0.5,
@@ -1492,6 +1743,17 @@ export const Styles = ScaledSheet.create({
     fontSize: 15,
   },
 
+  order_button_text: {
+    backgroundColor: Color.COLOR,
+    fontSize: '18@s',
+    color: '#fff',
+    paddingHorizontal: '7@s',
+    paddingVertical: '5@s',
+    alignSelf: 'center',
+    borderRadius: '5@s',
+    marginTop: '3@s'
+  },
+
   /*---------------------------------------------This Style is for Add Product Image--------------------------------------------------------- */
   image_view: {
     // width: '100%',
@@ -1701,7 +1963,7 @@ export const Styles = ScaledSheet.create({
   },
 
   payment_selection_header: {
-    fontSize: '20@s',
+    fontSize: '16@s',
     fontWeight: 'bold',
     marginBottom: '10@s'
   },

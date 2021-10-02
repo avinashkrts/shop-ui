@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet } from "react-native";
+import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet, BackHandler } from "react-native";
 import { Avatar, List, Divider, ListItemElement, ThemedComponentProps } from "react-native-ui-kitten";
 import { CustomerAllProductScreenProps } from "../../../navigation/customer-navigator/customerAllProduct.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
@@ -58,7 +58,6 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
 
     async componentDidMount() {
         const { allData } = this.state;
-
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
         // Alert.alert(""+userData.userId);
@@ -410,7 +409,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
                         >
 
                             <View style={Styles.all_Item_Main_View}>
-                                {null != allProduct ? allProduct.slice(0).reverse().map((data, index) => {
+                                {null != allProduct ? allProduct.map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
                                             <View style={{ height: 200 }}>

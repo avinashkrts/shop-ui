@@ -13,6 +13,7 @@ import Axios from "axios";
 import Modal from "react-native-modal";
 import { AppRoute } from "../../../navigation/app-routes";
 import { Notification } from "../../../components/notification";
+import { scale } from "react-native-size-matters";
 
 export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -142,79 +143,91 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
 
                         <View style={[Styles.order_list_image, Styles.center]}>
                             <TouchableOpacity onPress={() => { this.handleCartSubmit(item.cartId) }}>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.userId  + '_' + this.state.customerType + '_avatar.png' }} style={Styles.order_image} />
+                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/avatar/' + item.userId + '_' + this.state.customerType + '_avatar.png' }} style={Styles.order_image} />
                             </TouchableOpacity>
                         </View>
 
                         <View style={Styles.list_name}>
                             <View style={[Styles.list_price, { width: '96%' }]}>
-                                <Text style={Styles.customer_list_name_text}>{item.userName}</Text>
+                                <View style={{ width: '55%', flexDirection: 'row', flexWrap: 'wrap' }}>
+                                    <Text style={Styles.customer_list_name_text}>{item.userName}</Text>
+                                </View>
                                 {null != this.state.orderstatusData ? this.state.orderstatusData.map((orderStatus, oIndex) => {
                                     if (orderStatus.lookUpName === "PLACED") {
                                         // Alert.alert(''+ item.orderStatus)
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text onPress={() => { this.handleOrderStatus('ACCEPT', item.cartId, item.userId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginBottom: 3 }]}>{LableText.ACCEPT}</Text>
+                                                // <View style={{ width: '45%', flexWrap: 'wrap' }}>
+                                                    <Text onPress={() => { this.handleOrderStatus('ACCEPT', item.cartId, item.userId) }} style={Styles.order_button_text}>{LableText.ACCEPT}</Text>
+                                                // </View>
                                             )
                                         }
                                     }
                                 }) : null}
                             </View>
 
-                            <View style={[Styles.list_price, { width: '96%' }]}>
-                                <Text style={Styles.customer_list_price_text}>{item.mobileNo}</Text>
-                                <Text style={Styles.customer_list_price_text}>Rs: {item.payableAmount}</Text>
+                            <View style={[Styles.list_price, { width: '96%', }]}>
+                                <View style={{ width: '55%', flexDirection: 'column', flexWrap: 'wrap' }}>
+                                    <Text style={Styles.customer_list_price_text}>{item.mobileNo}</Text>
+                                    <Text style={Styles.customer_list_price_text}>Rs: {item.payableAmount}</Text>
+                                </View>
+                                {/* <View style={{ width: '45%', flexWrap: 'wrap', alignItems: 'flex-end' }}> */}
                                 {null != this.state.orderstatusData ? this.state.orderstatusData.map((orderStatus, oIndex) => {
                                     if (orderStatus.lookUpName === "PLACED") {
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text onPress={() => { this.toggleReject(item.cartId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.REJECT}</Text>
+                                                <Text onPress={() => { this.toggleReject(item.cartId) }} style={Styles.order_button_text}>{LableText.REJECT}</Text>
                                             )
                                         }
                                     } else if (orderStatus.lookUpName === "REJECTED") {
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Rejected</Text>
+                                                <Text style={Styles.order_button_text}>Rejected</Text>
                                             )
                                         }
                                     } else if (orderStatus.lookUpName === "ACCEPTED") {
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Accepted</Text>
+                                                <Text style={Styles.order_button_text}>Accepted</Text>
                                             )
                                         }
                                     } else if (orderStatus.lookUpName === "PACKED") {
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Packed</Text>
+                                                <Text style={Styles.order_button_text}>Packed</Text>
                                             )
                                         }
                                     } else if (orderStatus.lookUpName === "SHIPPED") {
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Shipped</Text>
+                                                <Text style={Styles.order_button_text}>Shipped</Text>
                                             )
                                         }
                                     } else if (orderStatus.lookUpName === "DELIVERED") {
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Delivered</Text>
+                                                <Text style={Styles.order_button_text}>Delivered</Text>
                                             )
                                         }
                                     } else if (orderStatus.lookUpName === "RECEIVED") {
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Received</Text>
+                                                <Text style={Styles.order_button_text}>Received</Text>
                                             )
                                         }
                                     } else if (orderStatus.lookUpName === "DENIED") {
                                         if (orderStatus.lookUpId == item.orderStatus) {
                                             return (
-                                                <Text style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Denied</Text>
+                                                <Text style={Styles.order_button_text}>Denied</Text>
                                             )
                                         }
                                     }
                                 }) : null}
+                                {/* </View> */}
+
+                            </View>
+                            <View style={[{ justifyContent: 'flex-start' }]}>
+                                <Text style={[{ backgroundColor: '#0099cc', alignSelf: 'flex-start', color: '#fff', borderRadius: scale(5), paddingVertical: scale(3), paddingHorizontal: scale(5) }]} onPress={() => { this.handleCartSubmit(item.cartId) }} >Get Detail</Text>
                             </View>
                         </View>
                     </View>
@@ -238,7 +251,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
                                 />
                             </View>
                             <View style={[Styles.center, { marginTop: 30 }]}>
-                                <Text onPress={() => { this.handleOrderStatus('REJECT', item.cartId, item.userId) }} style={[{ backgroundColor: Color.COLOR, fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>{LableText.SUBMIT}</Text>
+                                <Text onPress={() => { this.handleOrderStatus('REJECT', item.cartId, item.userId) }} style={Styles.order_button_text}>{LableText.SUBMIT}</Text>
                             </View>
                         </View>
                     </Modal>
