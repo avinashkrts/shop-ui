@@ -48,9 +48,13 @@ import { scale } from 'react-native-size-matters';
 import { AsyncStorage } from 'react-native';
 import { LableText } from '../../constants';
 import { CustomerProfileDrawerNavigator } from './customerProfile.Navigator';
+import { RegistrationNavigator } from '../registration.navigator';
+import { GetProductByIdNavigator } from './getProdutById.navigator';
 
 type CustomerHomeDrawerNavigatorParams = {
   [AppRoute.CUSTOMER_HOME]: undefined;
+  [AppRoute.REGISTRATION]: undefined;
+  [AppRoute.GET_PRODUCT]: undefined;
   [AppRoute.CUSTOMER_ORDER_NAV]: undefined;
   [AppRoute.CUSTOMER_ADDRESS]: undefined;
   [AppRoute.CUSTOMER_CART]: undefined;
@@ -76,6 +80,11 @@ type CustomerHomeBottomTabsNavigatorParams = {
   [AppRoute.WISH_LIST]: undefined;
 }
 
+// export interface RegistrationNavigatorScreenProps {
+//   navigation: DrawerNavigationProp<CustomerHomeBottomTabsNavigatorParams, AppRoute.REGISTRATION>;
+//   route: RouteProp<CustomerHomeBottomTabsNavigatorParams, AppRoute.REGISTRATION>;
+// }
+
 export type CustomerAllShopTabNavigationProps = CompositeNavigationProp<
   BottomTabNavigationProp<CustomerHomeBottomTabsNavigatorParams, AppRoute.CUSTOMER_ALL_SHOP>,
   DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_HOME>
@@ -89,6 +98,11 @@ export type CombinedProductTabNavigationProps = CompositeNavigationProp<
 export interface CustomerOrderNavigatorScreenProps {
   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER_NAV>;
   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ORDER_NAV>;
+}
+
+export interface GetProductByIdNavigatorScreenProps {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.GET_PRODUCT>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.GET_PRODUCT>;
 }
 
 export type BillBookTabNavigationProps = CompositeNavigationProp<
@@ -109,6 +123,11 @@ export type WishListTabNavigationProps = CompositeNavigationProp<
 export interface CustomerAddressScreenProps {
   navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ADDRESS>;
   route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.CUSTOMER_ADDRESS>;
+}
+
+export interface CustomerRegistrationNavigatorScreenProps {
+  navigation: DrawerNavigationProp<CustomerHomeDrawerNavigatorParams, AppRoute.REGISTRATION>;
+  route: RouteProp<CustomerHomeDrawerNavigatorParams, AppRoute.REGISTRATION>;
 }
 
 export interface CustomerWalletScreenProps {
@@ -216,6 +235,18 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
     />
 
     <Drawer.Screen
+      name={AppRoute.REGISTRATION}
+      component={RegistrationNavigator}
+      options={{ title: 'Business Register', drawerIcon: ProfileIcon }}
+    />
+
+    <Drawer.Screen
+      name={AppRoute.GET_PRODUCT}
+      component={GetProductByIdNavigator}
+      options={{ title: 'Search Product', drawerIcon: ProfileIcon }}
+    />
+
+    <Drawer.Screen
       name={AppRoute.CUSTOMER_PROFILE}
       component={CustomerProfileDrawerNavigator}
       options={{ title: 'Profile', drawerIcon: ProfileIcon }}
@@ -225,8 +256,14 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
       name={AppRoute.CUSTOMER_ADDRESS}
       component={CustomerAddressScreen}
       options={{ title: 'Address', drawerIcon: AddressIcon }}
-
     />
+
+    <Drawer.Screen
+      name={AppRoute.CUSTOMER_NOTIFICATION}
+      component={CustomerNotificationScreen}
+      options={{ title: 'Notification', drawerIcon: AddressIcon }}
+    />
+
     <Drawer.Screen
       name={AppRoute.CUSTOMER_ORDER_NAV}
       component={CustomerOrderNavigator}

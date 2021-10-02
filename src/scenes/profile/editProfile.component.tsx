@@ -46,6 +46,7 @@ import { PlusCircle } from '../../assets/icons';
 import FilePickerManager from 'react-native-file-picker';
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
+import {LableText} from '../../constants/LabelConstants';
 
 const allTodos: TimeLineData[] = [
     TimeLineData.getAllTimelineData()
@@ -259,7 +260,7 @@ export class EditProfileScreen extends React.Component<EditProfileScreenProps & 
 
                         <View style={styles.textInput}>
                             <Item floatingLabel>
-                                <Label>Current Location</Label>
+                                <Label>{LableText.USE_CURRENT_LOCATION}</Label>
                                 <TextInput></TextInput>
                             </Item>
                         </View>

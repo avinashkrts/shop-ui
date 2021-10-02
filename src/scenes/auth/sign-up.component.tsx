@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Image, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Alert, View, Image, TextInput, TouchableOpacity, AsyncStorage, PermissionsAndroid } from 'react-native';
 import { Text } from 'react-native-ui-kitten';
 import { SafeAreaLayout, SaveAreaInset, } from '../../components/safe-area-layout.component';
 import { Content } from 'native-base';
@@ -11,6 +11,8 @@ import { Styles } from '../../assets/styles'
 import { AppConstants, Color, LableText, Placeholder } from '../../constants';
 import DeviceInfo from 'react-native-device-info';
 import { scale } from 'react-native-size-matters';
+import Geolocation from 'react-native-geolocation-service';
+import { StackActions } from '@react-navigation/routers';
 
 const data = [
   { text: 'Candidate' },
@@ -35,8 +37,41 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
     this.onPasswordIconPress = this.onPasswordIconPress.bind(this);
   }
 
-  componentDidMount() {
+ async componentDidMount() {
     let deviceId = DeviceInfo.getUniqueId();
+
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: "Milaan Location Permission",
+          message:
+            "Milaan needs access to your Location " +
+            "so you can get your nearest shop.",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition((position) => {
+          var lat = position.coords.latitude
+          var long = position.coords.longitude
+          AsyncStorage.setItem('latitude', String(lat))
+          AsyncStorage.setItem('longitude', String(long))
+          AsyncStorage.setItem('location', 'Current Location')
+          // console.log('location', lat, position.coords.accuracy)
+        }, (err) => {
+
+        }, { enableHighAccuracy: true })
+      } else {
+        console.log("Location permission denied");
+        Alert.alert("Please give location permition to use this application.")
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+
     axios({
       method: 'GET',
       url: AppConstants.API_BASE_URL + '/api/lookup/getallusertype',
@@ -74,7 +109,8 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
         } else {
           AsyncStorage.setItem('phoneForOtp', JSON.stringify(mobileNo), () => {
             Alert.alert('User account created successfully, login with your credential.');
-            this.props.navigation.navigate(AppRoute.SIGN_IN);
+            const pushAction = StackActions.push(AppRoute.SIGN_IN);
+            this.props.navigation.dispatch(pushAction);
           })
         }
       }, (error) => {

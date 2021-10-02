@@ -18,7 +18,7 @@ import Modal from "react-native-modal";
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { CombinedOfferScreenProps } from "../../../navigation/combined-navigator/combinedOffers.navigator";
-
+import { LableText } from '../../../constants/LabelConstants'
 
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
@@ -39,7 +39,7 @@ export class CombinedOffersScreen extends Component<CombinedOfferScreenProps, Th
             search: '',
             lat: '',
             long: '',
-            location: 'Current Location',
+            location: LableText.USE_CURRENT_LOCATION,
             searchVisible: false,
             allData: [
                 {
@@ -317,7 +317,7 @@ export class CombinedOffersScreen extends Component<CombinedOfferScreenProps, Th
                     lat: position.coords.latitude,
                     long: position.coords.longitude,
                     searchVisible: false,
-                    location: 'Current Location'
+                    location: LableText.USE_CURRENT_LOCATION
                 })
             }, (error) => {
                 Alert.alert("Server error.")
@@ -388,7 +388,7 @@ export class CombinedOffersScreen extends Component<CombinedOfferScreenProps, Th
                     </View>
                     <View style={{ flex: 1 }}>
                         <View>
-                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>Current Location</Text>
+                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>{LableText.USE_CURRENT_LOCATION}</Text>
                         </View>
                         <GooglePlacesAutocomplete
                             placeholder='Search'
@@ -403,7 +403,7 @@ export class CombinedOffersScreen extends Component<CombinedOfferScreenProps, Th
                                 language: 'en',
                             }}
                         // currentLocation={true}
-                        // currentLocationLabel='Current location'
+                        // currentLocationLabel=LableText.USE_CURRENT_LOCATION
                         />
                         {lat !== '' && long !== '' ?
                             <>

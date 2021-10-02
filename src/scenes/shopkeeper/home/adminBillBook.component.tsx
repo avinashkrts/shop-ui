@@ -49,7 +49,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
             }).then((response) => {
                 if (null != response.data) {
                     this.setState({
-                        transactionData: response.data,
+                        transactionData: response.data.reverse(),
                     })
                 }
             }, (error) => {
@@ -149,7 +149,7 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                         }
                     >
                         {null != transactionData ? transactionData.map((data, index) => {
-                            data.paymentMode == onlinePay && (data.transactionType == shopping ) ? total = total + data.totalAmount : data.paymentMode == walletPay && (data.transactionType == adminRejected || data.transactionType == userDenied || data.transactionType == withdrawRequest || data.transactionType == planPurchase )  ? total = total - data.totalAmount : null
+                            data.paymentMode == onlinePay && (data.transactionType == shopping) ? total = total + data.totalAmount : data.paymentMode == walletPay && (data.transactionType == adminRejected || data.transactionType == userDenied || data.transactionType == withdrawRequest || data.transactionType == planPurchase) ? total = total - data.totalAmount : null
                             return (
                                 <View>
                                     <Divider />
@@ -167,23 +167,25 @@ export class AdminBillBookScreen extends Component<AdminBillBookScreenProps, The
                                             </View>
                                             <View style={Styles.bill_column_3}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design}>{data.id}</Text>
+                                                <Text style={Styles.text_design}>
+                                                    {data.transactionType ? data.transactionType == shopping || data.transactionType == adminRejected || data.transactionType == userDenied ? data.cartId : data.transactionType == planPurchase ? data.purchaseId : data.transactionType == withdrawRequest || data.transactionType == withdrawDone ? data.withdrawId : null : null}
+                                                </Text>
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_4}>
                                                 {/* <View style={Styles.bill_box}> */}
                                                 {data.paymentMode == refund || data.paymentMode == walletPay ?
-                                                    <Text style={Styles.text_design_red}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
+                                                    <Text style={Styles.text_design_red}>{data.totalAmount}</Text> : <Text style={Styles.text_design}> -- </Text>}
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_5}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                {data.paymentMode == onlinePay || data.paymentMode == cashPay ? <Text style={Styles.text_design_green}>{data.amount}</Text> : <Text style={Styles.text_design}> -- </Text>}
+                                                {data.paymentMode == onlinePay || data.paymentMode == cashPay ? <Text style={Styles.text_design_green}>{data.totalAmount}</Text> : <Text style={Styles.text_design}> -- </Text>}
                                                 {/* </View> */}
                                             </View>
                                             <View style={Styles.bill_column_6}>
                                                 {/* <View style={Styles.bill_box}> */}
-                                                <Text style={Styles.text_design_green}>{data.paymentMode ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == walletPay && data.transactionType == adminRejected  ? 'Rejected' : data.paymentMode == walletPay && data.transactionType == userDenied  ? 'Not Delivered' : data.paymentMode == walletPay && data.transactionType == withdrawRequest ? 'Withdraw' : data.paymentMode == walletPay && data.transactionType == planPurchase ? 'Recharge' : null : null}</Text>
+                                                <Text style={Styles.text_design_green}>{data.paymentMode ? data.paymentMode == onlinePay ? 'Online' : data.paymentMode == cashPay ? 'Cash' : data.paymentMode == walletPay && data.transactionType == adminRejected ? 'Rejected' : data.paymentMode == walletPay && data.transactionType == userDenied ? 'Not Delivered' : data.paymentMode == walletPay && data.transactionType == withdrawRequest ? 'Withdraw' : data.paymentMode == walletPay && data.transactionType == planPurchase ? 'Recharge' : null : null}</Text>
                                                 {/* </View> */}
                                             </View>
                                         </View>

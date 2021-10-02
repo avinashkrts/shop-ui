@@ -238,17 +238,18 @@ export class AddCustomerScreen extends React.Component<AddCustomerScreenProps & 
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
-                <Content style={Styles.customer_content}
+                {/* <Content style={Styles.customer_content}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
                             onRefresh={this._onRefresh.bind(this)}
                         />
                     }
-                >
-                    <View style={Styles.center}>
-                        <View style={[Styles.center, { flex: 1 }]}>
-                            <View style={[Styles.profile, Styles.center]}>
+                > */}
+                <View style={Styles.center}>
+
+                    <View style={[Styles.center, { flex: 1 }]}>
+                        {/* <View style={[Styles.profile, Styles.center]}>
                                 <View style={Styles.categoryImage}>
                                     <View>
                                         <TouchableOpacity onPress={() => { this.selectPhoto() }}>
@@ -258,46 +259,47 @@ export class AddCustomerScreen extends React.Component<AddCustomerScreenProps & 
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                            </View>
+                            </View> */}
 
-                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+
+                        {/* <View style={[Styles.inputTextView, { width: '90%' }]}>
                                 <TextInput
                                     style={[Styles.inputText, { width: '90%' }]}
                                     placeholder={LableText.FIRST_NAME}
                                     value={firstName}
                                     onChangeText={(value) => { this.setState({ firstName: value }) }}
                                 />
-                            </View>
+                            </View> */}
 
-                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                        {/* <View style={[Styles.inputTextView, { width: '90%' }]}>
                                 <TextInput
                                     style={[Styles.inputText, { width: '90%' }]}
                                     placeholder={LableText.LAST_NAME}
                                     value={lastName}
                                     onChangeText={(value) => { this.setState({ lastName: value }) }}
                                 />
-                            </View>
+                            </View> */}
 
-                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                        {/* <View style={[Styles.inputTextView, { width: '90%' }]}>
                                 <TextInput
                                     style={[Styles.inputText, { width: '90%' }]}
                                     placeholder={LableText.EMAIL_ID}
                                     value={emailId}
                                     onChangeText={(value) => { this.setState({ emailId: value }) }}
                                 />
-                            </View>
+                            </View> */}
 
 
-                            <View style={[Styles.inputTextView, { width: '90%' }]}>
+                        {/* <View style={[Styles.inputTextView, { width: '90%' }]}>
                                 <TextInput
                                     style={[Styles.inputText, { width: '90%' }]}
                                     placeholder={LableText.MOBILE}
                                     value={mobileNo}
                                     onChangeText={(value) => { this.setState({ mobileNo: value }) }}
                                 />
-                            </View>
+                            </View> */}
 
-                            {/* <View style={[Styles.inputTextView, { width: '90%' }]}>
+                        {/* <View style={[Styles.inputTextView, { width: '90%' }]}>
                                 <TextInput
                                     style={[Styles.inputText, { width: '90%' }]}
                                     placeholder={LableText.ADDRESS}
@@ -307,16 +309,19 @@ export class AddCustomerScreen extends React.Component<AddCustomerScreenProps & 
 
 
 
-                            <View style={{ flexDirection: 'row' }}>
+                        {/* <View style={{ flexDirection: 'row' }}>
                                 <View style={[Styles.center, { marginHorizontal: '10%', width: '100%' }]}>
                                     <TouchableOpacity style={[Styles.buttonBox, Styles.center, { width: '50%' }]} onPress={() => { this.handleAddCustomer() }}>
                                         <Text style={Styles.buttonName}>{LableText.ADD}</Text>
                                     </TouchableOpacity>
                                 </View>
-                            </View>
-                        </View>
+                            </View> */}
                     </View>
-                </Content>
+                    <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>This page will be added soon.</Text>
+                    </View>
+                </View>
+                {/* </Content> */}
             </SafeAreaLayout>
         )
     }

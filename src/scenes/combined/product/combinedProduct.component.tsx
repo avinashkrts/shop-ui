@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet, PermissionsAndroid } from "react-native";
+import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet, PermissionsAndroid, BackHandler } from "react-native";
 import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
@@ -19,11 +19,13 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Header } from 'native-base';
 import { StackActions } from "@react-navigation/native";
 import { scale } from "react-native-size-matters";
+import { LableText } from '../../../constants/LabelConstants';
 
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
 
 export class CombinedProductScreen extends Component<CombinedProductScreenProps, ThemedComponentProps & any> {
+    backHandler: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -48,25 +50,18 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                     method: 'GET',
                     variable: 'allMeasurement',
                 }
-               ],
+            ],
             scrollY: new Animated.Value(0),
             single: false,
             shopName: '',
-        }
+        };
 
         this._onRefresh = this._onRefresh.bind(this);
         this.handleAddToCart = this.handleAddToCart.bind(this);
     }
 
-    // UNSAFE_componentWillMount() {
-    //     // const { shopId } = this.props.route.params
-    //     // Alert.alert(""+shopId)
-    //     console.log('route DAta', this.props.route.params)
-    // }
-
     async componentDidMount() {
         const { allData } = this.state;
-
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
 
@@ -97,7 +92,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
             }).then((response) => {
                 if (null != response.data) {
                     this.setState({
-                        allProduct: response.data,
+                        allProduct: response.data.reverse(),
                     })
                 }
             }, (error) => {
@@ -131,47 +126,28 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
             });
         } else {
             try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                    {
-                        title: "Cool Photo App Camera Permission",
-                        message:
-                            "Cool Photo App needs access to your camera " +
-                            "so you can take awesome pictures.",
-                        buttonNeutral: "Ask Me Later",
-                        buttonNegative: "Cancel",
-                        buttonPositive: "OK"
-                    }
-                );
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    Geolocation.getCurrentPosition((position) => {
-                        var lat = position.coords.latitude
-                        var long = position.coords.longitude
-                        console.log('location', lat, position.coords.accuracy)
+                var lat = await AsyncStorage.getItem('latitude')
+                var long = await AsyncStorage.getItem('longitude')
+                var location = await AsyncStorage.getItem('location')
 
-                        axios({
-                            method: 'GET',
-                            url: AppConstants.API_BASE_URL + '/api/product/getbylocation/' + lat + '/' + long,
-                        }).then((response) => {
-                            this.setState({
-                                allProduct: response.data,
-                                lat: position.coords.latitude,
-                                long: position.coords.longitude,
-                                location: 'Current Location',
-                                single: false
-                            })
-                        }, (error) => {
-                            Alert.alert("Server error.")
-                        });
-                    }, (erroe) => {
-
-                    }, { enableHighAccuracy: true })
-                } else {
-                    console.log("Camera permission denied");
-                }
+                axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/product/getbylocation/' + lat + '/' + long,
+                }).then((response) => {
+                    this.setState({
+                        allProduct: response.data,
+                        lat: lat,
+                        long: long,
+                        location: location,
+                        single: false
+                    })
+                }, (error) => {
+                    Alert.alert("Server error.")
+                });
             } catch (err) {
                 console.warn(err);
             }
+
             axios({
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
@@ -206,7 +182,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                 method: data.method,
                 url: AppConstants.API_BASE_URL + data.url,
             }).then((response) => {
-               if (data.variable === 'allMeasurement') {
+                if (data.variable === 'allMeasurement') {
                     console.log(data.variable, response.data)
                     this.setState({
                         allMeasurement: response.data,
@@ -350,28 +326,28 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
         // Alert.alert('')
         const { search, single, shopId, lat, long } = this.state;
         single ?
-        axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/product/search/offer/shopId/' + shopId + '/'  + search
-        }).then((response) => {
-            this.setState({
-                allProduct: response.data,
-                search: ''
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/product/search/offer/shopId/' + shopId + '/' + search
+            }).then((response) => {
+                this.setState({
+                    allProduct: response.data,
+                    search: ''
+                })
+            }, (error) => {
+                // Alert.alert("Server error.")
             })
-        }, (error) => {
-            // Alert.alert("Server error.")
-        })
-        : axios({
-            method: 'GET',
-            url: AppConstants.API_BASE_URL + '/api/product/search/' + search + '/' + lat + '/' + long,
-        }).then((response) => {
-            this.setState({
-                allProduct: response.data,
-                search: ''
-            })
-        }, (error) => {
-            // Alert.alert("Server error.")
-        });
+            : axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/product/search/' + search + '/' + lat + '/' + long,
+            }).then((response) => {
+                this.setState({
+                    allProduct: response.data,
+                    search: ''
+                })
+            }, (error) => {
+                // Alert.alert("Server error.")
+            });
     }
 
     toggleModal() {
@@ -388,6 +364,10 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
         }).then((response) => {
             const { data: { result: { geometry: { location } } } } = response
             const { lat, lng } = location
+            AsyncStorage.setItem('latitude', String(lat))
+            AsyncStorage.setItem('longitude', String(lng))
+            AsyncStorage.setItem('location', String(data.structured_formatting.main_text))
+
             console.log('Location', data.structured_formatting.main_text)
             axios({
                 method: 'GET',
@@ -409,7 +389,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
         })
     }
 
-    onCurrentLocation() {
+    async onCurrentLocation() {
         console.log('Map Clicked')
         this.toggleModal();
         // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
@@ -417,6 +397,9 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
             var lat = position.coords.latitude
             var long = position.coords.longitude
             console.log('location', lat, position.coords.accuracy)
+            AsyncStorage.setItem('latitude', String(lat))
+            AsyncStorage.setItem('longitude', String(long))
+            AsyncStorage.setItem('location', 'Current Location')
 
             axios({
                 method: 'GET',
@@ -483,7 +466,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                     </View>
                     <View style={{ flex: 1 }}>
                         <View>
-                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>Current Location</Text>
+                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>{LableText.USE_CURRENT_LOCATION}</Text>
                         </View>
                         <GooglePlacesAutocomplete
                             placeholder='Search'
@@ -498,7 +481,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                 language: 'en',
                             }}
                         // currentLocation={true}
-                        // currentLocationLabel='Current location'
+                        // currentLocationLabel=LableText.USE_CURRENT_LOCATION
                         />
                         {lat !== '' && long !== '' ?
                             <>
@@ -507,15 +490,15 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                     provider={PROVIDER_GOOGLE}
                                     showsUserLocation={true}
                                     initialRegion={{
-                                        latitude: lat,
-                                        longitude: long,
+                                        latitude: Number(lat),
+                                        longitude: Number(long),
                                         latitudeDelta: 0.0922,
                                         longitudeDelta: 0.0421,
                                     }}
 
                                     region={{
-                                        latitude: lat,
-                                        longitude: long,
+                                        latitude: Number(lat),
+                                        longitude: Number(long),
                                         latitudeDelta: 0.0922,
                                         longitudeDelta: 0.0421,
                                     }}
@@ -523,8 +506,8 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
 
                                     <Marker
                                         coordinate={{
-                                            latitude: lat,
-                                            longitude: long
+                                            latitude: Number(lat),
+                                            longitude: Number(long),
                                         }
                                         }
                                     >
@@ -668,11 +651,11 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
 
                                             <View style={Styles.all_Item_Detail}>
                                                 <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                    <View style={{ flexDirection: 'row'}}>
+                                                    <View style={{ flexDirection: 'row' }}>
                                                         {null != allBrand ? allBrand.map((brand, index) => {
                                                             if (brand.id == data.brand) {
                                                                 return (
-                                                                    <View style={{width: '80%', flexWrap: 'wrap'}}>
+                                                                    <View style={{ width: '80%', flexWrap: 'wrap' }}>
                                                                         <Text style={{ color: '#000', marginTop: scale(5), fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
                                                                     </View>
                                                                 );
@@ -722,11 +705,24 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                                     }
 
                                                 </View>
-                                                <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId, data.shopId) }}>
-                                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
-                                                    </View>
-                                                </TouchableOpacity>
+                                                {data.stock ? data.stock > 0 ?
+                                                    <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId, data.shopId) }}>
+                                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                                        </View>
+                                                    </TouchableOpacity> :
+
+                                                    <TouchableOpacity >
+                                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
+                                                        </View>
+                                                    </TouchableOpacity> :
+                                                    <TouchableOpacity >
+                                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                }
                                             </View>
                                         </View>
                                     )

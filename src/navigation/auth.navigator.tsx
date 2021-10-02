@@ -13,9 +13,12 @@ import {
   LogoutScreen,
   ForgetPasswordScreen
 } from '../scenes/auth';
+import { ShopAddressScreen, ShopImageScreen } from '../scenes/registration';
 
 type AuthNavigatorParams = AppNavigatorParams & {
   [AppRoute.SIGN_IN]: undefined;
+  [AppRoute.SIGN_REG_IMAGE]: undefined;
+  [AppRoute.SIGN_REG_ADDRESS]: undefined;
   [AppRoute.OTP]: undefined;
   [AppRoute.SIGN_UP]: undefined;
   [AppRoute.FORGET_PASSWORD]: undefined;
@@ -25,6 +28,16 @@ type AuthNavigatorParams = AppNavigatorParams & {
 export interface SignInScreenProps {
   navigation: StackNavigationProp<AuthNavigatorParams, AppRoute.SIGN_IN>;
   route: RouteProp<AuthNavigatorParams, AppRoute.SIGN_IN>;
+}
+
+export interface SignRegAddressScreenProps {
+  navigation: StackNavigationProp<AuthNavigatorParams, AppRoute.SIGN_REG_ADDRESS>;
+  route: RouteProp<AuthNavigatorParams, AppRoute.SIGN_REG_ADDRESS>;
+}
+
+export interface SignRegImageScreenProps {
+  navigation: StackNavigationProp<AuthNavigatorParams, AppRoute.SIGN_REG_IMAGE>;
+  route: RouteProp<AuthNavigatorParams, AppRoute.SIGN_REG_IMAGE>;
 }
 
 export interface SignUpScreenProps {
@@ -56,5 +69,7 @@ export const AuthNavigator = (): React.ReactElement => (
     <Stack.Screen name={AppRoute.FORGET_PASSWORD} component={ForgetPasswordScreen}/>
     <Stack.Screen name={AppRoute.OTP} component={OtpScreen}/>
     <Stack.Screen name={AppRoute.LOG_OUT} component={LogoutScreen}/>
+    <Stack.Screen name={AppRoute.SIGN_REG_ADDRESS} component={ShopAddressScreen}/>
+    <Stack.Screen name={AppRoute.SIGN_REG_IMAGE} component={ShopImageScreen}/>
   </Stack.Navigator>
 );

@@ -47,7 +47,6 @@ import ImageSlider from 'react-native-image-slider';
 import Axios from 'axios';
 import { OffersDetailScreenProps } from '../../../navigation/customer-navigator/offers.navigator';
 import { SearchProductDetailScreenProps } from '../../../navigation/customer-navigator/getProdutById.navigator';
-import { StackActions } from '@react-navigation/routers';
 
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
@@ -80,7 +79,7 @@ const PROFILE_IMAGE_MAX_HEIGHT = 80;
 const PROFILE_IMAGE_MIN_HEIGHT = 40;
 
 
-export class CustProductDetailScreen extends React.Component<CustProductDetailScreenProps & SearchProductDetailScreenProps & OffersDetailScreenProps & ThemedComponentProps, MyState & any> {
+export class CustProductDetailScreen1 extends React.Component<SearchProductDetailScreenProps & ThemedComponentProps, MyState & any> {
     constructor(props) {
         super(props)
         this.state = {
@@ -98,7 +97,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
             productQuantity: '1',
             allData: [
                 {
-                    url: '/api/product/getproductbyproductidandshopid/' + this.props.route.params.productId + '/' + this.props.route.params.shopId,
+                    url: '/api/product/get/' + this.props.route.params.productId,
                     method: 'GET',
                     variable: 'allProduct',
                 },
@@ -310,7 +309,6 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
     //     </ListItem>
     // )
 
-
     navigationCart() {
         this.props.navigation.navigate(AppRoute.CART)
     }
@@ -328,11 +326,11 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
         // console.log("User Data",userData.userId)
 
         const productId = this.props.route.params.productId
-        const shop = this.props.route.params.shopId
+        console.log("Product Id",productId)
+        // const shop = this.props.route.params.shopId
         this.setState({
             userData: userData,
-            productId: productId,
-            shopId: shop
+            productId: productId
         })
 
         const logedIn = await AsyncStorage.getItem('logedIn');
@@ -359,12 +357,14 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                 if (data.variable === 'allProduct') {
                     console.log(data.variable, response.data)
                     const image1 = []
-                    response.data[0].image.map((image) => {
+                    if(response.data.image) {
+                    response.data.image.map((image) => {
                         image1.push(AppConstants.IMAGE_BASE_URL + '/product/' + image.avatarName)
                     })
+                }
                     console.log('allImages Url', image1)
                     this.setState({
-                        allProduct: response.data[0],
+                        allProduct: response.data,
                         allImages: image1
                     })
                 } else if (data.variable === 'allCategory') {
@@ -461,6 +461,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
 
     render() {
         const { isSelectedWish, userData, productQuantity, allMeasurement, allImages, wishList, allProduct, productId } = this.state
+        console.log('Data in render', allProduct)
         return (
             <SafeAreaLayout
                 style={[Styles.safeArea]}
@@ -521,7 +522,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                                             <Picker.Item label="10" value="10" />
                                         </Picker>
                                     </View>
-
+                                    
                                     <TouchableOpacity style={[Styles.product_2nd_buy_view, Styles.center]} onPress={() => { this.handleAddToCart(allProduct.shopId, allProduct.productId) }}>
                                         <View>
                                             <Text style={Styles.product_2nd_buy_text}>{LableText.CART}</Text>

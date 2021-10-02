@@ -49,50 +49,54 @@ export class CustomerProfileScreen extends Component<CustomerProfileScreenProps,
         let userData = JSON.parse(userDetail);
         // Alert.alert(userData.userId)
 
-        if (userData) {
-            // Alert.alert(''+userData.userId)
-            Axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/user/get/' + userData.userId
-            }).then((response) => {
-                this.setState({
-                    firstName: response.data.firstName,
-                    emailId: response.data.emailId,
-                    lastName: response.data.lastName,
-                    lastLoginDate: response.data.lastLoginDate,
-                    dob: response.data.dob,
-                    mobileNo: String(response.data.mobileNo),
-                    userId: userData.userId,
-                    userType: userData.userType
-                })
-            }, (error) => {
+        if (null != logedIn && logedIn === 'true') {
+            if (userData) {
+                // Alert.alert(''+userData.userId)
+                Axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/user/get/' + userData.userId
+                }).then((response) => {
+                    this.setState({
+                        firstName: response.data.firstName,
+                        emailId: response.data.emailId,
+                        lastName: response.data.lastName,
+                        lastLoginDate: response.data.lastLoginDate,
+                        dob: response.data.dob,
+                        mobileNo: String(response.data.mobileNo),
+                        userId: userData.userId,
+                        userType: userData.userType
+                    })
+                }, (error) => {
 
-            });
+                });
 
-            Axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/address/getby/userid/' + userData.userId
-            }).then((response) => {
-                this.setState({
-                    mobileNo: response.data[0].mobileNo,
-                    city: String(response.data[0].city),
-                    pinCode: String(response.data[0].pinCode),
-                    state: response.data[0].state,
-                    country: response.data[0].country,
-                    longitude: response.data[0].longitude,
-                    latitude: response.data[0].latitude,
-                    userType: response.data[0].userType,
-                    shopId: response.data[0].shopId,
-                    district: response.data[0].district,
-                    postOffice: response.data[0].postOffice,
-                    policeStation: response.data[0].policeStation,
-                    landmark: response.data[0].landmark,
-                    userId: response.data[0].userId,
-                    id: response.data[0].id
-                })
-            }, (error) => {
+                Axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/address/getby/userid/' + userData.userId
+                }).then((response) => {
+                    this.setState({
+                        mobileNo: response.data[0].mobileNo,
+                        city: String(response.data[0].city),
+                        pinCode: String(response.data[0].pinCode),
+                        state: response.data[0].state,
+                        country: response.data[0].country,
+                        longitude: response.data[0].longitude,
+                        latitude: response.data[0].latitude,
+                        userType: response.data[0].userType,
+                        shopId: response.data[0].shopId,
+                        district: response.data[0].district,
+                        postOffice: response.data[0].postOffice,
+                        policeStation: response.data[0].policeStation,
+                        landmark: response.data[0].landmark,
+                        userId: response.data[0].userId,
+                        id: response.data[0].id
+                    })
+                }, (error) => {
 
-            });
+                });
+            }
+        } else {
+            this.props.navigation.navigate(AppRoute.AUTH)
         }
     }
 

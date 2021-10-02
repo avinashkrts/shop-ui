@@ -12,6 +12,7 @@ import { Content } from "native-base";
 import Modal from "react-native-modal";
 import Axios from "axios";
 import { isDate } from "util";
+import { AppRoute } from "../../../navigation/app-routes";
 
 
 export class CustomerAddressScreen extends Component<CustomerAddressScreenProps, ThemedComponentProps & any> {
@@ -72,6 +73,8 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
             }, (error) => {
                 Alert.alert("Server error!.")
             });
+        } else {
+            this.props.navigation.navigate(AppRoute.AUTH)
         }
     }
 
@@ -102,7 +105,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
         } else if (street == null || street === '') {
             Alert.alert("Please enter street.");
         } else {
-
             Axios({
                 method: 'POST',
                 url: AppConstants.API_BASE_URL + '/api/address/create',
@@ -129,7 +131,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                 Alert.alert("Server error!");
             })
         }
-
     }
 
     handleEdit(index) {
@@ -187,7 +188,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
         } else if (street == null || street === '') {
             Alert.alert("Please enter street.");
         } else {
-
             Axios({
                 method: 'PUT',
                 url: AppConstants.API_BASE_URL + '/api/address/update',
@@ -218,7 +218,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                 Alert.alert("Server error!");
             })
         }
-
     }
 
     handleDefault(id) {
@@ -243,7 +242,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
         });
     }
 
-
     renderAddress = ({ item, index }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
@@ -255,10 +253,16 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
 
                     <View style={Styles.address_edit_pen}>
                         <View>
+                            <Text style={Styles.address_text}>Name :- {item.name}</Text>
+                            <Text style={Styles.address_text}>Mobile No. :- {item.mobileNo}</Text>
                             <Text style={Styles.address_text}>City :- {item.city}</Text>
+                            <Text style={Styles.address_text}>Street :- {item.street}</Text>
+                            <Text style={Styles.address_text}>Land Mark :- {item.landmark}</Text>
                             <Text style={Styles.address_text}>Post Office :- {item.postOffice}</Text>
-                            <Text style={Styles.address_text}>District :- {item.district} </Text>
+                            <Text style={Styles.address_text}>District :- {item.district}</Text>
+                            <Text style={Styles.address_text}>State :- {item.state} </Text>
                             <Text style={Styles.address_text}>Pincode :- {item.pinCode} </Text>
+                            <Text style={Styles.address_text}>Country :-{item.country}</Text>
                         </View>
 
                         <TouchableOpacity style={{ padding: 5 }} onPress={() => { this.handleEdit(index) }}>
@@ -358,7 +362,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                                 </View>
                             </View>
 
-
                             <View style={Styles.user_detail}>
                                 <View style={Styles.user_detail_header}>
                                     <Text style={Styles.user_detail_header_text}>{LableText.VILLAGE}</Text>
@@ -404,9 +407,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                                 </View>
                             </View>
 
-
-
-
                             <View style={Styles.user_detail}>
                                 <View style={Styles.user_detail_header}>
                                     <Text style={Styles.user_detail_header_text}>{LableText.POST_OFFICE}</Text>
@@ -421,8 +421,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                                     />
                                 </View>
                             </View>
-
-
 
                             <View style={Styles.user_detail}>
                                 <View style={Styles.user_detail_header}>
@@ -484,7 +482,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                                 </View>
                             </View>
 
-
                             {/* 
                             <View style={Styles.user_detail}>
                                 <View style={Styles.user_detail_header}>
@@ -530,12 +527,6 @@ export class CustomerAddressScreen extends Component<CustomerAddressScreenProps,
                                     />
                                 </View>
                             </View>
-
-
-
-
-
-
 
                             {null != edit ? edit ?
                                 <View style={{ marginHorizontal: '10%' }}>

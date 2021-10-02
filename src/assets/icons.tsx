@@ -24,6 +24,10 @@ export const PeopleIcon = (style): AntDesign => (
   <SimpleLineIcons size={20} name='people' />
 );
 
+export const FilterIcon = (style): AntDesign => (
+  <AntDesign size={scale(20)} color='#0099cc' name='filter' />
+);
+
 export const EditIcon = (style): AntDesign => (
   <MaterialIcons size={25} name='edit' />
 );
@@ -53,11 +57,11 @@ export const WishIcon = (style): AntDesign => (
 );
 
 export const MinusIcon = (style): AntDesign => (
-  <AntDesign size={20} name='minus' />
+  <AntDesign size={scale(20)} name='minus' />
 );
 
 export const AddIcon = (style): AntDesign => (
-  <AntDesign size={20} name='plus' />
+  <AntDesign size={scale(20)} name='plus' />
 );
 
 export const RupeeIcon = (style): AntDesign => (

@@ -18,15 +18,17 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import Geolocation from 'react-native-geolocation-service';
 import Modal from "react-native-modal";
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import {SearchableFlatList} from 'react-native-searchable-list';
+import { SearchableFlatList } from 'react-native-searchable-list';
 import { StackActions } from "@react-navigation/native";
 import { scale } from "react-native-size-matters";
 import OneSignal from "react-native-onesignal";
-
+import { LableText } from '../../../constants/LabelConstants';
+import { BackHandler } from "react-native";
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
 
 export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps, ThemedComponentProps & any> {
+    backHandler: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -43,7 +45,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
             lat: '',
             long: '',
             searchVisible: false,
-            location: 'Current location',
+            location: '',
             allData: [
                 {
                     url: '/api/lookup/getallmeasurementtype',
@@ -77,51 +79,61 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
         this.handleAddToCart = this.handleAddToCart.bind(this);
     }
 
+      backAction = () => {
+       
+        Alert.alert("Alert!", LableText.CUS_HOME_PAGE, [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel"
+          },
+          { text: "YES", onPress: () =>{
+             BackHandler.exitApp() 
+          }  
+         
+        }
+        ]);
+        return true;
+      };
+      componentWillUnmount() {
+       this.backHandler.remove();       
+      }
+
     async componentDidMount() {
+        this.props.navigation.addListener('focus', () => {
+            this.backHandler = BackHandler.addEventListener(
+                "hardwareBackPress",
+                this.backAction
+              );
+        })
+        this.props.navigation.addListener('blur', () => {
+            this.backHandler.remove();
+        })
+        
         const { allData } = this.state;
         // Alert.alert('')
         const clean = ''
         AsyncStorage.setItem('shopId', String(clean))
-        const pCount = await AsyncStorage.getItem('productCount')        
+        const pCount = await AsyncStorage.getItem('productCount')
         // console.log('pCount', pCount)
         try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                {
-                    title: "Cool Photo App Camera Permission",
-                    message:
-                        "Cool Photo App needs access to your camera " +
-                        "so you can take awesome pictures.",
-                    buttonNeutral: "Ask Me Later",
-                    buttonNegative: "Cancel",
-                    buttonPositive: "OK"
-                }
-            );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                Geolocation.getCurrentPosition((position) => {
-                    var lat = position.coords.latitude
-                    var long = position.coords.longitude
-                    console.log('location', lat, position.coords.accuracy)
-
-                    axios({
-                        method: 'GET',
-                        url: AppConstants.API_BASE_URL + '/api/admin/getbylocation/' + lat + '/' + long,
-                    }).then((response) => {
-                        this.setState({
-                            allShop: response.data,
-                            lat: position.coords.latitude,
-                            long: position.coords.longitude,
-                            location: 'Current Location'
-                        })
-                    }, (error) => {
-                        Alert.alert("Server error.")
-                    });
-                }, (erroe) => {
-
-                }, { enableHighAccuracy: true })
-            } else {
-                console.log("Camera permission denied");
-            }
+            var lat = await AsyncStorage.getItem('latitude')
+            var long = await AsyncStorage.getItem('longitude')
+            var location = await AsyncStorage.getItem('location')
+            console.log('Api Base Url', AppConstants.API_BASE_URL + '/api/admin/getbylocation/' + lat + '/' + long)
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/admin/getbylocation/' + lat + '/' + long,
+            }).then((response) => {
+                this.setState({
+                    allShop: response.data,
+                    lat: lat,
+                    long: long,
+                    location: location
+                })
+            }, (error) => {
+                // Alert.alert("Server error.")
+            });
         } catch (err) {
             console.warn(err);
         }
@@ -131,7 +143,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
         // Alert.alert(""+userData.userId);
-        // console.log("User Data",userData.userId)
+        // console.log("User Data in shop page",userData)
 
         this.setState({
             userData: userData
@@ -147,7 +159,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                     wishList: response.data.wishList
                 })
             }, (error) => {
-                Alert.alert("Server error.")
+                // Alert.alert("Server error.")
             });
         }
 
@@ -180,6 +192,8 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
             });
         })
     }
+
+  
 
     addToCart(id) {
 
@@ -222,13 +236,13 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
         const pCount = await AsyncStorage.getItem('productCount')
         AsyncStorage.setItem('shopId', String(id))
         AsyncStorage.setItem('shopName', String(shopName))
-        if(pCount === '0') {
+        if (pCount === '0') {
             AsyncStorage.setItem('productCount', '1')
             this.props.navigation.navigate(AppRoute.COMBINED_PRODUCT)
         } else {
             this.props.navigation.dispatch(pushAction)
             this.props.navigation.navigate(AppRoute.COMBINED_PRODUCT)
-        // Alert.alert(pCount + '')
+            // Alert.alert(pCount + '')
 
         }
     }
@@ -301,6 +315,9 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
         }).then((response) => {
             const { data: { result: { geometry: { location } } } } = response
             const { lat, lng } = location
+            AsyncStorage.setItem('latitude', String(lat))
+            AsyncStorage.setItem('longitude', String(lng))
+            AsyncStorage.setItem('location', String(data.structured_formatting.main_text))
             console.log('Location', data.structured_formatting.main_text)
             axios({
                 method: 'GET',
@@ -336,6 +353,9 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
             var lat = position.coords.latitude
             var long = position.coords.longitude
             console.log('location', lat, position.coords.accuracy)
+            AsyncStorage.setItem('latitude', String(lat))
+            AsyncStorage.setItem('longitude', String(long))
+            AsyncStorage.setItem('location', 'Current Location')
 
             axios({
                 method: 'GET',
@@ -346,7 +366,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                     lat: position.coords.latitude,
                     long: position.coords.longitude,
                     searchVisible: false,
-                    location: 'Current Location'
+                    location: LableText.USE_CURRENT_LOCATION
                 })
             }, (error) => {
                 Alert.alert("Server error.")
@@ -375,7 +395,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
     }
 
     render() {
-        const { allShop, location,searchAttribute, searchTerm, data, ignoreCase, lat, long, searchVisible, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
+        const { allShop, location, searchAttribute, searchTerm, data, ignoreCase, lat, long, searchVisible, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
             inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
@@ -419,7 +439,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                     </View>
                     <View style={{ flex: 1 }}>
                         <View>
-                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>Current Location</Text>
+                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>{LableText.USE_CURRENT_LOCATION}</Text>
                         </View>
                         <GooglePlacesAutocomplete
                             placeholder='Search'
@@ -441,15 +461,15 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                     provider={PROVIDER_GOOGLE}
                                     showsUserLocation={true}
                                     initialRegion={{
-                                        latitude: lat,
-                                        longitude: long,
+                                        latitude: Number(lat),
+                                        longitude: Number(long),
                                         latitudeDelta: 0.0922,
                                         longitudeDelta: 0.0421,
                                     }}
 
                                     region={{
-                                        latitude: lat,
-                                        longitude: long,
+                                        latitude: Number(lat),
+                                        longitude: Number(long),
                                         latitudeDelta: 0.0922,
                                         longitudeDelta: 0.0421,
                                     }}
@@ -457,8 +477,8 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
 
                                     <Marker
                                         coordinate={{
-                                            latitude: lat,
-                                            longitude: long
+                                            latitude: Number(lat),
+                                            longitude: Number(long)
                                         }
                                         }
                                     >
@@ -568,7 +588,6 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                             </View>
                         </View>
                     </Header> */}
-
                 </Animated.View>
 
                 <Animated.ScrollView style={{ flex: 1 }}
@@ -588,7 +607,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                 />
                             }
                         >
-                            <View style={Styles.all_Item_Main_View}>   
+                            <View style={Styles.all_Item_Main_View}>
 
                                 {null != allShop ? allShop.map((data, index) => {
                                     return (

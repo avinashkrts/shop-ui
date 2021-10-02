@@ -93,10 +93,39 @@ export const Styles = ScaledSheet.create({
     paddingVertical: '10@s',
     marginVertical: '20@s',
     backgroundColor: Color.COLOR,
-    borderRadius: '50@s'
+    borderRadius: '50@s',
+
+  },
+
+  buttonBox1: {
+    paddingVertical: '5@msr',
+    marginVertical: 1,
+    backgroundColor: Color.COLOR,
+    borderRadius: 10
+  },
+
+  skip_buttonBox: {
+    paddingVertical: '10@s',
+    marginVertical: '1@s',
+    width: '100@s',
+    backgroundColor: Color.COLOR,
+    borderRadius: '25@s',
+    alignSelf: 'center',
+
+
   },
 
   buttonName: {
+    fontSize: '15@s',
+    color: Color.BUTTON_NAME_COLOR,
+  },
+
+  buttonName1: {
+    fontSize: '15@s',
+    color: Color.BUTTON_NAME_COLOR,
+    marginRight: 10
+  },
+  skip_buttonName: {
     fontSize: '15@s',
     color: Color.BUTTON_NAME_COLOR,
   },
@@ -145,7 +174,6 @@ export const Styles = ScaledSheet.create({
     width: '48%',
     backgroundColor: '#000',
     margin: '1%',
-    // height: 1000
   },
 
   all_Item_Image: {
@@ -294,7 +322,7 @@ export const Styles = ScaledSheet.create({
   recharge_no_offer_input: {
     width: '90@s',
     height: '50@s'
-   
+
   },
 
   invoice_main_view: {
@@ -452,22 +480,22 @@ export const Styles = ScaledSheet.create({
 
   cart_main_view: {
     borderBottomColor: Color.BORDER,
-    borderBottomWidth: 0.5,
+    borderBottomWidth: '1@s',
     borderTopColor: Color.BORDER,
-    borderTopWidth: 0.5,
-    paddingVertical: 25,
+    borderTopWidth: '1@s',
+    paddingVertical: '25@s',
     backgroundColor: Color.BUTTON_NAME_COLOR
   },
 
   cart_view_1: {
     width: '100%',
-    paddingBottom: 20,
+    paddingBottom: '20@s',
     flexDirection: 'row',
   },
 
   cart_view_1_1: {
     width: '30%',
-    height: 100,
+    height: '100@s',
   },
 
   cart_avatar_view: {
@@ -477,36 +505,43 @@ export const Styles = ScaledSheet.create({
 
   cart_avatar: {
     borderRadius: 0,
-    width: 100,
-    height: 120,
+    width: '100@s',
+    height: '120@s',
   },
 
   cart_view_1_2: {
     width: '70%',
-    height: 110,
-    paddingHorizontal: 10,
+    height: '110@s',
+    paddingHorizontal: '1@s',
   },
 
   cart_name_text: {
-    fontSize: 17,
-    fontWeight: '700'
+    fontSize: '15@s',
+    fontWeight: '700',
+  },
+
+  cart_name_text_view: {
+    width: '80%',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   },
 
   cart_price_view: {
     width: '100%',
+    // backgroundColor: 'red',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 25,
+    marginTop: '25@s',
   },
 
   price_text: {
-    fontSize: 19,
+    fontSize: '19@s',
     fontWeight: 'bold'
   },
 
   offer_price_text: {
-    fontSize: 14,
-    marginHorizontal: 20,
+    fontSize: '14@s',
+    marginHorizontal: '20@s',
     textDecorationLine: 'line-through'
   },
 
@@ -520,124 +555,346 @@ export const Styles = ScaledSheet.create({
   },
 
   cart_quantity_text: {
-    paddingVertical: 5,
-    paddingHorizontal: 10
+    paddingVertical: '5@s',
+    paddingHorizontal: '10@s'
   },
 
   cart_button: {
     backgroundColor: Color.COLOR,
-    borderRadius: 3
+    borderRadius: '2@s'
   },
 
   cart_button_text: {
-    paddingVertical: 7,
-    paddingHorizontal: 5,
+    paddingVertical: '8@s',
+    paddingHorizontal: '5@s',
     color: Color.BUTTON_NAME_COLOR
   },
 
   cart_offer_text: {
     color: Color.COLOR,
     fontWeight: 'bold',
-    fontSize: 17
+    fontSize: '17@s'
   },
 
   cart_shopping_view: {
     flexDirection: 'row',
     borderColor: Color.BORDER,
     backgroundColor: Color.BUTTON_NAME_COLOR,
-    borderTopWidth: 0.5,
-    borderBottomWidth: 0.5,
-    paddingVertical: 20,
-    marginTop: 5,
+    borderTopWidth: '1@s',
+    borderBottomWidth: '1@s',
+    paddingVertical: '20@s',
+    marginTop: '5@s',
     justifyContent: 'space-between',
     paddingHorizontal: Padding.HORIZONTAL_PADDING
   },
 
   cart_shopping_text: {
-    fontSize: 20
+    fontSize: '20@s'
   },
 
   price_detail_1: {
     backgroundColor: Color.BUTTON_NAME_COLOR,
-    marginVertical: 15,
-    paddingTop: 20,
+    marginVertical: '15@s',
+    paddingTop: '20@s',
     borderTopColor: Color.BORDER,
-    borderTopWidth: 0.5
+    borderTopWidth: '1@s'
   },
 
   cart_price_detail_1_text: {
-    fontSize: 20,
+    fontSize: '20@s',
     paddingHorizontal: Padding.HORIZONTAL_PADDING,
     color: Color.SILVER,
-    fontWeight: '700'
+    fontWeight: 'bold'
   },
 
   price_detail_2: {
-    paddingVertical: 15,
+    paddingVertical: '15@s',
     paddingHorizontal: Padding.HORIZONTAL_PADDING,
-    marginTop: 20,
+    marginTop: '20@s',
     borderColor: Color.BORDER,
-    borderTopWidth: 1,
-    borderBottomWidth: 1
+    borderTopWidth: '1@s',
+    borderBottomWidth: '1@s'
   },
 
   price_detail_2_1: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 5
+    paddingVertical: '5@s'
   },
 
   cart_price_text_head: {
-    fontWeight: '600',
-    fontSize: 18
+    fontWeight: 'bold',
+    fontSize: '18@s'
   },
 
   cart_price_text_data: {
-    fontWeight: '600',
-    fontSize: 18,
+    fontWeight: 'bold',
+    fontSize: '18@s',
     color: Color.COLOR,
   },
 
   cart_total_view: {
     paddingHorizontal: Padding.HORIZONTAL_PADDING,
-    marginVertical: 15,
+    marginVertical: '15@s',
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
 
   cart_total_text_head: {
-    fontSize: 18,
+    fontSize: '18@s',
     fontWeight: 'bold'
   },
 
   cart_bottom_box_view: {
     flexDirection: 'row',
     paddingHorizontal: Padding.HORIZONTAL_PADDING,
-    paddingVertical: 10,
+    paddingVertical: '10@s',
     justifyContent: 'space-between'
   },
 
   cart_bottom_box_price_text: {
-    fontSize: 25,
-    paddingTop: 5,
+    fontSize: '25@s',
+    paddingTop: '5@s',
     fontWeight: 'bold',
-    marginBottom: 5
+    marginBottom: '5@s'
   },
 
   cart_bottom_box_button: {
-    borderRadius: 5,
+    borderRadius: '5@s',
     backgroundColor: Color.COLOR,
   },
 
   cart_bottom_box_button_text: {
     color: Color.BUTTON_NAME_COLOR,
-    fontSize: 20,
-    paddingVertical: 15,
+    fontSize: '20@s',
+    paddingVertical: '15@s',
     paddingHorizontal: '10%'
   },
 
-  /*---------------------------------------------This Style is for Address Of Customer--------------------------------------------------------- */
+  inside_shop_button_box: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '50@s'
+  },
 
+  inside_shop_button_text: {
+    backgroundColor: Color.COLOR,
+    color: 'white',
+    paddingVertical: '10@s',
+    paddingHorizontal: '50@s',
+    borderRadius: '5@s'
+  },
+
+  get_detail_button_box: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  get_detail_button_text: {
+    backgroundColor: Color.COLOR,
+    color: 'white',
+    paddingVertical: '10@s',
+    paddingHorizontal: '20@s',
+    borderRadius: '5@s'
+  },
+
+  /*---------------------------------------------This Style is for Stock List--------------------------------------------------------- */
+
+  // stock_text_box: {
+  //   fontSize: 15,
+  //   color: 'black'
+  // },
+
+  // stock_details: {
+  //   justifyContent: 'center',
+  //   alignItems: 'flex-start',
+  //   flexDirection: 'column',
+  //   marginTop: 15
+  // },
+  // stock_main: {
+  //   flexDirection: 'row',
+  //   backgroundColor: '#0099cc',
+  //   borderColor: 'silver',
+  //   borderWidth: 1
+  // },
+
+  // buttonBox1: {
+  //   paddingVertical: 10,
+  //   marginVertical: 1,
+  //   backgroundColor: Color.COLOR,
+  //   borderRadius: 10
+  // },
+
+  // buttonName1: {
+  //   fontSize: 20,
+  //   color: Color.BUTTON_NAME_COLOR,
+  //   marginRight: 10
+
+  // },
+
+
+  // stock_main1: {
+  //   width: '100%',
+  //   borderWidth: 2,
+  //   borderColor: '#0099cc',
+  //   borderRadius: 10
+
+  // },
+  // stock_main_text: {
+  //   flexDirection: 'row',
+  //   backgroundColor: '#0099cc',
+  //   borderColor: 'silver'
+
+  // },
+
+  // stock_box: {
+  //   backgroundColor: '#0099cc',
+  //   borderColor: 'silver',
+  //   width: '53%',
+  //   justifyContent: 'center',
+  //   alignItems: 'center'
+  // },
+
+  // stock_box1: {
+  //   backgroundColor: '#0099cc',
+  //   borderRightColor: 'silver',
+  //   borderRightWidth: 1,
+  //   padding: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   width: '23%'
+  // },
+  // stock_box2: {
+  //   backgroundColor: '#0099cc',
+  //   borderLeftColor: 'silver',
+  //   borderLeftWidth: 1,
+  //   padding: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   width: '23%'
+  // },
+
+
+  // stock_text: {
+  //   fontSize: 15,
+  //   color: 'white',
+  //   padding: 5
+
+  // },
+  // stock_text1: {
+  //   fontSize: 20,
+  //   color: '#0099cc',
+  //   padding: 5
+
+  // },
+
+  // out_of_stock_main: {
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   display: 'flex',
+  //   flexDirection: 'row',
+  //   backgroundColor: '#0099cc'
+  // },
+  // out_of_stock: {
+  //   borderRightWidth: 1,
+  //   borderRightColor: 'silver',
+  //   width: '23%',
+  //   alignItems: 'center'
+  // },
+  // out_of_stock1: {
+  //   width: '33%',
+  //   borderLeftColor: 'silver',
+  //   borderLeftWidth: 2,
+  //   alignItems:'center'
+  // },
+
+  // out_of_stock2: {
+  //   width: '50%',
+  //   alignItems:'center'
+  // },
+  // out_of_stock_text: {
+  //   fontSize: 20,
+  //   color: 'white',
+  //   padding:5
+  // },
+
+  // out_of_stock_text1: {
+  //   fontSize: 20,
+  //   color: 'white',
+  //   padding:5
+  // },
+  stock_text_box: {
+    fontSize: 15,
+    color: 'black'
+  },
+  stock_details: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+    marginTop: 15
+  },
+  stock_main: {
+    flexDirection: 'row',
+    // backgroundColor: '#0099cc',
+    borderColor: 'silver',
+    borderWidth: 0.5
+
+  },
+
+  stock_main1: {
+    width: '100@s',
+    borderWidth: 2,
+    borderColor: '#0099cc',
+    borderRadius: 10
+
+  },
+  stock_main_text: {
+    flexDirection: 'row',
+    backgroundColor: '#0099cc',
+    borderColor: 'silver'
+
+  },
+
+  stock_box: {
+    // backgroundColor: '#0099cc',
+    borderColor: 'silver',
+    width: '53%',
+    justifyContent: 'center'
+  },
+
+  stock_box1: {
+    // backgroundColor: '#0099cc',
+    borderRightColor: 'silver',
+    borderRightWidth: 0.5,
+    padding: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '60@s'
+  },
+  stock_box2: {
+    // backgroundColor: '#0099cc',
+    borderLeftColor: 'silver',
+    borderLeftWidth: 0.7,
+    padding: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100@s'
+  },
+
+  stock_text: {
+    fontSize: '18@s',
+    color: '#0099cc',
+    padding: '5@msr',
+    fontWeight: 'bold'
+  },
+
+  stock_text1: {
+    padding: 10,
+    color: 'black',
+    fontSize: '16@s'
+  },
+
+  /*---------------------------------------------This Style is for Address Of Customer--------------------------------------------------------- */
 
   address_container: {
     borderWidth: 0.5,
@@ -667,15 +924,15 @@ export const Styles = ScaledSheet.create({
     backgroundColor: "#fafafa",
     height: '90%',
     width: '90%',
-    borderRadius: 5,
-    borderWidth: 1,
+    borderRadius: '5@s',
+    borderWidth: '1@s',
     borderColor: '#fafafa',
-    marginTop: 10,
-    padding: 10
+    marginTop: '10@s',
+    padding: '10@s'
   },
 
   modalHeader: {
-    height: 20,
+    height: '20@s',
     alignItems: 'flex-end'
   },
 
@@ -814,6 +1071,18 @@ export const Styles = ScaledSheet.create({
     padding: 5
   },
 
+  show_otp: {
+    fontSize: '25@s',
+    width: '20@s',
+    textAlign: 'center',
+    transform: [{ rotateZ: '90deg' }]
+  },
+
+  hide_otp: {
+    fontSize: '25@s',
+    width: '20@s',
+    textAlign: 'center'
+  },
 
 
 
@@ -821,18 +1090,57 @@ export const Styles = ScaledSheet.create({
   /*---------------------------------------------This Style is for order Of Customer--------------------------------------------------------- */
 
   notification_main: {
-    borderWidth: 1,
+    borderWidth: '1@s',
     borderColor: 'silver',
-    backgroundColor: '#0099cc',
-    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderRadius: '5@s',
+    marginVertical: '2@s',
+    marginHorizontal: '10@s'
+  },
+
+  notification_text_box: {
   },
 
   notification_text: {
-    padding: 10,
-    color: 'white',
+    padding: '10@s',
+    color: 'black',
+    fontSize: '18@s'
+
   },
+  notification_date_box: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end'
 
+  },
+  notification_text_date: {
+    padding: '10@s',
+    color: 'black',
+    fontSize: '15@s'
 
+  },
+  notification_button: {
+    borderRadius: '20@s',
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: 'pink',
+    borderWidth: 0,
+    marginHorizontal: '10@s',
+    marginVertical: '1@s'
+  },
+  notification_button_text: {
+    color: 'black',
+    width: '100%',
+    fontSize: '20@s',
+    paddingVertical: '5@s',
+    textAlign: 'center',
+  },
+  notification_devider: {
+    height: 0.5,
+    backgroundColor: 'silver',
+    marginVertical: '5@s'
+
+  },
 
   /*---------------------------------------------This Style is for  Contact_us Page--------------------------------------------------------- */
 
@@ -1079,44 +1387,44 @@ export const Styles = ScaledSheet.create({
 
   wallet_column_1: {
     width: '10%',
-    padding: 4,
+    padding: '4@s',
   },
 
   wallet_column_2: {
     width: '22%',
-    paddingLeft: 2,
-    paddingRight: 2,
-    paddingTop: 4,
+    paddingLeft: '2@s',
+    paddingRight: '2@s',
+    paddingTop: '4@s',
 
   },
 
   wallet_column_3: {
     width: '32%',
-    padding: 4,
+    padding: '4@s',
   },
 
   wallet_column_4: {
     width: '18%',
-    padding: 4,
+    padding: '4@s',
   },
 
   wallet_column_5: {
     width: '18%',
-    padding: 4,
+    padding: '4@s',
   },
 
 
   wallet_design: {
-    fontSize: 14,
-    padding: 2,
+    fontSize: '14@s',
+    padding: '2@s',
     alignSelf: 'center',
     color: 'white'
   },
 
   wallet_design1: {
-    fontSize: 18,
+    fontSize: '18@s',
     fontWeight: 'bold',
-    padding: 2,
+    padding: '2@s',
     alignSelf: 'center',
     color: 'white'
   },
@@ -1124,27 +1432,27 @@ export const Styles = ScaledSheet.create({
 
   wallet_bottom_text: {
     textAlign: 'right',
-    padding: 2,
+    padding: '2@s',
     width: '64%',
     color: 'white',
-    fontSize: 16,
+    fontSize: '16@s',
   },
 
 
   wallet_paid: {
     textAlign: 'center',
-    padding: 2,
+    padding: '2@s',
     width: '18%',
     color: 'white',
-    fontSize: 16,
+    fontSize: '16@s',
   },
 
   wallet_due: {
     textAlign: 'center',
-    padding: 2,
+    padding: '2@s',
     width: '18%',
     color: 'white',
-    fontSize: 16,
+    fontSize: '16@s',
   },
 
 
@@ -1160,11 +1468,11 @@ export const Styles = ScaledSheet.create({
   cart_view: {
     width: '100%',
     flexDirection: 'row',
-    padding: 2,
-    paddingVertical: 5,
+    padding: '2@s',
+    paddingVertical: '5@s',
     backgroundColor: Color.COLOR,
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
+    borderTopLeftRadius: '5@s',
+    borderTopRightRadius: '5@s',
     flexWrap: 'wrap',
   },
 
@@ -1187,10 +1495,10 @@ export const Styles = ScaledSheet.create({
   cart_quantity_view: {
     flexDirection: 'row',
     backgroundColor: Color.COLOR,
-    width: '45%',
+    // width: '50%',
     justifyContent: 'space-between',
-    padding: 5,
-    borderRadius: 5
+    padding: '1@s',
+    borderRadius: '2@s'
   },
 
   cart_amount_view: {
@@ -1394,7 +1702,7 @@ export const Styles = ScaledSheet.create({
     height: 50
   },
 
- order_list_image: {
+  order_list_image: {
     margin: 10,
     width: '15%',
   },
@@ -1433,6 +1741,17 @@ export const Styles = ScaledSheet.create({
   customer_list_price_text: {
     color: Color.COLOR_CUSTOMER,
     fontSize: 15,
+  },
+
+  order_button_text: {
+    backgroundColor: Color.COLOR,
+    fontSize: '18@s',
+    color: '#fff',
+    paddingHorizontal: '7@s',
+    paddingVertical: '5@s',
+    alignSelf: 'center',
+    borderRadius: '5@s',
+    marginTop: '3@s'
   },
 
   /*---------------------------------------------This Style is for Add Product Image--------------------------------------------------------- */
@@ -1630,27 +1949,28 @@ export const Styles = ScaledSheet.create({
   payment_box_view: {
     width: '90%',
     borderColor: Color.SILVER,
-    borderRadius: 3,
-    borderWidth: .5,
-    padding: 20,
-    paddingLeft: 20,
-    marginVertical: 15
+    borderRadius: '3@s',
+    borderWidth: '1@s',
+    padding: '20@s',
+    paddingLeft: '20@s',
+    marginVertical: '15@s'
   },
 
   payment_selection_view: {
     flexDirection: 'row',
-    width: '100%'
+    width: '100%',
+    flexWrap: 'wrap'
   },
 
   payment_selection_header: {
-    fontSize: 20,
+    fontSize: '16@s',
     fontWeight: 'bold',
-    marginBottom: 10
+    marginBottom: '10@s'
   },
 
   payment_selection_text: {
-    marginLeft: 10,
-    fontSize: 18,
+    marginLeft: '10@s',
+    fontSize: '18@s',
     // fontWeight: '700'
   },
 

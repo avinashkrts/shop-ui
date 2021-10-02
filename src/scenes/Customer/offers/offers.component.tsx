@@ -1,6 +1,6 @@
 import { OffersScreenProps } from "../../../navigation/customer-navigator/offers.navigator";
 import React, { Component } from "react";
-import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet, PermissionsAndroid } from "react-native";
+import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet, PermissionsAndroid, BackHandler } from "react-native";
 import { Avatar, List, Divider, ListItemElement, ThemedComponentProps } from "react-native-ui-kitten";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
@@ -18,12 +18,14 @@ import Modal from "react-native-modal";
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { StackActions } from "@react-navigation/native";
+import { LableText } from '../../../constants/LabelConstants';
 
 
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
 
 export class OffersScreen extends Component<OffersScreenProps, ThemedComponentProps & any> {
+    backHandler: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -39,7 +41,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             search: '',
             lat: '',
             long: '',
-            location: 'Current Location',
+            location: '',
             searchVisible: false,
             single: false,
             shopName: '',
@@ -55,9 +57,9 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
 
         this.onRefresh = this.onRefresh.bind(this);
         this.handleAddToCart = this.handleAddToCart.bind(this);
-    }
+    }   
 
-    async componentDidMount() {
+    async componentDidMount() {       
         const { allData } = this.state;
         const shopIdAsync = await AsyncStorage.getItem('shopId')
         const shopName = await AsyncStorage.getItem('shopName')
@@ -105,49 +107,31 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             });
         } else {
             try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                    {
-                        title: "Cool Photo App Camera Permission",
-                        message:
-                            "Cool Photo App needs access to your camera " +
-                            "so you can take awesome pictures.",
-                        buttonNeutral: "Ask Me Later",
-                        buttonNegative: "Cancel",
-                        buttonPositive: "OK"
+                var lat = await AsyncStorage.getItem('latitude')
+                var long = await AsyncStorage.getItem('longitude')
+                var location = await AsyncStorage.getItem('location')
+                axios({
+                    method: 'GET',
+                    url: AppConstants.API_BASE_URL + '/api/product/getbyofferproduct/' + lat + '/' + long
+                }).then((response) => {
+                    console.log('Product', response.data)
+                    if (null != response.data) {
+                        this.setState({
+                            allProduct: response.data,
+                            lat: lat,
+                            long: long,
+                            location: location
+                        })
                     }
-                );
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    Geolocation.getCurrentPosition((position) => {
-                        var lat = position.coords.latitude
-                        var long = position.coords.longitude
-                        console.log('location', lat, position.coords.accuracy)
-                        axios({
-                            method: 'GET',
-                            url: AppConstants.API_BASE_URL + '/api/product/getbyofferproduct/' + lat + '/' + long
-                        }).then((response) => {
-                            console.log('Product', response.data)
-                            if (null != response.data) {
-                                this.setState({
-                                    allProduct: response.data,
-                                    lat: position.coords.latitude,
-                                    long: position.coords.longitude,
-                                    location: 'Curent Location'
-                                })
-                            }
-                        }, (error) => {
-                            Alert.alert("Server error!.")
-                        });
-                    }, (erroe) => {
+                }, (error) => {
+                    Alert.alert("Server error!.")
+                });
 
-                    }, { enableHighAccuracy: true })
-                } else {
-                    console.log("Camera permission denied");
-                }
+
             } catch (err) {
                 console.warn(err);
             }
-
+          
             axios({
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
@@ -320,6 +304,9 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             const { data: { result: { geometry: { location } } } } = response
             const { lat, lng } = location
             console.log('Location', data.structured_formatting.main_text)
+            AsyncStorage.setItem('latitude', String(lat))
+            AsyncStorage.setItem('longitude', String(lng))
+            AsyncStorage.setItem('location', String(data.structured_formatting.main_text))
             axios({
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/product/getbyofferproduct/' + lat + '/' + lng,
@@ -354,7 +341,9 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             var lat = position.coords.latitude
             var long = position.coords.longitude
             console.log('location', lat, position.coords.accuracy)
-
+            AsyncStorage.setItem('latitude', String(lat))
+            AsyncStorage.setItem('longitude', String(long))
+            AsyncStorage.setItem('location', 'Current Location')
             axios({
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/product/getbyofferproduct/' + lat + '/' + long,
@@ -364,7 +353,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                     lat: position.coords.latitude,
                     long: position.coords.longitude,
                     searchVisible: false,
-                    location: 'Current Location'
+                    location: LableText.USE_CURRENT_LOCATION
                 })
             }, (error) => {
                 Alert.alert("Server error.")
@@ -435,7 +424,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                     </View>
                     <View style={{ flex: 1 }}>
                         <View>
-                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>Current Location</Text>
+                            <Text onPress={() => { this.onCurrentLocation() }} style={{ color: Color.BUTTON_NAME_COLOR, padding: 10, backgroundColor: Color.COLOR, opacity: 0.8, borderRadius: 10, marginTop: 10 }}>{LableText.USE_CURRENT_LOCATION}</Text>
                         </View>
                         <GooglePlacesAutocomplete
                             placeholder='Search'
@@ -450,7 +439,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                 language: 'en',
                             }}
                         // currentLocation={true}
-                        // currentLocationLabel='Current location'
+                        // currentLocationLabel=LableText.USE_CURRENT_LOCATION
                         />
                         {lat !== '' && long !== '' ?
                             <>
@@ -459,15 +448,15 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                     provider={PROVIDER_GOOGLE}
                                     showsUserLocation={true}
                                     initialRegion={{
-                                        latitude: lat,
-                                        longitude: long,
+                                        latitude: Number(lat),
+                                        longitude: Number(long),
                                         latitudeDelta: 0.0922,
                                         longitudeDelta: 0.0421,
                                     }}
 
                                     region={{
-                                        latitude: lat,
-                                        longitude: long,
+                                        latitude: Number(lat),
+                                        longitude: Number(long),
                                         latitudeDelta: 0.0922,
                                         longitudeDelta: 0.0421,
                                     }}
@@ -475,8 +464,8 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
 
                                     <Marker
                                         coordinate={{
-                                            latitude: lat,
-                                            longitude: long
+                                            latitude: Number(lat),
+                                        longitude: Number(long),
                                         }
                                         }
                                     >
@@ -627,7 +616,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                                         {null != allBrand ? allBrand.map((brand, index) => {
                                                             if (brand.id == data.brand) {
                                                                 return (
-                                                                    <View style={{width: '80%', flexWrap: 'wrap'}}>
+                                                                    <View style={{ width: '80%', flexWrap: 'wrap' }}>
                                                                         <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
                                                                     </View>
                                                                 );
@@ -667,8 +656,8 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                                     </View>
                                                     {null != data.offerActiveInd ? data.offerActiveInd ?
                                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo? data.offerPercent : null} % off</Text>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo? data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4) : null}</Text>
+                                                            <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo ? data.offerPercent : null} % off</Text>
+                                                            <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo ? data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4) : null}</Text>
                                                         </View> :
                                                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
                                                             <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>

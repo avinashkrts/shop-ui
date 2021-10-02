@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl, Alert, AsyncStorage } from "react-native";
+import { View, Text, RefreshControl, Alert, AsyncStorage, ActivityIndicator } from "react-native";
 import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
 import { AddDrawerProductImageScreenProps } from "../../../navigation/addProductNavigator.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
@@ -13,6 +13,7 @@ import Axios from "axios";
 import DatePicker from 'react-native-datepicker'
 import { AppRoute } from "../../../navigation/app-routes";
 import ImagePicker from 'react-native-image-picker';
+import { scale } from "react-native-size-matters";
 
 const options = {
     title: 'Select a Photo',
@@ -32,7 +33,8 @@ export class AddDrawerProductImageScreen extends Component<AddDrawerProductImage
             file: null,
             name: '',
             title: '',
-            imageUploaded: false
+            imageUploaded: false,
+            isUploaded: false
         }
         this.onRefresh = this.onRefresh.bind(this);
     }
@@ -72,6 +74,7 @@ export class AddDrawerProductImageScreen extends Component<AddDrawerProductImage
         const formData = new FormData();
         formData.append('file', file);
         console.log(productId);
+        this.toggleUpload()
         fetch(AppConstants.API_BASE_URL + '/api/image/upload/avatar/' + shopId + '/' + productId, {
             method: 'post',
             body: formData
@@ -80,7 +83,8 @@ export class AddDrawerProductImageScreen extends Component<AddDrawerProductImage
                 this.setState({
                     imageSource: '',
                     file: null,
-                    imageUploaded: true
+                    imageUploaded: true,
+                    isUploaded: false
                 });
                 Alert.alert("File uploaded successfully.");
             }
@@ -104,10 +108,15 @@ export class AddDrawerProductImageScreen extends Component<AddDrawerProductImage
         });
     }
 
+    toggleUpload(){
+        const {isUploaded} = this.state;
+        this.setState({
+            isUploaded: !isUploaded
+        })
+    }
+
     render() {
-        const { imageUploaded, imageSource, isEditable, allCategory, allBrand, name, category, brand, shopId, avatar, price, quantity, description, barcode,
-            stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
-            gstAmount, measurement, gstPercent, minDate, allMeasurement } = this.state
+        const { isUploaded, imageUploaded, emailId, imageSource } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -119,6 +128,7 @@ export class AddDrawerProductImageScreen extends Component<AddDrawerProductImage
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
+
                 <Content style={Styles.content}
                     refreshControl={
                         <RefreshControl
@@ -127,10 +137,14 @@ export class AddDrawerProductImageScreen extends Component<AddDrawerProductImage
                         />
                     }
                 >
-                    <View style={[Styles.product_view]}>
-                        <TouchableOpacity style={[{ justifyContent: 'flex-end', marginTop: 5, marginRight: 5, alignItems: 'flex-end' }]} onPress={() => { this.selectPhoto() }}>
-                            {/* <Text><EditIcon /></Text> */}
-                        </TouchableOpacity>
+                    <View style={Styles.center}>
+                        {/* <Text style={[{ fontSize: scale(18), textAlign: 'center', marginVertical: scale(10) }]}>Your Product Image - {emailId}</Text> */}
+                    </View>
+
+                    <View style={[Styles.product_view, {borderColor: 'gray', borderWidth: scale(1)}]}>
+                        {/* <TouchableOpacity style={[{ justifyContent: 'flex-end', marginTop: 5, marginRight: 5, alignItems: 'flex-end' }]} onPress={() => { this.selectPhoto() }}>
+                            <Text><EditIcon /></Text>
+                        </TouchableOpacity> */}
                         <View style={[Styles.product_image, Styles.center]}>
                             {/* <View style={Styles.ImgBgOne} />
                             <View style={Styles.ImgBgTwo} /> */}
@@ -144,26 +158,32 @@ export class AddDrawerProductImageScreen extends Component<AddDrawerProductImage
 
 
                     </View>
+                    {isUploaded ?
+                        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                            <ActivityIndicator size='large' />
+                           <Text style={{color: Color.COLOR, fontSize: scale(20)}}>Uploading...</Text>
+                        </View> :
+                        <>
+                            <View style={{ marginHorizontal: '10%' }}>
+                                <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.selectPhoto() }}>
+                                    <Text style={Styles.buttonName}>{LableText.CHOOSE_IMAGE}</Text>
+                                </TouchableOpacity>
+                            </View>
 
-                    <View style={{ marginHorizontal: '10%' }}>
-                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.selectPhoto() }}>
-                            <Text style={Styles.buttonName}>{LableText.CHOOSE_IMAGE}</Text>
-                        </TouchableOpacity>
-                    </View>
+                            <View style={{ marginHorizontal: '10%' }}>
+                                <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.uploadImage() }}>
+                                    <Text style={Styles.buttonName}>{LableText.UPLOAD}</Text>
+                                </TouchableOpacity>
+                            </View>
+                            {null != imageUploaded ? imageUploaded ?
+                                <View style={{ marginHorizontal: '10%' }}>
+                                    <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.props.navigation.navigate(AppRoute.HOME) }}>
+                                        <Text style={Styles.buttonName}>{LableText.FINISH}</Text>
+                                    </TouchableOpacity>
+                                </View> : null : null}
 
-                    <View style={{ marginHorizontal: '10%' }}>
-                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.uploadImage() }}>
-                            <Text style={Styles.buttonName}>{LableText.UPLOAD}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {null != imageUploaded ? imageUploaded ?
-                        <View style={{ marginHorizontal: '10%' }}>
-                            <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.props.navigation.navigate(AppRoute.HOME) }}>
-                                <Text style={Styles.buttonName}>{LableText.FINISH}</Text>
-                            </TouchableOpacity>
-                        </View> : null : null}
-
-
+                        </>
+                    }
                     <View style={Styles.bottomSpace}></View>
                 </Content>
 

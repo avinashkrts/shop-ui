@@ -92,14 +92,14 @@ export class OtpScreen extends Component<OtpScreenProps, any & State & any> {
                             <Text style={Styles.loginWelcome}>{LableText.WELCOME_TEXT}</Text>
                         </View> */}
 
-                        <View style={Styles.inputTextView}>
+                         <View style={Styles.inputTextView}>
                             <TextInput
                                 style={Styles.inputText}
                                 placeholder={Placeholder.OTP}
                                 value={otp}
                                 onChangeText={(value) => { this.setState({ otp: value }) }}
                             />
-                        </View>                    
+                        </View>                     
 
                         <View style={{ marginHorizontal: '10%' }}>
                             <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.onFormSubmit() }}>

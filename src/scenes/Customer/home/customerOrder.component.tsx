@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl, Alert, AsyncStorage } from "react-native";
+import { View, Text, RefreshControl, Alert, AsyncStorage, BackHandler } from "react-native";
 import { Avatar, Divider, ThemedComponentProps, ListItem, ListItemElement, List } from "react-native-ui-kitten";
 import { CustomerOrderScreenProps } from "../../../navigation/customer-navigator/customerOrder.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
@@ -17,8 +17,10 @@ import { CustomerOrderProductScreenProps } from "../../../navigation/customer-na
 import { Notification } from "../../../components/notification";
 import { Contents } from "../../../constants/LabelConstants";
 import { StackActions } from "@react-navigation/core";
+import { scale } from "react-native-size-matters";
 
 export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & CustomerOrderProductScreenProps, ThemedComponentProps & any> {
+    backHandler: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -30,13 +32,36 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
             denied: false,
             review: '',
             receivedCartId: '',
-            adminData: []
+            adminData: [],
+            isDetail: false,
+            paymentMode: []
         }
 
         this.onRefresh = this.onRefresh.bind(this);
     }
 
+    backAction = () => {
+        const pushAction = StackActions.push(AppRoute.CUSTOMER_HOME)
+        this.props.navigation.dispatch(pushAction);
+        return true;
+    };
+
+    componentWillUnmount() {
+        this.backHandler.remove();
+    }
+
     async componentDidMount() {
+        this.props.navigation.addListener('focus', () => {
+            this.backHandler = BackHandler.addEventListener(
+                "hardwareBackPress",
+                this.backAction
+            );
+        })
+
+        this.props.navigation.addListener('blur', () => {
+            this.backHandler.remove();
+        })
+
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
         this.setState({ userData: userData })
@@ -58,26 +83,14 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
 
             Axios({
                 method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/lookup/getallorderstatus',
+                url: AppConstants.API_BASE_URL + '/api/lookup/getalllookup',
             }).then((response) => {
                 if (null != response.data) {
                     console.log(response.data);
                     this.setState({
-                        orderstatusData: response.data
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
-
-            Axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/lookup/getalldeliverytype',
-            }).then((response) => {
-                if (null != response.data) {
-                    console.log(response.data);
-                    this.setState({
-                        deliveryTypeData: response.data
+                        deliveryTypeData: response.data.DELIVERY_TYPE,
+                        paymentMode: response.data.PAYMENT_MODE,
+                        orderstatusData: response.data.ORDER_STATUS
                     })
                 }
             }, (error) => {
@@ -93,18 +106,6 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
         this.componentDidMount().then(() => {
             this.setState({ refreshing: false });
         });
-    }
-
-    componentWillUnmount() {
-        const { params } = this.props.route;
-        // console.log(this.props.route)
-        if (params) {
-            this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
-            params.id()
-        } else {
-            // Alert.alert('fg')
-            this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
-        }
     }
 
     handleCartSubmit(cartId) {
@@ -185,7 +186,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
     renderCart = ({ item, index }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
-                <View>
+                <View style={{ paddingHorizontal: scale(10) }}>
                     <Modal style={Styles.modal} isVisible={this.state.reviewModal}>
                         <View style={Styles.modalHeader}>
                             <TouchableOpacity>
@@ -212,13 +213,26 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                     </Modal>
 
                     <View style={Styles.order_row}>
-                        <TouchableOpacity onPress={() => { this.handleCartSubmit(item.cartId) }}>
+                        <TouchableOpacity style={{ width: '100%' }} onPress={() => { this.handleCartSubmit(item.cartId) }}>
                             <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/shop/' + item.adminId + '_1_' + item.shopId + '_shop.png' }} style={Styles.order_cart} />
                         </TouchableOpacity>
-                        <View style={Styles.order_column}>
-                            <Text style={Styles.order_text}>{item.shopName}</Text>
+                        <View style={[Styles.order_column, { width: '65%' }]}>
+                            <View style={{ flexWrap: 'wrap', flexDirection: 'row', width: '100%' }}>
+                                <Text style={Styles.order_text}>{item.shopName}</Text>
+                            </View>
                             {/* <Text style={Styles.order_text}>{item.mobileNo}</Text> */}
                             <Text style={[Styles.order_column]}>Total Amount: {item.payableAmount}</Text>
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                                <Text style={[Styles.order_column]}>Order ID: {item.cartId}</Text>
+                                {this.state.paymentMode ? this.state.paymentMode.map((data, index) => (
+                                    data.lookUpId == item.transactionType ?
+                                        <Text style={[Styles.order_column]}>{data.lookUpLabel}</Text> : null
+                                )) : null}
+                            </View>
+
+                            <View style={[Styles.get_detail_button_box]}>
+                                <Text style={Styles.get_detail_button_text} onPress={() => { this.handleCartSubmit(item.cartId) }} >Get Detail</Text>
+                            </View>
                         </View>
                     </View>
 
@@ -534,6 +548,9 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                             if (orderStatus.lookUpId == item.orderStatus) {
                                 return (
                                     <>
+                                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>OTP</Text>
+                                        <Text style={{ marginVertical: 5, fontWeight: 'bold', fontSize: 16 }}> {item.otp}</Text>
+
                                         {null != this.state.deliveryTypeData ? this.state.deliveryTypeData.map((deliveryType, dIndex) => {
                                             if (deliveryType.lookUpName === "BY_DELIVERY_BOY") {
                                                 if (deliveryType.lookUpId == item.deliveryType) {
@@ -588,12 +605,12 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                     )
                         : null}
                     {null != this.state.orderstatusData ? this.state.orderstatusData.map((orderStatus, oIndex) => {
-                        if (orderStatus.lookUpName === "DELIVERED" || orderStatus.lookUpName === "SHIPPED") {
+                        if (orderStatus.lookUpName === "DELIVERED") {
                             if (orderStatus.lookUpId == item.orderStatus) {
                                 return (
                                     <>
                                         <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
-                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Have you received your order?</Text>
+                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Do you want to write your review?</Text>
                                             <View style={Styles.cart_bottom_box_view}>
                                                 <View>
                                                     <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.toggleModal('RECEIVED', item.cartId) }}>
@@ -601,11 +618,11 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                                                     </TouchableOpacity>
                                                 </View>
 
-                                                <View>
+                                                {/* <View>
                                                     <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.toggleModal('DENIED', item.cartId) }}>
                                                         <Text style={{ paddingVertical: 10, paddingHorizontal: 20, color: Color.BUTTON_NAME_COLOR }}>No</Text>
                                                     </TouchableOpacity>
-                                                </View>
+                                                </View> */}
                                             </View>
                                             {/* <Text style={{ marginVertical: 5, fontWeight: 'bold', fontSize: 16 }}>Rs. {item.deliveryCharge}</Text>
                                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Delivery boy detail</Text>
@@ -620,7 +637,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                                 return (
                                     <>
                                         <View style={{ backgroundColor: '#fff', borderColor: Color.BORDER, borderWidth: 0.5, padding: 20, marginBottom: 10 }}>
-                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Reveiw</Text>
+                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{orderStatus.lookUpName === "DENIED" ? 'Remarks' : orderStatus.lookUpName === "RECEIVED" ? 'Review' : null}</Text>
 
                                             {/* <Text style={{ marginVertical: 5, fontWeight: 'bold', fontSize: 16 }}>Rs. {item.deliveryCharge}</Text>
                                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Delivery boy detail</Text> */}
@@ -638,8 +655,12 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
         </ListItem>
     )
 
+    NavigateToHome() {
+        this.props.navigation.navigate(AppRoute.CUSTOMER_HOME)
+    }
+
     render() {
-        const { cartData } = this.state
+        const { cartData, isDetail } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -647,7 +668,7 @@ export class CustomerOrderScreen extends Component<CustomerOrderScreenProps & Cu
                 <Toolbar
                     title='My Order'
                     backIcon={BackIcon}
-                    onBackPress={this.componentWillUnmount.bind(this)}
+                    onBackPress={() => this.NavigateToHome()}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
                 <Divider />
