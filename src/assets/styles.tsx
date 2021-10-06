@@ -427,7 +427,7 @@ export const Styles = ScaledSheet.create({
   product_2nd_wish_view: {
     width: '20%',
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     paddingRight: 5
   },
 

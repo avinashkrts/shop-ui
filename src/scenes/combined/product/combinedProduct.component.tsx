@@ -650,14 +650,18 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                             </TouchableOpacity> */}
 
                                             <View style={Styles.all_Item_Detail}>
-                                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 0 }}>
                                                     <View style={{ flexDirection: 'row' }}>
                                                         {null != allBrand ? allBrand.map((brand, index) => {
                                                             if (brand.id == data.brand) {
                                                                 return (
-                                                                    <View style={{ width: '80%', flexWrap: 'wrap' }}>
-                                                                        <Text style={{ color: '#000', marginTop: scale(5), fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
+                                                                    <View style={{ width: '80%', flexWrap: 'wrap', flexDirection: 'row' }}>
+                                                                        <Text style={{ color: '#000', marginTop: scale(5), fontWeight: 'bold', fontSize: scale(14)  }}>{data.name} {`\n`} {brand.name}</Text>
                                                                     </View>
+
+                                                                    // <>
+                                                                    //     <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
+                                                                    // </>
                                                                 );
                                                             }
                                                         }) : null}

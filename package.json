@@ -54,6 +54,7 @@
     "react-native-version-check": "^3.4.2",
     "react-native-webview": "^9.4.0",
     "react-navigation": "^4.0.10",
+    "sharp": "^0.29.1",
     "use-places-autocomplete": "^1.9.3",
     "yup": "^0.27.0"
   },
