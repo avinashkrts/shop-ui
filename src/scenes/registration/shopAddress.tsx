@@ -11,7 +11,7 @@ import { AppConstants, Color, LableText, Placeholder } from '../../constants';
 import DeviceInfo from 'react-native-device-info';
 import { scale } from 'react-native-size-matters';
 import { ShopAddressScreenProps } from '../../navigation/registration.navigator';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import Modal from "react-native-modal";
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';

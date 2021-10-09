@@ -183,24 +183,24 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
         }
     }
 
-    selectPhoto() {
-        ImagePicker.showImagePicker(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled Image picker');
-            } else if (response.error) {
-                console.log('Image Picker Error: ', response.error);
-            } else {
-                const source = { uri: response.uri };
-                const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
+    // selectPhoto() {
+    //     ImagePicker.showImagePicker(options, (response) => {
+    //         if (response.didCancel) {
+    //             console.log('User cancelled Image picker');
+    //         } else if (response.error) {
+    //             console.log('Image Picker Error: ', response.error);
+    //         } else {
+    //             const source = { uri: response.uri };
+    //             const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
 
-                this.setState({
-                    imageSource: source,
-                    file: file,
-                    isVisible: true
-                });
-            }
-        });
-    }
+    //             this.setState({
+    //                 imageSource: source,
+    //                 file: file,
+    //                 isVisible: true
+    //             });
+    //         }
+    //     });
+    // }
 
     oploadImage() {
         const formData = new FormData();

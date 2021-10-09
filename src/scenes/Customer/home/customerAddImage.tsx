@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl, Alert, AsyncStorage, ActivityIndicator } from "react-native";
+import { View, Text, RefreshControl, Alert, AsyncStorage, ActivityIndicator, PermissionsAndroid } from "react-native";
 import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
 import { AddCustomerImageScreenProps } from "../../../navigation/customer-navigator/customerProfile.Navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
-import { BackIcon, MenuIcon } from "../../../assets/icons";
+import { BackIcon, CancelIcon, MenuIcon } from "../../../assets/icons";
 import { Styles } from "../../../assets/styles";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AppConstants, Color, LableText } from "../../../constants";
@@ -12,15 +12,15 @@ import { CheckBox, Content, Picker } from "native-base";
 import Axios from "axios";
 import DatePicker from 'react-native-datepicker'
 import { AppRoute } from "../../../navigation/app-routes";
-import ImagePicker from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { scale } from "react-native-size-matters";
+import Modal from "react-native-modal";
 
 const options = {
-    title: 'Select a Photo',
-    takePhoto: 'Take Photo',
-    chooseFromLibraryButtonTitle: 'Choose from gallery',
-    quality: 1,
-    type: 'image'
+    quality: 0.7,
+    maxWidth: 500,
+    maxHeight: 550,
+    mediaType: 'photo'
 }
 
 export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProps, ThemedComponentProps & any> {
@@ -34,7 +34,8 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
             name: '',
             title: '',
             imageUploaded: false,
-            isUploaded: false
+            isUploaded: false,
+            openModal: false
         }
         this.onRefresh = this.onRefresh.bind(this);
     }
@@ -51,15 +52,59 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
         })
     }
 
-    selectPhoto() {
-        ImagePicker.showImagePicker(options, (response) => {
+    async handleTakePhoto() {
+        this.handleModal()
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                    title: "Milaan Camera/Gallery Permission",
+                    message:
+                        "Milaan needs access to your Camera " +
+                        "so you can upload image from Camera.",
+                    buttonNeutral: "Ask Me Later",
+                    buttonNegative: "Cancel",
+                    buttonPositive: "OK"
+                }
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                launchCamera(options, (response) => {
+                    if (response.didCancel) {
+                        console.log('User cancelled Image picker');
+                    } else if (response.errorCode) {
+                        console.log('Image Picker Error: ', response.errorCode);
+                    } else {
+                        console.log('URI', response.assets[0])
+                        const source = { uri: response.assets[0].uri };
+                        const file = { name: 'shop' + response.assets[0].fileName, uri: response.assets[0].uri, type: response.assets[0].type, size: response.assets[0].fileSize }
+
+                        this.setState({
+                            imageSource: source,
+                            file: file,
+                        });
+                    }
+                });
+            } else {
+                console.log("Camera permission denied");
+                Alert.alert("Please give Camera permission to use Camera.")
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    }
+
+
+    handleChooseImage() {
+        this.handleModal()
+        launchImageLibrary(options, (response) => {
             if (response.didCancel) {
                 console.log('User cancelled Image picker');
-            } else if (response.error) {
+            } else if (response.errorCode) {
                 console.log('Image Picker Error: ', response.error);
             } else {
-                const source = { uri: response.uri };
-                const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
+                console.log('URI', response)
+                const source = { uri: response.assets[0].uri };
+                const file = { name: 'shop' + response.assets[0].fileName, uri: response.assets[0].uri, type: response.assets[0].type, size: response.assets[0].fileSize }
 
                 this.setState({
                     imageSource: source,
@@ -69,36 +114,35 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
         });
     }
 
-    uploadImage() {
-        const { shopId, userType, userId, productId, imageUploaded, file } = this.state;
-        console.log(userId, userType)
-        const formData = new FormData();
-        formData.append('file', file);
-        console.log(productId);
-        this.toggleUpload()
-        fetch(AppConstants.API_BASE_URL + '/api/file/upload/avatar/' + userType + '/' + userId + '/' + 'avatar', {
-            method: 'post',
-            body: formData
-        }).then(res => {
-            if (res.ok) {
-                this.setState({
-                    imageSource: '',
-                    file: null,
-                    imageUploaded: !imageUploaded,
-                    isUploaded: false
-                });
-                Alert.alert("File uploaded successfully.");
-            }
-        });
+    handleModal() {
+        const { openModal } = this.state;
+        this.setState({ openModal: !openModal })
     }
 
-    handleAddMeasurement(value) {
-        if (value === 'add') {
-            // this.props.navigation.navigate(AppRoute.ADD_CATEGORY)
+    uploadImage() {
+        const { imageSource, userType, userId, productId, imageUploaded, file } = this.state;
+        console.log(userId, userType)
+        if (imageSource === '' || imageSource.length <= 0) {
+            Alert.alert("Please select a Photo")
         } else {
-            this.setState({
-                measurement: value
-            })
+            const formData = new FormData();
+            formData.append('file', file);
+            console.log(productId);
+            this.toggleUpload()
+            fetch(AppConstants.API_BASE_URL + '/api/file/upload/avatar/' + userType + '/' + userId + '/' + 'avatar', {
+                method: 'post',
+                body: formData
+            }).then(res => {
+                if (res.ok) {
+                    this.setState({
+                        imageSource: '',
+                        file: null,
+                        imageUploaded: !imageUploaded,
+                        isUploaded: false
+                    });
+                    Alert.alert("File uploaded successfully.");
+                }
+            });
         }
     }
 
@@ -109,15 +153,15 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
         });
     }
 
-    toggleUpload(){
-        const {isUploaded} = this.state;
+    toggleUpload() {
+        const { isUploaded } = this.state;
         this.setState({
             isUploaded: !isUploaded
         })
     }
 
     render() {
-        const { isUploaded, imageUploaded, emailId, imageSource } = this.state
+        const { isUploaded, openModal, imageUploaded, emailId, imageSource } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -139,16 +183,11 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
                     }
                 >
                     <View style={Styles.center}>
-                        <Text style={[{ fontSize: scale(18), textAlign: 'center', marginVertical: scale(10) }]}>Your Email ID - {emailId}</Text>
+                        {/* <Text style={[{ fontSize: scale(18), textAlign: 'center', marginVertical: scale(10) }]}>Your Email ID - {emailId}</Text> */}
                     </View>
 
-                    <View style={[Styles.product_view, {borderColor: 'gray', borderWidth: scale(1)}]}>
-                        {/* <TouchableOpacity style={[{ justifyContent: 'flex-end', marginTop: 5, marginRight: 5, alignItems: 'flex-end' }]} onPress={() => { this.selectPhoto() }}>
-                            <Text><EditIcon /></Text>
-                        </TouchableOpacity> */}
+                    <View style={[Styles.product_view, { borderColor: 'gray', borderWidth: scale(1) }]}>
                         <View style={[Styles.product_image, Styles.center]}>
-                            {/* <View style={Styles.ImgBgOne} />
-                            <View style={Styles.ImgBgTwo} /> */}
                             <Avatar source={imageSource} style={Styles.product_avatar} />
                         </View>
                     </View>
@@ -160,13 +199,13 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
 
                     </View>
                     {isUploaded ?
-                        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <ActivityIndicator size='large' />
-                           <Text style={{color: Color.COLOR, fontSize: scale(20)}}>Uploading...</Text>
+                            <Text style={{ color: Color.COLOR, fontSize: scale(20) }}>Uploading...</Text>
                         </View> :
                         <>
                             <View style={{ marginHorizontal: '10%' }}>
-                                <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.selectPhoto() }}>
+                                <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleModal() }}>
                                     <Text style={Styles.buttonName}>{LableText.CHOOSE_IMAGE}</Text>
                                 </TouchableOpacity>
                             </View>
@@ -185,6 +224,28 @@ export class AddCustomerImageScreen extends Component<AddCustomerImageScreenProp
 
                         </>
                     }
+
+                    <Modal style={Styles.image_modal} isVisible={openModal}>
+                        <View style={Styles.modalHeader}>
+                            <TouchableOpacity>
+                                <Text onPress={() => { this.handleModal() }}><CancelIcon fontSize={25} /></Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={Styles.center}>
+                            <Text style={Styles.image_upload_box}>Select a Photo</Text>
+                        </View>
+                        <Divider />
+                        <Divider />
+                        <Divider />
+                        <View>
+                            <Text onPress={() => { this.handleTakePhoto() }} style={Styles.image_upload_box_text}>Take Photo</Text>
+                        </View>
+                        <View>
+                            <Text onPress={() => { this.handleChooseImage() }} style={Styles.image_upload_box_text}>Choose from Gallery</Text>
+                        </View>
+                    </Modal>
+
                     <View style={Styles.bottomSpace}></View>
                 </Content>
 

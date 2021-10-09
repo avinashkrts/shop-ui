@@ -15,7 +15,7 @@ import { AppConstants } from '../../constants/AppConstants';
 import { AsyncStorage } from 'react-native';
 import { Item, Picker, Form, Icon, Thumbnail, Footer, FooterTab, Content } from 'native-base';
 import axios from 'axios';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
 // import FilePickerManager from 'react-native-file-picker';
 // import RNFetchBlob from 'react-native-fetch-blob';
 // import { VideoIcon } from '../../assets/icons';
@@ -62,36 +62,36 @@ export class AskScreen extends React.Component<ThemedComponentProps & any, MySta
       refreshing: false,
     }
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.selectPhoto = this.selectPhoto.bind(this);
+    // this.selectPhoto = this.selectPhoto.bind(this);
     this.selectAudio = this.selectAudio.bind(this);
-    this.selectVideo = this.selectVideo.bind(this);
+    // this.selectVideo = this.selectVideo.bind(this);
   }
 
 
-  selectPhoto(e, timelineType) {
-    // console.log('Select Photo Clicked')
-    ImagePicker.showImagePicker(options, (response) => {
-      // console.log('Response = ', response);
+  // selectPhoto(e, timelineType) {
+  //   // console.log('Select Photo Clicked')
+  //   ImagePicker.showImagePicker(options, (response) => {
+  //     // console.log('Response = ', response);
 
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        const source = { uri: response.uri };
-        const file = { name: 'thoughtPF_image' + response.fileName, uri: response.uri, type: response.type, size: response.fileSize, path: response.path }
-        this.setState({
-          timelineType: timelineType,
-          imageSource: source,
-          timelineBody: response,
-          imageWidth: response.width,
-          imageHeight: response.height,
-          file: file,
-        });
-        // console.log('Image Source', file)
-      }
-    });
-  }
+  //     if (response.didCancel) {
+  //       console.log('User cancelled image picker');
+  //     } else if (response.error) {
+  //       console.log('ImagePicker Error: ', response.error);
+  //     } else {
+  //       const source = { uri: response.uri };
+  //       const file = { name: 'thoughtPF_image' + response.fileName, uri: response.uri, type: response.type, size: response.fileSize, path: response.path }
+  //       this.setState({
+  //         timelineType: timelineType,
+  //         imageSource: source,
+  //         timelineBody: response,
+  //         imageWidth: response.width,
+  //         imageHeight: response.height,
+  //         file: file,
+  //       });
+  //       // console.log('Image Source', file)
+  //     }
+  //   });
+  // }
 
   selectAudio(e, timelineType) {
     // Alert.alert("We are facing some issues, shortly we'll come up with solution");
@@ -117,29 +117,29 @@ export class AskScreen extends React.Component<ThemedComponentProps & any, MySta
     });
   }
 
-  selectVideo(e, timelineType) {
+  // selectVideo(e, timelineType) {
 
-    // console.log('Video Timeline Type', timelineType)
-    ImagePicker.showImagePicker(videoOptions, (response) => {
-      // console.log('Response = ', response);
+  //   // console.log('Video Timeline Type', timelineType)
+  //   ImagePicker.showImagePicker(videoOptions, (response) => {
+  //     // console.log('Response = ', response);
 
-      if (response.didCancel) {
-        console.log('User cancelled video picker');
-      } else if (response.error) {
-        console.log('Video Picker Error: ', response.error);
-      } else {
-        const file = { name: 'thoughtPF_timeline.mp4', uri: response.uri, type: 'video/mp4', path: response.path, size: '' }
+  //     if (response.didCancel) {
+  //       console.log('User cancelled video picker');
+  //     } else if (response.error) {
+  //       console.log('Video Picker Error: ', response.error);
+  //     } else {
+  //       const file = { name: 'thoughtPF_timeline.mp4', uri: response.uri, type: 'video/mp4', path: response.path, size: '' }
 
-        this.setState({
-          timelineType: timelineType,
-          timelineBody: response.path,
-          imageSource: response.path,
-          file: file
-        });
-        // console.log('Video Source', file)
-      }
-    });
-  }
+  //       this.setState({
+  //         timelineType: timelineType,
+  //         timelineBody: response.path,
+  //         imageSource: response.path,
+  //         file: file
+  //       });
+  //       // console.log('Video Source', file)
+  //     }
+  //   });
+  // }
 
   handleSubmit() {
     // console.log('Timeline')

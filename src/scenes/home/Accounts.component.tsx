@@ -33,7 +33,7 @@ import { any } from 'prop-types';
 import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
 // import console = require('console');
 
 type MyState = {
@@ -82,7 +82,7 @@ export class AccountsScreen extends React.Component<TodoInProgressScreenProps & 
       refreshing: false
     }
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.selectPhoto = this.selectPhoto.bind(this);
+    // this.selectPhoto = this.selectPhoto.bind(this);
   }
 
 
@@ -125,32 +125,32 @@ export class AccountsScreen extends React.Component<TodoInProgressScreenProps & 
     }
   }
 
-  selectPhoto(e, timelineType) {
-    // console.log('Select Photo Clicked')
-    ImagePicker.showImagePicker(options, (response) => {
-      // console.log('Response = ', response);
+  // selectPhoto(e, timelineType) {
+  //   // console.log('Select Photo Clicked')
+  //   ImagePicker.showImagePicker(options, (response) => {
+  //     // console.log('Response = ', response);
 
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        const source = { uri: response.uri };
-        // console.log("image",response.uri);
-        const file = { name: 'thoughtPF_image' + response.fileName, uri: response.uri, type: response.type, size: response.fileSize, path: response.path }
-        this.setState({
-          timelineType: timelineType,
-          imageSource: source,
-          timelineBody: response,
-          imageWidth: response.width,
-          imageHeight: response.height,
-          file: file        
-        });
-        // console.log('Image Source', file)
-      // this.handleSubmit();
-      }
-    });
-  }
+  //     if (response.didCancel) {
+  //       console.log('User cancelled image picker');
+  //     } else if (response.error) {
+  //       console.log('ImagePicker Error: ', response.error);
+  //     } else {
+  //       const source = { uri: response.uri };
+  //       // console.log("image",response.uri);
+  //       const file = { name: 'thoughtPF_image' + response.fileName, uri: response.uri, type: response.type, size: response.fileSize, path: response.path }
+  //       this.setState({
+  //         timelineType: timelineType,
+  //         imageSource: source,
+  //         timelineBody: response,
+  //         imageWidth: response.width,
+  //         imageHeight: response.height,
+  //         file: file        
+  //       });
+  //       // console.log('Image Source', file)
+  //     // this.handleSubmit();
+  //     }
+  //   });
+  // }
 
   async componentDidMount() {
 

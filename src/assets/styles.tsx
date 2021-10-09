@@ -931,6 +931,29 @@ export const Styles = ScaledSheet.create({
     padding: '10@s'
   },
 
+  image_modal: {
+    justifyContent: 'flex-start',
+    backgroundColor: "#fafafa",
+    width: '90%',
+    borderRadius: '5@s',
+    borderWidth: '1@s',
+    borderColor: '#fafafa',
+    marginTop: '200@s',
+    padding: '10@s',
+    marginBottom: '230@s'
+  },
+
+  image_upload_box: {
+    fontWeight: 'bold',
+    fontSize: '20@s',
+    paddingBottom: '10@s'
+  },
+
+  image_upload_box_text: {
+    fontSize: '16@s',
+    marginTop: '20@s'
+  },
+
   modalHeader: {
     height: '20@s',
     alignItems: 'flex-end'

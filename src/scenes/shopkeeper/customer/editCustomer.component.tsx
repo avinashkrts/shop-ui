@@ -43,7 +43,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import { Placeholder, LableText, Color } from '../../../constants';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
 import { getFirstInstallTime } from 'react-native-device-info';
 import Axios from 'axios';
 
@@ -55,7 +55,9 @@ const options = {
     title: 'Select a Photo',
     takePhoto: 'Take Photo',
     chooseFromLibraryButtonTitle: 'Choose from gallery',
-    quality: 1,
+    quality: 0.7,
+    maxWidth: 500,
+    maxHeight: 550,
     type: 'image'
 }
 
@@ -103,24 +105,24 @@ export class EditCustomerScreen extends React.Component<EditCustomerScreenProps 
         this.handleAddCustomer = this.handleAddCustomer.bind(this);
     }
 
-    selectPhoto() {
-        ImagePicker.showImagePicker(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled Image picker');
-            } else if (response.error) {
-                console.log('Image Picker Error: ', response.error);
-            } else {
-                const source = { uri: response.uri };
-                const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
+    // selectPhoto() {
+    //     ImagePicker.showImagePicker(options, (response) => {
+    //         if (response.didCancel) {
+    //             console.log('User cancelled Image picker');
+    //         } else if (response.error) {
+    //             console.log('Image Picker Error: ', response.error);
+    //         } else {
+    //             const source = { uri: response.uri };
+    //             const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
 
-                this.setState({
-                    imageSource: source,
-                    file: file,
-                    isVisible: true,
-                });
-            }
-        });
-    }
+    //             this.setState({
+    //                 imageSource: source,
+    //                 file: file,
+    //                 isVisible: true,
+    //             });
+    //         }
+    //     });
+    // }
 
     
 

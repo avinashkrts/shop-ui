@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl, Alert, AsyncStorage, ActivityIndicator } from "react-native";
+import { View, Text, RefreshControl, Alert, AsyncStorage, ActivityIndicator, PermissionsAndroid } from "react-native";
 import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
 import { AddDrawerProductScreenProps } from "../../../navigation/home.navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
@@ -14,15 +14,15 @@ import DatePicker from 'react-native-datepicker'
 import { AppRoute } from "../../../navigation/app-routes";
 import Modal from "react-native-modal";
 import moment from "moment";
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
 import { scale } from "react-native-size-matters";
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 
 const options = {
-    title: 'Select a Photo',
-    takePhoto: 'Take Photo',
-    chooseFromLibraryButtonTitle: 'Choose from gallery',
-    quality: 1,
-    type: 'image'
+    quality: 0.7,
+    maxWidth: 500,
+    maxHeight: 550,
+    mediaType: 'photo'
 }
 
 export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProps, ThemedComponentProps & any> {
@@ -75,13 +75,18 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                 variable: 'allMeasurement',
             }
             ],
+            openModal: false
         }
         this.onRefresh = this.onRefresh.bind(this);
     }
 
     async componentDidMount() {
         const { allData } = this.state;
-
+        this.props.navigation.addListener('blur', () => {
+            this.setState({
+                isImage: false
+            })
+        })
         const value = await AsyncStorage.getItem('userDetail');
         if (value) {
             const user = JSON.parse(value);
@@ -275,15 +280,59 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
         }
     }
 
-    selectPhoto() {
-        ImagePicker.showImagePicker(options, (response) => {
+    async handleTakePhoto() {
+        this.handleModal()
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                    title: "Milaan Camera/Gallery Permission",
+                    message:
+                        "Milaan needs access to your Camera " +
+                        "so you can upload image from Camera.",
+                    buttonNeutral: "Ask Me Later",
+                    buttonNegative: "Cancel",
+                    buttonPositive: "OK"
+                }
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                launchCamera(options, (response) => {
+                    if (response.didCancel) {
+                        console.log('User cancelled Image picker');
+                    } else if (response.errorCode) {
+                        console.log('Image Picker Error: ', response.errorCode);
+                    } else {
+                        console.log('URI', response.assets[0])
+                        const source = { uri: response.assets[0].uri };
+                        const file = { name: 'shop' + response.assets[0].fileName, uri: response.assets[0].uri, type: response.assets[0].type, size: response.assets[0].fileSize }
+
+                        this.setState({
+                            imageSource: source,
+                            file: file,
+                        });
+                    }
+                });
+            } else {
+                console.log("Camera permission denied");
+                Alert.alert("Please give Camera permission to use Camera.")
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    }
+
+
+    handleChooseImage() {
+        this.handleModal()
+        launchImageLibrary(options, (response) => {
             if (response.didCancel) {
                 console.log('User cancelled Image picker');
-            } else if (response.error) {
+            } else if (response.errorCode) {
                 console.log('Image Picker Error: ', response.error);
             } else {
-                const source = { uri: response.uri };
-                const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
+                console.log('URI', response)
+                const source = { uri: response.assets[0].uri };
+                const file = { name: 'shop' + response.assets[0].fileName, uri: response.assets[0].uri, type: response.assets[0].type, size: response.assets[0].fileSize }
 
                 this.setState({
                     imageSource: source,
@@ -293,31 +342,40 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
         });
     }
 
+    handleModal() {
+        const { openModal } = this.state;
+        this.setState({ openModal: !openModal })
+    }
+
 
     async uploadImage() {
-        const { productId, file } = this.state;
+        const { productId, imageSource, file } = this.state;
         const value = await AsyncStorage.getItem('userDetail');
         if (value) {
             const user = JSON.parse(value);
             var shopId = user.shopId
-            const formData = new FormData();
-            formData.append('file', file);
-            console.log(productId, shopId);
-            this.toggleUpload()
-            fetch(AppConstants.API_BASE_URL + '/api/image/upload/avatar/' + shopId + '/' + productId, {
-                method: 'post',
-                body: formData
-            }).then(res => {
-                if (res.ok) {
-                    this.setState({
-                        imageSource: '',
-                        file: null,
-                        imageUploaded: true,
-                        isUploaded: false
-                    });
-                    Alert.alert("File uploaded successfully.");
-                }
-            });
+            if (imageSource === '' || imageSource.length <= 0) {
+                Alert.alert("Please select a Photo")
+            } else {
+                const formData = new FormData();
+                formData.append('file', file);
+                console.log(productId, shopId);
+                this.toggleUpload()
+                fetch(AppConstants.API_BASE_URL + '/api/image/upload/avatar/' + shopId + '/' + productId, {
+                    method: 'post',
+                    body: formData
+                }).then(res => {
+                    if (res.ok) {
+                        this.setState({
+                            imageSource: '',
+                            file: null,
+                            imageUploaded: true,
+                            isUploaded: false
+                        });
+                        Alert.alert("File uploaded successfully.");
+                    }
+                });
+            }
         }
     }
 
@@ -431,11 +489,11 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
 
     handleImageFinish() {
         this.setState({ isImage: false })
-        this.props.navigation.navigate(AppRoute.HOME) 
+        this.props.navigation.navigate(AppRoute.HOME)
     }
 
     render() {
-        const { isEditable, outOfStock, isImage, manufactureMinDate, brandVisible, manufactureDate, expireDate, brandName, brandCatId, catImage, catName, categoryVisible, allCategory, allBrand, name, category, brand, shopId, avatar, price, quantity, description, barcode,
+        const { isEditable, openModal, outOfStock, isImage, manufactureMinDate, brandVisible, manufactureDate, expireDate, brandName, brandCatId, catImage, catName, categoryVisible, allCategory, allBrand, name, category, brand, shopId, avatar, price, quantity, description, barcode,
             stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
             gstAmount, measurement, gstPercent, minDate, allMeasurement, expireActiveInd, isUploaded, imageUploaded, imageSource } = this.state
         return (
@@ -457,10 +515,31 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                         />
                     }
                 >
+                    <Modal style={Styles.image_modal} isVisible={openModal}>
+                        <View style={Styles.modalHeader}>
+                            <TouchableOpacity>
+                                <Text onPress={() => { this.handleModal() }}><CancelIcon fontSize={25} /></Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={Styles.center}>
+                            <Text style={Styles.image_upload_box}>Select a Photo</Text>
+                        </View>
+                        <Divider />
+                        <Divider />
+                        <Divider />
+                        <View>
+                            <Text onPress={() => { this.handleTakePhoto() }} style={Styles.image_upload_box_text}>Take Photo</Text>
+                        </View>
+                        <View>
+                            <Text onPress={() => { this.handleChooseImage() }} style={Styles.image_upload_box_text}>Choose from Gallery</Text>
+                        </View>
+                    </Modal>
+
                     {isImage ?
                         <View>
-                            <View style={[Styles.product_view, { borderColor: 'gray', borderWidth: scale(1) }]}>                              
-                                <View style={[Styles.product_image, Styles.center]}>                                   
+                            <View style={[Styles.product_view, { borderColor: 'gray', borderWidth: scale(1) }]}>
+                                <View style={[Styles.product_image, Styles.center]}>
                                     <Avatar source={imageSource} style={Styles.product_avatar} />
                                 </View>
                             </View>
@@ -474,7 +553,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                 </View> :
                                 <>
                                     <View style={{ marginHorizontal: '10%' }}>
-                                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.selectPhoto() }}>
+                                        <TouchableOpacity style={[Styles.buttonBox, Styles.center]} onPress={() => { this.handleModal() }}>
                                             <Text style={Styles.buttonName}>{LableText.CHOOSE_IMAGE}</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -694,7 +773,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                     </View>
                                 </View>
 
-                               
+
 
                                 <View style={Styles.user_detail}>
                                     <View style={Styles.user_detail_header}>
