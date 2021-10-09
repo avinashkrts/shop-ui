@@ -17,6 +17,9 @@ import { AppNavigator } from './navigation/app.navigator';
 import { AppRoute } from './navigation/app-routes';
 import SplashScreen from 'react-native-splash-screen';
 import OneSignal from 'react-native-onesignal';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import store, { persistor } from './redux/store';
 
 // This value is used to determine the initial screen
 // const isAuthorized: boolean = false;
@@ -97,16 +100,20 @@ export default class App extends Component<any, any>{
   render() {
     return (
       <React.Fragment>
-        <IconRegistry icons={EvaIconsPack} />
-        <ApplicationProvider
-          mapping={mapping}
-          theme={light}>
-          <SafeAreaProvider>
-            <NavigationContainer>
-              <AppNavigator initialRouteName={AppRoute.USER_DECIDE}/>
-            </NavigationContainer>
-          </SafeAreaProvider>
-        </ApplicationProvider>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <IconRegistry icons={EvaIconsPack} />
+            <ApplicationProvider
+              mapping={mapping}
+              theme={light}>
+              <SafeAreaProvider>
+                <NavigationContainer>
+                  <AppNavigator initialRouteName={AppRoute.USER_DECIDE} />
+                </NavigationContainer>
+              </SafeAreaProvider>
+            </ApplicationProvider>
+          </PersistGate>
+        </Provider>
       </React.Fragment>
     );
   }

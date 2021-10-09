@@ -74,7 +74,6 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
         switch (orderStatus) {
             case 'ACCEPT':
                 // Alert.alert( orderStatus)
-
                 Axios({
                     method: 'GET',
                     url: AppConstants.API_BASE_URL + '/api/cart/order/accept/' + cartId + '/' + userData.shopId,

@@ -144,8 +144,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
-        versionCode 1
-        versionName "1.0"
+        versionCode 10
+        versionName "10.0.0"
          manifestPlaceholders = [onesignal_app_id: "43e3395b-0019-492b-b999-4321444f25ad",
                                 onesignal_google_project_number: "REMOTE"]
          

@@ -24,6 +24,8 @@ import { scale } from "react-native-size-matters";
 import OneSignal from "react-native-onesignal";
 import { LableText } from '../../../constants/LabelConstants';
 import { BackHandler } from "react-native";
+import { connect } from "react-redux";
+import { changeProductData } from "../../../redux/action/tokenActions";
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
 
@@ -131,6 +133,8 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                     long: long,
                     location: location
                 })
+
+                // this.props.ChangeProductData(response.data)
             }, (error) => {
                 // Alert.alert("Server error.")
             });
@@ -394,7 +398,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
         });
     }
 
-    render() {
+    render() {        
         const { allShop, location, searchAttribute, searchTerm, data, ignoreCase, lat, long, searchVisible, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
         const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
         const headerHeight = this.state.scrollY.interpolate({
@@ -789,3 +793,20 @@ const styles = StyleSheet.create({
     }
 
 });
+
+// function mapStateToProps(state) {
+//     return ({
+//         productData: state.tokenReducer.productData
+//     })
+//   }
+  
+//   function mapDispatchToProps(dispatch) {
+//     return ({
+//         changeProductData: (data) => {
+//         dispatch(changeProductData(data))
+//       }
+//     })
+//   }
+  
+  
+//   export default connect(mapStateToProps,mapDispatchToProps)(CustomerAllShopScreen);

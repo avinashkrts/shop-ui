@@ -43,7 +43,7 @@ import { pathToFileURL, fileURLToPath } from 'url';
 import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import { Color, LableText } from '../../../constants/LabelConstants';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
 import { url } from 'inspector';
 import ImageSlider from 'react-native-image-slider';
 // import axios from 'axios';  
@@ -306,26 +306,26 @@ export class ItemDetailScreen extends React.Component<ItemDetailScreenProps & Th
     //     </ListItem>
     // )
 
-    selectPhoto() {
-        ImagePicker.showImagePicker(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled Image picker');
-            } else if (response.error) {
-                console.log('Image Picker Error: ', response.error);
-            } else {
-                const source = { uri: response.uri };
-                const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
+    // selectPhoto() {
+    //     ImagePicker.showImagePicker(options, (response) => {
+    //         if (response.didCancel) {
+    //             console.log('User cancelled Image picker');
+    //         } else if (response.error) {
+    //             console.log('Image Picker Error: ', response.error);
+    //         } else {
+    //             const source = { uri: response.uri };
+    //             const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
 
-                this.setState({
-                    imageSource: source,
-                    file: file,
-                    isVisible: true
-                });
+    //             this.setState({
+    //                 imageSource: source,
+    //                 file: file,
+    //                 isVisible: true
+    //             });
 
-                this.oploadImage(file)
-            }
-        });
-    }
+    //             this.oploadImage(file)
+    //         }
+    //     });
+    // }
 
     oploadImage(file) {
         const { productId, selectedFile } = this.state;
@@ -568,6 +568,8 @@ const options = {
     title: 'Select a Photo',
     takePhoto: 'Take Photo',
     chooseFromLibraryButtonTitle: 'Choose from gallery',
-    quality: 1,
+    quality: 0.7,
+    maxWidth: 500,
+    maxHeight: 550,
     type: 'image'
 }

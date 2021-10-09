@@ -12,14 +12,16 @@ import { CheckBox, Content, Picker } from "native-base";
 import Axios from "axios";
 import DatePicker from 'react-native-datepicker'
 import { AppRoute } from "../../../navigation/app-routes";
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
 import { scale } from "react-native-size-matters";
 
 const options = {
     title: 'Select a Photo',
     takePhoto: 'Take Photo',
     chooseFromLibraryButtonTitle: 'Choose from gallery',
-    quality: 1,
+    quality: 0.7,
+    maxWidth: 500,
+    maxHeight: 550,
     type: 'image'
 }
 
@@ -51,23 +53,23 @@ export class AddProductImageScreen extends Component<AddProductImageScreenProps,
         })
     }
 
-    selectPhoto() {
-        ImagePicker.showImagePicker(options, (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled Image picker');
-            } else if (response.error) {
-                console.log('Image Picker Error: ', response.error);
-            } else {
-                const source = { uri: response.uri };
-                const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
+    // selectPhoto() {
+    //     ImagePicker.showImagePicker(options, (response) => {
+    //         if (response.didCancel) {
+    //             console.log('User cancelled Image picker');
+    //         } else if (response.error) {
+    //             console.log('Image Picker Error: ', response.error);
+    //         } else {
+    //             const source = { uri: response.uri };
+    //             const file = { name: 'shop' + response.fileName, uri: response.uri, type: response.type, size: response.readableSize, path: response.path }
 
-                this.setState({
-                    imageSource: source,
-                    file: file,
-                });
-            }
-        });
-    }
+    //             this.setState({
+    //                 imageSource: source,
+    //                 file: file,
+    //             });
+    //         }
+    //     });
+    // }
 
     uploadImage() {
         const { shopId, productId, imageUploaded, file } = this.state;

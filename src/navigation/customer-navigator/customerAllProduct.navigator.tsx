@@ -95,7 +95,6 @@ const Stack = createStackNavigator<CustomerAllProductNavigatorParams>();
 
 export const CustomerAllShopNavigator = (): React.ReactElement => (
     <Stack.Navigator initialRouteName={AppRoute.CUSTOMER_ALL_SHOP} headerMode='none'>
-        <Stack.Screen name={AppRoute.TEST_SCREEN} component={TestScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_ALL_SHOP} component={CustomerAllShopScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_ALL_PRODUCT} component={CustomerAllProductScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_CART} component={CartScreen} />        
@@ -104,5 +103,6 @@ export const CustomerAllShopNavigator = (): React.ReactElement => (
         <Stack.Screen name={AppRoute.PAYMENT} component={PaymentScreen} />        
         <Stack.Screen name={AppRoute.MAP} component={MapScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_ORDER_PRODUCT} component={CustomerOrderScreen} />        
+        <Stack.Screen name={AppRoute.TEST_SCREEN} component={TestScreen} />        
     </Stack.Navigator>
 );

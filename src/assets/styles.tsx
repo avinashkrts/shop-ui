@@ -427,7 +427,7 @@ export const Styles = ScaledSheet.create({
   product_2nd_wish_view: {
     width: '20%',
     justifyContent: 'center',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     paddingRight: 5
   },
 
@@ -929,6 +929,29 @@ export const Styles = ScaledSheet.create({
     borderColor: '#fafafa',
     marginTop: '10@s',
     padding: '10@s'
+  },
+
+  image_modal: {
+    justifyContent: 'flex-start',
+    backgroundColor: "#fafafa",
+    width: '90%',
+    borderRadius: '5@s',
+    borderWidth: '1@s',
+    borderColor: '#fafafa',
+    marginTop: '200@s',
+    padding: '10@s',
+    marginBottom: '230@s'
+  },
+
+  image_upload_box: {
+    fontWeight: 'bold',
+    fontSize: '20@s',
+    paddingBottom: '10@s'
+  },
+
+  image_upload_box_text: {
+    fontSize: '16@s',
+    marginTop: '20@s'
   },
 
   modalHeader: {

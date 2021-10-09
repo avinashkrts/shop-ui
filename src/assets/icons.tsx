@@ -53,7 +53,7 @@ export const CameraIcon = (style): AntDesign => (
 );
 
 export const WishIcon = (style): AntDesign => (
-  <Entypo size={30} name='heart' />
+  <Entypo size={scale(23)} name='heart' />
 );
 
 export const MinusIcon = (style): AntDesign => (
