@@ -748,27 +748,8 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                 </View>
                             </View>
                         </Header>
-                    </> : null}
-                {/* <Animated.View style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: 'white',
-                    height: HEADER_MIN_HEIGHT,
-                    zIndex: headerZIndex,
-                    transform: [{ translateY: headerY }]
-                }}>
-
-                </Animated.View> */}
-                <ScrollView style={{ flex: 1 }}
-                    bounces={false}
-                    scrollEventThrottle={16}
-                   >
-                    <View style={{
-                        height: '100%',
-                        width: '100%'
-                    }}>
+                    </> : null}              
+              
                         <ScrollView style={[Styles.customer_content, { marginTop: 10 }]} showsVerticalScrollIndicator={false}
                             refreshControl={
                                 <RefreshControl
@@ -781,104 +762,9 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                 <List data={allProduct}
                                     renderItem={this.renderProduct}
                                 /> : null}
-                            {/* <View style={Styles.all_Item_Main_View}>
-                                {null != allProduct ? allProduct.map((data, index) => {
-                                    return (
-                                        <View style={Styles.all_Item_List}>
-                                            <View style={{ height: 200 }}>
-                                                <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId, data.shopId) }}>
-                                                    <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + data.shopId + '_product.png' }} style={Styles.product_avatar} />
-                                                    </View>
-                                                </TouchableOpacity>
-                                            </View>
-                                           
-
-                                            <View style={Styles.all_Item_Detail}>
-                                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 0 }}>
-                                                    <View style={{ flexDirection: 'row' }}>
-                                                        {null != allBrand ? allBrand.map((brand, index) => {
-                                                            if (brand.id == data.brand) {
-                                                                return (
-                                                                    <View style={{ width: '80%', flexWrap: 'wrap', flexDirection: 'row' }}>
-                                                                        <Text style={{ color: '#000', marginTop: scale(5), fontWeight: 'bold', fontSize: scale(14)  }}>{data.name} {`\n`} {brand.name}</Text>
-                                                                    </View>
-                                                                );
-                                                            }
-                                                        }) : null}
-                                                        {null !== wishList ?
-                                                            <View style={[Styles.product_2nd_wish_view]}>
-                                                                <TouchableOpacity onPress={() => { this.handleWishList(data.productId) }}>
-                                                                    <Text
-                                                                        style={wishList.includes(data.productId) ?
-                                                                            Styles.selected_wish_icon :
-                                                                            Styles.wish_icon
-                                                                        }
-                                                                    >
-                                                                        <WishIcon />
-                                                                    </Text>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            : null
-                                                        }
-                                                    </View>
-                                                    {null != allMeasurement ? allMeasurement.map((brand, index) => {
-                                                        if (brand.lookUpId == data.measurement) {
-                                                            return (
-                                                                <>
-                                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
-                                                                </>
-                                                            );
-                                                        }
-                                                    }) : null}
-                                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
-                                                        {data.offerActiveInd ?
-                                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
-                                                            : null
-                                                        }
-                                                    </View>
-                                                    {null != data.offerActiveInd ? data.offerActiveInd ?
-                                                    
-                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo ? data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4) : null}</Text>
-                                                        </View> :
-                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
-                                                            <Text style={{ color: Color.COLOR }}></Text>
-                                                        </View> : null
-                                                    }
-
-                                                </View>
-                                                {data.stock ? data.stock > 0 ?
-                                                    <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId, data.shopId) }}>
-                                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
-                                                        </View>
-                                                    </TouchableOpacity> :
-
-                                                    <TouchableOpacity >
-                                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
-                                                        </View>
-                                                    </TouchableOpacity> :
-                                                    <TouchableOpacity >
-                                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                }
-                                            </View>
-                                        </View>
-                                    )
-                                }) : null}
-                            </View> */}
+                          
                             <View style={{ height: 10, width: '100%' }} />
-                        </ScrollView>
-                    </View>
-                </ScrollView>
-
+                        </ScrollView>  
             </SafeAreaLayout>
         );
     }
