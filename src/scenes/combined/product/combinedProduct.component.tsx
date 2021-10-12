@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet, PermissionsAndroid, BackHandler } from "react-native";
-import { Avatar, Divider, ThemedComponentProps } from "react-native-ui-kitten";
+import { Avatar, Divider, List, ListItem, ListItemElement, ThemedComponentProps } from "react-native-ui-kitten";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
 import { BackIcon, CartIcon, CancelIcon, SearchIcon, WishIcon, MenuIcon } from "../../../assets/icons";
@@ -8,7 +8,6 @@ import { FlatList, ScrollView, TextInput, TouchableOpacity } from "react-native-
 import { AppConstants, Color } from "../../../constants";
 import { Styles } from "../../../assets/styles";
 import axios from 'axios';
-import Animated from "react-native-reanimated";
 import { AppRoute } from "../../../navigation/app-routes";
 import Axios from "axios";
 import { CombinedProductScreenProps } from "../../../navigation/combined-navigator/combinedAllProduct.navigator";
@@ -20,9 +19,6 @@ import { Header } from 'native-base';
 import { StackActions } from "@react-navigation/native";
 import { scale } from "react-native-size-matters";
 import { LableText } from '../../../constants/LabelConstants';
-
-const HEADER_MAX_HEIGHT = 205;
-const HEADER_MIN_HEIGHT = 0;
 
 export class CombinedProductScreen extends Component<CombinedProductScreenProps, ThemedComponentProps & any> {
     backHandler: any;
@@ -51,7 +47,6 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                     variable: 'allMeasurement',
                 }
             ],
-            scrollY: new Animated.Value(0),
             single: false,
             shopName: '',
         };
@@ -423,37 +418,192 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
         // }
     }
 
+    renderProduct = ({ item }: any): ListItemElement => (
+        <ListItem style={{ borderBottomColor: 'rgba(200, 200, 200, 1)', borderBottomWidth: scale(1) }}>
+            <View style={Styles.product_list_main}>
+                <View style={Styles.product_list_img}>
+                    <TouchableOpacity onPress={() => { this.navigateProductDetail(item.productId, item.shopId) }}>
+                        <View style={[Styles.all_Item_Image_2, Styles.center]}>
+                            <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_' + 1 + "_" + item.shopId + '_product.png' }} style={Styles.product_avatar} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                <View style={Styles.product_list_detail}>
+                    <View style={Styles.all_Item_List1}>
+                        <View style={Styles.all_Item_Detail}>
+                            <View style={{ backgroundColor: '#fff', paddingHorizontal: 0 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    {null != this.state.allBrand ? this.state.allBrand.map((brand, index) => {
+                                        if (brand.id == item.brand) {
+                                            return (
+                                                <View style={{ width: '80%', flexWrap: 'wrap', flexDirection: 'row' }}>
+                                                    <Text style={{ color: '#000', marginTop: scale(5), fontSize: scale(14) }}>{item.name} {`\n`}{brand.name}</Text>
+                                                </View>
+                                            );
+                                        }
+                                    }) : null}
+                                    {null !== this.state.wishList ?
+                                        <View style={[Styles.product_2nd_wish_view]}>
+                                            <TouchableOpacity onPress={() => { this.handleWishList(item.productId) }}>
+                                                <Text
+                                                    style={this.state.wishList.includes(item.productId) ?
+                                                        Styles.selected_wish_icon :
+                                                        Styles.wish_icon
+                                                    }
+                                                >
+                                                    <WishIcon />
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        : null
+                                    }
+                                </View>
+                                {null != this.state.allMeasurement ? this.state.allMeasurement.map((brand, index) => {
+                                    if (brand.lookUpId == item.measurement) {
+                                        return (
+                                            <>
+                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{item.quantity} {brand.lookUpName}</Text>
+                                            </>
+                                        );
+                                    }
+                                }) : null}
+                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                    <Text style={{ color: '#000', fontSize: scale(14)}}>Rs. {item.price}</Text>
+                                    {item.offerActiveInd ?
+                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{item.oldPrice}</Text>
+                                        : null
+                                    }
+                                </View>
+                                {null != item.offerActiveInd ? item.offerActiveInd ?
+
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                        <Text style={{ color: Color.COLOR }}>{item.offerPercent} % off</Text>
+                                        <Text style={{ color: Color.COLOR }}>{item.offerActiveInd && item.offerTo ? item.offerTo.substr(8, 2) + "/" + item.offerTo.substr(5, 2) + "/" + item.offerTo.substr(0, 4) : null}</Text>
+                                    </View> :
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                        <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
+                                        <Text style={{ color: Color.COLOR }}></Text>
+                                    </View> : null
+                                }
+
+                            </View>
+                            {item.stock ? item.stock > 0 ?
+                                <TouchableOpacity onPress={() => { this.handleAddToCart(item.productId, item.shopId) }}>
+                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                    </View>
+                                </TouchableOpacity> :
+
+                                <TouchableOpacity >
+                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
+                                    </View>
+                                </TouchableOpacity> :
+                                <TouchableOpacity >
+                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            }
+                        </View>
+                    </View>
+                </View>
+
+            </View>
+            {/* <View style={Styles.all_Item_Main_View}>
+                <View style={Styles.all_Item_List}>
+                    <View style={{ height: 150 }}>
+                        <TouchableOpacity onPress={() => { this.navigateProductDetail(item.productId, item.shopId) }}>
+                            <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_' + 1 + "_" + item.shopId + '_product.png' }} style={Styles.product_avatar} />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={Styles.all_Item_Detail}>
+                        <View style={{ backgroundColor: '#fff', paddingHorizontal: 0 }}>
+                            <View style={{ flexDirection: 'row' }}>
+                                {null != this.state.allBrand ? this.state.allBrand.map((brand, index) => {
+                                    if (brand.id == item.brand) {
+                                        return (
+                                            <View style={{ width: '80%', flexWrap: 'wrap', flexDirection: 'row' }}>
+                                                <Text style={{ color: '#000', marginTop: scale(5), fontWeight: 'bold', fontSize: scale(14) }}>{item.name} {`\n`} {brand.name}</Text>
+                                            </View>
+                                        );
+                                    }
+                                }) : null}
+                                {null !== this.state.wishList ?
+                                    <View style={[Styles.product_2nd_wish_view]}>
+                                        <TouchableOpacity onPress={() => { this.handleWishList(item.productId) }}>
+                                            <Text
+                                                style={this.state.wishList.includes(item.productId) ?
+                                                    Styles.selected_wish_icon :
+                                                    Styles.wish_icon
+                                                }
+                                            >
+                                                <WishIcon />
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    : null
+                                }
+                            </View>
+                            {null != this.state.allMeasurement ? this.state.allMeasurement.map((brand, index) => {
+                                if (brand.lookUpId == item.measurement) {
+                                    return (
+                                        <>
+                                            <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{item.quantity} {brand.lookUpName}</Text>
+                                        </>
+                                    );
+                                }
+                            }) : null}
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {item.price}</Text>
+                                {item.offerActiveInd ?
+                                    <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{item.oldPrice}</Text>
+                                    : null
+                                }
+                            </View>
+                            {null != item.offerActiveInd ? item.offerActiveInd ?
+
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                    <Text style={{ color: Color.COLOR }}>{item.offerPercent} % off</Text>
+                                    <Text style={{ color: Color.COLOR }}>{item.offerActiveInd && item.offerTo ? item.offerTo.substr(8, 2) + "/" + item.offerTo.substr(5, 2) + "/" + item.offerTo.substr(0, 4) : null}</Text>
+                                </View> :
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                    <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
+                                    <Text style={{ color: Color.COLOR }}></Text>
+                                </View> : null
+                            }
+
+                        </View>
+                        {item.stock ? item.stock > 0 ?
+                            <TouchableOpacity onPress={() => { this.handleAddToCart(item.productId, item.shopId) }}>
+                                <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                    <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                </View>
+                            </TouchableOpacity> :
+
+                            <TouchableOpacity >
+                                <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                    <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
+                                </View>
+                            </TouchableOpacity> :
+                            <TouchableOpacity >
+                                <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                    <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
+                                </View>
+                            </TouchableOpacity>
+                        }
+                    </View>
+                </View>
+            </View> */}
+        </ListItem>
+    )
+
     render() {
         const { allProduct, shopName, single, searchVisible, location, lat, long, refreshing, shopId, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
-        const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
-        const headerHeight = this.state.scrollY.interpolate({
-            inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
-            outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-            extrapolate: 'clamp'
-        })
-
-        const headerZIndex = Animated.interpolate(diffClamp, {
-            inputRange: [0, 1000],
-            outputRange: [1000, 0]
-        })
-
-        const containtZIndex = Animated.interpolate(diffClamp, {
-            inputRange: [1000, 1000],
-            outputRange: [1000, 1000]
-        })
-
-
-        // const scrollY = new Animated.Value(0);
-
-        const headerY = Animated.interpolate(diffClamp, {
-            inputRange: [0, HEADER_MAX_HEIGHT],
-            outputRange: [0, -HEADER_MAX_HEIGHT],
-        })
-
-        const profileImageMarginTop = Animated.interpolate(diffClamp, {
-            inputRange: [0, HEADER_MIN_HEIGHT],
-            outputRange: [HEADER_MIN_HEIGHT, HEADER_MIN_HEIGHT]
-        })
+       
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -535,7 +685,6 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                     </View> : null}
                 {/* <Header style={styles.header}> */}
                 <View style={[Styles.searchBox, { marginBottom: 0 }]}>
-
                     <TextInput
                         placeholder="Search"
                         style={[Styles.searchInput]}
@@ -547,7 +696,6 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                             <Text style={Styles.searchIcon}><SearchIcon /></Text>
                         </TouchableOpacity>
                     </View>
-
                 </View>
                 <Divider />
                 {/* </Header> */}
@@ -601,7 +749,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                             </View>
                         </Header>
                     </> : null}
-                <Animated.View style={{
+                {/* <Animated.View style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
@@ -612,15 +760,14 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                     transform: [{ translateY: headerY }]
                 }}>
 
-                </Animated.View>
-                <Animated.ScrollView style={{ flex: 1 }}
+                </Animated.View> */}
+                <ScrollView style={{ flex: 1 }}
                     bounces={false}
                     scrollEventThrottle={16}
-                    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}>
-                    <Animated.View style={{
+                   >
+                    <View style={{
                         height: '100%',
-                        width: '100%',
-                        marginTop: profileImageMarginTop
+                        width: '100%'
                     }}>
                         <ScrollView style={[Styles.customer_content, { marginTop: 10 }]} showsVerticalScrollIndicator={false}
                             refreshControl={
@@ -630,8 +777,11 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                 />
                             }
                         >
-
-                            <View style={Styles.all_Item_Main_View}>
+                            {null != allProduct ?
+                                <List data={allProduct}
+                                    renderItem={this.renderProduct}
+                                /> : null}
+                            {/* <View style={Styles.all_Item_Main_View}>
                                 {null != allProduct ? allProduct.map((data, index) => {
                                     return (
                                         <View style={Styles.all_Item_List}>
@@ -642,12 +792,7 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                                     </View>
                                                 </TouchableOpacity>
                                             </View>
-                                            {/* <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId) }}>
-                                                <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
-                                                </View>
-
-                                            </TouchableOpacity> */}
+                                           
 
                                             <View style={Styles.all_Item_Detail}>
                                                 <View style={{ backgroundColor: '#fff', paddingHorizontal: 0 }}>
@@ -658,10 +803,6 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                                                     <View style={{ width: '80%', flexWrap: 'wrap', flexDirection: 'row' }}>
                                                                         <Text style={{ color: '#000', marginTop: scale(5), fontWeight: 'bold', fontSize: scale(14)  }}>{data.name} {`\n`} {brand.name}</Text>
                                                                     </View>
-
-                                                                    // <>
-                                                                    //     <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
-                                                                    // </>
                                                                 );
                                                             }
                                                         }) : null}
@@ -732,11 +873,11 @@ export class CombinedProductScreen extends Component<CombinedProductScreenProps,
                                         </View>
                                     )
                                 }) : null}
-                            </View>
+                            </View> */}
                             <View style={{ height: 10, width: '100%' }} />
                         </ScrollView>
-                    </Animated.View>
-                </Animated.ScrollView>
+                    </View>
+                </ScrollView>
 
             </SafeAreaLayout>
         );

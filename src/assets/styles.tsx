@@ -163,6 +163,32 @@ export const Styles = ScaledSheet.create({
     marginBottom: '25@s'
   },
 
+  /*---------------------------------------------This Style is for All Product List Page--------------------------------------------------------- */
+  product_list_main: {
+    width: '100%',
+    flexDirection: 'row'
+  },
+
+  product_list_img: {
+    width: '130@s',
+    height: '130@s'
+  },
+
+  product_list_detail: {
+    width: '60%',
+    padding: '4@s'
+  },
+
+  all_Item_List1: {
+    width: '98%',
+    backgroundColor: '#000',
+    margin: '1%',
+  },
+
+  all_Item_Image_2: {
+    padding: 15,
+    backgroundColor: Color.BUTTON_NAME_COLOR
+  },
   /*---------------------------------------------This Style is for All Item Page--------------------------------------------------------- */
   all_Item_Main_View: {
     width: '100%',

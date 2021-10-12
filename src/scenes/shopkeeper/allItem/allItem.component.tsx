@@ -306,7 +306,7 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                         title='Product'
                         backIcon={MenuIcon}
                         onBackPress={this.props.navigation.toggleDrawer}
-                        onRightPress={() => { this.handleAddProduct() }}
+                        onRightPress={() => { this.handleAddProduct()}}
                         menuIcon={PlusCircle}
                         style={{ marginTop: -5, marginLeft: -5 }}
                     />
@@ -448,9 +448,9 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                                                     }
                                                 </View>
                                                 {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
-                                                <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                                 <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
                                                     <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.stock}</Text>
-                                                </View>
+                                                </View> 
                                                 {/* </TouchableOpacity> */}
                                             </View>
                                             {/* </TouchableOpacity> */}
