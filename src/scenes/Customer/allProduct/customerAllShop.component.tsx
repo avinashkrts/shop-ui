@@ -95,6 +95,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
         ]);
         return true;
       };
+      
       componentWillUnmount() {
        this.backHandler.remove();       
       }

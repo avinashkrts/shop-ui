@@ -34,13 +34,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { any } from 'prop-types';
 import { AsyncStorage } from 'react-native';
 import axios from 'axios';
-import { truncate, open } from 'fs';
-// import VideoPlayer from 'react-native-video-player';
-// import { FlatList } from 'react-native-gesture-handler';
-import Share from 'react-native-share';
-import { pathToFileURL, fileURLToPath } from 'url';
-// import SwipeHiddenHeader from 'react-native-swipe-hidden-header';
-import Animated from 'react-native-reanimated';
 import { Styles } from '../../../assets/styles'
 import { Color, Contents, LableText } from '../../../constants/LabelConstants';
 import Axios from 'axios';
@@ -50,9 +43,7 @@ import { MyOrderDetailScreenProps } from '../../../navigation/shopKeeperNavigato
 import moment from 'moment';
 import { Notification } from '../../../components/notification';
 import { scale } from 'react-native-size-matters';
-// import axios from 'axios';  
-// import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
-
+import { CheckBox } from 'native-base'
 export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props)
@@ -91,7 +82,9 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
             otp: '',
             isOtp: true,
             isCancel: true,
-            review: ''
+            review: '',
+            totalItem: '',
+            isChecked: []
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -120,9 +113,18 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/cart/get/' + cartId
             }).then((response) => {
-                console.log('delivery date ' + cartId + ' ', moment(response.data.slotDate).format('DD-MM-YYYY hh:mm a'))
+                // console.log('delivery date ' + cartId + ' ', moment(response.data.slotDate).format('DD-MM-YYYY hh:mm a'))
+                var totalItem = 0;
+                var isChecked = [];
+                response.data.productList.map((data, i) => {
+                    totalItem = totalItem + data.productQuantity;
+                    var objChecked = { "id": i, "isChecked": false }
+                    isChecked.push(objChecked)
+                })
                 this.setState({
                     userId: response.data.userId,
+                    totalItem: totalItem,
+                    isChecked: isChecked,
                     deliveryDate: String(moment(response.data.slotDate).format('YYYY-MM-DD hh:mm:a'))
                 })
                 axios({
@@ -427,12 +429,28 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
         }
     }
 
-    renderCart = ({ item }: any): ListItemElement => (
+    handleChecked(value, index) {
+        const { isChecked } = this.state;
+        var tempChecked = isChecked
+        tempChecked[index].isChecked= !tempChecked[index].isChecked       
+        this.setState({
+            isChecked: tempChecked
+        })
+    }
+
+    renderCart = ({ item, index }: any): ListItemElement => (
         <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
             {item != null ?
-
                 <View style={Styles.cart_main_view}>
-
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: '95%' }}>
+                        {this.state.isChecked.map((data, i) => {
+                            if(data.id == index) {
+                                return(
+                                <CheckBox checked={data.isChecked} onPress={(value) => { this.handleChecked(value, index) }} />
+                                )
+                            }
+                        })}
+                    </View>
                     <View style={Styles.cart_view_1}>
                         <View style={Styles.cart_view_1_1}>
                             <View style={[Styles.cart_avatar_view, Styles.center]}>
@@ -569,7 +587,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
     }
 
     render() {
-        const { cartData, cartId, isOtp, review, isCancel, deliverModal, otp, deliveryCharge, cashPay, onlinePay, walletPay, homeDelivery, selfPick, byDBoyDType, bySelfDType, byCourierDType, shippedDate, deliveryDate, rejectionModal, shippedModal, deliveryModal, addressData, orderstatusData, productList } = this.state
+        const { cartData, totalItem, cartId, isOtp, review, isCancel, deliverModal, otp, deliveryCharge, cashPay, onlinePay, walletPay, homeDelivery, selfPick, byDBoyDType, bySelfDType, byCourierDType, shippedDate, deliveryDate, rejectionModal, shippedModal, deliveryModal, addressData, orderstatusData, productList } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -841,8 +859,21 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
 
                         <View style={Styles.price_detail_2}>
                             <View style={Styles.price_detail_2_1}>
-                                <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} items)</Text>
-                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.price ? (cartData.price).toFixed(2) : null}</Text>
+                                <View style={{ flexWrap: 'wrap', flexDirection: 'row', width: '60%' }}>
+                                    <Text style={Styles.cart_price_text_head}>Item Count</Text>
+                                </View>
+                                <View style={{ flexWrap: 'wrap', flexDirection: 'row', width: '38%', justifyContent: 'flex-end' }}>
+                                    <Text style={Styles.cart_price_text_head}>{null != totalItem ? (totalItem) : null} Nos.</Text>
+                                </View>
+                            </View>
+
+                            <View style={Styles.price_detail_2_1}>
+                                <View style={{ flexWrap: 'wrap', flexDirection: 'row', width: '60%' }}>
+                                    <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} Product)</Text>
+                                </View>
+                                <View style={{ flexWrap: 'wrap', flexDirection: 'row', width: '38%', justifyContent: 'flex-end' }}>
+                                    <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.price ? (cartData.price).toFixed(2) : null}</Text>
+                                </View>
                             </View>
 
                             <View style={Styles.price_detail_2_1}>

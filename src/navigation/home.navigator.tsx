@@ -351,7 +351,7 @@ var login
 const logedIn = async () => {
   const log = await AsyncStorage.getItem('logedIn')
   login = log
-  console.log('data login', login)
+  // console.log('data login', login)
 }
 
 export const HomeNavigator = (): React.ReactElement => (

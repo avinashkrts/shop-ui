@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet } from "react-native";
+import { View, Text, RefreshControl, AsyncStorage, Alert, StyleSheet, Keyboard } from "react-native";
 import { Avatar, List, Divider, ListItemElement, ThemedComponentProps } from "react-native-ui-kitten";
 import { AllItemScreenProps } from "../../../navigation/shopKeeperNavigator/allItem.Navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
-import { BackIcon, CartIcon, MenuIcon, PlusCircle, SearchIcon, WishIcon } from "../../../assets/icons";
+import { BackIcon, CartIcon, MenuIcon, CancelIcon, SearchIcon, WishIcon } from "../../../assets/icons";
 import { FlatList, ScrollView, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AppConstants, Color, LableText } from "../../../constants";
 import { Styles } from "../../../assets/styles";
@@ -12,26 +12,17 @@ import { Content, Header, Item, ListItem } from "native-base";
 import axios from 'axios';
 import Animated from "react-native-reanimated";
 import { AppRoute } from "../../../navigation/app-routes";
-import Axios from "axios";
 import { BackHandler } from "react-native";
+import { scale } from "react-native-size-matters";
+import { changeProductData } from "../../../redux/action/tokenActions";
+import { connect, ConnectedProps } from "react-redux";
+import { createFilter } from "react-native-search-filter";
 
-type MyState = {
-    displayName: String,
-    dataSource: [],
-    userId: String,
-    likeCount: number,
-    dislikeCount: number,
-    liked: boolean[],
-    disliked: boolean[],
-    categories: [],
-    textShown: -1,
-    selectedIndex: number;
-}
+const KEYS_TO_FILTERS = ['name'];
 
-const HEADER_MAX_HEIGHT = 205;
-const HEADER_MIN_HEIGHT = 70;
+type Props = AllItemScreenProps & ThemedComponentProps & CombinedProductProps
 
-export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedComponentProps, MyState & any> {
+class AllItem extends React.Component<Props, any> {
     backHandler: any;
     constructor(props) {
         super(props);
@@ -45,7 +36,8 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
             selectedBrand: '',
             allMeasurement: [],
             search: '',
-
+            searchVisible1: false,
+            searchTerm: '',
             allData: [
                 {
                     url: '/api/lookup/getallmeasurementtype',
@@ -107,12 +99,13 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
                 url: AppConstants.API_BASE_URL + '/api/product/getproductbyshopid/' + user.shopId,
             }).then((response) => {
                 if (null != response.data) {
+                    this.props.changeProductData(response.data)
                     this.setState({
                         allProduct: response.data,
                     })
                 }
             }, (error) => {
-                Alert.alert("Server error!.")
+                // Alert.alert("Server error!.")
             });
 
             axios({
@@ -256,212 +249,225 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
         this.props.navigation.navigate(AppRoute.ADD_PRODUCT_NAVIGATOR)
     }
 
+    renderProduct = ({ item }: any): ListItemElement => (
+        <ListItem style={{ borderBottomColor: 'rgba(200, 200, 200, 1)', borderBottomWidth: scale(1) }}>
+            <View style={Styles.product_list_main}>
+                <View style={Styles.product_list_img}>
+                    <TouchableOpacity onPress={() => { this.navigateProductDetail(item.productId, item.shopId) }}>
+                        <View style={[Styles.all_Item_Image_2, Styles.center]}>
+                            <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_' + 1 + "_" + item.shopId + '_product.png' }} style={Styles.product_avatar} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                <View style={Styles.product_list_detail}>
+                    <View style={Styles.all_Item_List1}>
+                        <View style={Styles.all_Item_Detail}>
+                            <View style={{ backgroundColor: '#fff', paddingHorizontal: 0 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    {null != this.state.allBrand ? this.state.allBrand.map((brand, index) => {
+                                        if (brand.id == item.brand) {
+                                            return (
+                                                <View style={{ width: '80%', flexWrap: 'wrap', flexDirection: 'row' }}>
+                                                    <Text style={{ color: '#000', marginTop: scale(5), fontSize: scale(14) }}>{item.name} {`\n`}{brand.name}</Text>
+                                                </View>
+                                            );
+                                        }
+                                    }) : null}
+
+                                </View>
+                                {null != this.state.allMeasurement ? this.state.allMeasurement.map((brand, index) => {
+                                    if (brand.lookUpId == item.measurement) {
+                                        return (
+                                            <>
+                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{item.quantity} {brand.lookUpName}</Text>
+                                            </>
+                                        );
+                                    }
+                                }) : null}
+                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                    <Text style={{ color: '#000', fontSize: scale(14) }}>Rs. {item.price}</Text>
+                                    {item.offerActiveInd ?
+                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{item.oldPrice}</Text>
+                                        : null
+                                    }
+                                </View>
+                                {null != item.offerActiveInd ? item.offerActiveInd ?
+
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                        <Text style={{ color: Color.COLOR }}>{item.offerPercent} % off</Text>
+                                        <Text style={{ color: Color.COLOR }}>{item.offerActiveInd && item.offerTo ? item.offerTo.substr(8, 2) + "/" + item.offerTo.substr(5, 2) + "/" + item.offerTo.substr(0, 4) : null}</Text>
+                                    </View> :
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                        <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
+                                        <Text style={{ color: Color.COLOR }}></Text>
+                                    </View> : null
+                                }
+
+                            </View>
+                            <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {item.stock}</Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+
+            </View>
+        </ListItem>
+    )
+
+    toggleModal2() {
+        this.setState({
+            searchVisible1: false
+        })
+    }
+
+    productSearch(filteredProduct) {
+        this.setState({
+            allProduct: filteredProduct,
+            searchVisible1: false
+        })
+        Keyboard.dismiss();
+    }
+
+    clearSearch() {
+        this.setState({
+            searchTerm: '',
+            allProduct: this.props.productData
+        })
+    }
+
+    search(index) {
+        var product = [index]
+        this.setState({
+            allProduct: product,
+            searchVisible1: false,
+            searchTerm: index.name
+        })
+    }
+
+    searchUpdated(term) {
+        this.setState({ searchTerm: term })
+    }
     render() {
-        const { allProduct, shopId, search, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
-        const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
-        const headerHeight = this.state.scrollY.interpolate({
-            inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
-            outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-            extrapolate: 'clamp'
-        })
+        const productList = this.props.productData
+        const { allProduct, refreshing, searchVisible1, searchTerm, shopId, search, allMeasurement, allCategory, allBrand, selectedBrand, selectedCategory } = this.state;
 
-        const headerZIndex = Animated.interpolate(diffClamp, {
-            inputRange: [0, 1000],
-            outputRange: [1000, 0]
-        })
-
-        const containtZIndex = Animated.interpolate(diffClamp, {
-            inputRange: [1000, 1000],
-            outputRange: [1000, 1000]
-        })
-
-
-        // const scrollY = new Animated.Value(0);
-
-        const headerY = Animated.interpolate(diffClamp, {
-            inputRange: [0, HEADER_MAX_HEIGHT],
-            outputRange: [0, -HEADER_MAX_HEIGHT],
-        })
-
-        const profileImageMarginTop = Animated.interpolate(diffClamp, {
-            inputRange: [0, HEADER_MIN_HEIGHT],
-            outputRange: [HEADER_MIN_HEIGHT, HEADER_MIN_HEIGHT]
-        })
+        const filteredProduct = productList.length > 0 ? productList.filter(createFilter(searchTerm, KEYS_TO_FILTERS)) : null
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
 
-                <Animated.View style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: 'white',
-                    height: HEADER_MIN_HEIGHT,
-                    zIndex: headerZIndex,
-                    transform: [{ translateY: headerY }]
-                }}>
-                    <Toolbar
-                        title='Product'
-                        backIcon={MenuIcon}
-                        onBackPress={this.props.navigation.toggleDrawer}
-                        onRightPress={() => { this.handleAddProduct()}}
-                        menuIcon={PlusCircle}
-                        style={{ marginTop: -5, marginLeft: -5 }}
+                <Toolbar
+                    title='Product'
+                    backIcon={MenuIcon}
+                    onBackPress={this.props.navigation.openDrawer}
+                    onRightPress={() => { this.navigateToCart() }}
+                    menuIcon={CartIcon}
+                    style={{ marginTop: -5, marginLeft: -5 }}
+                />
+
+                <Divider />
+                <Divider />
+                <Divider />
+                {/* <Header style={styles.header}> */}
+                <View style={[Styles.searchBox, { marginBottom: 0 }]}>
+                    <TextInput
+                        placeholder="Search"
+                        style={[Styles.searchInput_new]}
+                        value={searchTerm}
+                        onChangeText={(term) => { this.searchUpdated(term) }}
+                        onFocus={() => { this.setState({ searchVisible1: true }) }}
+                        onBlur={() => { this.setState({ searchVisible1: false }) }}
                     />
-                    {/* <Header style={styles.header}> */}
-                    <View style={[Styles.searchBox, { marginBottom: 0 }]}>
-                        <View style={[{ width: '10%', }, Styles.center]}>
-                            <TouchableOpacity onPress={() => { this.handleSearch() }}>
-                                <Text style={Styles.searchIcon}><SearchIcon /></Text>
-                            </TouchableOpacity>
-                        </View>
-                        <TextInput
-                            placeholder="Search"
-                            style={[Styles.searchInput]}
-                            value={search}
-                            onChangeText={(value) => { this.setState({ search: value }) }}
-                        />
+
+                    <View style={[{ width: '10%', }, Styles.center]}>
+                        {productList.length != allProduct.length || searchTerm != '' ?
+                            <TouchableOpacity onPress={() => { this.clearSearch() }}>
+                                <Text style={[Styles.searchIcon, { width: scale(30), height: scale(30) }]}><CancelIcon fontSize={scale(25)} /></Text>
+                            </TouchableOpacity> : null}
                     </View>
-                    <Divider />
-                    {/* </Header> */}
-                    <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
+                    <View style={[{ width: '10%', }, Styles.center]}>
+                        <TouchableOpacity onPress={() => { this.productSearch(filteredProduct) }}>
+                            <Text style={Styles.searchIcon}><SearchIcon /></Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <Divider />
+                {searchVisible1 ?
+                    <>
+                        <ScrollView>
+                            {filteredProduct.map((product, i) => {
+                                return (
+                                    <TouchableOpacity onPress={() => { this.search(product) }} key={product.id} style={styles.emailItem}>
+                                        <View>
+                                            <Text>{product.name}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            })}
+                        </ScrollView>
+                    </> :
+                    <>
 
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            <View style={{ marginTop: 10 }}>
-                                {/* <View style={selectedCategory === 'all' ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                    <Text style={selectedCategory === 'all' ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>All</Text>
-                                </View> */}
+                        <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
 
-                                <FlatList
-                                    style={{}}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    data={allCategory}
-                                    renderItem={({ item, index }) => {
-                                        return (
-                                            <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
-                                                <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                    {/* <Text style={selectedCategory === 'all' ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>All</Text> */}
-                                                    <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        )
-                                    }}
-                                >
-                                </FlatList>
-                            </View>
-                        </View>
-                    </Header>
-                    <Divider />
-                    <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
-
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            <View style={{ marginTop: 10 }}>
-                                <FlatList
-                                    style={{}}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    data={allBrand}
-                                    renderItem={({ item, index }) => {
-                                        return (
-                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id, item.name) }}>
-                                                <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                    <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        )
-                                    }}
-                                >
-                                </FlatList>
-                            </View>
-                        </View>
-                    </Header>
-                </Animated.View>
-                <Animated.ScrollView style={{ flex: 1 }}
-                    bounces={false}
-                    scrollEventThrottle={16}
-                    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}>
-                    <Animated.View style={{
-                        height: '100%',
-                        width: '100%',
-                        marginTop: profileImageMarginTop
-                    }}>
-                        <ScrollView style={[Styles.customer_content, { marginTop: 135 }]} showsVerticalScrollIndicator={false}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={this.state.refreshing}
-                                    onRefresh={this.onRefresh.bind(this)}
-                                />
-                            }
-                        >
-
-                            <View style={Styles.all_Item_Main_View}>
-                                {null != allProduct ? allProduct.slice(0).reverse().map((data, index) => {
-                                    return (
-                                        <View style={Styles.all_Item_List}>
-                                            <View style={{ height: 200 }}>
-                                                <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId, data.shopId) }}>
-                                                    <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + data.shopId + '_product.png' }} style={Styles.product_avatar} />
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <View style={{ marginTop: 10 }}>
+                                    <FlatList
+                                        style={{}}
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
+                                        data={allCategory}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <TouchableOpacity onPress={() => { this.selectCategory(item.id) }}>
+                                                    <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                        <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
                                                     </View>
                                                 </TouchableOpacity>
-                                            </View>
-
-                                            <View style={Styles.all_Item_Detail}>
-                                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                    {null != allBrand ? allBrand.map((brand, index) => {
-                                                        if (brand.id == data.brand) {
-                                                            return (
-                                                                <>
-                                                                    <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
-                                                                </>
-                                                            );
-                                                        }
-                                                    }) : null}
-                                                    {null != allMeasurement ? allMeasurement.map((brand, index) => {
-                                                        if (brand.lookUpId == data.measurement) {
-                                                            return (
-                                                                <>
-                                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
-                                                                </>
-                                                            );
-                                                        }
-                                                    }) : null}
-                                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
-                                                        {data.offerActiveInd ?
-                                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
-                                                            : null
-                                                        }
-                                                    </View>
-                                                    {null != data.offerActiveInd ? data.offerActiveInd ?
-                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
-                                                        </View> :
-                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
-                                                            <Text style={{ color: Color.COLOR }}></Text>
-                                                        </View> : null
-                                                    }
-                                                </View>
-                                                {/* <TouchableOpacity onPress={() => { this.addToCart(data.id) }}> */}
-                                                 <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                    <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Available {data.stock}</Text>
-                                                </View> 
-                                                {/* </TouchableOpacity> */}
-                                            </View>
-                                            {/* </TouchableOpacity> */}
-                                        </View>
-                                    )
-                                }) : null}
+                                            )
+                                        }}
+                                    >
+                                    </FlatList>
+                                </View>
                             </View>
-                            <View style={{ height: 10, width: '100%' }} />
-                        </ScrollView>
-                    </Animated.View>
-                </Animated.ScrollView>
+                        </Header>
+                        <Divider />
+                        <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
+
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <View style={{ marginTop: 10 }}>
+                                    <FlatList
+                                        style={{}}
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
+                                        data={allBrand}
+                                        renderItem={({ item, index }) => {
+                                            return (
+                                                <TouchableOpacity onPress={() => { this.selectBrand(item.id, item.name) }}>
+                                                    <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                        <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            )
+                                        }}
+                                    >
+                                    </FlatList>
+                                </View>
+                            </View>
+                        </Header>
+                        {null != allProduct ?
+                            <List data={allProduct}
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={refreshing}
+                                        onRefresh={this.onRefresh.bind(this)}
+                                    />}
+                                renderItem={this.renderProduct}
+                            /> : null}
+                    </>}
+                <View style={{ height: 10, width: '100%' }} />
 
             </SafeAreaLayout>
         );
@@ -469,86 +475,42 @@ export class AllItemScreen extends React.Component<AllItemScreenProps & ThemedCo
 }
 
 const styles = StyleSheet.create({
-    ImgBgTwo: {
-        position: 'absolute',
-        borderRadius: 55,
-        alignSelf: 'center',
-        height: 11, width: 11,
-        transform: [{ scaleX: 2 }],
-        backgroundColor: 'white',
-        marginTop: 20
-    },
-    ImgBgOne: {
-        height: 9,
-        width: 9,
-        backgroundColor: 'white',
-        borderRadius: 50,
-        alignSelf: 'center',
-        marginTop: 9,
-        position: 'absolute'
-    },
-    askButton: {
-        backgroundColor: '#D8D8D899',
-        width: 50,
-        height: 50,
-        borderRadius: 30,
-        position: 'absolute',
-        alignSelf: 'flex-end',
-        zIndex: 100,
-        bottom: 0,
-        right: 0,
-        marginBottom: 2,
-        marginRight: 2
-    },
-    Search: {
-        width: '88%', alignSelf: 'flex-end',
-        position: 'absolute', zIndex: 100, marginTop: 5, borderRadius: 25
-    },
-
-    name: {
-        fontSize: 12,
-        marginRight: 5,
-        marginTop: -5,
-        marginLeft: 10,
-        fontWeight: 'bold',
-        marginBottom: 2
-    },
-
-    TextView: {
-        width: '85%'
-    },
-    text: {
-        textAlign: 'justify',
-        fontSize: 15,
-        color: 'black',
-        marginRight: 5
-    },
-    safeArea: {
-        flex: 1,
-        paddingBottom: 0,
-        // paddingHorizontal: 16,
-    },
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: '#fff',
+        justifyContent: 'flex-start'
     },
-    horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    emailItem: {
+        borderBottomWidth: 0.5,
+        borderColor: 'rgba(0,0,0,0.3)',
         padding: 10
     },
-
-    selected: {
-        color: 'blue',
-        borderBottomColor: 'blue',
-        borderBottomWidth: 2,
-        fontSize: 16,
-        fontWeight: 'bold'
+    emailSubject: {
+        color: 'rgba(0,0,0,0.5)'
     },
-
-    notSelected: {
-        color: 'silver'
+    searchInput: {
+        padding: 10,
+        borderColor: '#CCC',
+        borderWidth: 1
     }
-
 });
+
+function mapStateToProps(state) {
+    return ({
+        productData: state.tokenReducer.productData
+    })
+}
+
+function mapDispatchToProps(dispatch) {
+    return ({
+        changeProductData: (data) => {
+            dispatch(changeProductData(data))
+        }
+    })
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type CombinedProductProps = ConnectedProps<typeof connector>;
+
+export const AllItemScreen = connector(AllItem)

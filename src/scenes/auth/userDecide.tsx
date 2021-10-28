@@ -52,7 +52,7 @@ export class UserDecide extends Component<UserDecideProps, any & State & any> {
         VersionCheck.needUpdate()
             .then(async res => {
                 console.log('data', res.isNeeded);    // true
-                if (!res.isNeeded) {
+                if (res.isNeeded) {
                     Linking.openURL(res.storeUrl);  // open store if update is needed.
                 } else {
                     try {

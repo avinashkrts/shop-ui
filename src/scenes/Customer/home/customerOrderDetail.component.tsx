@@ -49,6 +49,8 @@ import { CustomerOrderDetailScreenProps } from '../../../navigation/customer-nav
 // import axios from 'axios';  
 // import Container from '@react-navigation/core/lib/typescript/NavigationContainer';
 
+
+
 export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScreenProps, ThemedComponentProps & any> {
     constructor(props) {
         super(props)
@@ -64,7 +66,8 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
             userData: [],
             cashPay: '',
             onlinePay: '',
-            walletPay: ''
+            walletPay: '',
+            totalItem: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -105,10 +108,16 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                 }, (error) => {
                     Alert.alert("Server problem")
                 })
+                var totalItem = 0;
+                response.data.productList.map((data, i) => {
+                    totalItem = totalItem + data.productQuantity
+                })
                 this.setState({
                     cartData: response.data,
-                    productList: response.data.productList
+                    productList: response.data.productList,
+                    totalItem: totalItem
                 })
+
             }, (error) => {
                 Alert.alert("Server problem")
             })
@@ -223,62 +232,61 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
         this.setState({ modalVisible: !modalVisible })
     }
 
-    renderCart = ({ item }: any): ListItemElement => (
-        <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
-            {item != null ?
-
-                <View style={Styles.cart_main_view}>
-
-                    <View style={Styles.cart_view_1}>
-                        <View style={Styles.cart_view_1_1}>
-                            <View style={[Styles.cart_avatar_view, Styles.center]}>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_1_' + item.shopId + '_product.png' }} style={Styles.product_avatar} />
+    renderCart = ({ item, index }: any): ListItemElement => {
+        return (
+            <ListItem style={{ borderBottomColor: 'rgba(2,15,20,0.10)', borderBottomWidth: 1 }}>
+                {item != null ?
+                    <View style={Styles.cart_main_view}>
+                        <View style={Styles.cart_view_1}>
+                            <View style={Styles.cart_view_1_1}>
+                                <View style={[Styles.cart_avatar_view, Styles.center]}>
+                                    <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_1_' + item.shopId + '_product.png' }} style={Styles.product_avatar} />
+                                </View>
                             </View>
-                        </View>
 
-                        <View style={Styles.cart_view_1_2}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={Styles.cart_name_text}>{item.productName}</Text>
-                                {/* <TouchableOpacity  onPress={() => { this.handleDelete(item.id) }}>
+                            <View style={Styles.cart_view_1_2}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Text style={Styles.cart_name_text}>{item.productName}</Text>
+                                    {/* <TouchableOpacity  onPress={() => { this.handleDelete(item.id) }}>
                                     <Text style={Styles.cart_name_text}><CancelIcon fontSize={25} /></Text>
                                 </TouchableOpacity> */}
-                            </View>
-                            <View style={Styles.cart_price_view}>
-                                <View style={{ flexDirection: 'row', width: '55%', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                                    <Text style={Styles.price_text}><RupeeIcon /> {item.price.toFixed(2)}</Text>
-                                    <Text style={Styles.offer_price_text}>{item.offersAvailable && item.oldPrice ? item.oldPrice.toFixed(2) : null}</Text>
                                 </View>
+                                <View style={Styles.cart_price_view}>
+                                    <View style={{ flexDirection: 'row', width: '55%', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                                        <Text style={Styles.price_text}><RupeeIcon /> {item.price.toFixed(2)}</Text>
+                                        <Text style={Styles.offer_price_text}>{item.offersAvailable && item.oldPrice ? item.oldPrice.toFixed(2) : null}</Text>
+                                    </View>
 
-                                <View style={[Styles.cart_quantity_view, Styles.center]}>
-                                    {/* <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleDecrease(item.productId, item.productQuantity) }}>
+                                    <View style={[Styles.cart_quantity_view, Styles.center]}>
+                                        {/* <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleDecrease(item.productId, item.productQuantity) }}>
                                         <Text style={Styles.cart_button_text}><MinusIcon /></Text>
                                     </TouchableOpacity> */}
 
-                                    <View style={[Styles.cart_quantity_text_view]}>
-                                        <Text style={[{ color: Color.BUTTON_NAME_COLOR }, Styles.cart_quantity_text]}>{item.productQuantity}</Text>
-                                    </View>
+                                        <View style={[Styles.cart_quantity_text_view]}>
+                                            <Text style={[{ color: Color.BUTTON_NAME_COLOR }, Styles.cart_quantity_text]}>{item.productQuantity}</Text>
+                                        </View>
 
-                                    {/* <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleIncrease(item.productId) }}>
+                                        {/* <TouchableOpacity style={Styles.cart_button} onPress={() => { this.handleIncrease(item.productId) }}>
                                         <Text style={Styles.cart_button_text}><AddIcon /></Text>
                                     </TouchableOpacity> */}
+                                    </View>
+                                </View>
+
+                                <View>
+                                    <Text style={Styles.cart_offer_text}>{item.offersAvailable && item.offer ? item.offer : null} {item.offersAvailable && item.offer ? '% off' : null}</Text>
                                 </View>
                             </View>
+                        </View>
 
-                            <View>
-                                <Text style={Styles.cart_offer_text}>{item.offersAvailable && item.offer ? item.offer : null} {item.offersAvailable && item.offer ? '% off' : null}</Text>
-                            </View>
+                        <View>
+                            <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>{item.offersAvailable ? item.offersAvailable : null} {item.offersAvailable ? 'offers available' : null}</Text>
                         </View>
                     </View>
-
-                    <View>
-                        <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}>{item.offersAvailable ? item.offersAvailable : null} {item.offersAvailable ? 'offers available' : null}</Text>
-                    </View>
-                </View>
-                :
-                <ActivityIndicator size='large' color='green' />}
-
-        </ListItem>
-    )
+                    :
+                    <ActivityIndicator size='large' color='green' />}
+            </ListItem>
+        )
+    }
 
     navigationItemList() {
         // this.props.navigation.navigate(AppRoute.ITEMLIST)
@@ -295,7 +303,7 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
 
 
     render() {
-        const { cartData, cashPay, onlinePay, walletPay, cartId, addressData, orderstatusData, productList } = this.state
+        const { totalItem, cartData, cashPay, onlinePay, walletPay, cartId, addressData, orderstatusData, productList } = this.state
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -367,12 +375,27 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
                     </Modal>
 
                     <View style={Styles.price_detail_1}>
-                        <Text style={Styles.cart_price_detail_1_text}>PRICE DETAILS</Text>
+                        <View>
+                            <Text style={Styles.cart_price_detail_1_text}>PRICE DETAILS</Text>
+                        </View>
 
                         <View style={Styles.price_detail_2}>
                             <View style={Styles.price_detail_2_1}>
-                                <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} items)</Text>
-                                <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.price ? (cartData.price).toFixed(2) : null}</Text>
+                                <View style={{ flexWrap: 'wrap', flexDirection: 'row', width: '60%' }}>
+                                    <Text style={Styles.cart_price_text_head}>Item Count</Text>
+                                </View>
+                                <View style={{ flexWrap: 'wrap', flexDirection: 'row', width: '38%', justifyContent: 'flex-end' }}>
+                                    <Text style={Styles.cart_price_text_head}>{null != totalItem ? (totalItem) : null} Nos.</Text>
+                                </View>
+                            </View>
+
+                            <View style={Styles.price_detail_2_1}>
+                                <View style={{ flexWrap: 'wrap', flexDirection: 'row', width: '60%' }}>
+                                    <Text style={Styles.cart_price_text_head}>Price ({null != productList ? productList.length : null} Product)</Text>
+                                </View>
+                                <View style={{ flexWrap: 'wrap', flexDirection: 'row', width: '38%', justifyContent: 'flex-end' }}>
+                                    <Text style={Styles.cart_price_text_head}><RupeeIcon fontSize={18} />{null != cartData.price ? (cartData.price).toFixed(2) : null}</Text>
+                                </View>
                             </View>
 
                             <View style={Styles.price_detail_2_1}>
