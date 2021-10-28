@@ -10,7 +10,6 @@ import { AppConstants, Color } from "../../../constants";
 import { Styles } from "../../../assets/styles";
 import { Content, Header, Item, ListItem } from "native-base";
 import axios from 'axios';
-import Animated from "react-native-reanimated";
 import { AppRoute } from "../../../navigation/app-routes";
 import Axios from "axios";
 // import Geolocation from '@react-native-community/geolocation';
@@ -64,7 +63,6 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                     method: 'GET',
                     variable: 'allBrand',
                 }],
-            scrollY: new Animated.Value(0),
             data: [{ id: 1, name: "Taj Mahal", country: "India" },
             { id: 2, name: "Great Wall of China", country: "China" },
             { id: 3, name: "Machu Picchu", country: "Peru" },
@@ -97,6 +95,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
         ]);
         return true;
       };
+      
       componentWillUnmount() {
        this.backHandler.remove();       
       }
@@ -400,36 +399,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
 
     render() {        
         const { allShop, location, searchAttribute, searchTerm, data, ignoreCase, lat, long, searchVisible, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
-        const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
-        const headerHeight = this.state.scrollY.interpolate({
-            inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
-            outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-            extrapolate: 'clamp'
-        })
-
-        const headerZIndex = Animated.interpolate(diffClamp, {
-            inputRange: [0, 1000],
-            outputRange: [1000, 0]
-        })
-
-        const containtZIndex = Animated.interpolate(diffClamp, {
-            inputRange: [1000, 1000],
-            outputRange: [1000, 1000]
-        })
-
-
-        // const scrollY = new Animated.Value(0);
-
-
-        const headerY = Animated.interpolate(diffClamp, {
-            inputRange: [0, HEADER_MAX_HEIGHT],
-            outputRange: [0, -HEADER_MAX_HEIGHT],
-        })
-
-        const profileImageMarginTop = Animated.interpolate(diffClamp, {
-            inputRange: [0, HEADER_MIN_HEIGHT],
-            outputRange: [HEADER_MIN_HEIGHT, HEADER_MIN_HEIGHT]
-        })
+       
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -503,14 +473,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                 />
                 <Divider />
                 <Divider />
-                <Divider />
-                {/* <SearchableFlatList
-                     data={data}
-                      searchTerm={searchTerm}
-                    searchAttribute={searchAttribute} 
-                    ignoreCase={ignoreCase}
-                    renderItem={({ item }) => (<Text>{item.name}</Text>)}
-                    keyExtractor={item => item.id} /> */}
+                <Divider />               
 
                 <View style={{ padding: 5 }}>
                     <Text onPress={() => { this.setState({ searchVisible: true }) }} style={{ fontWeight: 'bold', fontSize: 18, color: Color.COLOR }}>Location: <Text style={{ fontSize: 16, fontWeight: '100' }}>{location}</Text></Text>
@@ -555,54 +518,8 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                         </View>
                     </View>
                 </Header>
-                <Divider />
+                <Divider />     
 
-                <Animated.View style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: 'white',
-                    height: HEADER_MIN_HEIGHT,
-                    zIndex: headerZIndex,
-                    transform: [{ translateY: headerY }]
-                }}>
-
-
-                    {/* <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
-
-                        <View style={{ flex: 1, flexDirection: 'column' }}>
-                            <View style={{ marginTop: 10 }}>
-                                <FlatList
-                                    style={{}}
-                                    horizontal={true}
-                                    showsHorizontalScrollIndicator={false}
-                                    data={allBrand}
-                                    renderItem={({ item, index }) => {
-                                        return (
-                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id) }}>
-                                                <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                    <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        )
-                                    }}
-                                >
-                                </FlatList>
-                            </View>
-                        </View>
-                    </Header> */}
-                </Animated.View>
-
-                <Animated.ScrollView style={{ flex: 1 }}
-                    bounces={false}
-                    scrollEventThrottle={16}
-                    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}>
-                    <Animated.View style={{
-                        height: '100%',
-                        width: '100%',
-                        marginTop: profileImageMarginTop
-                    }}>
                         <ScrollView style={[Styles.customer_content, { marginTop: 10 }]} showsVerticalScrollIndicator={false}
                             refreshControl={
                                 <RefreshControl
@@ -629,40 +546,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                                         <View>
                                                             <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.shopName}</Text>
                                                         </View>
-                                                        {/* {null != allBrand ? allBrand.map((brand, index) => {
-                                                            if (brand.id == data.brand) {
-                                                                return (
-                                                                    <View>
-                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.firstName} {brand.name}</Text>
-                                                                    </View>
-                                                                );
-                                                            }
-                                                        }) : null} */}
-                                                        {/* {null !== wishList ?
-                                                            <View style={Styles.product_2nd_wish_view}>
-                                                                <TouchableOpacity onPress={() => { this.handleWishList(data.productId) }}>
-                                                                    <Text
-                                                                        style={wishList.includes(data.productId) ?
-                                                                            Styles.selected_wish_icon :
-                                                                            Styles.wish_icon
-                                                                        }
-                                                                    >
-                                                                        <WishIcon />
-                                                                    </Text>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            : null
-                                                        } */}
                                                     </View>
-                                                    {/* {null != allMeasurement ? allMeasurement.map((brand, index) => {
-                                                        if (brand.lookUpId == data.measurement) {
-                                                            return (
-                                                                <>
-                                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
-                                                                </>
-                                                            );
-                                                        }
-                                                    }) : null} */}
                                                     {null != data.adminAddress ?
                                                         <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.adminAddress[0] != null ? data.adminAddress[0].city : null}, {null != data.adminAddress[0] ? data.adminAddress[0].state : null}</Text>
                                                         :
@@ -677,17 +561,6 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                                                         }
                                                     }) : null}
 
-                                                    {/* {null != data.offerActiveInd ? data.offerActiveInd ?
-                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerPercent} % off</Text>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4)}</Text>
-                                                        </View> :
-                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
-                                                            <Text style={{ color: Color.COLOR }}></Text>
-                                                        </View> : null
-                                                    } */}
-
                                                 </View>
                                                 <TouchableOpacity onPress={() => { this.navigateProductDetail(data.shopId, data.shopName) }}>
                                                     <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
@@ -701,9 +574,6 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
                             </View>
                             <View style={{ height: 10, width: '100%' }} />
                         </ScrollView>
-                    </Animated.View>
-                </Animated.ScrollView>
-
             </SafeAreaLayout>
         );
     }

@@ -163,6 +163,32 @@ export const Styles = ScaledSheet.create({
     marginBottom: '25@s'
   },
 
+  /*---------------------------------------------This Style is for All Product List Page--------------------------------------------------------- */
+  product_list_main: {
+    width: '100%',
+    flexDirection: 'row'
+  },
+
+  product_list_img: {
+    width: '130@s',
+    height: '130@s'
+  },
+
+  product_list_detail: {
+    width: '60%',
+    padding: '4@s'
+  },
+
+  all_Item_List1: {
+    width: '98%',
+    backgroundColor: '#000',
+    margin: '1%',
+  },
+
+  all_Item_Image_2: {
+    padding: 15,
+    backgroundColor: Color.BUTTON_NAME_COLOR
+  },
   /*---------------------------------------------This Style is for All Item Page--------------------------------------------------------- */
   all_Item_Main_View: {
     width: '100%',
@@ -172,7 +198,7 @@ export const Styles = ScaledSheet.create({
 
   all_Item_List: {
     width: '48%',
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     margin: '1%',
   },
 
@@ -510,8 +536,9 @@ export const Styles = ScaledSheet.create({
   },
 
   cart_view_1_2: {
-    width: '70%',
+    width: '65%',
     height: '110@s',
+    marginLeft: '10@s',
     paddingHorizontal: '1@s',
   },
 
@@ -603,6 +630,7 @@ export const Styles = ScaledSheet.create({
   cart_price_detail_1_text: {
     fontSize: '20@s',
     paddingHorizontal: Padding.HORIZONTAL_PADDING,
+    paddingTop: '10@s',
     color: Color.SILVER,
     fontWeight: 'bold'
   },
@@ -2009,14 +2037,20 @@ export const Styles = ScaledSheet.create({
   },
 
   searchIcon: {
-    width: '100%',
-    color: '#aaa',
+    color: '#000',
     alignSelf: 'center',
     textAlign: 'center',
   },
 
   searchInput: {
     width: '90%',
+    backgroundColor: '#fff',
+    // height: '100%',
+    borderRadius: 5,
+  },
+
+  searchInput_new: {
+    width: '80%',
     backgroundColor: '#fff',
     // height: '100%',
     borderRadius: 5,

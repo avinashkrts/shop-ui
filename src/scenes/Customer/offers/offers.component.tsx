@@ -19,6 +19,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { StackActions } from "@react-navigation/native";
 import { LableText } from '../../../constants/LabelConstants';
+import { scale } from "react-native-size-matters";
 
 
 const HEADER_MAX_HEIGHT = 205;
@@ -45,6 +46,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             searchVisible: false,
             single: false,
             shopName: '',
+            refreshing: false,
             allData: [
                 {
                     url: '/api/lookup/getallmeasurementtype',
@@ -57,9 +59,9 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
 
         this.onRefresh = this.onRefresh.bind(this);
         this.handleAddToCart = this.handleAddToCart.bind(this);
-    }   
+    }
 
-    async componentDidMount() {       
+    async componentDidMount() {
         const { allData } = this.state;
         const shopIdAsync = await AsyncStorage.getItem('shopId')
         const shopName = await AsyncStorage.getItem('shopName')
@@ -131,7 +133,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             } catch (err) {
                 console.warn(err);
             }
-          
+
             axios({
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
@@ -381,37 +383,104 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
         });
     }
 
+    renderProduct = ({ item }: any): ListItemElement => (
+        <ListItem style={{ backgroundColor: 'rgba(255, 255, 255, 1)', borderBottomColor: 'rgba(200, 200, 200, 1)', borderBottomWidth: scale(1) }}>
+            <View style={Styles.product_list_main}>
+                <View style={Styles.product_list_img}>
+                    <TouchableOpacity onPress={() => { this.navigateProductDetail(item.productId, item.shopId) }}>
+                        <View style={[Styles.all_Item_Image_2, Styles.center]}>
+                            <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_' + 1 + "_" + item.shopId + '_product.png' }} style={Styles.product_avatar} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                <View style={Styles.product_list_detail}>
+                    <View style={Styles.all_Item_List1}>
+                        <View style={Styles.all_Item_Detail}>
+                            <View style={{ backgroundColor: '#fff', paddingHorizontal: 0 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    {null != this.state.allBrand ? this.state.allBrand.map((brand, index) => {
+                                        if (brand.id == item.brand) {
+                                            return (
+                                                <View style={{ width: '80%', flexWrap: 'wrap', flexDirection: 'row' }}>
+                                                    <Text style={{ color: '#000', marginTop: scale(5), fontSize: scale(14) }}>{item.name} {`\n`}{brand.name}</Text>
+                                                </View>
+                                            );
+                                        }
+                                    }) : null}
+                                    {null !== this.state.wishList ?
+                                        <View style={[Styles.product_2nd_wish_view]}>
+                                            <TouchableOpacity onPress={() => { this.handleWishList(item.productId) }}>
+                                                <Text
+                                                    style={this.state.wishList.includes(item.productId) ?
+                                                        Styles.selected_wish_icon :
+                                                        Styles.wish_icon
+                                                    }
+                                                >
+                                                    <WishIcon />
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        : null
+                                    }
+                                </View>
+                                {null != this.state.allMeasurement ? this.state.allMeasurement.map((brand, index) => {
+                                    if (brand.lookUpId == item.measurement) {
+                                        return (
+                                            <>
+                                                <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{item.quantity} {brand.lookUpName}</Text>
+                                            </>
+                                        );
+                                    }
+                                }) : null}
+                                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                    <Text style={{ color: '#000', fontSize: scale(14) }}>Rs. {item.price}</Text>
+                                    {item.offerActiveInd ?
+                                        <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{item.oldPrice}</Text>
+                                        : null
+                                    }
+                                </View>
+                                {null != item.offerActiveInd ? item.offerActiveInd ?
+
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                        <Text style={{ color: Color.COLOR }}>{item.offerPercent} % off</Text>
+                                        <Text style={{ color: Color.COLOR }}>{item.offerActiveInd && item.offerTo ? item.offerTo.substr(8, 2) + "/" + item.offerTo.substr(5, 2) + "/" + item.offerTo.substr(0, 4) : null}</Text>
+                                    </View> :
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                        <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
+                                        <Text style={{ color: Color.COLOR }}></Text>
+                                    </View> : null
+                                }
+
+                            </View>
+                            {item.stock ? item.stock > 0 ?
+                                <TouchableOpacity onPress={() => { this.handleAddToCart(item.productId, item.shopId) }}>
+                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                    </View>
+                                </TouchableOpacity> :
+
+                                <TouchableOpacity >
+                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
+                                    </View>
+                                </TouchableOpacity> :
+                                <TouchableOpacity >
+                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Out of Stock</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            }
+                        </View>
+                    </View>
+                </View>
+
+            </View>
+        </ListItem>
+    )
+
     render() {
-        const { allProduct, single, shopName, search, lat, long, searchVisible, location, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
-        const diffClamp = Animated.diffClamp(this.state.scrollY, 0, HEADER_MAX_HEIGHT)
-        const headerHeight = this.state.scrollY.interpolate({
-            inputRange: [0, HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT],
-            outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-            extrapolate: 'clamp'
-        })
+        const { allProduct, single, refreshing, shopName, search, lat, long, searchVisible, location, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
 
-        const headerZIndex = Animated.interpolate(diffClamp, {
-            inputRange: [0, 1000],
-            outputRange: [1000, 0]
-        })
-
-        const containtZIndex = Animated.interpolate(diffClamp, {
-            inputRange: [1000, 1000],
-            outputRange: [1000, 1000]
-        })
-
-
-        // const scrollY = new Animated.Value(0);
-
-        const headerY = Animated.interpolate(diffClamp, {
-            inputRange: [0, HEADER_MAX_HEIGHT],
-            outputRange: [0, -HEADER_MAX_HEIGHT],
-        })
-
-        const profileImageMarginTop = Animated.interpolate(diffClamp, {
-            inputRange: [0, HEADER_MIN_HEIGHT],
-            outputRange: [HEADER_MIN_HEIGHT, HEADER_MIN_HEIGHT]
-        })
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -438,8 +507,6 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                 key: AppConstants.GOOGLE_MAP_KEY,
                                 language: 'en',
                             }}
-                        // currentLocation={true}
-                        // currentLocationLabel=LableText.USE_CURRENT_LOCATION
                         />
                         {lat !== '' && long !== '' ?
                             <>
@@ -465,7 +532,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                     <Marker
                                         coordinate={{
                                             latitude: Number(lat),
-                                        longitude: Number(long),
+                                            longitude: Number(long),
                                         }
                                         }
                                     >
@@ -492,9 +559,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                         <Text onPress={() => { this.setState({ searchVisible: true }) }} style={{ fontWeight: 'bold', fontSize: 18, color: Color.COLOR }}>Location: <Text style={{ fontSize: 16, fontWeight: '100' }}>{location}</Text></Text>
                     </View> : null
                 }
-                {/* <Header style={styles.header}> */}
                 <View style={[Styles.searchBox, { marginBottom: 0 }]}>
-
                     <TextInput
                         placeholder="Search"
                         style={[Styles.searchInput]}
@@ -562,211 +627,96 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                         </Header>
                     </> : null
                 }
-                <Animated.View style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    backgroundColor: 'white',
-                    height: HEADER_MIN_HEIGHT,
-                    zIndex: headerZIndex,
-                    transform: [{ translateY: headerY }]
-                }}>
+                {null != allProduct ?
+                    <List data={allProduct}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={this.onRefresh.bind(this)}
+                            />}
+                        renderItem={this.renderProduct}
+                    /> : null}
 
-                </Animated.View>
-                <Animated.ScrollView style={{ flex: 1 }}
-                    bounces={false}
-                    scrollEventThrottle={16}
-                    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }])}>
-                    <Animated.View style={{
-                        height: '100%',
-                        width: '100%',
-                        marginTop: profileImageMarginTop
-                    }}>
-                        <Content style={[Styles.customer_content, { marginTop: 10 }]} showsVerticalScrollIndicator={false}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={this.state.refreshing}
-                                    onRefresh={this.onRefresh.bind(this)}
-                                />
-                            }
-                        >
-
-                            <View style={Styles.all_Item_Main_View}>
-                                {null != allProduct ? allProduct.map((data, index) => {
-                                    return (
-                                        <View style={Styles.all_Item_List}>
-                                            <View style={{ height: 200 }}>
-                                                <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId, data.shopId) }}>
-                                                    <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                        <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + data.shopId + '_product.png' }} style={Styles.product_avatar} />
-                                                    </View>
-                                                </TouchableOpacity>
-                                            </View>
-                                            {/* <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId) }}>
-                                                <View style={[Styles.all_Item_Image_1, Styles.center]}>
-                                                    <Avatar source={require("../../../assets/dawat_rice.jpg")} style={Styles.all_Item_Image} />
-                                                </View>
-
-                                            </TouchableOpacity> */}
-
-                                            <View style={Styles.all_Item_Detail}>
-                                                <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
-                                                    <View style={{ flexDirection: 'row' }}>
-                                                        {null != allBrand ? allBrand.map((brand, index) => {
-                                                            if (brand.id == data.brand) {
-                                                                return (
-                                                                    <View style={{ width: '80%', flexWrap: 'wrap' }}>
-                                                                        <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
-                                                                    </View>
-                                                                );
-                                                            }
-                                                        }) : null}
-                                                        {null !== wishList ?
-                                                            <View style={Styles.product_2nd_wish_view}>
-                                                                <TouchableOpacity onPress={() => { this.handleWishList(data.productId) }}>
-                                                                    <Text
-                                                                        style={wishList.includes(data.productId) ?
-                                                                            Styles.selected_wish_icon :
-                                                                            Styles.wish_icon
-                                                                        }
-                                                                    >
-                                                                        <WishIcon />
-                                                                    </Text>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            : null
-                                                        }
-                                                    </View>
-                                                    {null != allMeasurement ? allMeasurement.map((brand, index) => {
-                                                        if (brand.lookUpId == data.measurement) {
-                                                            return (
-                                                                <>
-                                                                    <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
-                                                                </>
-                                                            );
-                                                        }
-                                                    }) : null}
-                                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
-                                                        <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
-                                                        {data.offerActiveInd ?
-                                                            <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
-                                                            : null
-                                                        }
-                                                    </View>
-                                                    {null != data.offerActiveInd ? data.offerActiveInd ?
-                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo ? data.offerPercent : null} % off</Text>
-                                                            <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo ? data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4) : null}</Text>
-                                                        </View> :
-                                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                                                            <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
-                                                            <Text style={{ color: Color.COLOR }}></Text>
-                                                        </View> : null
-                                                    }
-
-                                                </View>
-                                                <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId, data.shopId) }}>
-                                                    <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
-                                                        <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
-                                                    </View>
-                                                </TouchableOpacity>
-                                            </View>
+                {/* <View style={Styles.all_Item_Main_View}>
+                    {null != allProduct ? allProduct.map((data, index) => {
+                        return (
+                            <View style={Styles.all_Item_List}>
+                                <View style={{ height: 200 }}>
+                                    <TouchableOpacity onPress={() => { this.navigateProductDetail(data.productId, data.shopId) }}>
+                                        <View style={[Styles.all_Item_Image_1, Styles.center]}>
+                                            <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + data.productId + '_' + 1 + "_" + data.shopId + '_product.png' }} style={Styles.product_avatar} />
                                         </View>
-                                    )
-                                }) : null}
-                            </View>
-                            <View style={{ height: 10, width: '100%' }} />
-                        </Content>
-                    </Animated.View>
-                </Animated.ScrollView>
+                                    </TouchableOpacity>
+                                </View>                               
 
+                                <View style={Styles.all_Item_Detail}>
+                                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 5 }}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            {null != allBrand ? allBrand.map((brand, index) => {
+                                                if (brand.id == data.brand) {
+                                                    return (
+                                                        <View style={{ width: '80%', flexWrap: 'wrap' }}>
+                                                            <Text style={{ color: '#000', marginTop: 5, fontWeight: 'bold' }}>{data.name} {`\n`} {brand.name}</Text>
+                                                        </View>
+                                                    );
+                                                }
+                                            }) : null}
+                                            {null !== wishList ?
+                                                <View style={Styles.product_2nd_wish_view}>
+                                                    <TouchableOpacity onPress={() => { this.handleWishList(data.productId) }}>
+                                                        <Text
+                                                            style={wishList.includes(data.productId) ?
+                                                                Styles.selected_wish_icon :
+                                                                Styles.wish_icon
+                                                            }
+                                                        >
+                                                            <WishIcon />
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                : null
+                                            }
+                                        </View>
+                                        {null != allMeasurement ? allMeasurement.map((brand, index) => {
+                                            if (brand.lookUpId == data.measurement) {
+                                                return (
+                                                    <>
+                                                        <Text style={{ color: Color.COLOR_ITEM_NAME, marginTop: 5 }}>{data.quantity} {brand.lookUpName}</Text>
+                                                    </>
+                                                );
+                                            }
+                                        }) : null}
+                                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginVertical: 5 }}>
+                                            <Text style={{ color: '#000', fontSize: 18, fontWeight: 'bold' }}>Rs. {data.price}</Text>
+                                            {data.offerActiveInd ?
+                                                <Text style={{ color: Color.COLOR, fontSize: 20, textDecorationLine: 'line-through' }}>{data.oldPrice}</Text>
+                                                : null
+                                            }
+                                        </View>
+                                        {null != data.offerActiveInd ? data.offerActiveInd ?
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo ? data.offerPercent : null} % off</Text>
+                                                <Text style={{ color: Color.COLOR }}>{data.offerActiveInd && data.offerTo ? data.offerTo.substr(8, 2) + "/" + data.offerTo.substr(5, 2) + "/" + data.offerTo.substr(0, 4) : null}</Text>
+                                            </View> :
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                                                <Text style={{ color: Color.COLOR, marginTop: 2.5 }}></Text>
+                                                <Text style={{ color: Color.COLOR }}></Text>
+                                            </View> : null
+                                        }
+
+                                    </View>
+                                    <TouchableOpacity onPress={() => { this.handleAddToCart(data.productId, data.shopId) }}>
+                                        <View style={[{ backgroundColor: Color.COLOR, marginVertical: 10, alignSelf: 'center', paddingVertical: 5, borderRadius: 5, width: '90%' }, Styles.center]}>
+                                            <Text style={{ color: Color.BUTTON_NAME_COLOR }}>Add to cart</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        )
+                    }) : null}
+                </View> */}
+                {/* <View style={{ height: 10, width: '100%' }} /> */}
             </SafeAreaLayout>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    ImgBgTwo: {
-        position: 'absolute',
-        borderRadius: 55,
-        alignSelf: 'center',
-        height: 11, width: 11,
-        transform: [{ scaleX: 2 }],
-        backgroundColor: 'white',
-        marginTop: 20
-    },
-    ImgBgOne: {
-        height: 9,
-        width: 9,
-        backgroundColor: 'white',
-        borderRadius: 50,
-        alignSelf: 'center',
-        marginTop: 9,
-        position: 'absolute'
-    },
-    askButton: {
-        backgroundColor: '#D8D8D899',
-        width: 50,
-        height: 50,
-        borderRadius: 30,
-        position: 'absolute',
-        alignSelf: 'flex-end',
-        zIndex: 100,
-        bottom: 0,
-        right: 0,
-        marginBottom: 2,
-        marginRight: 2
-    },
-    Search: {
-        width: '88%', alignSelf: 'flex-end',
-        position: 'absolute', zIndex: 100, marginTop: 5, borderRadius: 25
-    },
-
-    name: {
-        fontSize: 12,
-        marginRight: 5,
-        marginTop: -5,
-        marginLeft: 10,
-        fontWeight: 'bold',
-        marginBottom: 2
-    },
-
-    TextView: {
-        width: '85%'
-    },
-    text: {
-        textAlign: 'justify',
-        fontSize: 15,
-        color: 'black',
-        marginRight: 5
-    },
-    safeArea: {
-        flex: 1,
-        paddingBottom: 0,
-        // paddingHorizontal: 16,
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 10
-    },
-
-    selected: {
-        color: 'blue',
-        borderBottomColor: 'blue',
-        borderBottomWidth: 2,
-        fontSize: 16,
-        fontWeight: 'bold'
-    },
-
-    notSelected: {
-        color: 'silver'
-    }
-
-});

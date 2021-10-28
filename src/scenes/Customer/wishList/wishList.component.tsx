@@ -317,13 +317,15 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                                 </View>
 
                                 <View>
-                                    <Text style={Styles.cart_offer_text}>{item.offerPercent}% off</Text>
+                                    {item.offerPercent ? item.offerPercent > 0 ?
+                                    <Text style={Styles.cart_offer_text}>{item.offerPercent}% off</Text> : null : null}
                                 </View>
                             </View>
                         </View>
 
                         <View>
-                            <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}> offers available</Text>
+                        {item.offerPercent ? item.offerPercent > 0 ?
+                            <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}> offers available</Text>: null : null}
                         </View>
                     </View>
 
