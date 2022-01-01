@@ -140,12 +140,12 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.milaansearch"
+        applicationId "com.sonebiryani"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled true
-        versionCode 20
-        versionName "20.0.0"
+        versionCode 4
+        versionName "4.0.0"
         manifestPlaceholders = [onesignal_app_id: "43e3395b-0019-492b-b999-4321444f25ad",
                                 onesignal_google_project_number: "REMOTE"]         
     }

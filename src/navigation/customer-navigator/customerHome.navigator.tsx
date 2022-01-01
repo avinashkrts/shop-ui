@@ -182,16 +182,16 @@ const CustomerHomeBottomNavigator = (): React.ReactElement => (
   // @ts-ignore: `tabBar` also contains a DrawerNavigationProp
   <BottomTab.Navigator tabBar={CustomerHomeTabBar}>
 
-    <BottomTab.Screen
+    {/* <BottomTab.Screen
       name={AppRoute.CUSTOMER_ALL_SHOP}
       component={CustomerAllShopNavigator}
       options={{ title: 'Home', tabBarIcon: HomeIcon }}
-    />
+    /> */}
 
     <BottomTab.Screen
       name={AppRoute.COMBINED_PRODUCT}
       component={CombinedProductNavigator}
-      options={{ title: 'Product', tabBarIcon: HomeIcon }}
+      options={{ title: 'Home', tabBarIcon: HomeIcon }}
     />
 
     <BottomTab.Screen
@@ -234,17 +234,17 @@ export const CustomerHomeNavigator = (): React.ReactElement => (
       options={{ title: logedIn() ? 'Home' : 'Home', drawerIcon: HomeIcon }}
     />
 
-    <Drawer.Screen
+    {/* <Drawer.Screen
       name={AppRoute.REGISTRATION}
       component={RegistrationNavigator}
       options={{ title: 'Business Register', drawerIcon: ProfileIcon }}
-    />
+    /> */}
 
-    <Drawer.Screen
+    {/* <Drawer.Screen
       name={AppRoute.GET_PRODUCT}
       component={GetProductByIdNavigator}
       options={{ title: 'Search Product', drawerIcon: ProfileIcon }}
-    />
+    /> */}
 
     <Drawer.Screen
       name={AppRoute.CUSTOMER_PROFILE}

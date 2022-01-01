@@ -11,6 +11,7 @@ import axios from "axios";
 import moment from "moment";
 import { Content } from "native-base";
 import { ScrollView } from "react-native-gesture-handler";
+import { AppRoute } from "../../../navigation/app-routes";
 
 export class BillBookScreen extends Component<BillBookScreenProps, ThemedComponentProps & any> {
     constructor(props) {
@@ -24,7 +25,7 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
             userData: [],
             single: false,
             shopName: '',
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             userDenied: '',
             shoping: '',
             planPurchase: '',
@@ -45,25 +46,9 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
             const shopIdAsync = await AsyncStorage.getItem('shopId')
             const shopName = await AsyncStorage.getItem('shopName')
 
-            if (null != shopIdAsync && shopIdAsync !== '') {
-                // Alert.alert('')
-                this.setState({ single: true, shopName: shopName, shopId: shopIdAsync })
-                axios(AppConstants.API_BASE_URL + "/api/transaction/get/transactionby/userId/shopId/" + userData.userId + '/' + shopIdAsync)
-                    .then(res => this.setState({ transactionData: res.data.reverse() }))
-            } else {
-                axios({
-                    method: 'GET',
-                    url: AppConstants.API_BASE_URL + '/api/transaction/gettransactionbyuserid/' + userData.userId,
-                }).then((response) => {
-                    if (null != response.data) {
-                        this.setState({
-                            transactionData: response.data.reverse(),
-                        })
-                    }
-                }, (error) => {
-                    Alert.alert("Server error!.")
-                });
-            }
+            axios(AppConstants.API_BASE_URL + "/api/transaction/get/transactionby/userId/shopId/" + userData.userId + '/' + AppConstants.SHOP_ID)
+                .then(res => this.setState({ transactionData: res.data.reverse() }))
+
             axios(AppConstants.API_BASE_URL + "/api/lookup/getalllookup")
                 //.then(res => this.setState({ transactionType: res.data.PAYMENT_MODE }))
                 .then((res) => {
@@ -97,6 +82,8 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
 
                 })
                 .catch(error => console.log(error))
+        } else {
+            this.props.navigation.navigate(AppRoute.AUTH)
         }
     }
 
@@ -116,7 +103,7 @@ export class BillBookScreen extends Component<BillBookScreenProps, ThemedCompone
         return (
             <SafeAreaLayout style={Styles.safeArea}>
                 <Toolbar
-                    title={single ? shopName : 'All Bill Book'}
+                    title='Bill Book'
                     backIcon={MenuIcon}
                     onBackPress={this.props.navigation.openDrawer}
                     style={{ marginTop: -5, marginLeft: -5 }}

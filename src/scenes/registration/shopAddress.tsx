@@ -40,7 +40,7 @@ export class ShopAddressScreen extends Component<ShopAddressScreenProps & SignRe
             mobileNo: '',
             landMark: '',
             userType: '',
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             district: '',
             policeStation: '',
             postOffice: '',

@@ -25,7 +25,7 @@ export const PeopleIcon = (style): AntDesign => (
 );
 
 export const FilterIcon = (style): AntDesign => (
-  <AntDesign size={scale(20)} color='#0099cc' name='filter' />
+  <AntDesign size={scale(20)} color='#501B1D' name='filter' />
 );
 
 export const EditIcon = (style): AntDesign => (
@@ -135,7 +135,7 @@ export const DailyMessageIcon = (style): AntDesign => (
 );
 
 export const CartIcon = (style): AntDesign => (
-  <MaterialIcons size={24} color={'#0099CC'} name='shopping-cart' />
+  <MaterialIcons size={24} color={'#501B1D'} name='shopping-cart' />
 );
 
 

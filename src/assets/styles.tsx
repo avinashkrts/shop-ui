@@ -189,6 +189,26 @@ export const Styles = ScaledSheet.create({
     padding: 15,
     backgroundColor: Color.BUTTON_NAME_COLOR
   },
+
+  bottom_tab_bar: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    backgroundColor: Color.COLOR
+  },
+
+  bottom_view_cart_button: {
+    // paddingHorizontal: '10@s',
+    width: '100%',
+    backgroundColor: 'green'
+  },
+
+  bottom_view_cart_text: {
+    fontSize: '20@s',
+    paddingVertical: '10@s',
+    color: Color.BUTTON_NAME_COLOR
+  },
+
   /*---------------------------------------------This Style is for All Item Page--------------------------------------------------------- */
   all_Item_Main_View: {
     width: '100%',
@@ -309,7 +329,7 @@ export const Styles = ScaledSheet.create({
   },
 
   recharge_button_box: {
-    backgroundColor: '#0099cc',
+    backgroundColor: '#501B1D',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: '6@s',
@@ -583,7 +603,8 @@ export const Styles = ScaledSheet.create({
 
   cart_quantity_text: {
     paddingVertical: '5@s',
-    paddingHorizontal: '10@s'
+    paddingHorizontal: '10@s',
+    color: Color.BUTTON_NAME_COLOR
   },
 
   cart_button: {
@@ -741,7 +762,7 @@ export const Styles = ScaledSheet.create({
   // },
   // stock_main: {
   //   flexDirection: 'row',
-  //   backgroundColor: '#0099cc',
+  //   backgroundColor: '#501B1D',
   //   borderColor: 'silver',
   //   borderWidth: 1
   // },
@@ -764,19 +785,19 @@ export const Styles = ScaledSheet.create({
   // stock_main1: {
   //   width: '100%',
   //   borderWidth: 2,
-  //   borderColor: '#0099cc',
+  //   borderColor: '#501B1D',
   //   borderRadius: 10
 
   // },
   // stock_main_text: {
   //   flexDirection: 'row',
-  //   backgroundColor: '#0099cc',
+  //   backgroundColor: '#501B1D',
   //   borderColor: 'silver'
 
   // },
 
   // stock_box: {
-  //   backgroundColor: '#0099cc',
+  //   backgroundColor: '#501B1D',
   //   borderColor: 'silver',
   //   width: '53%',
   //   justifyContent: 'center',
@@ -784,7 +805,7 @@ export const Styles = ScaledSheet.create({
   // },
 
   // stock_box1: {
-  //   backgroundColor: '#0099cc',
+  //   backgroundColor: '#501B1D',
   //   borderRightColor: 'silver',
   //   borderRightWidth: 1,
   //   padding: 1,
@@ -793,7 +814,7 @@ export const Styles = ScaledSheet.create({
   //   width: '23%'
   // },
   // stock_box2: {
-  //   backgroundColor: '#0099cc',
+  //   backgroundColor: '#501B1D',
   //   borderLeftColor: 'silver',
   //   borderLeftWidth: 1,
   //   padding: 1,
@@ -811,7 +832,7 @@ export const Styles = ScaledSheet.create({
   // },
   // stock_text1: {
   //   fontSize: 20,
-  //   color: '#0099cc',
+  //   color: '#501B1D',
   //   padding: 5
 
   // },
@@ -821,7 +842,7 @@ export const Styles = ScaledSheet.create({
   //   alignItems: 'center',
   //   display: 'flex',
   //   flexDirection: 'row',
-  //   backgroundColor: '#0099cc'
+  //   backgroundColor: '#501B1D'
   // },
   // out_of_stock: {
   //   borderRightWidth: 1,
@@ -863,7 +884,7 @@ export const Styles = ScaledSheet.create({
   },
   stock_main: {
     flexDirection: 'row',
-    // backgroundColor: '#0099cc',
+    // backgroundColor: '#501B1D',
     borderColor: 'silver',
     borderWidth: 0.5
 
@@ -872,26 +893,26 @@ export const Styles = ScaledSheet.create({
   stock_main1: {
     width: '100@s',
     borderWidth: 2,
-    borderColor: '#0099cc',
+    borderColor: '#501B1D',
     borderRadius: 10
 
   },
   stock_main_text: {
     flexDirection: 'row',
-    backgroundColor: '#0099cc',
+    backgroundColor: '#501B1D',
     borderColor: 'silver'
 
   },
 
   stock_box: {
-    // backgroundColor: '#0099cc',
+    // backgroundColor: '#501B1D',
     borderColor: 'silver',
     width: '53%',
     justifyContent: 'center'
   },
 
   stock_box1: {
-    // backgroundColor: '#0099cc',
+    // backgroundColor: '#501B1D',
     borderRightColor: 'silver',
     borderRightWidth: 0.5,
     padding: 1,
@@ -900,7 +921,7 @@ export const Styles = ScaledSheet.create({
     width: '60@s'
   },
   stock_box2: {
-    // backgroundColor: '#0099cc',
+    // backgroundColor: '#501B1D',
     borderLeftColor: 'silver',
     borderLeftWidth: 0.7,
     padding: 1,
@@ -911,7 +932,7 @@ export const Styles = ScaledSheet.create({
 
   stock_text: {
     fontSize: '18@s',
-    color: '#0099cc',
+    color: '#501B1D',
     padding: '5@msr',
     fontWeight: 'bold'
   },
@@ -1198,7 +1219,7 @@ export const Styles = ScaledSheet.create({
   contact_main: {
     borderWidth: 1,
     borderColor: '#fff',
-    backgroundColor: '#0099cc',
+    backgroundColor: '#501B1D',
     borderRadius: 5,
   },
 
@@ -1257,7 +1278,7 @@ export const Styles = ScaledSheet.create({
   bill_row: {
     flexDirection: 'row',
     width: '100%',
-    backgroundColor: '#0099cc',
+    backgroundColor: '#501B1D',
   },
 
   bill_row_1: {
@@ -1414,7 +1435,7 @@ export const Styles = ScaledSheet.create({
 
   wallet_main: {
     borderWidth: 1,
-    backgroundColor: '#0099cc',
+    backgroundColor: '#501B1D',
   },
 
   wallet_row: {
@@ -1932,7 +1953,7 @@ export const Styles = ScaledSheet.create({
   validity: {
     borderWidth: 0.5,
     borderRadius: 5,
-    backgroundColor: '#0099cc',
+    backgroundColor: '#501B1D',
     padding: 10,
 
   },
@@ -1946,7 +1967,7 @@ export const Styles = ScaledSheet.create({
   validity_button: {
     borderWidth: 0.5,
     borderRadius: 5,
-    backgroundColor: '#0099cc',
+    backgroundColor: '#501B1D',
     padding: 10,
     alignSelf: 'center',
     marginTop: '20%',
@@ -1974,7 +1995,7 @@ export const Styles = ScaledSheet.create({
     borderWidth: 0.5,
     borderRadius: 10,
     paddingVertical: 0,
-    backgroundColor: '#0099cc',
+    backgroundColor: '#501B1D',
     marginTop: 40,
     width: '40%',
     marginHorizontal: 5,
@@ -2088,7 +2109,7 @@ export const Styles = ScaledSheet.create({
   contact_milaan: {
     borderWidth: 1,
     borderColor: 'silver',
-    backgroundColor: '#0099cc',
+    backgroundColor: '#501B1D',
     borderRadius: 5,
   },
 

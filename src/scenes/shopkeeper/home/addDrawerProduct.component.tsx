@@ -10,7 +10,7 @@ import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AppConstants, Color, LableText, Placeholder } from "../../../constants";
 import { CheckBox, Content, Picker } from "native-base";
 import Axios from "axios";
-import DatePicker from 'react-native-datepicker'
+import DatePicker from 'react-native-datepicker';
 import { AppRoute } from "../../../navigation/app-routes";
 import Modal from "react-native-modal";
 import moment from "moment";
@@ -62,13 +62,16 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             catImage: false,
             catName: '',
             brandVisible: false,
+            unitCostPrice: '',
             brandName: '',
             brandCatId: '',
             outOfStock: '',
             isImage: false,
             productId: '',
             imageSource: '',
+            selectedProduct: '',
             file: null,
+            allProduct: [],
             allData: [{
                 url: '/api/lookup/getallmeasurementtype',
                 method: 'GET',
@@ -105,6 +108,21 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                     this.setState({
                         allCategory: response.data,
                         selectedCategory: response.data[0].id
+                    })
+                }
+            }, (error) => {
+                Alert.alert("Server error!.")
+            });
+
+            Axios({
+                method: 'GET',
+                // url: AppConstants.API_BASE_URL + '/api/item/getall',
+                url: 'http://api.milaansearch.com:8092/api/item/getproduct/MILAAN63',
+            }).then((response) => {
+                console.log('all user data', response.data)
+                if (null != response.data) {
+                    this.setState({
+                        allProduct: response.data,
                     })
                 }
             }, (error) => {
@@ -264,6 +282,33 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
             }, (error) => {
                 Alert.alert("Server error!.")
             });
+        }
+    }
+
+    handleAddProduct(value) {
+        const { productVisible } = this.state
+        if (value === 'add') {
+            this.setState({
+                productVisible: !productVisible
+            })
+        } else {
+            this.setState({
+                selectedProduct: value
+            })
+
+            // Axios({
+            //     method: 'GET',
+            //     url: AppConstants.API_BASE_URL + '/api/brand/getallDeactivebrandbyshopid/' + value,
+            // }).then((response) => {
+            //     if (null != response.data) {
+            //         this.setState({
+            //             category: value,
+            //             allBrand: response.data
+            //         })
+            //     }
+            // }, (error) => {
+            //     Alert.alert("Server error!.")
+            // });
         }
     }
 
@@ -493,7 +538,7 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
     }
 
     render() {
-        const { isEditable, openModal, outOfStock, isImage, manufactureMinDate, brandVisible, manufactureDate, expireDate, brandName, brandCatId, catImage, catName, categoryVisible, allCategory, allBrand, name, category, brand, shopId, avatar, price, quantity, description, barcode,
+        const { isEditable, allProduct,selectedProduct, openModal, outOfStock, isImage, unitCostPrice, manufactureMinDate, brandVisible, manufactureDate, expireDate, brandName, brandCatId, catImage, catName, categoryVisible, allCategory, allBrand, name, category, brand, shopId, avatar, price, quantity, description, barcode,
             stock, sellingPrice, costPrice, oldPrice, offerPercent, offerFrom, offerTo, offerActiveInd,
             gstAmount, measurement, gstPercent, minDate, allMeasurement, expireActiveInd, isUploaded, imageUploaded, imageSource } = this.state
         return (
@@ -578,21 +623,6 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                             <View>
                                 <View style={Styles.user_detail}>
                                     <View style={Styles.user_detail_header}>
-                                        <Text style={Styles.user_detail_header_text}>{LableText.PRODUCT_NAME}</Text>
-                                    </View>
-                                    <View style={Styles.user_detail_data}>
-                                        <TextInput
-                                            editable={isEditable}
-                                            value={name}
-                                            onChangeText={(value) => { this.setState({ name: value }) }}
-                                            style={Styles.cash_pay_input}
-                                            placeholder={LableText.PRODUCT_NAME}
-                                        />
-                                    </View>
-                                </View>
-
-                                <View style={Styles.user_detail}>
-                                    <View style={Styles.user_detail_header}>
                                         <Text style={Styles.user_detail_header_text}>{LableText.CATEGORY}</Text>
                                     </View>
                                     <View style={Styles.user_detail_data}>
@@ -639,6 +669,29 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
 
                                 <View style={Styles.user_detail}>
                                     <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.PRODUCT_NAME}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <Picker
+                                            note
+                                            mode="dropdown"
+                                            style={[Styles.center, { marginVertical: -8, color: Color.COLOR, width: '100%' }]}
+                                            selectedValue={selectedProduct}
+                                            onValueChange={(value) => { this.handleAddProduct(value) }}
+                                        >
+                                            <Picker.Item label="Select Product" value="" />
+                                            <Picker.Item label="Add Product" value="add" color={Color.COLOR} />
+                                            {null != allProduct ? allProduct.map((data, index) => {
+                                                return (
+                                                    <Picker.Item label={data.name} value={data.id} />
+                                                )
+                                            }) : null}
+                                        </Picker>
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
                                         <Text style={Styles.user_detail_header_text}>{LableText.COST_PRICE}</Text>
                                     </View>
                                     <View style={Styles.user_detail_data}>
@@ -649,6 +702,22 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                             onChangeText={(value) => { this.setState({ costPrice: value }) }}
                                             style={Styles.cash_pay_input}
                                             placeholder={LableText.COST_PRICE}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.UNIT_COST_PRICE}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            editable={isEditable}
+                                            keyboardType='numeric'
+                                            value={unitCostPrice}
+                                            onChangeText={(value) => { this.setState({ unitCostPrice: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.UNIT_COST_PRICE}
                                         />
                                     </View>
                                 </View>
@@ -671,6 +740,22 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
 
                                 <View style={Styles.user_detail}>
                                     <View style={Styles.user_detail_header}>
+                                        <Text style={Styles.user_detail_header_text}>{LableText.SELLING_PRICE}</Text>
+                                    </View>
+                                    <View style={Styles.user_detail_data}>
+                                        <TextInput
+                                            editable={isEditable}
+                                            value={sellingPrice}
+                                            keyboardType='numeric'
+                                            onChangeText={(value) => { this.setState({ sellingPrice: value }) }}
+                                            style={Styles.cash_pay_input}
+                                            placeholder={LableText.SELLING_PRICE}
+                                        />
+                                    </View>
+                                </View>
+
+                                {/* <View style={Styles.user_detail}>
+                                    <View style={Styles.user_detail_header}>
                                         <Text style={Styles.user_detail_header_text}>{LableText.MEASUREMENT}</Text>
                                     </View>
                                     <View style={Styles.user_detail_data}>
@@ -688,28 +773,10 @@ export class AddDrawerProductScreen extends Component<AddDrawerProductScreenProp
                                                 )
                                             }) : null}
                                             <Picker.Item label="Add measurement" value="add" />
-
-                                            {/* <Picker.Item label="Mobile" value="1" />
-                                        <Picker.Item label="Laptop" value="2" /> */}
                                         </Picker>
                                     </View>
-                                </View>
+                                </View> */}
 
-                                <View style={Styles.user_detail}>
-                                    <View style={Styles.user_detail_header}>
-                                        <Text style={Styles.user_detail_header_text}>{LableText.SELLING_PRICE}</Text>
-                                    </View>
-                                    <View style={Styles.user_detail_data}>
-                                        <TextInput
-                                            editable={isEditable}
-                                            value={sellingPrice}
-                                            keyboardType='numeric'
-                                            onChangeText={(value) => { this.setState({ sellingPrice: value }) }}
-                                            style={Styles.cash_pay_input}
-                                            placeholder={LableText.SELLING_PRICE}
-                                        />
-                                    </View>
-                                </View>
                                 <View style={Styles.user_detail}>
                                     <View style={Styles.user_detail_header}>
                                         <Text style={Styles.user_detail_header_text}>{LableText.BARCODE}</Text>

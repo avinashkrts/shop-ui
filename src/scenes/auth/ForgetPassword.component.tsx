@@ -61,7 +61,7 @@ export class ForgetPasswordScreen extends Component<ForgetPasswordScreenProps, a
                 console.log(error);
             });
         }
-        };
+    };
 
     navigateHome() {
         this.props.navigation.navigate(AppRoute.HOME);
@@ -78,7 +78,7 @@ export class ForgetPasswordScreen extends Component<ForgetPasswordScreenProps, a
     navigateINFORMATION() {
         this.props.navigation.navigate(AppRoute.INFORMATION);
     };
-  
+
     navigateSignUp() {
         this.props.navigation.navigate(AppRoute.SIGN_UP);
     };
@@ -93,12 +93,12 @@ export class ForgetPasswordScreen extends Component<ForgetPasswordScreenProps, a
             <SafeAreaLayout
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP} >
-                < Content style={Styles.content} >
+                < Content style={[Styles.content, { backgroundColor: '#e6e6e6' }]} >
                     <View>
                         <Image
                             source={require('../../assets/logo.png')}
                             resizeMode="contain"
-                            style={[Styles.loginImage, {marginTop: scale(80)}]}
+                            style={[Styles.loginImage, { marginTop: scale(80) }]}
                         />
                         <View style={Styles.center}>
                             <Text style={Styles.loginWelcome}>{LableText.RESET_PASSWORD}</Text>

@@ -1,8 +1,12 @@
 import { combineReducers } from 'redux'
-import TokenReducers from './tokenReducers'
+import ProductReducers from './product.reducers'
+import BrandReducers from './brand.reducers'
+import UserReducers from './user.reducers'
 
 const rootReducer = combineReducers({
-    tokenReducer: TokenReducers
+    productReducers: ProductReducers,
+    brandReducers: BrandReducers,
+    userReducers: UserReducers
 })
 
 export default rootReducer;

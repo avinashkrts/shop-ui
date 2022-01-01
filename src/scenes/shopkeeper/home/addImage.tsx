@@ -28,7 +28,7 @@ export class AddProfileImageScreen extends Component<ImageUploadScreenProps, The
     constructor(props) {
         super(props);
         this.state = {
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             productId: '',
             imageSource: '',
             file: null,
@@ -59,9 +59,9 @@ export class AddProfileImageScreen extends Component<ImageUploadScreenProps, The
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.CAMERA,
                 {
-                    title: "Milaan Camera/Gallery Permission",
+                    title: "Sone Biryani Camera/Gallery Permission",
                     message:
-                        "Milaan needs access to your Camera " +
+                        "Sone Biryani needs access to your Camera " +
                         "so you can upload image from Camera.",
                     buttonNeutral: "Ask Me Later",
                     buttonNegative: "Cancel",

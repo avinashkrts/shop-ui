@@ -43,6 +43,7 @@ export default class App extends Component<any, any>{
   }
 
   async componentDidMount() {
+    OneSignal.setAppId("43e3395b-0019-492b-b999-4321444f25ad");
     // const value = await AsyncStorage.getItem('userDetail');
     // const value1 = await AsyncStorage.getItem('adminType');
     // const logedIn = await AsyncStorage.getItem('logedIn');
@@ -101,7 +102,7 @@ export default class App extends Component<any, any>{
     return (
       <React.Fragment>
         <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
+          {/* <PersistGate loading={null} persistor={persistor}> */}
             <IconRegistry icons={EvaIconsPack} />
             <ApplicationProvider
               mapping={mapping}
@@ -112,7 +113,7 @@ export default class App extends Component<any, any>{
                 </NavigationContainer>
               </SafeAreaProvider>
             </ApplicationProvider>
-          </PersistGate>
+          {/* </PersistGate> */}
         </Provider>
       </React.Fragment>
     );

@@ -20,7 +20,7 @@ export class AddProductScreen extends Component<AddProductScreenProps, ThemedCom
             name: '',
             category: '',
             brand: '',
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             avatar: '',
             price: '',
             quantity: '',

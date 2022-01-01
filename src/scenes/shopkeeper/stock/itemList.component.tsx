@@ -86,7 +86,7 @@ export class ItemListScreen extends React.Component<ItemListScreenProps & Themed
             selectedBrand: '',
             allMeasurement: [],
             search: '',
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             refreshing: false,
             allData: [{
                 url: '/api/category/getallcategory',

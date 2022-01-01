@@ -130,7 +130,6 @@ const styles = StyleSheet.create({
   },
   NestedView: {
     height: 140,
-    width: 140,
     backgroundColor: '#D8D8D899',
     borderRadius: 80,
     alignSelf: 'center',
@@ -138,7 +137,9 @@ const styles = StyleSheet.create({
   },
   displayName: {
     alignSelf: 'center',
-    fontSize: 18
+    flexWrap: 'wrap',
+    fontSize: 18,
+    // backgroundColor: 'red',
   },
   header: {
     height: 130,

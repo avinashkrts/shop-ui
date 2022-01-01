@@ -24,7 +24,7 @@ import OneSignal from "react-native-onesignal";
 import { LableText } from '../../../constants/LabelConstants';
 import { BackHandler } from "react-native";
 import { connect } from "react-redux";
-import { changeProductData } from "../../../redux/action/tokenActions";
+import { changeProductData } from "../../../redux/action/productActions";
 const HEADER_MAX_HEIGHT = 205;
 const HEADER_MIN_HEIGHT = 0;
 
@@ -39,7 +39,7 @@ export class CustomerAllShopScreen extends Component<CustomerAllShopScreenProps,
             selectedCategory: '',
             selectedBrand: '',
             userData: [],
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             allMeasurement: [],
             wishList: '',
             search: '',

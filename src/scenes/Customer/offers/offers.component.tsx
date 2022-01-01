@@ -36,7 +36,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             selectedCategory: '',
             selectedBrand: '',
             userData: [],
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             allMeasurement: [],
             wishList: '',
             search: '',
@@ -66,12 +66,9 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
         const shopIdAsync = await AsyncStorage.getItem('shopId')
         const shopName = await AsyncStorage.getItem('shopName')
 
-        if (null != shopIdAsync && shopIdAsync !== '') {
-            // Alert.alert('')
-            this.setState({ single: true, shopName: shopName, shopId: shopIdAsync })
             axios({
                 method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/product/get/offerproduct/byshopid/' + shopIdAsync,
+                url: AppConstants.API_BASE_URL + '/api/product/get/offerproduct/byshopid/' + AppConstants.SHOP_ID,
             }).then((response) => {
                 if (null != response.data) {
                     this.setState({
@@ -83,7 +80,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             });
             axios({
                 method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/category/getcategorybyshopid/' + shopIdAsync,
+                url: AppConstants.API_BASE_URL + '/api/category/getcategorybyshopid/' + AppConstants.SHOP_ID,
             }).then((response) => {
                 if (null != response.data) {
                     this.setState({
@@ -96,7 +93,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
             });
             axios({
                 method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/brand/getbrandbyshopid/' + shopIdAsync,
+                url: AppConstants.API_BASE_URL + '/api/brand/getbrandbyshopid/' + AppConstants.SHOP_ID,
             }).then((response) => {
                 if (null != response.data) {
                     this.setState({
@@ -106,61 +103,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                 }
             }, (error) => {
                 Alert.alert("Server error!.")
-            });
-        } else {
-            try {
-                var lat = await AsyncStorage.getItem('latitude')
-                var long = await AsyncStorage.getItem('longitude')
-                var location = await AsyncStorage.getItem('location')
-                axios({
-                    method: 'GET',
-                    url: AppConstants.API_BASE_URL + '/api/product/getbyofferproduct/' + lat + '/' + long
-                }).then((response) => {
-                    console.log('Product', response.data)
-                    if (null != response.data) {
-                        this.setState({
-                            allProduct: response.data,
-                            lat: lat,
-                            long: long,
-                            location: location
-                        })
-                    }
-                }, (error) => {
-                    Alert.alert("Server error!.")
-                });
-
-
-            } catch (err) {
-                console.warn(err);
-            }
-
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
-            }).then((response) => {
-                if (null != response.data) {
-                    this.setState({
-                        allCategory: response.data,
-                        selectedCategory: response.data[0].id
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/brand/getallbrand/',
-            }).then((response) => {
-                if (null != response.data) {
-                    this.setState({
-                        allBrand: response.data,
-                        selectedBrand: response.data[0].id
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
-        }
+            });      
 
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
@@ -221,11 +164,52 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
     }
 
     selectCategory(id) {
-        this.setState({ selectedCategory: id })
+        const { shopId } = this.state;
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/brand/getallDeactivebrandbyshopid/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allBrand: response.data,
+                    selectedCategory: id
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/product/getproductbyshopidandcategory/' + shopId + '/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allProduct: response.data,
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+        // this.setState({ selectedCategory: id })
     }
 
-    selectBrand(id) {
-        this.setState({ selectedBrand: id })
+    selectBrand(id, brandName) {
+        const { shopId } = this.state
+        axios({
+            method: 'GET',
+            url: AppConstants.API_BASE_URL + '/api/product/getproduct/shopid/brand/' + shopId + '/' + id,
+        }).then((response) => {
+            if (null != response.data) {
+                this.setState({
+                    allProduct: response.data,
+                    selectedBrand: id
+                })
+            }
+        }, (error) => {
+            Alert.alert("Server error!.")
+        });
+        // this.setState({ selectedBrand: id })
     }
 
     navigateProductDetail(id, shopId) {
@@ -544,7 +528,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                 </Modal>
 
                 <Toolbar
-                    title={single ? shopName : 'All Offers'}
+                    title='Offers'
                     backIcon={MenuIcon}
                     onBackPress={this.props.navigation.openDrawer}
                     onRightPress={() => { this.navigateToCart() }}
@@ -554,11 +538,11 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                 <Divider />
                 <Divider />
                 <Divider />
-                {!single ?
+                {/* {!single ?
                     <View style={{ padding: 5 }}>
                         <Text onPress={() => { this.setState({ searchVisible: true }) }} style={{ fontWeight: 'bold', fontSize: 18, color: Color.COLOR }}>Location: <Text style={{ fontSize: 16, fontWeight: '100' }}>{location}</Text></Text>
                     </View> : null
-                }
+                } */}
                 <View style={[Styles.searchBox, { marginBottom: 0 }]}>
                     <TextInput
                         placeholder="Search"
@@ -576,7 +560,6 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
 
                 <Divider />
                 {/* </Header> */}
-                {single ?
                     <>
                         <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
 
@@ -625,8 +608,7 @@ export class OffersScreen extends Component<OffersScreenProps, ThemedComponentPr
                                 </View>
                             </View>
                         </Header>
-                    </> : null
-                }
+                    </>
                 {null != allProduct ?
                     <List data={allProduct}
                         refreshControl={

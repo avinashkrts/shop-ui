@@ -72,7 +72,6 @@ type HomeDrawerNavigatorParams = {
   [AppRoute.IMAGEUPLOAD]: undefined;
   [AppRoute.LOGOUT]: undefined;
   [AppRoute.AUTH]: undefined;
-  // [AppRoute.REGISTRATION]: undefined;
   [AppRoute.ORDER]: undefined;
   [AppRoute.ADD_PRODUCT_NAVIGATOR]: undefined;
   [AppRoute.PROFILE]: undefined;
@@ -376,11 +375,11 @@ export const HomeNavigator = (): React.ReactElement => (
       options={{ title: 'My Wallet', drawerIcon: WalletIcon }}
     />
 
-    <Drawer.Screen
+    {/* <Drawer.Screen
       name={AppRoute.WITHDRAW}
       component={WithdrawScreen}
       options={{ title: 'Withdraw', drawerIcon: WalletIcon }}
-    />
+    /> */}
 
     <Drawer.Screen
       name={AppRoute.ADMIN_BILL_BOOK}

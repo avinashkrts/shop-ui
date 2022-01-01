@@ -57,7 +57,7 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
 
 
                             Helpline Number +91-7294926271{`\n`}
-                            customersupport@milaansearch.com{`\n`}
+                            customersupport@sonebiryani.com{`\n`}
 
 
                         </Text>
@@ -66,7 +66,7 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                         {/* <Text style={Styles.about_us}>address</Text> */}
                         <Text style={Styles.about_content}>
 
-                            We at Milaansearch provide great deals and coupons along with price transparency
+                            We at sonebiryani provide great deals and coupons along with price transparency
                             in your daily transactions of purchasing goods and services. Flat discounts and no hidden charges
                             with totally handmade profits directly to the customers. Our most efficient feature is the versatility
                             and the transparency of the profits that we urge from the retailers and provide it directly in the
@@ -79,7 +79,7 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                         <Text style={Styles.about_contact}>Our Services</Text>
                         <Text style={Styles.about_content}>
 
-                            at Milaansearch is having tie-ups with several goods and service providers and its main service are to execute
+                            at sonebiryani is having tie-ups with several goods and service providers and its main service are to execute
                             orders from the vendors and provide it to their customers with the discounts and respective offers on the product directly
                             in the hands of the customer with 100% transparency with an easy of buying them. In today's world, just for a little discount,
                             we use to wait for several days and even weeks to get it from online other than our local nearby vendors. Now, we can avail of
@@ -113,7 +113,7 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                             As we are highly influenced by social sites on daily basis,
                             so we go through daily ads of several discounts and offers.
                             Well, here we offer you what is actually something very
-                            genuine and assured. We tat Milaansearch generates discounts
+                            genuine and assured. We tat sonebiryani generates discounts
                             and offers from your local vendors and let you have all that
                             benefits in your hand directly without misleading with
                             a single penny.
@@ -124,10 +124,10 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                         <Text style={Styles.about_contact}> PRIVACY POLICY</Text>
                         <Text style={Styles.about_content}>
 
-                            Trust and Belief are the pillars of the milaansearch and include trusting us to do the right thing with your information. There are some values that guide us as we provide several discounts and offers on our products and services. These values should help you better understand how we think about your information and privacy. This Privacy Policy discloses the privacy practices for milaansearch. It applies solely to information collected by the company’s Website.
+                            Trust and Belief are the pillars of the sonebiryani and include trusting us to do the right thing with your information. There are some values that guide us as we provide several discounts and offers on our products and services. These values should help you better understand how we think about your information and privacy. This Privacy Policy discloses the privacy practices for sonebiryani. It applies solely to information collected by the company’s Website.
                             {`\n`}
-                            Basic eligibility to access the services by milaansearch
-                            By accessing this website we assume you accept these terms and conditions in full. Do not continue to use the milaansearch website i.e. https://milaansearch.com, if you do not accept all of the terms and conditions stated on this page. You hereby represent and warrant to the Company that you are at least eighteen (18) years of age or above and are capable of entering, performing, and adhering to these Terms and that you agree to be bound by the following terms and conditions. While individuals under the age of 18 may utilize the Service of the site, they shall do so only with the involvement & guidance of their parents. You are responsible for checking Terms of Use regularly to remain in compliance with these terms. Your use of the website and any amendments to the Terms of Use shall constitute your acceptance of these terms and you also agree to be bound by any such changes/revisions/amendments.
+                            Basic eligibility to access the services by sonebiryani
+                            By accessing this website we assume you accept these terms and conditions in full. Do not continue to use the sonebiryani website i.e. https://sonebiryani.com, if you do not accept all of the terms and conditions stated on this page. You hereby represent and warrant to the Company that you are at least eighteen (18) years of age or above and are capable of entering, performing, and adhering to these Terms and that you agree to be bound by the following terms and conditions. While individuals under the age of 18 may utilize the Service of the site, they shall do so only with the involvement & guidance of their parents. You are responsible for checking Terms of Use regularly to remain in compliance with these terms. Your use of the website and any amendments to the Terms of Use shall constitute your acceptance of these terms and you also agree to be bound by any such changes/revisions/amendments.
                             {`\n`}
                             Your information belongs to you
                             We carefully analyze that what is the information we need to provide our company, and we usually try to limit the information that we collect to only what we really need. When possible, we delete the information when we no longer need it. When building and improving our products, our team works so closely with our privacy and security teams to build with privacy in mind. In all of this work, our guiding principle is that your information belongs to you, and we aim to only use your information to your benefit.
@@ -136,12 +136,12 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                             If a third party requests your personal information, we will refuse to share it unless you give us permission or we are legally required. When we are legally required to share your personal information, we will tell you in advance, unless we are legally forbidden.
                             {`\n`}
                             How we use cookies
-                            We employ the use of cookies. By using the milaansearch website you consent to the use of cookies in accordance with the milaansearch privacy policy. Most modern day interactive websites use cookies to enable us to retrieve user details for each visit. Cookies are used in some areas of our site to enable the functionality of this area and ease of use for those people visiting. Some of our affiliate/advertising partners may also use cookies.{`\n`}{`\n`}
+                            We employ the use of cookies. By using the sonebiryani website you consent to the use of cookies in accordance with the sonebiryani privacy policy. Most modern day interactive websites use cookies to enable us to retrieve user details for each visit. Cookies are used in some areas of our site to enable the functionality of this area and ease of use for those people visiting. Some of our affiliate/advertising partners may also use cookies.{`\n`}{`\n`}
                             {`\n`}
                             You must not:{`\n`}
-                            Republish material from https://milaansearch.com{`\n`}
-                            Sell, rent, or sub-license material from https://milaansearch.com{`\n`}
-                            Reproduce, duplicate or copy material from https://milaansearch.com
+                            Republish material from https://sonebiryani.com{`\n`}
+                            Sell, rent, or sub-license material from https://sonebiryani.com{`\n`}
+                            Reproduce, duplicate or copy material from https://sonebiryani.com
                         </Text>
                     </View>
 
@@ -150,7 +150,7 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                         <Text style={Styles.about_content}>
                             This document is an electronic record in terms of Information Technology Act, 2000 and rules there under as applicable and the amended provisions pertaining to electronic records in various statutes as amended by the Information Technology Act, 2000. This electronic record is generated by a computer system and does not require any physical or digital signatures.
                             {`\n`}
-                            This document is published in accordance with the provisions of Rule 3 (1) of the Information Technology (Intermediaries guidelines) Rules, 2011 that require publishing the rules and regulations, privacy policy, and Terms of Use for access or usage of domain name [www.milaansearch.com, including the related mobile site and mobile application (hereinafter referred to as “Platform”)
+                            This document is published in accordance with the provisions of Rule 3 (1) of the Information Technology (Intermediaries guidelines) Rules, 2011 that require publishing the rules and regulations, privacy policy, and Terms of Use for access or usage of domain name [www.sonebiryani.com, including the related mobile site and mobile application (hereinafter referred to as “Platform”)
                             {`\n`}
                             The Platform is owned by Milaan IT Projects Private Limited Group a company with its registered office at 101, Inorbit Complex , Near BMP 16, Phulwari khagaul Road Patna, 801505 (hereinafter referred to as "Milaan IT Projects Private Limited").
                             {`\n`}
@@ -163,7 +163,7 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                             ACCESSING, BROWSING, OR OTHERWISE USING THE SITE INDICATES YOUR AGREEMENT TO ALL THE TERMS AND CONDITIONS UNDER THESE TERMS OF USE, SO PLEASE READ THE TERMS OF USE CAREFULLY BEFORE PROCEEDING. By impliedly or expressly accepting these Terms of Use, You also accept and agree to be bound by Milaan IT Projects Private Limited Policies (including but not limited to Privacy Policy available at Privacy) as amended from time to time.
                             {`\n`}
                             Basic eligibility to access the services by Milaan IT Projects Private Limited
-                            By accessing this website we assume you accept these terms and conditions in full. Do not continue to use the Milaan IT Projects Private Limited website i.e. https://www.milaansearch.com, if you do not accept all of the terms and conditions stated on this page. You hereby represent and warrant to the Company that you are at least eighteen (18) years of age or above and are capable of entering, performing, and adhering to these Terms and that you agree to be bound by the following terms and conditions. While individuals under the age of 18 may utilize the Service of the site, they shall do so only with the involvement & guidance of their parents. You are responsible for checking Terms of Use regularly to remain in compliance with these terms. Your use of the website and any amendments to the Terms of Use shall constitute your acceptance of these terms and you also agree to be bound by any such changes/revisions/amendments.
+                            By accessing this website we assume you accept these terms and conditions in full. Do not continue to use the Milaan IT Projects Private Limited website i.e. https://www.sonebiryani.com, if you do not accept all of the terms and conditions stated on this page. You hereby represent and warrant to the Company that you are at least eighteen (18) years of age or above and are capable of entering, performing, and adhering to these Terms and that you agree to be bound by the following terms and conditions. While individuals under the age of 18 may utilize the Service of the site, they shall do so only with the involvement & guidance of their parents. You are responsible for checking Terms of Use regularly to remain in compliance with these terms. Your use of the website and any amendments to the Terms of Use shall constitute your acceptance of these terms and you also agree to be bound by any such changes/revisions/amendments.
                             {`\n`}
                             Your information belongs to you
                             We carefully analyze that what is the information we need to provide our company, and we usually try to limit the information that we collect to only what we really need. When possible, we delete the information when we no longer need it. When building and improving our products, our team works so closely with our privacy and security teams to build with privacy in mind. In all of this work, our guiding principle is that your information belongs to you, and we aim to only use your information to your benefit.
@@ -183,7 +183,7 @@ export class CustomerContactScreen extends Component<CustomerContactScreenProps,
                             We also offer premium services and premium discounts. To utilize the premium services we charge a small amount to buyers. Every premium plan comes with validity. To retain the premium service you may choose to manually or auto-renew your services.
                             {`\n`}
                             Contacting the seller
-                            At Milaan IT Projects Private Limited we are committed towards ensuring that disputes between sellers and buyers are settled amicably by way of the above dispute resolution mechanisms and procedures. However, in the event that a buyer wishes to contact the seller, he/ she may proceed to do so by accessing the seller-related information made available by the sellers on their business listing page. Alternatively, the buyers may also reach out to customer support at 7294926271 or access mail us at customersupport@milaansearch.com.
+                            At Milaan IT Projects Private Limited we are committed towards ensuring that disputes between sellers and buyers are settled amicably by way of the above dispute resolution mechanisms and procedures. However, in the event that a buyer wishes to contact the seller, he/ she may proceed to do so by accessing the seller-related information made available by the sellers on their business listing page. Alternatively, the buyers may also reach out to customer support at 7294926271 or access mail us at customersupport@sonebiryani.com.
                         </Text>
                     </View>                   
                 </Content>

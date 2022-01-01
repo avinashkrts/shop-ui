@@ -29,7 +29,7 @@ export class AddDrawerProductImageScreen extends Component<AddDrawerProductImage
     constructor(props) {
         super(props);
         this.state = {
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             productId: '',
             imageSource: '',
             file: null,

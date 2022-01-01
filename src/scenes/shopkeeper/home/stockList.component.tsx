@@ -20,7 +20,7 @@ export class StockListScreen extends Component<StockListScreenProps, ThemedCompo
             allProduct: [],
             tempAllProduct: [],
             userData: '',
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             heading: [
                 {
                     id: 1,

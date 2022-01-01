@@ -25,7 +25,7 @@ export class CustomerWalletScreen extends Component<CustomerWalletScreenProps, T
             userData: [],
             single: false,
             shopName: '',
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             user: []
         }
 

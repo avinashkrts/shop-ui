@@ -583,7 +583,7 @@ export class CustProductDetailScreen extends React.Component<CustProductDetailSc
                                 {/* <ScrollView> */}
                                 <View style={Styles.product_description_view}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>Product Description</Text>
-                                    <View style={{ borderTopWidth: 2, borderColor: '#0099cc', marginTop: 10, padding: 10 }}>
+                                    <View style={{ borderTopWidth: 2, borderColor: '#501B1D', marginTop: 10, padding: 10 }}>
                                         <Text style={{ fontSize: 18 }}>{allProduct.description}</Text>
                                     </View>
                                 </View>

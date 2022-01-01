@@ -44,9 +44,9 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: "Milaan Location Permission",
+          title: "Sone Biryani Location Permission",
           message:
-            "Milaan needs access to your Location " +
+            "Sone Biryani needs access to your Location " +
             "so you can get your nearest shop.",
           buttonNeutral: "Ask Me Later",
           buttonNegative: "Cancel",
@@ -102,6 +102,7 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
           mobileNo: mobileNo,
           pwd: pwd,
           userType: userType,
+          shopId: AppConstants.SHOP_ID
         }
       }).then((response) => {
         if (response.data.status === "false") {
@@ -133,7 +134,7 @@ export class SignUpScreen extends Component<SignUpScreenProps, any & State, any>
       <SafeAreaLayout
         style={Styles.safeArea}
         insets={SaveAreaInset.TOP} >
-        < Content style={Styles.content} >
+        < Content style={[Styles.content,{backgroundColor: '#e6e6e6'}]} >
           <View>
             <Image
               source={require('../../assets/logo.png')}

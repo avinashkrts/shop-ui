@@ -2,12 +2,12 @@ import { AsyncStorage } from "react-native";
 
 /*------------------------------------------------------------COLOR CODE------------------------------------------------------------*/
 export class Color {
-    public static readonly COLOR = '#0099cc';
+    public static readonly COLOR = '#ff4d4d';
     public static readonly BUTTON_NAME_COLOR = '#fff';
-    public static readonly COLOR_CUSTOMER = '#00bfff';
+    public static readonly COLOR_CUSTOMER = '#501B1D';
     public static readonly COLOR_ITEM_NAME = '#777777';
     public static readonly BORDER = '#d1d1d1';
-    public static readonly CART_LIST_EVEN = '#0099cc';
+    public static readonly CART_LIST_EVEN = '#501B1D';
     public static readonly CART_LIST_ODD = '#4dd2ff';
     public static readonly CART_BACKGROUND = '#f2f2f2';
     public static readonly SILVER = '#8f8f8f';

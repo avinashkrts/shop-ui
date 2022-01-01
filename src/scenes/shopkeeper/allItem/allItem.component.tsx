@@ -4,7 +4,7 @@ import { Avatar, List, Divider, ListItemElement, ThemedComponentProps } from "re
 import { AllItemScreenProps } from "../../../navigation/shopKeeperNavigator/allItem.Navigator";
 import { SafeAreaLayout, SaveAreaInset } from "../../../components/safe-area-layout.component";
 import { Toolbar } from "../../../components/toolbar.component";
-import { BackIcon, CartIcon, MenuIcon, CancelIcon, SearchIcon, WishIcon } from "../../../assets/icons";
+import { BackIcon, CartIcon, MenuIcon, CancelIcon, SearchIcon, WishIcon, PlusCircle } from "../../../assets/icons";
 import { FlatList, ScrollView, TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { AppConstants, Color, LableText } from "../../../constants";
 import { Styles } from "../../../assets/styles";
@@ -14,7 +14,7 @@ import Animated from "react-native-reanimated";
 import { AppRoute } from "../../../navigation/app-routes";
 import { BackHandler } from "react-native";
 import { scale } from "react-native-size-matters";
-import { changeProductData } from "../../../redux/action/tokenActions";
+import { changeProductData } from "../../../redux/action/productActions";
 import { connect, ConnectedProps } from "react-redux";
 import { createFilter } from "react-native-search-filter";
 
@@ -30,7 +30,7 @@ class AllItem extends React.Component<Props, any> {
             allProduct: [],
             allCategory: [],
             allBrand: [],
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             refreshing: false,
             selectedCategory: '',
             selectedBrand: '',
@@ -362,8 +362,8 @@ class AllItem extends React.Component<Props, any> {
                     title='Product'
                     backIcon={MenuIcon}
                     onBackPress={this.props.navigation.openDrawer}
-                    onRightPress={() => { this.navigateToCart() }}
-                    menuIcon={CartIcon}
+                    onRightPress={() => { this.handleAddProduct() }}
+                    menuIcon={PlusCircle}
                     style={{ marginTop: -5, marginLeft: -5 }}
                 />
 

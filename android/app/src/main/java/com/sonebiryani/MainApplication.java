@@ -1,4 +1,4 @@
-package com.milaansearch;
+package com.sonebiryani;
 
 import android.app.Application;
 import android.content.Context;

@@ -57,7 +57,7 @@ export class CustomerOrderDetailScreen extends Component<CustomerOrderDetailScre
         this.state = {
             cartData: [],
             productList: [],
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             cartId: '',
             addressData: [],
             orderstatusData: [],

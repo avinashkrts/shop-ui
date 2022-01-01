@@ -83,7 +83,7 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
             allBrand: [],
             selectedCategory: '',
             selectedBrand: '',
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             allMeasurement: [],
             userData: [],
             allData: [
@@ -93,17 +93,17 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                     variable: 'allMeasurement',
                 },
                 {
-                    url: '/api/category/getallcategory',
+                    url: '/api/category/getcategorybyshopid/' + AppConstants.SHOP_ID,
                     method: 'GET',
                     variable: 'allCategory',
                 },
                 {
-                    url: '/api/brand/getallbrand',
+                    url: '/api/brand/getbrandbyshopid/' + AppConstants.SHOP_ID,
                     method: 'GET',
                     variable: 'allBrand',
                 }],
-                single: false,
-                shopName: ''
+            single: false,
+            shopName: ''
         }
         this._onRefresh = this._onRefresh.bind(this);
         this.navigationProductDetail = this.navigationProductDetail.bind(this);
@@ -121,7 +121,7 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
         const { allData } = this.state;
 
         let userDetail = await AsyncStorage.getItem('userDetail');
-         const shopIdAsync = await AsyncStorage.getItem('shopId')
+        const shopIdAsync = await AsyncStorage.getItem('shopId')
         const shopName = await AsyncStorage.getItem('shopName')
         let userData = JSON.parse(userDetail);
         // Alert.alert(""+shopId);
@@ -146,34 +146,19 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                 Alert.alert("Server error.")
             });
 
-            if (null != shopIdAsync && shopIdAsync !== '') {
-                this.setState({ single: true, shopName: shopName, shopId: shopIdAsync })
-                axios({
-                    method: 'GET',
-                    url: AppConstants.API_BASE_URL + '/api/product/getproduct/wishlist/' + shopIdAsync + '/' + userData.userId,
-                }).then((response) => {
-                    // console.log(data.variable, response.data)
-                    this.setState({ allProduct: response.data })
-                }, (error) => {
-                    this.setState({ allProduct: null })
-                    // Alert.alert("Server error.")
-                });
-            } else {
-                // Alert.alert('')
-                axios({
-                    method: 'GET',
-                    url: AppConstants.API_BASE_URL + '/api/product/getwishlist/' + userData.userId,
-                }).then((response) => {
-                    // console.log(data.variable, response.data)
-                    this.setState({ allProduct: response.data })
-                }, (error) => {
-                    this.setState({ allProduct: null })
-                    // Alert.alert("Server error.")
-                });
-            }
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/product/getproduct/wishlist/' + AppConstants.SHOP_ID + '/' + userData.userId,
+            }).then((response) => {
+                // console.log(data.variable, response.data)
+                this.setState({ allProduct: response.data })
+            }, (error) => {
+                this.setState({ allProduct: null })
+                // Alert.alert("Server error.")
+            });
         }
-       
-       
+
+
 
         allData.map((data, index) => {
             // console.log(allData)
@@ -266,7 +251,7 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
             axios({
                 method: "GET",
                 url: AppConstants.API_BASE_URL + '/api/user/wishlist/add/' + userData.userId + "/" + id,
-            }).then((response) => {               
+            }).then((response) => {
                 this._onRefresh();
             }, (error) => {
                 Alert.alert("Server error.")
@@ -290,15 +275,15 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
 
                             <View style={Styles.cart_view_1_2}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={Styles.cart_name_text}>{item.name}</Text>
-                                <TouchableOpacity  onPress={() => { this.handleDelete(item.productId) }}>
-                                    <Text style={Styles.cart_name_text}><CancelIcon fontSize={25} /></Text>
-                                </TouchableOpacity>
-                            </View>
+                                    <Text style={Styles.cart_name_text}>{item.name}</Text>
+                                    <TouchableOpacity onPress={() => { this.handleDelete(item.productId) }}>
+                                        <Text style={Styles.cart_name_text}><CancelIcon fontSize={25} /></Text>
+                                    </TouchableOpacity>
+                                </View>
                                 <View style={Styles.cart_price_view}>
                                     <View style={{ flexDirection: 'column' }}>
                                         <Text style={Styles.price_text}><RupeeIcon /> {item.price}</Text>
-                                        <Text style={Styles.offer_price_text}>{item.oldPrice}</Text>
+                                        <Text style={Styles.offer_price_text}>{item.offerPercent ? item.offerPercent > 0 && item.offerActiveInd ? item.oldPrice : '' : ''}</Text>
                                     </View>
 
                                     <View style={[Styles.cart_quantity_view, Styles.center]}>
@@ -317,15 +302,15 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                                 </View>
 
                                 <View>
-                                    {item.offerPercent ? item.offerPercent > 0 ?
-                                    <Text style={Styles.cart_offer_text}>{item.offerPercent}% off</Text> : null : null}
+                                    {item.offerPercent ? item.offerPercent > 0 && item.offerActiveInd ?
+                                        <Text style={Styles.cart_offer_text}>{item.offerPercent}% off</Text> : null : null}
                                 </View>
                             </View>
                         </View>
 
                         <View>
-                        {item.offerPercent ? item.offerPercent > 0 ?
-                            <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}> offers available</Text>: null : null}
+                            {item.offerPercent ? item.offerPercent > 0 && item.offerActiveInd?
+                                <Text style={[Styles.cart_offer_text, { marginLeft: 10 }]}> offers available</Text> : null : null}
                         </View>
                     </View>
 
@@ -342,7 +327,7 @@ export class WishListScreen extends React.Component<WishListScreenProps & Themed
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title={single ? shopName : 'All Wish List'}
+                    title= 'Wish List'
                     backIcon={MenuIcon}
                     onBackPress={this.props.navigation.openDrawer}
                     onRightPress={() => { this.continiueShopping() }}

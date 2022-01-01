@@ -572,7 +572,7 @@ export class ShopDetailScreen extends React.Component<ShopDetailScreenProps & Of
                                 {/* <ScrollView> */}
                                 <View style={Styles.product_description_view}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>Shopkeeper Detail</Text>
-                                    <View style={{ borderTopWidth: 2, borderColor: '#0099cc', marginTop: 10, padding: 10 }}>
+                                    <View style={{ borderTopWidth: 2, borderColor: '#501B1D', marginTop: 10, padding: 10 }}>
                                         {/* <Text style={{ fontSize: 18 }}>{allProduct.description}</Text> */}
                                         {null != allProduct ?
                                             <Text  style={{ fontSize: 18 }}>{allProduct.firstName} {allProduct.lastName},  +91{allProduct.mobileNo}</Text>
@@ -582,7 +582,7 @@ export class ShopDetailScreen extends React.Component<ShopDetailScreenProps & Of
 
                                 <View style={Styles.product_description_view}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>Shop Address</Text>
-                                    <View style={{ borderTopWidth: 2, borderColor: '#0099cc', marginTop: 10, padding: 10 }}>
+                                    <View style={{ borderTopWidth: 2, borderColor: '#501B1D', marginTop: 10, padding: 10 }}>
                                         {/* <Text style={{ fontSize: 18 }}>{allProduct.description}</Text> */}
                                         {null != allMeasurement[0] ?
                                             <Text style={{ fontSize: 18 }}>{allMeasurement[0].street}, {allMeasurement[0].city}, {allMeasurement[0].postOffice}, {allMeasurement[0].policeStation}, {allMeasurement[0].district}, {allMeasurement[0].state}, {allMeasurement[0].country}, {allMeasurement[0].pinCode}</Text>

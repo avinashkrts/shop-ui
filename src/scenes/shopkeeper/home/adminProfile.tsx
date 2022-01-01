@@ -32,7 +32,7 @@ export class AdminProfileScreen extends Component<AdminProfileScreenProps, Theme
             longitude: '',
             latitude: '',
             userType: '',
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             district: '',
             postOffice: '',
             policeStation: '',

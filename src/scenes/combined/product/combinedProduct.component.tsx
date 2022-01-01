@@ -21,14 +21,20 @@ import { scale } from "react-native-size-matters";
 import { LableText } from '../../../constants/LabelConstants';
 import { ThunkDispatch } from "redux-thunk";
 import { bindActionCreators } from "redux";
-import { changeProductData } from "../../../redux/action/tokenActions";
-import { ProductActions } from "../../../redux/product.constant";
-import { Product } from "../../../redux/product";
+import { changeProductData } from "../../../redux/action/productActions";
+import { ProductActions } from "../../../redux/interfaces/product.interface";
+import { Product } from "../../../redux/modules/product";
 import { connect, ConnectedProps } from "react-redux";
 import SearchInput, { createFilter } from 'react-native-search-filter';
+import { fetchBrandByShopId } from "../../../redux/action/brandAction";
+import { AppState } from "src/redux/store";
+import { Brand } from "src/redux/modules/brand.modules";
+import { AppActions } from "src/redux/interfaces";
+import { User } from "../../../redux/modules/user.modules";
+import { fetchUserById } from "../../../redux/action/userAction";
 const KEYS_TO_FILTERS = ['name'];
 
-type Props = CombinedProductScreenProps & ThemedComponentProps & CombinedProductProps
+type Props = CombinedProductScreenProps & ThemedComponentProps & CombinedProductProps & LinkDispatchToProp & LinkStateToProp;
 
 class CombinedProduct extends Component<Props, any> {
     backHandler: any;
@@ -43,7 +49,7 @@ class CombinedProduct extends Component<Props, any> {
             selectedCategory: '',
             selectedBrand: '',
             userData: [],
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             allMeasurement: [],
             wishList: '',
             search: '',
@@ -52,6 +58,8 @@ class CombinedProduct extends Component<Props, any> {
             searchVisible: '',
             refreshing: false,
             location: '',
+            isCart: false,
+            user: '',
             allData: [
                 {
                     url: '/api/lookup/getallmeasurementtype',
@@ -68,11 +76,41 @@ class CombinedProduct extends Component<Props, any> {
     }
 
     // changeProductData = (product: Product[]) => {
-    //     this.props.changeProductData(product)
+    //    // this.props.changeProductData(product)
+    // }
+
+    backAction = () => {
+        Alert.alert("Alert!", LableText.CUS_HOME_PAGE, [
+            {
+                text: "Cancel",
+                onPress: () => null,
+                style: "cancel"
+            },
+            {
+                text: "YES", onPress: () => {
+                    BackHandler.exitApp()
+                }
+
+            }
+        ]);
+        return true;
+    };
+
+    // componentWillUnmount() {
+    //     this.backHandler.remove();
     // }
 
     async componentDidMount() {
         // console.log('Product data', this.props)
+        this.props.navigation.addListener('focus', () => {
+            this.backHandler = BackHandler.addEventListener(
+                "hardwareBackPress",
+                this.backAction
+            );
+        })
+        this.props.navigation.addListener('blur', () => {
+            this.backHandler.remove();
+        })
         const { allData } = this.state;
         let userDetail = await AsyncStorage.getItem('userDetail');
         let userData = JSON.parse(userDetail);
@@ -83,138 +121,71 @@ class CombinedProduct extends Component<Props, any> {
         this.setState({
             userData: userData,
         })
-        if (null != logedIn && logedIn === 'true') {
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/user/get/' + userData.userId,
-            }).then((response) => {
-                this.setState({
-                    userData: response.data,
-                    wishList: response.data.wishList
-                })
-            }, (error) => {
-                Alert.alert("Server error.")
-            });
-        }
-        if (null != shopIdAsync && shopIdAsync !== '') {
-            this.setState({ single: true, shopName: shopName, shopId: shopIdAsync })
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/product/getproductbyshopid/' + shopIdAsync,
-            }).then((response) => {
-                if (null != response.data) {
-                    this.props.changeProductData(response.data)
-                    this.setState({
-                        allProduct: response.data.reverse(),
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/category/getcategorybyshopid/' + shopIdAsync,
-            }).then((response) => {
-                if (null != response.data) {
-                    this.setState({
-                        allCategory: response.data,
-                        selectedCategory: response.data[0].id
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/brand/getbrandbyshopid/' + shopIdAsync,
-            }).then((response) => {
-                if (null != response.data) {
-                    this.setState({
-                        allBrand: response.data,
-                        selectedBrand: response.data[0].id
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
-        } else {
-            try {
-                var lat = await AsyncStorage.getItem('latitude')
-                var long = await AsyncStorage.getItem('longitude')
-                var location = await AsyncStorage.getItem('location')
+        this.props.changeProductData(AppConstants.SHOP_ID)
+        this.props.fetchBrandByShopId(AppConstants.SHOP_ID)
 
-                axios({
-                    method: 'GET',
-                    url: AppConstants.API_BASE_URL + '/api/product/getbylocation/' + lat + '/' + long,
-                }).then((response) => {
-                    this.props.changeProductData(response.data)
-                    this.setState({
-                        allProduct: response.data,
-                        lat: lat,
-                        long: long,
-                        location: location,
-                        single: false,
-                        searchTerm: ''
-                    })
-                    // console.log('Product data1', this.props.productData)
-
-                }, (error) => {
-                    Alert.alert("Server error.")
-                });
-            } catch (err) {
-                console.warn(err);
-            }
-
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/category/getallcategory',
-            }).then((response) => {
-                if (null != response.data) {
-                    this.setState({
-                        allCategory: response.data,
-                        selectedCategory: response.data[0].id
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
-            axios({
-                method: 'GET',
-                url: AppConstants.API_BASE_URL + '/api/brand/getallbrand/',
-            }).then((response) => {
-                if (null != response.data) {
-                    this.setState({
-                        allBrand: response.data,
-                        selectedBrand: response.data[0].id
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error!.")
-            });
-        }
-
-        allData.map((data, index) => {
-            // console.log(allData)
-            axios({
-                method: data.method,
-                url: AppConstants.API_BASE_URL + data.url,
-            }).then((response) => {
-                if (data.variable === 'allMeasurement') {
-                    // console.log(data.variable, response.data)
-                    this.setState({
-                        allMeasurement: response.data,
-                    })
-                } else if (data.variable === 'user') {
-                    // console.log(data.variable, response.data)
-                    this.setState({
-                        userData: response.data,
-                        wishList: response.data.wishList
-                    })
-                }
-            }, (error) => {
-                Alert.alert("Server error.")
-            });
+        this.setState({
+            allBrand: this.props.allBrand,
+            allProduct: this.props.productData
         })
+
+        if (null != logedIn && logedIn === 'true') {
+            this.props.fetchUserById(Number(userData.userId))
+            this.setState({
+                user: this.props.userData
+            })
+        }
+        // axios({
+        //     method: 'GET',
+        //     url: AppConstants.API_BASE_URL + '/api/product/getproductbyshopid/' + AppConstants.SHOP_ID,
+        // }).then((response) => {
+        //     if (null != response.data) {
+        //         //// this.props.changeProductData(response.data)
+        //         this.setState({
+        //             allProduct: response.data.reverse(),
+        //         })
+        //     }
+        // }, (error) => {
+        //     Alert.alert("Server error!.")
+        // });
+        // axios({
+        //     method: 'GET',
+        //     url: AppConstants.API_BASE_URL + '/api/category/getcategorybyshopid/' + AppConstants.SHOP_ID,
+        // }).then((response) => {
+        //     if (null != response.data) {
+        //         this.setState({
+        //             allCategory: response.data,
+        //             selectedCategory: response.data[0].id
+        //         })
+        //     }
+        // }, (error) => {
+        //     Alert.alert("Server error!.")
+        // });
+        // axios({
+        //     method: 'GET',
+        //     url: AppConstants.API_BASE_URL + '/api/brand/getbrandbyshopid/' + AppConstants.SHOP_ID,
+        // }).then((response) => {
+        //     if (null != response.data) {
+        //         this.setState({
+        //             allBrand: response.data,
+        //             selectedBrand: response.data[0].id
+        //         })
+        //     }
+        // }, (error) => {
+        //     Alert.alert("Server error!.")
+        // });
+
+        // axios({
+        //     method: 'GET',
+        //     url: AppConstants.API_BASE_URL + '/api/lookup/getallmeasurementtype',
+        // }).then((response) => {
+        //     // console.log(data.variable, response.data)
+        //     this.setState({
+        //         allMeasurement: response.data,
+        //     })
+        // }, (error) => {
+        //     Alert.alert("Server error.")
+        // });
     }
 
     addToCart(id) {
@@ -247,7 +218,7 @@ class CombinedProduct extends Component<Props, any> {
             url: AppConstants.API_BASE_URL + '/api/product/getproductbyshopidandcategory/' + shopId + '/' + id,
         }).then((response) => {
             if (null != response.data) {
-                this.props.changeProductData(response.data)
+                // this.props.changeProductData(response.data)
                 this.setState({
                     allProduct: response.data,
                 })
@@ -265,7 +236,7 @@ class CombinedProduct extends Component<Props, any> {
             url: AppConstants.API_BASE_URL + '/api/product/getproduct/shopid/brand/' + shopId + '/' + id,
         }).then((response) => {
             if (null != response.data) {
-                this.props.changeProductData(response.data)
+                // this.props.changeProductData(response.data)
                 this.setState({
                     allProduct: response.data,
                     selectedBrand: id
@@ -385,7 +356,7 @@ class CombinedProduct extends Component<Props, any> {
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/product/getbylocation/' + lat + '/' + lng,
             }).then((response) => {
-                this.props.changeProductData(response.data)
+                // this.props.changeProductData(response.data)
                 this.setState({
                     allProduct: response.data,
                     lat: lat,
@@ -418,7 +389,7 @@ class CombinedProduct extends Component<Props, any> {
                 method: 'GET',
                 url: AppConstants.API_BASE_URL + '/api/product/getbylocation/' + lat + '/' + long,
             }).then((response) => {
-                this.props.changeProductData(response.data)
+                // this.props.changeProductData(response.data)
                 this.setState({
                     allProduct: response.data,
                     lat: position.coords.latitude,
@@ -546,10 +517,11 @@ class CombinedProduct extends Component<Props, any> {
     }
 
     render() {
-        const productList = this.props.productData
-
-        const { allProduct, searchVisible1, searchTerm, shopName, single, searchVisible, location, lat, long, refreshing, shopId, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
-        const filteredProduct = productList.length > 0 ? productList.filter(createFilter(searchTerm, KEYS_TO_FILTERS)) : null
+        // const productList = this.props.productData
+        const productList = null
+        const { allProduct, user, searchVisible1, searchTerm, isCart, shopName, single, searchVisible, location, lat, long, refreshing, shopId, search, allCategory, allMeasurement, wishList, allBrand, selectedBrand, selectedCategory } = this.state;
+        const filteredProduct = productList ? productList.length > 0 ? productList.filter(createFilter(searchTerm, KEYS_TO_FILTERS)) : null : null
+        // console.log('User Data', user)
         return (
             <SafeAreaLayout
                 style={Styles.safeArea}
@@ -616,7 +588,7 @@ class CombinedProduct extends Component<Props, any> {
 
 
                 <Toolbar
-                    title={single ? shopName : 'All Shop Product'}
+                    title='Sone Biryani'
                     backIcon={MenuIcon}
                     onBackPress={this.props.navigation.openDrawer}
                     onRightPress={() => { this.navigateToCart() }}
@@ -627,10 +599,10 @@ class CombinedProduct extends Component<Props, any> {
                 <Divider />
                 <Divider />
                 <Divider />
-                {!single ?
+                {/* {!single ?
                     <View style={{ padding: 5 }}>
                         <Text onPress={() => { this.setState({ searchVisible: true }) }} style={{ fontWeight: 'bold', fontSize: 18, color: Color.COLOR }}>Location: <Text style={{ fontSize: 16, fontWeight: '100' }}>{location}</Text></Text>
-                    </View> : null}
+                    </View> : null} */}
                 {/* <Header style={styles.header}> */}
                 <View style={[Styles.searchBox, { marginBottom: 0 }]}>
                     <TextInput
@@ -643,10 +615,10 @@ class CombinedProduct extends Component<Props, any> {
                     />
 
                     <View style={[{ width: '10%', }, Styles.center]}>
-                        {productList.length != allProduct.length || searchTerm != '' ?
+                        {/* {productList.length != allProduct.length || searchTerm != '' ?
                             <TouchableOpacity onPress={() => { this.clearSearch() }}>
                                 <Text style={[Styles.searchIcon, { width: scale(30), height: scale(30) }]}><CancelIcon fontSize={scale(25)} /></Text>
-                            </TouchableOpacity> : null}
+                            </TouchableOpacity> : null} */}
                     </View>
                     <View style={[{ width: '10%', }, Styles.center]}>
                         <TouchableOpacity onPress={() => { this.productSearch(filteredProduct) }}>
@@ -656,56 +628,55 @@ class CombinedProduct extends Component<Props, any> {
                 </View>
                 <Divider />
                 {/* </Header> */}
-                {single ?
-                    <>
-                        <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
+                <>
+                    <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
 
-                            <View style={{ flex: 1, flexDirection: 'column' }}>
-                                <View style={{ marginTop: 10 }}>
-                                    <FlatList
-                                        style={{}}
-                                        horizontal={true}
-                                        showsHorizontalScrollIndicator={false}
-                                        data={allCategory}
-                                        renderItem={({ item, index }) => {
-                                            return (
-                                                <TouchableOpacity key={index} onPress={() => { this.selectCategory(item.id) }}>
-                                                    <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                        <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                                    </View>
-                                                </TouchableOpacity>
-                                            )
-                                        }}
-                                    >
-                                    </FlatList>
-                                </View>
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
+                            <View style={{ marginTop: 10 }}>
+                                <FlatList
+                                    style={{}}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    data={allCategory}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <TouchableOpacity key={index} onPress={() => { this.selectCategory(item.id) }}>
+                                                <View style={selectedCategory == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                    <Text style={selectedCategory == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    }}
+                                >
+                                </FlatList>
                             </View>
-                        </Header>
-                        <Divider />
-                        <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
+                        </View>
+                    </Header>
+                    <Divider />
+                    <Header style={{ backgroundColor: '#ffffff', height: 50, marginTop: 0 }}>
 
-                            <View style={{ flex: 1, flexDirection: 'column' }}>
-                                <View style={{ marginTop: 10 }}>
-                                    <FlatList
-                                        style={{}}
-                                        horizontal={true}
-                                        showsHorizontalScrollIndicator={false}
-                                        data={allBrand}
-                                        renderItem={({ item, index }) => {
-                                            return (
-                                                <TouchableOpacity onPress={() => { this.selectBrand(item.id, item.name) }}>
-                                                    <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
-                                                        <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
-                                                    </View>
-                                                </TouchableOpacity>
-                                            )
-                                        }}
-                                    >
-                                    </FlatList>
-                                </View>
+                        <View style={{ flex: 1, flexDirection: 'column' }}>
+                            <View style={{ marginTop: 10 }}>
+                                <FlatList
+                                    style={{}}
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    data={allBrand}
+                                    renderItem={({ item, index }) => {
+                                        return (
+                                            <TouchableOpacity onPress={() => { this.selectBrand(item.id, item.name) }}>
+                                                <View style={selectedBrand == item.id ? Styles.product_nav_button_selected : Styles.product_nav_button}>
+                                                    <Text style={selectedBrand == item.id ? Styles.product_nav_button_selected_text : Styles.product_nav_button_text}>{item.name}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    }}
+                                >
+                                </FlatList>
                             </View>
-                        </Header>
-                    </> : null}
+                        </View>
+                    </Header>
+                </>
                 {searchVisible1 ?
                     <>
                         <ScrollView>
@@ -734,32 +705,16 @@ class CombinedProduct extends Component<Props, any> {
                     </>}
                 <View style={{ height: 10, width: '100%' }} />
 
+                {!isCart ?
+                    <TouchableOpacity style={Styles.bottom_tab_bar} onPress={() => { Alert.alert("Asdf") }}>
+                        <Text style={Styles.bottom_view_cart_text}>View Cart</Text>
+                    </TouchableOpacity>
+                    : null
+                }
             </SafeAreaLayout>
         );
     }
 }
-
-// interface LinkStateToProp {
-//     productData: Product[]
-// }
-
-// interface LinkDispatchToProp {
-//     changeProductData: (product: Product[]) => void;
-// }
-
-// const mapStateToProps = (
-//     state: AppState,
-//     ownProps: ProductPageProps
-// ): LinkStateToProp => ({
-//     productData: state.tokenReducer
-// })
-
-// const mapDispatchToProps = (
-//     dispatch: ThunkDispatch<any, any, ProductActions>,
-//     ownProps: ProductPageProps
-// ): LinkDispatchToProp => ({
-//     changeProductData: bindActionCreators(changeProductData, dispatch)
-// });
 
 const styles = StyleSheet.create({
     container: {
@@ -782,19 +737,35 @@ const styles = StyleSheet.create({
     }
 });
 
-function mapStateToProps(state) {
-    return ({
-        productData: state.tokenReducer.productData
-    })
+interface LinkStateToProp {
+    productData?: Product[],
+    userData?: User[],
+    allBrand?: Brand[]
 }
 
-function mapDispatchToProps(dispatch) {
-    return ({
-        changeProductData: (data) => {
-            dispatch(changeProductData(data))
-        }
-    })
+interface LinkDispatchToProp {
+    changeProductData?: (shopId: String) => void;
+    fetchBrandByShopId?: (shopId: String) => void;
+    fetchUserById?: (id: Number) => void;
 }
+
+const mapStateToProps = (
+    state: AppState,
+    ownProps: Brand
+): LinkStateToProp => ({
+    productData: state.productReducers.productData,
+    userData: state.userReducers.userData,
+    allBrand: state.brandReducers.allBrand
+})
+
+const mapDispatchToProps = (
+    dispatch: ThunkDispatch<any, any, AppActions>,
+    ownProps: Brand
+): LinkDispatchToProp => ({
+    changeProductData: bindActionCreators(changeProductData, dispatch),
+    fetchUserById: bindActionCreators(fetchUserById, dispatch),
+    fetchBrandByShopId: bindActionCreators(fetchBrandByShopId, dispatch)
+});
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 

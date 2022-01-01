@@ -84,7 +84,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         this.state = {
             cartData: [],
             productList: [],
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             cartId: '',
             addressData: [],
             single: false,
@@ -111,38 +111,20 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
 
         if (null != logedIn && logedIn === 'true') {
             // Alert.alert("" + userData.userId)           
-            if (null != shopId && shopId !== '') {
-                // Alert.alert("" + shopId)
-                this.setState({ single: true, shopName: shopName, shopId: shopId })
-                axios({
-                    method: 'GET',
-                    url: AppConstants.API_BASE_URL + '/api/cart/get/cartby/shopid/userid/' + shopId + '/' + userData.userId
-                }).then((response) => {
-                    if (null != response.data) {
-                        this.setState({
-                            cartData: response.data[0],
-                            cartId: response.data[0].cartId,
-                            productList: response.data[0].productList
-                        })
-                    }
-                }, (error) => {
-                    // Alert.alert("Server error!.")
-                });
-            } else {
-                axios({
-                    method: 'GET',
-                    url: AppConstants.API_BASE_URL + '/api/cart/get/all/cartby/userid/' + userData.userId
-                }).then((response) => {
+            axios({
+                method: 'GET',
+                url: AppConstants.API_BASE_URL + '/api/cart/get/cartby/shopid/userid/' + AppConstants.SHOP_ID + '/' + userData.userId
+            }).then((response) => {
+                if (null != response.data) {
                     this.setState({
-                        single: false,
-                        cartData: response.data,
+                        cartData: response.data[0],
                         cartId: response.data[0].cartId,
                         productList: response.data[0].productList
                     })
-                }, (error) => {
-                    // Alert.alert("Server problem")
-                })
-            }
+                }
+            }, (error) => {
+                // Alert.alert("Server error!.")
+            });
         } else {
             this.props.navigation.navigate(AppRoute.AUTH)
         }
@@ -195,7 +177,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         })
     }
 
-    handlePlaceOrder() {
+    handlePlaceOrder(cartId) {
         const { insideShop, selectedCartId } = this.state;
         // console.log('hjhjhj', String(insideShop));
 
@@ -210,8 +192,8 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
         //     Alert.alert("It seems any product is out of stock"+cart.productQuantity + " " + cart.currentStock);
         // } else {
         //     Alert.alert(''+cart.productQuantity + " " + cart.currentStock)
-        this.toggleModal()
-        const pushAction = StackActions.push(AppRoute.PAYMENT, { cartId: String(selectedCartId), insideShop: insideShop })
+        // this.toggleModal()
+        const pushAction = StackActions.push(AppRoute.PAYMENT, { cartId: String(cartId), insideShop: false })
         this.props.navigation.dispatch(pushAction);
         //             }
         //         }
@@ -303,11 +285,11 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
     renderCombinedCart = ({ item, index }: any): ListItemElement => (
         <>
             {item != null && item.productList ?
-                <ListItem style={{ margin: 10, borderColor: '#0099cc', borderWidth: 1, flexDirection: 'column' }}>
+                <ListItem style={{ margin: 10, borderColor: '#501B1D', borderWidth: 1, flexDirection: 'column' }}>
                     {item != null && item.productList ?
                         <>
                             <View>
-                                <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#0099cc' }}>{item.shopName}</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#501B1D' }}>{item.shopName}</Text>
                             </View>
                             <List data={item.productList ? item.productList.slice(0).reverse() : null}
                                 renderItem={this.renderCart}
@@ -399,7 +381,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                 style={Styles.safeArea}
                 insets={SaveAreaInset.TOP}>
                 <Toolbar
-                    title={single ? shopName : 'All Shop Cart'}
+                    title='Shop Cart'
                     backIcon={BackIcon}
                     onBackPress={this.props.navigation.goBack}
                     onRightPress={() => { this.continiueShopping() }}
@@ -408,7 +390,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                 />
                 <Divider />
 
-                <Modal style={Styles.modal} isVisible={isModalVisible}>
+                {/* <Modal style={Styles.modal} isVisible={isModalVisible}>
                     <View style={Styles.modalHeader}>
                         <TouchableOpacity>
                             <Text onPress={() => { this.toggleModal() }}><CancelIcon fontSize={25} /></Text>
@@ -420,12 +402,12 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                             <Text style={Styles.payment_selection_header}>Are you inside the Mart/Shop?</Text>
                             <View style={[Styles.payment_selection_view, { justifyContent: 'space-between' }]}>
                                 <View style={{ flexDirection: 'row', marginRight: scale(20) }}>
-                                    <Radio selectedColor='#0099cc' selected={insideShop} onPress={() => { this.setState({ insideShop: true }) }} />
+                                    <Radio selectedColor='#501B1D' selected={insideShop} onPress={() => { this.setState({ insideShop: true }) }} />
                                     <Text style={Styles.payment_selection_text}>Yes</Text>
                                 </View>
 
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Radio selectedColor='#0099cc' selected={!insideShop} onPress={() => { this.setState({ insideShop: false }) }} />
+                                    <Radio selectedColor='#501B1D' selected={!insideShop} onPress={() => { this.setState({ insideShop: false }) }} />
                                     <Text style={Styles.payment_selection_text}>No</Text>
                                 </View>
                             </View>
@@ -434,7 +416,7 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                             </View>
                         </View>
                     </View>
-                </Modal>
+                </Modal> */}
 
                 <Content style={Styles.cart_content} showsVerticalScrollIndicator={false}
                     refreshControl={
@@ -464,7 +446,6 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                             </TouchableOpacity>
                         </View>
                     </View> */}
-                    {single ?
                         <>
                             <List data={productList ? productList.slice(0).reverse() : null}
                                 renderItem={this.renderCart}
@@ -509,23 +490,11 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                                 </View>
                             </View>
 
-                        </> :
-                        <>
-                            <List data={cartData.slice(0).reverse()}
-                                renderItem={this.renderCombinedCart}
-                            />
-
-                            <TouchableOpacity style={Styles.cart_shopping_view} onPress={() => { this.continiueShopping() }}>
-                                <Text style={Styles.cart_shopping_text}>Continue Shopping</Text>
-                                <Text style={Styles.cart_shopping_text}><RightArrowIcon fontSize={20} /></Text>
-                            </TouchableOpacity>
                         </>
-                    }
 
 
                     <View style={{ height: 10, width: '100%' }} />
                 </Content>
-                {single ?
                     <>
                         <View style={Styles.cart_bottom_box_view}>
                             <View>
@@ -536,13 +505,12 @@ export class CartScreen extends React.Component<CartScreenProps & CustomerCartSc
                             </View>
 
                             <View>
-                                <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handleCartId(cartData.cartId) }}>
+                                <TouchableOpacity style={[Styles.cart_bottom_box_button, Styles.center]} onPress={() => { this.handlePlaceOrder(cartData.cartId) }}>
                                     <Text style={Styles.cart_bottom_box_button_text}>Place Order</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    </> : null
-                }
+                    </> 
 
                 <Divider />
                 <Divider />

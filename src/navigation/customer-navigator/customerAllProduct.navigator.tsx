@@ -6,6 +6,7 @@ import { AppRoute } from '../app-routes';
 import { CartScreen, CustomerAllProductScreen, CustomerAllShopScreen, CustProductDetailScreen, MapScreen, PaymentScreen, ShopDetailScreen } from '../../scenes/Customer/allProduct';
 import { CustomerOrderScreen } from '../../scenes/Customer/home';
 import { TestScreen } from '../../scenes/test/test';
+import { CombinedProductScreen } from '../../scenes/combined/product';
 type CustomerAllProductNavigatorParams = {
     [AppRoute.CUSTOMER_ALL_PRODUCT]: undefined;   
     [AppRoute.CUSTOMER_ALL_SHOP]: undefined;   
@@ -94,15 +95,16 @@ export interface TestProductScreenProps {
 const Stack = createStackNavigator<CustomerAllProductNavigatorParams>();
 
 export const CustomerAllShopNavigator = (): React.ReactElement => (
-    <Stack.Navigator initialRouteName={AppRoute.CUSTOMER_ALL_SHOP} headerMode='none'>
-        <Stack.Screen name={AppRoute.CUSTOMER_ALL_SHOP} component={CustomerAllShopScreen} />        
-        <Stack.Screen name={AppRoute.CUSTOMER_ALL_PRODUCT} component={CustomerAllProductScreen} />        
+    <Stack.Navigator initialRouteName={AppRoute.CUSTOMER_ALL_PRODUCT} headerMode='none'>
+        {/* <Stack.Screen name={AppRoute.TEST_SCREEN} component={TestScreen} />         */}
+        {/* <Stack.Screen name={AppRoute.CUSTOMER_ALL_SHOP} component={CustomerAllShopScreen} />         */}
+        <Stack.Screen name={AppRoute.CUSTOMER_ALL_PRODUCT} component={CombinedProductScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_CART} component={CartScreen} />        
         <Stack.Screen name={AppRoute.SHOP_DETAIL} component={ShopDetailScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_PRODUCT_DETAIL} component={CustProductDetailScreen} />        
         <Stack.Screen name={AppRoute.PAYMENT} component={PaymentScreen} />        
         <Stack.Screen name={AppRoute.MAP} component={MapScreen} />        
         <Stack.Screen name={AppRoute.CUSTOMER_ORDER_PRODUCT} component={CustomerOrderScreen} />        
-        <Stack.Screen name={AppRoute.TEST_SCREEN} component={TestScreen} />        
+        {/* <Stack.Screen name={AppRoute.TEST_SCREEN} component={TestScreen} />         */}
     </Stack.Navigator>
 );

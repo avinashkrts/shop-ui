@@ -55,7 +55,7 @@ export class OrderDetailScreen extends Component {
         this.state = {
             cartData: [],
             productList: [],
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             cartId: '',
             addressData: [],
             orderstatusData: [],
@@ -76,13 +76,11 @@ export class OrderDetailScreen extends Component {
 
         let userDetail = await AsyncStorage.getItem('userDetail');
         let logedIn = await AsyncStorage.getItem('logedIn');
-        let shopId = await AsyncStorage.getItem('shopId');
         let userData = JSON.parse(userDetail);
         const cartId = this.props.cartId;
         // Alert.alert("" + userData.adminId, cartId)
 
         this.setState({
-            shopId: shopId,
             cartId: cartId,
             userData: userData
         })
@@ -171,7 +169,7 @@ export class OrderDetailScreen extends Component {
 
                 Axios({
                     method: 'GET',
-                    url: AppConstants.API_BASE_URL + '/api/cart/order/accept/' + cartId + '/' + userData.shopId,
+                    url: AppConstants.API_BASE_URL + '/api/cart/order/accept/' + cartId + '/' + AppConstants.SHOP_ID,
                 }).then((response) => {
                     if (null != response.data) {
                         this._onRefresh();
@@ -187,7 +185,7 @@ export class OrderDetailScreen extends Component {
                     url: AppConstants.API_BASE_URL + '/api/cart/order/reject',
                     data: {
                         cartId: cartId,
-                        shopId: userData.shopId,
+                        shopId: AppConstants.SHOP_ID,
                         description: description
                     }
                 }).then((response) => {
@@ -232,7 +230,7 @@ export class OrderDetailScreen extends Component {
                     <View style={Styles.cart_view_1}>
                         <View style={Styles.cart_view_1_1}>
                             <View style={[Styles.cart_avatar_view, Styles.center]}>
-                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_1_' + item.shopId + '_product.png' }} style={Styles.product_avatar} />
+                                <Avatar source={{ uri: AppConstants.IMAGE_BASE_URL + '/product/' + item.productId + '_1_' + AppConstants.SHOP_ID + '_product.png' }} style={Styles.product_avatar} />
                             </View>
                         </View>
 

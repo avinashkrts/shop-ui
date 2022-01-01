@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.milaansearch",
+    package = "com.sonebiryani",
 )
 
 android_resource(
     name = "res",
-    package = "com.milaansearch",
+    package = "com.sonebiryani",
     res = "src/main/res",
 )
 

@@ -28,8 +28,8 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
     super(props);
 
     this.state = {
-      emailId: '',
-      pwd: '',
+      emailId: 'v23@milaan.com',
+      pwd: 'Milaan@v2',
       passwordVisible: true,
       allUserType: [],
       deviceId: '',
@@ -51,13 +51,14 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
 
   async componentDidMount() {
     let deviceId = DeviceInfo.getUniqueId();
+    OneSignal.setAppId("43e3395b-0019-492b-b999-4321444f25ad");
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: "Milaan Location Permission",
+          title: "Sone Biryani Location Permission",
           message:
-            "Milaan needs access to your Location " +
+            "Sone Biryani needs access to your Location " +
             "so you can get your nearest shop.",
           buttonNeutral: "Ask Me Later",
           buttonNegative: "Cancel",
@@ -106,32 +107,32 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
         }
       })
 
-      response.data.REGISTRATION_STATUS.map((data, index) => {
-        if (data.lookUpName === 'REG_ADDRESS') {
-          this.setState({
-            regAddress: data.lookUpId
-          })
-        } else if (data.lookUpName === 'REG_IMAGE') {
-          this.setState({
-            regImage: data.lookUpId
-          })
-        } else if (data.lookUpName === 'REG_COMPLETED') {
-          this.setState({
-            regCompleted: data.lookUpId
-          })
-        }
-      })
+      // response.data.REGISTRATION_STATUS.map((data, index) => {
+      //   if (data.lookUpName === 'REG_ADDRESS') {
+      //     this.setState({
+      //       regAddress: data.lookUpId
+      //     })
+      //   } else if (data.lookUpName === 'REG_IMAGE') {
+      //     this.setState({
+      //       regImage: data.lookUpId
+      //     })
+      //   } else if (data.lookUpName === 'REG_COMPLETED') {
+      //     this.setState({
+      //       regCompleted: data.lookUpId
+      //     })
+      //   }
+      // })
 
-    },
-      (error) => {
-        Alert.alert("Didn't got data from server")
-      });
+    }, (error) => {
+      Alert.alert("Didn't got data from server")
+    });
   }
 
   async onFormSubmit() {
     const { emailId, pwd, admin, customer, allUserType, regAddress, regImage, regCompleted } = this.state
     const deviceState = await OneSignal.getDeviceState();
     let deviceId = DeviceInfo.getUniqueId();
+    // console.log('Res', emailId, pwd, deviceId, deviceState.userId)
 
     if (emailId == null || emailId === '') {
       Alert.alert("Please enter Email Id.");
@@ -145,12 +146,14 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
           emailId: emailId,
           pwd: base64.encode(pwd),
           deviceId: deviceId,
-          playerId: deviceState.userId
+          playerId: deviceState.userId,
+          shopId: AppConstants.SHOP_ID
         },
       }).then((response) => {
         // console.log('Res', response.data)
         if (response.data) {
           // console.log('ssssss', response.data);
+          // console.log('Resdddd', response.data)
 
           if (response.data.status === 'false') {
             // console.log('ssssss', response.data);
@@ -158,36 +161,33 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
             Alert.alert("Please enter a valid email ID and password.")
           } else {
             if (response.data.token && response.data.token.length > 30) {
-              if (response.data.userType == admin) {
-                AsyncStorage.setItem("logedIn", JSON.stringify(true))
-                AsyncStorage.setItem("userId", JSON.stringify(response.data.adminId))
-                AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-                  this.navigateHome();
-                })
-              } else if (response.data.userType == customer) {
-                AsyncStorage.setItem("logedIn", JSON.stringify(true))
-                AsyncStorage.setItem("userId", JSON.stringify(response.data.userId))
-                AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
-                  this.navigateCustomerHome();
-                })
+              // console.log('Resdddd', response.data)
+              if (response.data.shopId === 'MILAAN63') {
+                // console.log('Resdddd', response.data)        
+                if (response.data.userType == admin) {
+                  AsyncStorage.setItem("logedIn", JSON.stringify(true))
+                  AsyncStorage.setItem("userId", JSON.stringify(response.data.adminId))
+                  AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
+                    this.navigateHome();
+                  })
+                } else if (response.data.userType == customer) {
+                  AsyncStorage.setItem("logedIn", JSON.stringify(true))
+                  AsyncStorage.setItem("userId", JSON.stringify(response.data.userId))
+                  AsyncStorage.setItem('userDetail', JSON.stringify(response.data), () => {
+                    this.navigateCustomerHome();
+                  })
+                }
+              } else {
+                Alert.alert("Please enter a valid email ID and password.")
               }
-            } else if (response.data.registrationStatus == regAddress) {
-              this.props.navigation.navigate(AppRoute.SIGN_REG_ADDRESS, { adminId: response.data.adminId, shopId: response.data.shopId, mobileNo: response.data.mobileNo, emailId: emailId, from: 'signIn' });
-            } else if (response.data.registrationStatus == regImage) {
-              this.props.navigation.navigate(AppRoute.SIGN_REG_IMAGE, { adminId: response.data.adminId, shopId: response.data.shopId, mobileNo: response.data.mobileNo, emailId: emailId });
-            } else if (response.data.registrationStatus == regCompleted) {
-              Alert.alert("Please contact us to activate your account.")
-              // console.log('regCompleted')
             } else {
               Alert.alert("Please enter a valid email ID and password.")
             }
-
           }
         } else {
           Alert.alert("Please enter a valid email ID and password.")
         }
       }, (error) => {
-        // console.log('Error', error)
         Alert.alert("Please enter a valid email ID and password.")
       });
     }
@@ -221,7 +221,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
       <SafeAreaLayout
         style={Styles.safeArea}
         insets={SaveAreaInset.TOP} >
-        < Content style={Styles.content} >
+        < Content style={[Styles.content, { backgroundColor: '#e6e6e6' }]} >
           <View>
             <Image
               source={require('../../assets/logo.png')}
@@ -238,7 +238,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
                 style={Styles.inputText}
                 placeholder={Placeholder.PHONE_EMAIL}
                 value={emailId}
-                onChangeText={(value) => {this.setState({ emailId: value })}}
+                onChangeText={(value) => { this.setState({ emailId: value }) }}
               />
             </View>
 
@@ -248,7 +248,7 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
                 style={Styles.inputTextWithIcon}
                 placeholder={Placeholder.PASSWORD}
                 value={pwd}
-                onChangeText={(value) => { this.setState({ pwd: value })}}
+                onChangeText={(value) => { this.setState({ pwd: value }) }}
               />
               <View style={[Styles.inputTextIcon, Styles.center]}>
                 {this.state.passwordVisible ?
@@ -276,11 +276,11 @@ export class SignInScreen extends Component<SignInScreenProps, any & State & any
               <Text style={Styles.dontHaveAccount}>{LableText.DONT_HAVE_ACCOUNT}</Text>
             </TouchableOpacity>
 
-             <View style={{ marginHorizontal: '10%' }}>
-              <TouchableOpacity style={[Styles.skip_buttonBox, Styles.center]} onPress={() => { this.navigateCustomerHome()}}>
+            <View style={{ marginHorizontal: '10%' }}>
+              <TouchableOpacity style={[Styles.skip_buttonBox, Styles.center]} onPress={() => { this.navigateCustomerHome() }}>
                 <Text style={Styles.skip_buttonName}>{LableText.SKIP_LOGIN}</Text>
               </TouchableOpacity>
-            </View> 
+            </View>
 
           </View>
           <View style={Styles.bottomSpace}></View>

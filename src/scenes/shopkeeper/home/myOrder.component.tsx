@@ -226,7 +226,7 @@ export class MyOrderScreen extends Component<MyOrderScreenProps, ThemedComponent
 
                             </View>
                             <View style={[{ justifyContent: 'flex-start' }]}>
-                                <Text style={[{ backgroundColor: '#0099cc', alignSelf: 'flex-start', color: '#fff', borderRadius: scale(5), paddingVertical: scale(3), paddingHorizontal: scale(5) }]} onPress={() => { this.handleCartSubmit(item.cartId) }} >Get Detail</Text>
+                                <Text style={[{ backgroundColor: '#501B1D', alignSelf: 'flex-start', color: '#fff', borderRadius: scale(5), paddingVertical: scale(3), paddingHorizontal: scale(5) }]} onPress={() => { this.handleCartSubmit(item.cartId) }} >Get Detail</Text>
                             </View>
                         </View>
                     </View>

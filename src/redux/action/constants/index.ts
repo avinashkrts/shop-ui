@@ -1,0 +1,23 @@
+export const ProductActions = {
+    GET_BY_SHOP_ID: "GET_PRODUCT_BY_SHOP_ID",
+    GET_BY_SHOP_ID_ASYNC: "GET_PRODUCT_BY_SHOP_ID_ASYNC",
+    PRODUCT_ERROR: "PRODUCT_ERROR"
+}
+
+export const BrandActions = {
+    GET_BY_SHOP_ID: "GET_BRAND_BY_SHOP_ID",
+    GET_BY_SHOP_ID_ASYNC: "GET_BRAND_BY_SHOP_ID_ASYNC",
+    BRAND_ERROR: "BRAND_ERROR"
+}
+
+export const UserActions = {
+    GET_BY_ID: "GET_USER_BY_ID",
+    GET_BY_ID_ASYNC: "GET_USER_BY_ID_ASYNC",
+    USER_ERROR: "USER_ERROR"
+}
+
+export const VarientActions = {
+    GET_BY_SHOP_ID: "GET_VARIENT_BY_SHOP_ID",
+    GET_BY_SHOP_ID_ASYNC: "GET_VARIENT_BY_SHOP_ID_ASYNC",
+    VARIENT_ERROR: "VARIENT_ERROR"
+}

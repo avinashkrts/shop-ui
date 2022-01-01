@@ -86,9 +86,9 @@ export class ShopRegistrationScreen extends Component<ShopRegistrationScreenProp
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
                 {
-                    title: "Milaan Location Permission",
+                    title: "Sone Biryani Location Permission",
                     message:
-                        "Milaan needs access to your Location " +
+                        "Sone Biryani needs access to your Location " +
                         "so you can get your nearest shop.",
                     buttonNeutral: "Ask Me Later",
                     buttonNegative: "Cancel",

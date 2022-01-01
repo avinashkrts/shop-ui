@@ -28,7 +28,7 @@ export class CustomerAllProductScreen extends Component<CustomerAllProductScreen
             selectedCategory: '',
             selectedBrand: '',
             userData: [],
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             allMeasurement: [],
             wishList: '',
             search: '',

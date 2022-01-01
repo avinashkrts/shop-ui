@@ -32,7 +32,7 @@ export const TestComponent = (props) => {
     //         selectedCategory: '',
     //         selectedBrand: '',
     //         userData: [],
-    //         shopId: '',
+    //         shopId: AppConstants.SHOP_ID,
     //         allMeasurement: [],
     //         wishList: '',
     //         search: '',

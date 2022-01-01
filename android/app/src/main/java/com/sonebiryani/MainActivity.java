@@ -1,4 +1,4 @@
-package com.milaansearch;
+package com.sonebiryani;
 
 import android.os.Bundle;
 
@@ -14,7 +14,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "shop";
+    return "sonebiryani";
   }
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -109,7 +109,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             userMobileNo: '',
             userEmailId: '',
             addressId: '',
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             cartData: [],
             adminData: [],
             insideShop: false,
@@ -136,7 +136,8 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
             userName: userData.firstName,
             userMobileNo: userData.mobileNo,
             userEmailId: userData.emailId,
-            insideShop: insideShop
+            insideShop: insideShop,
+            orderPlacing: false
         })
         if (null != logedIn && logedIn === 'true') {
             // Alert.alert("" + userData.userId)
@@ -376,7 +377,7 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                 contact: userMobileNo,
                 name: userName
             },
-            theme: { color: '#0099cc' }
+            theme: { color: '#501B1D' }
         }
         RazorpayCheckout.open(options).then((data) => {
             // console.log('razor pay response', data.razorpay_payment_id);
@@ -575,14 +576,14 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                                 <Text style={Styles.payment_selection_header}>How do you want this order?</Text>
                                 <View style={Styles.payment_selection_view}>
                                     <View style={{ flexDirection: 'row', marginRight: scale(20) }}>
-                                        <Radio selected={homeDelivery} selectedColor='#0099cc' onPress={() => { this.handleOrderType('HOME') }} />
+                                        <Radio selected={homeDelivery} selectedColor='#501B1D' onPress={() => { this.handleOrderType('HOME') }} />
                                         <Text style={Styles.payment_selection_text}>Home Delivery</Text>
                                     </View>
 
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Radio selected={selfPick} selectedColor='#0099cc' onPress={() => { this.handleOrderType('SELF') }} />
+                                    {/* <View style={{ flexDirection: 'row' }}>
+                                        <Radio selected={selfPick} selectedColor='#501B1D' onPress={() => { this.handleOrderType('SELF') }} />
                                         <Text style={Styles.payment_selection_text}>Self Pickup</Text>
-                                    </View>
+                                    </View> */}
                                 </View>
                             </View>
                         </View> :
@@ -593,12 +594,12 @@ export class PaymentScreen extends React.Component<PaymentScreenProps & Customer
                             <Text style={Styles.payment_selection_header}>How do you want to pay?</Text>
                             <View style={Styles.payment_selection_view}>
                                 <View style={{ flexDirection: 'row', marginRight: scale(20) }}>
-                                    <Radio selected={cashDelivery} selectedColor='#0099cc' onPress={() => { this.handlePaymentType('CASH') }} />
+                                    <Radio selected={cashDelivery} selectedColor='#501B1D' onPress={() => { this.handlePaymentType('CASH') }} />
                                     <Text style={Styles.payment_selection_text}>Cash</Text>
                                 </View>
 
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Radio selected={payOnline} selectedColor='#0099cc' onPress={() => { this.handlePaymentType('PAYON') }} />
+                                    <Radio selected={payOnline} selectedColor='#501B1D' onPress={() => { this.handlePaymentType('PAYON') }} />
                                     <Text style={Styles.payment_selection_text}>Pay Online</Text>
                                 </View>
                             </View>

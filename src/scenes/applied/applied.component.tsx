@@ -139,8 +139,7 @@ export class AppliedScreen extends React.Component<AppliedScreenProps & ThemedCo
     
             axios({
                 method: 'get',
-                url: AppConstants.API_BASE_URL + '/api/job/getalljob',
-    
+                url: AppConstants.API_BASE_URL + '/api/job/getalljob',    
             }).then((response) => {
                 this.setState({
                     ...this.state,

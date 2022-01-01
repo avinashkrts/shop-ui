@@ -1,20 +1,19 @@
-import ActionTypes from "../action/constants/Constant";
+import { ProductActions } from "../action/constants";
 
 const INITIAL_STATE = {
     productData: {}
 }
 
-const TokenReducers = (states = INITIAL_STATE, action) => {
+const ProductReducers = (states = INITIAL_STATE, action) => {
     switch (action.type) {
-        case ActionTypes.CHANGE_PRODUCT_STATE:
+        case ProductActions.GET_BY_SHOP_ID_ASYNC:
             return ({
                 ...states,
                 productData: action.payload
-            })
-
+            });
         default:
             return states;
     }
 }
 
-export default TokenReducers;
+export default ProductReducers;

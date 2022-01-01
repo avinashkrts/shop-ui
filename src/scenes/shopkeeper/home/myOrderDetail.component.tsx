@@ -50,7 +50,7 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
         this.state = {
             cartData: [],
             productList: [],
-            shopId: '',
+            shopId: AppConstants.SHOP_ID,
             cartId: '',
             deliveryDate: '',
             addressData: [],
@@ -720,18 +720,18 @@ export class MyOrderDetailScreen extends Component<MyOrderDetailScreenProps, The
                                     <View style={Styles.user_detail_data}>
                                         {cartData.orderType ? String(cartData.orderType) === String(selfPick) ?
                                             <View style={{ flexDirection: 'row', marginRight: 20 }}>
-                                                <Radio selected={this.state.selfPickUp} selectedColor='#0099cc' onPress={() => { this.handleDeliveryType('SELFPICK') }} />
+                                                <Radio selected={this.state.selfPickUp} selectedColor='#501B1D' onPress={() => { this.handleDeliveryType('SELFPICK') }} />
                                                 <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>Self pick up</Text>
                                             </View> :
                                             cartData.orderType == homeDelivery || cartData.orderType == homeDelivery ?
                                                 <>
                                                     <View style={{ flexDirection: 'row', marginRight: 20 }}>
-                                                        <Radio selected={this.state.byDeliveryBoy} selectedColor='#0099cc' onPress={() => { this.handleDeliveryType('DBOY') }} />
+                                                        <Radio selected={this.state.byDeliveryBoy} selectedColor='#501B1D' onPress={() => { this.handleDeliveryType('DBOY') }} />
                                                         <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>By delivery boy</Text>
                                                     </View>
 
                                                     <View style={{ flexDirection: 'row', marginRight: 20 }}>
-                                                        <Radio selected={this.state.byCourier} selectedColor='#0099cc' onPress={() => { this.handleDeliveryType('COURIER') }} />
+                                                        <Radio selected={this.state.byCourier} selectedColor='#501B1D' onPress={() => { this.handleDeliveryType('COURIER') }} />
                                                         <Text style={[{ color: Color.COLOR }, Styles.payment_selection_text]}>By courier</Text>
                                                     </View>
                                                 </> : null : null

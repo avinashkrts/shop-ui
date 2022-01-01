@@ -80,7 +80,7 @@ export class SearchProductScreen extends Component<SearchProductScreennProps, Th
                         />
                     </View>
                     <View style={[Styles.center, { marginTop: 30 }]}>
-                        <Text onPress={() => { this.navigateProductDetail() }} style={[{ backgroundColor: '#0099cc', fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Submit</Text>
+                        <Text onPress={() => { this.navigateProductDetail() }} style={[{ backgroundColor: '#501B1D', fontSize: 18, color: '#fff', padding: 10, borderRadius: 5, marginTop: 3 }]}>Submit</Text>
                     </View>
                     {/* </View> */}
                 </ScrollView>

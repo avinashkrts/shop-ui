@@ -224,7 +224,7 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
                 contact: '1234567891',
                 name: 'Milaan'
             },
-            theme: { color: '#0099cc' }
+            theme: { color: '#501B1D' }
         }
         RazorpayCheckout.open(options).then((data) => {
             // console.log('razor pay response', data.razorpay_payment_id);
@@ -384,12 +384,12 @@ export class RechargeScreen extends Component<RechargeScreenProps, ThemedCompone
                             <Text style={Styles.payment_selection_header}>How do you want to pay?</Text>
                             <View style={[Styles.payment_selection_view, { justifyContent: 'space-around' }]}>
                                 <View style={{ flexDirection: 'row', marginRight: 20 }}>
-                                    <Radio selected={walletPay} selectedColor='#0099cc' onPress={() => { this.handlePaymentType('WALLET') }} />
+                                    <Radio selected={walletPay} selectedColor='#501B1D' onPress={() => { this.handlePaymentType('WALLET') }} />
                                     <Text style={Styles.payment_selection_text}>Wallet</Text>
                                 </View>
 
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Radio selected={payOnline} selectedColor='#0099cc' onPress={() => { this.handlePaymentType('PAYON') }} />
+                                    <Radio selected={payOnline} selectedColor='#501B1D' onPress={() => { this.handlePaymentType('PAYON') }} />
                                     <Text style={Styles.payment_selection_text}>Pay Online</Text>
                                 </View>
                             </View>
